@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/app/user/")
-public class AppUserController extends BaseController {
+public class WebUserController extends BaseController {
 
     /**
      * @Description 注册

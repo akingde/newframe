@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author:wangdong
- * @description:订单相关模块的Controller
+ * @description:账户相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/order/")
-public class AppOrderController extends BaseController {
+@RequestMapping("/app/account/")
+public class WebAccountController extends BaseController {
 
 
 }

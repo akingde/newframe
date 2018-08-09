@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 @RestController
 @RequestMapping("/app/business/")
-public class AppBusinessController extends BaseController {
+public class WebBusinessController extends BaseController {
 
     /**
      * @Description 获取产品列表
