@@ -242,3 +242,25 @@ CREATE TABLE `user_provider` (
   PRIMARY KEY (`uid`) USING BTREE,
   PRIMARY KEY (`uid`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='供应商表';
+
+-- ----------------------------
+-- Table structure for user_address
+-- 用户地址表
+-- ----------------------------
+CREATE TABLE `user_address`(
+  `id` bigint(20) not null comment '地址id',
+  `uid` bigint(20) not null coment '用户id',
+  `consigneeName` varhar(30) not null comment '收件人姓名',
+  `mobile` varchar(11) not null comment '收件人手机号',
+  `provinceId` int comment '省id',
+  `provinceName` varchar(10) comment '省名',
+  `cityId` int comment '市id',
+  `cityName` varchar(20) comment '市名',
+  `countyId` int comment '县id',
+  `countyName` varchar(20)  comment '县名',
+  `consigneeAddress` varchar(100) comment '收件地址',
+  `defaultAddress` tinyint(1) comment '是否默认',
+  `ctime` int(11) not null comment '创建时间',
+  `utime` int(11) not null comment '修改时间',
+  PRIMARY key (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户地址表';
