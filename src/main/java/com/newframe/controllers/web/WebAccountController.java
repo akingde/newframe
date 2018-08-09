@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/app/account/")
-public class AppAccountController extends BaseController {
+public class WebAccountController extends BaseController {
 
 
 }
