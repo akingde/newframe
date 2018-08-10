@@ -4,7 +4,8 @@ import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.order.DeliverInfoDto;
-import com.newframe.dto.order.RenterQueryOrderDto;
+import com.newframe.dto.order.FunderQueryOrderDto;
+import com.newframe.dto.order.QueryOrderDto;
 import com.newframe.utils.log.GwsLogger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +28,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("renter/getList")
-    public JsonResult getRenterOrder(RenterQueryOrderDto param){
+    public JsonResult getRenterOrder(QueryOrderDto param){
         return null;
     }
 
@@ -75,7 +76,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("funder/getList")
-    public JsonResult getFunderOrder(){
+    public JsonResult getFunderOrder(FunderQueryOrderDto param){
         return null;
     }
 
@@ -133,7 +134,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("supplier/getList")
-    public JsonResult getsSupplierOrder(){
+    public JsonResult getsSupplierOrder(QueryOrderDto param){
         return null;
     }
 
@@ -171,7 +172,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("lessor/getList")
-    public JsonResult getLessorOrder(){
+    public JsonResult getLessorOrder(QueryOrderDto param){
         return null;
     }
 
