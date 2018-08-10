@@ -25,6 +25,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("register")
     public JsonResult register(String mobile, String mCode) {
+        /*
+            1.手机号合法性校验和验证码校验
+            2.判断手机号是否注册过
+         */
         return null;
     }
 
@@ -37,7 +41,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("checkMobileExists")
     public JsonResult checkMobileExists(String mobile) {
-
+        /*
+            1.手机号合法性校验
+            2.判断手机号是否存在
+         */
         return null;
     }
 
@@ -50,6 +57,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("checkPasswordExists")
     public JsonResult checkPasswordExists(String mobile) {
+        /*
+            1.手机号合法性校验
+            2.判断手机号是否注册过和密码是否存在
+         */
         return null;
     }
 
@@ -63,6 +74,11 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("passwordLogin")
     public JsonResult passwordLogin(String mobile, String password) {
+        /*
+            1.手机号和密码合法性校验
+            2.密码是否正确
+            3.生成新的token 和 查询出用户的信息返回给前端
+         */
         return null;
     }
 
@@ -76,6 +92,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("sendVerificationCode")
     public JsonResult sendVerificationCode(String mobile, Integer codeType) {
+        /*
+            1.判断手机号是否合法 和 验证码类型是非正确
+            2.发送验证码
+         */
         return null;
     }
 
@@ -89,6 +109,11 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("verificationCodeLogin")
     public JsonResult verificationCodeLogin(String mobile, String code) {
+        /*
+            1.校验手机号的合法性
+            2.对手机号和验证码 进行校验
+            3.登录成功 生成新的 token，和 查询新的用户信息并返回
+         */
         return null;
     }
 
@@ -102,6 +127,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("setPassword")
     public JsonResult setPassword(String password, String confirmPassword) {
+        /*
+            1.判断密码和确认密码 进行合法性验证
+            2.判断用户是否有密码
+         */
         return null;
     }
 
@@ -116,6 +145,7 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifyPassword")
     public JsonResult modifyPassword(String oldPassword, String newPassword, String confirmPassword) {
+
         return null;
     }
 
