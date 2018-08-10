@@ -1,8 +1,11 @@
 package com.newframe.controllers.app;
 
+import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.order.DeliverInfoDto;
 import com.newframe.dto.order.RenterQueryOrderDto;
+import com.newframe.utils.log.GwsLogger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,8 +35,10 @@ public class AppOrderController extends BaseController {
      * 租赁商融资购机
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("renter/financing/buy")
     public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId){
+        GwsLogger.getLogger().info(orderId);
         return null;
     }
 
@@ -51,7 +56,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("renter/view/detail")
-    public JsonResult renterViewDetail(@RequestParam List<Long> orderId){
+    public JsonResult renterViewDetail(Long orderId){
         return null;
     }
 
@@ -89,7 +94,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("funder/refuse")
-    public JsonResult funderRefuse(Long orderId){
+    public JsonResult funderRefuse(@RequestParam List<Long> orderId){
         return null;
     }
 
@@ -99,7 +104,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("funder/loan")
-    public JsonResult funderLoan(Long orderId){
+    public JsonResult funderLoan(@RequestParam List<Long> orderId){
         return null;
     }
 
@@ -134,10 +139,11 @@ public class AppOrderController extends BaseController {
 
     /**
      * 供应商发货
+     * 批量发货怎么填写订单物流信息？
      * @return
      */
     @RequestMapping("supplier/deliver")
-    public JsonResult supplierDeliver(){
+    public JsonResult supplierDeliver(DeliverInfoDto deliverInfo){
         return null;
     }
 
@@ -146,7 +152,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("supplier/logistics")
-    public JsonResult supplierGetLogistics(){
+    public JsonResult supplierGetLogistics(Long orderId){
         return null;
     }
 
@@ -155,7 +161,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("supplier/edit/logistics")
-    public JsonResult supplierEditLogistics(){
+    public JsonResult supplierEditLogistics(DeliverInfoDto deliverInfo){
         return null;
     }
 
@@ -174,7 +180,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("lessor/logistics")
-    public JsonResult lessorLogistics(){
+    public JsonResult lessorLogistics(DeliverInfoDto deliverInfo){
         return null;
     }
 
@@ -183,7 +189,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("lessor/refuse")
-    public JsonResult lessorRefuse(){
+    public JsonResult lessorRefuse(List<Long> orderId){
         return null;
     }
 
