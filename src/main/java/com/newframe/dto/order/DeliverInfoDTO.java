@@ -8,7 +8,7 @@ import lombok.Data;
  * 发货信息封装
  */
 @Data
-public class DeliverInfoDto {
+public class DeliverInfoDTO {
     /**订单编号*/
     private Long orderId;
     /**手机序列号*/
