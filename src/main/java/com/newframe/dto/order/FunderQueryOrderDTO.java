@@ -7,7 +7,7 @@ import lombok.Data;
  * @author kfm
  */
 @Data
-public class FunderQueryOrderDto extends QueryOrderDto {
-    private Long renterId;
+public class FunderQueryOrderDTO extends QueryOrderDTO {
+    private String renterName;
 }
 

@@ -3,9 +3,10 @@ package com.newframe.controllers.app;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
-import com.newframe.dto.order.DeliverInfoDto;
-import com.newframe.dto.order.FunderQueryOrderDto;
-import com.newframe.dto.order.QueryOrderDto;
+import com.newframe.dto.order.DeliverInfoDTO;
+import com.newframe.dto.order.FunderQueryOrderDTO;
+import com.newframe.dto.order.ProductInfoDTO;
+import com.newframe.dto.order.QueryOrderDTO;
 import com.newframe.utils.log.GwsLogger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("renter/getList")
-    public JsonResult getRenterOrder(QueryOrderDto param){
+    public JsonResult getRenterOrder(QueryOrderDTO param){
         return null;
     }
 
@@ -54,10 +55,12 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商查看订单详情
+     *
      * @return
      */
     @RequestMapping("renter/view/detail")
     public JsonResult renterViewDetail(Long orderId){
+        // todo:文档
         return null;
     }
 
@@ -70,13 +73,31 @@ public class AppOrderController extends BaseController {
         return null;
     }
 
+    /**
+     * 租赁商进行融资购机时需要查询有订单所需机型的供应商列表
+     * @return
+     */
+    @RequestMapping("/getSupplierList")
+    public JsonResult getSupplierList(ProductInfoDTO productInfo){
+        return null;
+    }
+
+    /**
+     * 租赁商进行租机时需要查询有订单所需机型的出租方列表（单个订单操作）
+     * @return
+     */
+    @RequestMapping("/getLessorList")
+    public JsonResult getLessorList(ProductInfoDTO productInfo){
+        return null;
+    }
+
     /****************资金方订单********************/
     /**
      * 查询资金方订单
      * @return
      */
     @RequestMapping("funder/getList")
-    public JsonResult getFunderOrder(FunderQueryOrderDto param){
+    public JsonResult getFunderOrder(FunderQueryOrderDTO param){
         return null;
     }
 
@@ -86,6 +107,7 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("funder/view/detail")
     public JsonResult funderViewDetail(Long orderId){
+        // todo: 文档
         return null;
     }
 
@@ -120,7 +142,7 @@ public class AppOrderController extends BaseController {
     }
 
     /**
-     * 上次放款凭证
+     * 上传放款凭证
      * @param orderId
      * @return
      */
@@ -134,7 +156,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("supplier/getList")
-    public JsonResult getsSupplierOrder(QueryOrderDto param){
+    public JsonResult getsSupplierOrder(QueryOrderDTO param){
         return null;
     }
 
@@ -144,7 +166,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("supplier/deliver")
-    public JsonResult supplierDeliver(DeliverInfoDto deliverInfo){
+    public JsonResult supplierDeliver(DeliverInfoDTO deliverInfo){
         return null;
     }
 
@@ -162,7 +184,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("supplier/edit/logistics")
-    public JsonResult supplierEditLogistics(DeliverInfoDto deliverInfo){
+    public JsonResult supplierEditLogistics(DeliverInfoDTO deliverInfo){
         return null;
     }
 
@@ -172,7 +194,7 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("lessor/getList")
-    public JsonResult getLessorOrder(QueryOrderDto param){
+    public JsonResult getLessorOrder(QueryOrderDTO param){
         return null;
     }
 
@@ -180,8 +202,8 @@ public class AppOrderController extends BaseController {
      * 出租方发货
      * @return
      */
-    @RequestMapping("lessor/logistics")
-    public JsonResult lessorLogistics(DeliverInfoDto deliverInfo){
+    @RequestMapping("lessor/deliver")
+    public JsonResult lessorLogistics(DeliverInfoDTO deliverInfo){
         return null;
     }
 
@@ -191,6 +213,15 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("lessor/refuse")
     public JsonResult lessorRefuse(List<Long> orderId){
+        return null;
+    }
+
+    /**
+     * 出租方购机
+     * @return
+     */
+    @RequestMapping("lessor/buy")
+    public JsonResult lessorBuy(List<Long> orderId,Long supplierId){
         return null;
     }
 
