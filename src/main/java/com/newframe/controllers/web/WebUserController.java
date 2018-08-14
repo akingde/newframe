@@ -1,7 +1,10 @@
 package com.newframe.controllers.web;
 
+import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.services.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/app/user/")
 public class WebUserController extends BaseController {
 
+    @Autowired
+    private UserService userService;
+
     /**
      * @Description 注册
      * @Author WangBin
@@ -23,6 +29,7 @@ public class WebUserController extends BaseController {
      * @Return
      * @Date 2018/8/8 14:31
      */
+    @Anonymous(true)
     @PostMapping("register")
     public JsonResult register(String mobile, String mCode) {
         /*
@@ -33,33 +40,18 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @Description 校验手机号是否存在
+     * @Description 校验手机号和密码是否存在
      * @Author WangBin
      * @Param mobile 手机号
      * @Return
      * @Date 2018/8/8 14:31
      */
-    @PostMapping("checkMobileExists")
+    @Anonymous(true)
+    @PostMapping("checkMobileAndPasswordExists")
     public JsonResult checkMobileExists(String mobile) {
         /*
             1.手机号合法性校验
             2.判断手机号是否存在
-         */
-        return null;
-    }
-
-    /**
-     * @Description 校验手机号是否有密码
-     * @Author WangBin
-     * @Param mobile 手机号
-     * @Return
-     * @Date 2018/8/8 14:32
-     */
-    @PostMapping("checkPasswordExists")
-    public JsonResult checkPasswordExists(String mobile) {
-        /*
-            1.手机号合法性校验
-            2.判断手机号是否注册过和密码是否存在
          */
         return null;
     }
@@ -72,6 +64,7 @@ public class WebUserController extends BaseController {
      * @Return
      * @Date 2018/8/8 14:32
      */
+    @Anonymous(true)
     @PostMapping("passwordLogin")
     public JsonResult passwordLogin(String mobile, String password) {
         /*
@@ -90,6 +83,7 @@ public class WebUserController extends BaseController {
      * @Return com.newframe.controllers.JsonResult
      * @Date 2018/8/9 15:48
      */
+    @Anonymous(true)
     @PostMapping("sendVerificationCode")
     public JsonResult sendVerificationCode(String mobile, Integer codeType) {
         /*
@@ -107,6 +101,7 @@ public class WebUserController extends BaseController {
      * @Return
      * @Date 2018/8/9 16:05
      */
+    @Anonymous(true)
     @PostMapping("verificationCodeLogin")
     public JsonResult verificationCodeLogin(String mobile, String code) {
         /*
@@ -118,7 +113,7 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @Description 设置密码
+     * @Description 设置密码登录状态
      * @Author WangBin
      * @Param password 密码
      * @Param confirmPassword 确认密码
@@ -135,6 +130,21 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * @Description 未登录设置密码
+     * @Author WangBin
+     * @Param mobile 手机号
+     * @Param mCode 验证码
+     * @Param password 密码
+     * @Return
+     * @Date 2018/8/13 16:35
+     */
+    @Anonymous(true)
+    @PostMapping("setLoginPassword")
+    public JsonResult setLoginPassword(String mobile, String mCode, String password) {
+        return null;
+    }
+
+    /**
      * @Description 修改密码
      * @Author WangBin
      * @Param oldPassword 原密码
@@ -145,7 +155,6 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifyPassword")
     public JsonResult modifyPassword(String oldPassword, String newPassword, String confirmPassword) {
-
         return null;
     }
 
@@ -200,18 +209,6 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @Description 获取角色申请详细信息
-     * @Author WangBin
-     * @Param roleApplyId 角色申请id
-     * @Return
-     * @Date 2018/8/8 17:50
-     */
-    @PostMapping("getRoleApplyInfo")
-    public JsonResult getRoleApplyInfo(Long roleApplyId) {
-        return null;
-    }
-
-    /**
      * @Description 租赁商角色申请
      * @Author WangBin
      * @Param name 商家名称
@@ -230,6 +227,18 @@ public class WebUserController extends BaseController {
                                             String businessListenNumber, MultipartFile[] businessListen,
                                             MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
                                             MultipartFile[] houseProprietaryCertificate) {
+        return null;
+    }
+
+    /**
+     * @Description 获取租赁商申请详细信息
+     * @Author WangBin
+     * @Param roleAppleId 角色申请id
+     * @Return
+     * @Date 2018/8/13 14:34
+     */
+    @PostMapping("getRentMwechantApplyInfo")
+    public JsonResult getRentMwechantApplyInfo(Long roleAppleId){
         return null;
     }
 
@@ -258,6 +267,18 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * @Description 获取资金方角色申请详细信息
+     * @Author WangBin
+     * @Param roleApplyId 角色申请id
+     * @Return
+     * @Date 2018/8/13 14:37
+     */
+    @PostMapping("getFunderApplyInfo")
+    public JsonResult getFunderApplyInfo(Long roleApplyId){
+        return null;
+    }
+
+    /**
      * @Description 出租方申请
      * @Author WangBin
      * @Param name 商家名称
@@ -279,6 +300,18 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * @Description 获取出租方申请详细信息
+     * @Author WangBin
+     * @Param roleApplyId 角色申请id
+     * @Return
+     * @Date 2018/8/13 14:39
+     */
+    @PostMapping("getHirerApplyInfo")
+    public JsonResult getHirerApplyInfo(Long roleApplyId){
+        return null;
+    }
+
+    /**
      * @Description 供应商角色申请
      * @Author WangBin
      * @Param name 商家名称
@@ -293,6 +326,18 @@ public class WebUserController extends BaseController {
     @PostMapping("supplierRoleApply")
     public JsonResult supplierRoleApply(String name, String legalEntity, String legalEntityIdNumber,
                                         String businessListenNumber, MultipartFile[] businessListen) {
+        return null;
+    }
+
+    /**
+     * @Description 获取供应商角色申请详细信息
+     * @Author WangBin
+     * @Param roleApplyId 角色申请id
+     * @Return
+     * @Date 2018/8/13 14:40
+     */
+    @PostMapping("getSupplierApplyInfo")
+    public JsonResult getSupplierApplyInfo(Long roleApplyId){
         return null;
     }
 
@@ -408,9 +453,10 @@ public class WebUserController extends BaseController {
     /**
      * @Description 大B添加小B
      * @Author WangBin
-     * @Param name 商家名称
+     * @Param merchantName 商家名称
      * @Param legalEntity 法人姓名
      * @Param legalEntityIdNumber 法人身份证号
+     * @Param phone 手机号
      * @Param provinceId 省id
      * @Param cityId 市id
      * @Param countyId 县/地级市/区id
@@ -424,8 +470,8 @@ public class WebUserController extends BaseController {
      * @Date 2018/8/9 17:46
      */
     @PostMapping("addRentMerchant")
-    public JsonResult addRentMerchant(String name, String legalEntity, String legalEntityNumber, Integer provinceId,
-                                      Integer cityId, Integer countyId, String consigneeAddress,
+    public JsonResult addRentMerchant(String merchantName, String legalEntity, String legalEntityIdNumber, String phone,
+                                      Integer provinceId, Integer cityId, Integer countyId, String consigneeAddress,
                                       String businessListenNumber, MultipartFile[] businessListen,
                                       MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
                                       MultipartFile[] houseProprietaryCertificate) {
@@ -433,7 +479,7 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @Description
+     * @Description 修改小B的信息
      * @Author WangBin
      * @Param modifyuid 修改的租赁商uid
      * @Param name 商家名称
@@ -452,7 +498,7 @@ public class WebUserController extends BaseController {
      * @Date 2018/8/9 17:49
      */
     @PostMapping("modifyRentMerchant")
-    public JsonResult modifyRentMerchant(Long modifyuId, String name, String legalEntity, String legalEntityNumber,
+    public JsonResult modifyRentMerchant(Long modifyUid, String name, String legalEntity, String legalEntityIdNumber,
                                          Integer provinceId, Integer cityId, Integer countyId, String consigneeAddress,
                                          String businessListenNumber, MultipartFile[] businessListen,
                                          MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
@@ -468,7 +514,7 @@ public class WebUserController extends BaseController {
      * @Date 2018/8/8 18:00
      */
     @PostMapping("removeRentmerchant")
-    public JsonResult removeRentmerchant(Long removeuId) {
+    public JsonResult removeRentmerchant(Long removeUid) {
         return null;
     }
 }
