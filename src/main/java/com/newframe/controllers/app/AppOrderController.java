@@ -7,7 +7,9 @@ import com.newframe.dto.order.DeliverInfoDTO;
 import com.newframe.dto.order.FunderQueryOrderDTO;
 import com.newframe.dto.order.ProductInfoDTO;
 import com.newframe.dto.order.QueryOrderDTO;
+import com.newframe.services.order.OrderService;
 import com.newframe.utils.log.GwsLogger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +22,11 @@ import java.util.List;
  * @description:订单相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/")
+@RequestMapping("/app/order")
 public class AppOrderController extends BaseController {
+
+    @Autowired
+    OrderService orderService;
 
     /**
      * 查询租赁商订单列表
@@ -30,7 +35,10 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("renter/getList")
     public JsonResult getRenterOrder(QueryOrderDTO param){
-        return null;
+        // todo 获取登陆用户uid
+        Integer uid = 1231231;
+        JsonResult result = orderService.getRenterOrder(param, uid);
+        return result;
     }
 
     /**
