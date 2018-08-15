@@ -143,8 +143,8 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listRenterOrderRent")
-    public JsonResult listRenterOrderRent(Integer currentPage, Integer pageSize) {
+    @RequestMapping("listRenterOrderRentAccount")
+    public JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize) {
         return null;
     }
 
@@ -175,8 +175,8 @@ public class AppAccountController extends BaseController {
     }
 
     /**
-     * 租赁商租赁账户下
-     * 逾期订单租赁明细列表
+     * 租赁商订单逾期账户下
+     * 租赁明细列表
      * 涉及到分页
      * @param currentPage
      * @param pageSize
@@ -188,7 +188,7 @@ public class AppAccountController extends BaseController {
     }
 
     /**
-     * 租赁商租赁账户下
+     * 租赁商订单逾期账户下
      * 逾期订单租赁明细列表
      * 根据订单的Id,去查看详情
      * @param orderId
