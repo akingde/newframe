@@ -19,7 +19,7 @@ import java.util.List;
  * @description:订单相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/")
+@RequestMapping("/app/order")
 public class AppOrderController extends BaseController {
 
     /**
