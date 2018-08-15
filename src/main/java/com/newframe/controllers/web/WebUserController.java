@@ -240,19 +240,19 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param roleAppleId 角色申请id
+     * @param roleApplyId 角色申请id
      * @return
      * @description 获取租赁商申请详细信息
      * @author WangBin
      * @date 2018/8/13 14:34
      */
     @PostMapping("getRentMechantApplyInfo")
-    public JsonResult getRentMechantApplyInfo(Long roleAppleId) {
+    public JsonResult getRentMechantApplyInfo(Long roleApplyId) {
         return null;
     }
 
     /**
-     * @param roleAppleId
+     * @param roleApplyId
      * @param legalEntity
      * @param legalEntityIdNumber
      * @param businessListenNumber
@@ -261,12 +261,12 @@ public class WebUserController extends BaseController {
      * @param drivingLicense
      * @param houseProprietaryCertificate
      * @return
-     * @description 租赁商信息修改
+     * @description 租赁商申请信息修改
      * @author WangBin
      * @date 2018/8/15 11:14
      */
     @PostMapping("modifyRentMerchantApplyInfo")
-    public JsonResult modifyRentMerchantApplyInfo(Long roleAppleId, String legalEntity, String legalEntityIdNumber,
+    public JsonResult modifyRentMerchantApplyInfo(Long roleApplyId, String legalEntity, String legalEntityIdNumber,
                                                   String businessListenNumber, String[] businessListen,
                                                   String[] highestDegreeDiploma, String[] drivingLicense,
                                                   String[] houseProprietaryCertificate) {
