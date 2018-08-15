@@ -37,8 +37,8 @@ public class AppOrderController extends BaseController {
     public JsonResult getRenterOrder(QueryOrderDTO param){
         // todo 获取登陆用户uid
         Integer uid = 1231231;
-        JsonResult result = orderService.getRenterOrder(param, uid);
-        return result;
+        //JsonResult result = orderService.getRenterOrder(param, uid);
+        return null;
     }
 
     /**
