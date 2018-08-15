@@ -14,6 +14,7 @@ public enum SystemCode implements CodeStatus {
     NOT_IN_WHITELIST("203", "不在白名单内"),
     ILLEGAL_ACTION("204", "不合法的接口"),
     HANDLE_EXCEPTION("205", "系统处理异常，请稍后再试"),
+    NO_PAGE_PARAM("202","参数非法，缺少分页参数"),
 
 
 

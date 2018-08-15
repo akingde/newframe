@@ -6,6 +6,7 @@ import lombok.Data;
 public class ProductInfoDTO {
     private String productBrand;
     private String productName;
-    private String productSpecification;
+    private Integer productStorage;
+    private Integer productRandomMemory;
     private String productColor;
 }
