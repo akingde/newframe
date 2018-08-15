@@ -1,7 +1,7 @@
 package com.newframe.services.order;
 
 import com.newframe.controllers.JsonResult;
-import com.newframe.dto.order.QueryOrderDTO;
+import com.newframe.dto.order.request.QueryOrderDTO;
 
 /**
  * 订单接口

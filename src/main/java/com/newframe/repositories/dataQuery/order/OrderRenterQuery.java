@@ -21,4 +21,7 @@ public class OrderRenterQuery extends BaseQuery {
     @QBindAttrField(fieldName = "orderStatus",where = Where.equal)
     private Integer orderStatus;
 
+    @QBindAttrField(fieldName = "deleteStatus",where = Where.equal)
+    private Integer deleteStatus;
+
 }

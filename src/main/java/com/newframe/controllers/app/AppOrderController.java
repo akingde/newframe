@@ -3,10 +3,10 @@ package com.newframe.controllers.app;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
-import com.newframe.dto.order.DeliverInfoDTO;
-import com.newframe.dto.order.FunderQueryOrderDTO;
-import com.newframe.dto.order.ProductInfoDTO;
-import com.newframe.dto.order.QueryOrderDTO;
+import com.newframe.dto.order.request.DeliverInfoDTO;
+import com.newframe.dto.order.request.FunderQueryOrderDTO;
+import com.newframe.dto.order.request.ProductInfoDTO;
+import com.newframe.dto.order.request.QueryOrderDTO;
 import com.newframe.services.order.OrderService;
 import com.newframe.utils.log.GwsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/app/order")
+
 public class AppOrderController extends BaseController {
 
     @Autowired
@@ -33,10 +34,11 @@ public class AppOrderController extends BaseController {
      * @param param
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("renter/getList")
     public JsonResult getRenterOrder(QueryOrderDTO param){
         // todo 获取登陆用户uid
-        Integer uid = 1231231;
+        Long uid = 1231231L;
         JsonResult result = orderService.getRenterOrder(param, uid);
         return result;
     }
@@ -47,7 +49,7 @@ public class AppOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
-    public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId){
+    public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Integer supplierId){
         GwsLogger.getLogger().info(orderId);
         return null;
     }

@@ -1,4 +1,4 @@
-package com.newframe.dto.order;
+package com.newframe.dto.order.request;
 
 import lombok.Data;
 

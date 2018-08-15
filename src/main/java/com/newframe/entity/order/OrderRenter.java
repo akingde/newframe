@@ -16,8 +16,10 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "order_renter")
 public class OrderRenter {
-
+    /** 创建时间*/
     public static final String CTIME = "ctime";
+    /** 未删除状态*/
+    public static final Integer NO_DELETE_STATUS = 0;
 
     @Id
     @Column(name = "order_id")
