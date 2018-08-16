@@ -21,10 +21,17 @@ import javax.persistence.Table;
 @Table(name = "user_login_history")
 public class UserLoginHistory {
     /**
+     * id
+     * id
+     */
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    /**
      * 用户id
      * uid
      */
-    @Id
     @Column(name = "uid")
     private Long uid;
 
