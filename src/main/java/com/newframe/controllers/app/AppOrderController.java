@@ -45,6 +45,7 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商融资购机
+     * 将租赁商订单转到资金方订单去审核
      * @return
      */
     @Anonymous(true)
