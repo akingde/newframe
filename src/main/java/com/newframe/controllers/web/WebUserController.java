@@ -3,6 +3,7 @@ package com.newframe.controllers.web;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.user.request.*;
 import com.newframe.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -212,16 +213,20 @@ public class WebUserController extends BaseController {
         return null;
     }
 
-    @PostMapping("")
-    public JsonResult modifyRoleApplyInfo(){
+    /**
+     * @description 撤销申请
+     * @author WangBin
+     * @param roleApplyId 角色申请id
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 10:29
+     */
+    @PostMapping("revokeRoleApple")
+    public JsonResult revokeRoleApple(Long roleApplyId){
         return null;
     }
 
     /**
-     * @param name                        商家名称
-     * @param legalEntity                 法人姓名
-     * @param legalEntityIdNumber         法人身份证号
-     * @param businessListenNumber        营业执照编号
+     * @param roleApplyDTO                 参数类
      * @param businessListen              营业执照文件 2张
      * @param highestDegreeDiploma        最高学历毕业证文件 2张
      * @param drivingLicense              驾驶证文件 2张
@@ -232,8 +237,7 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:43
      */
     @PostMapping("rentMerchantRoleApply")
-    public JsonResult rentMerchantRoleApply(String name, String legalEntity, String legalEntityIdNumber,
-                                            String businessListenNumber, MultipartFile[] businessListen,
+    public JsonResult rentMerchantRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen,
                                             MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
                                             MultipartFile[] houseProprietaryCertificate) {
         return null;
@@ -252,35 +256,16 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param roleApplyId
-     * @param legalEntity
-     * @param legalEntityIdNumber
-     * @param businessListenNumber
-     * @param businessListen
-     * @param highestDegreeDiploma
-     * @param drivingLicense
-     * @param houseProprietaryCertificate
-     * @return
      * @description 租赁商申请信息修改
      * @author WangBin
      * @date 2018/8/15 11:14
      */
     @PostMapping("modifyRentMerchantApplyInfo")
-    public JsonResult modifyRentMerchantApplyInfo(Long roleApplyId, String legalEntity, String legalEntityIdNumber,
-                                                  String businessListenNumber, String[] businessListen,
-                                                  String[] highestDegreeDiploma, String[] drivingLicense,
-                                                  String[] houseProprietaryCertificate) {
+    public JsonResult modifyRentMerchantApplyInfo(RentMerchantModifyDTO rentMerchantModifyDTO) {
         return null;
     }
 
     /**
-     * @param name                   商家名称
-     * @param legalEntity            法人姓名
-     * @param legalEntityIdNumber    法人身份证号
-     * @param topContacts            紧急联系人姓名
-     * @param topContactsPhoneNumber 联系电话
-     * @param relationship           关系
-     * @param businessListenNumber   营业执照编号
      * @param businessListen         营业执照文件 2张
      * @param letterOfAttorney       授权委托书 2张
      * @param businessQualification  经营资质 2张
@@ -290,9 +275,7 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:50
      */
     @PostMapping("funderRoleApply")
-    public JsonResult funderRoleApply(String name, String legalEntity, String legalEntityIdNumber,
-                                      String topContacts, String topContactsPhoneNumber, Integer relationship,
-                                      String businessListenNumber, MultipartFile[] businessListen,
+    public JsonResult funderRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen,
                                       MultipartFile[] letterOfAttorney, MultipartFile[] businessQualification) {
         return null;
     }
@@ -310,38 +293,17 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param roleApplyId           角色申请id
-     * @param name                   商家名称
-     * @param legalEntity            法人姓名
-     * @param legalEntityIdNumber    法人身份证号
-     * @param topContacts            紧急联系人姓名
-     * @param topContactsPhoneNumber 联系电话
-     * @param relationship           关系
-     * @param businessListenNumber   营业执照编号
-     * @param businessListen         营业执照文件 2张
-     * @param letterOfAttorney       授权委托书 2张
-     * @param businessQualification  经营资质 2张
      * @return
      * @description 资金方角色申请信息修改
      * @author WangBin
      * @date 2018/8/9 16:50
      */
     @PostMapping("modifyFunderApplyInfo")
-    public JsonResult modifyFunderApplyInfo(Long roleApplyId, String name, String legalEntity, String legalEntityIdNumber,
-                                            String topContacts, String topContactsPhoneNumber, Integer relationship,
-                                            String businessListenNumber, String[] businessListen,
-                                            String[] letterOfAttorney, String[] businessQualification){
+    public JsonResult modifyFunderApplyInfo(FunderModifyDTO funderModifyDTO){
         return null;
     }
 
     /**
-     * @param name                   商家名称
-     * @param legalEntity            法人姓名
-     * @param legalEntityIdNumber    法人身份证号
-     * @param topContacts            紧急联系人姓名
-     * @param topContactsPhoneNumber 联系电话
-     * @param relationship           关系
-     * @param businessListenNumber   营业执照编号
      * @param businessListen         营业执照文件 2张
      * @return
      * @description 出租方申请
@@ -349,9 +311,7 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:52
      */
     @PostMapping("hirerRoleApply")
-    public JsonResult hirerRoleApply(String name, String legalEntity, String legalEntityIdNumber,
-                                     String topContacts, String topContactsPhoneNumber, Integer relationship,
-                                     String businessListenNumber, MultipartFile[] businessListen) {
+    public JsonResult hirerRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen) {
         return null;
     }
 
@@ -368,32 +328,16 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param name                   商家名称
-     * @param legalEntity            法人姓名
-     * @param legalEntityIdNumber    法人身份证号
-     * @param topContacts            紧急联系人姓名
-     * @param topContactsPhoneNumber 联系电话
-     * @param relationship           关系
-     * @param businessListenNumber   营业执照编号
-     * @param businessListen         营业执照文件 2张
-     * @return
-     * @description 修改出租方信息
+     * @description 修改出租方申请信息
      * @author WangBin
      * @date 2018/8/9 16:52
      */
     @PostMapping("modifyHirerApplyInfo")
-    public JsonResult modifyHirerApplyInfo(Long roleApplyId, String name, String legalEntity, String legalEntityIdNumber,
-                                           String topContacts, String topContactsPhoneNumber, Integer relationship,
-                                           String businessListenNumber, String[] businessListen){
+    public JsonResult modifyHirerApplyInfo(HirerModifyDTO hirerModifyDTO){
         return null;
     }
 
     /**
-     * @param name                 商家名称
-     * @param legalEntity          法人姓名
-     * @param legalEntityIdNumber  法人身份证号
-     * @param legalEntityIdNumber  法人身份证号
-     * @param businessListenNumber 营业执照编号
      * @param businessListen       营业执照文件 2张
      * @return
      * @description 供应商角色申请
@@ -401,8 +345,7 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:59
      */
     @PostMapping("supplierRoleApply")
-    public JsonResult supplierRoleApply(String name, String legalEntity, String legalEntityIdNumber,
-                                        String businessListenNumber, MultipartFile[] businessListen) {
+    public JsonResult supplierRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen) {
         return null;
     }
 
@@ -419,22 +362,12 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param roleApplyId        角色申请id
-     * @param name                 商家名称
-     * @param legalEntity          法人姓名
-     * @param legalEntityIdNumber  法人身份证号
-     * @param legalEntityIdNumber  法人身份证号
-     * @param businessListenNumber 营业执照编号
-     * @param businessListen       营业执照文件 2张
-     * @return
      * @description 供应商角色信息修改
      * @author WangBin
      * @date 2018/8/9 16:59
      */
     @PostMapping("modifySupplierApplyInfo")
-    public JsonResult modifySupplierApplyInfo(Long roleApplyId, String name, String legalEntity,
-                                                  String legalEntityIdNumber,  String businessListenNumber,
-                                                  String[] businessListen) {
+    public JsonResult modifySupplierApplyInfo(SupplierModifyDTO supplierModifyDTO) {
         return null;
     }
 
@@ -474,41 +407,22 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param defaultAddress   默认地址
-     * @param consigneeName    接收人姓名
-     * @param provinceId       省id
-     * @param cityId           市id
-     * @param countyId         县/地级市/区id
-     * @param consigneeAddress 收件详细地址
-     * @param mobile           手机号
-     * @return
      * @description 新增地址
      * @author WangBin
      * @date 2018/8/9 17:27
      */
     @PostMapping("addAddress")
-    public JsonResult addAddress(boolean defaultAddress, String consigneeName, Integer provinceId, Integer cityId,
-                                 Integer countyId, String consigneeAddress, String mobile) {
+    public JsonResult addAddress(AddressDTO addressDTO) {
         return null;
     }
 
     /**
-     * @param addressId        地址id
-     * @param defaultAddress   默认地址
-     * @param consigneeName    接收人姓名
-     * @param provinceId       省id
-     * @param cityId           市id
-     * @param countyId         县/地级市/区id
-     * @param consigneeAddress 收件详细地址
-     * @param mobile           手机号
-     * @return
      * @description 修改地址
      * @author WangBin
      * @date 2018/8/9 17:34
      */
     @PostMapping("modifyAddress")
-    public JsonResult modifyAddress(Long addressId, boolean defaultAddress, String consigneeName, Integer provinceId,
-                                    Integer cityId, Integer countyId, String consigneeAddress, String mobile) {
+    public JsonResult modifyAddress(AddressDTO addressDTO) {
         return null;
     }
 
@@ -548,15 +462,6 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param merchantName                商家名称
-     * @param legalEntity                 法人姓名
-     * @param legalEntityIdNumber         法人身份证号
-     * @param phone                       手机号
-     * @param provinceId                  省id
-     * @param cityId                      市id
-     * @param countyId                    县/地级市/区id
-     * @param consigneeAddress            收件详细地址
-     * @param businessListenNumber        营业执照编号
      * @param businessListen              营业执照文件 2张
      * @param highestDegreeDiploma        最高学历毕业证文件 2张
      * @param drivingLicense              驾驶证文件 2张
@@ -567,39 +472,19 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 17:46
      */
     @PostMapping("addRentMerchant")
-    public JsonResult addRentMerchant(String merchantName, String legalEntity, String legalEntityIdNumber, String phone,
-                                      Integer provinceId, Integer cityId, Integer countyId, String consigneeAddress,
-                                      String businessListenNumber, String businessListen,
-                                      String highestDegreeDiploma, String drivingLicense,
-                                      String houseProprietaryCertificate) {
+    public JsonResult addRentMerchant(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen,
+                                      MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
+                                      MultipartFile[] houseProprietaryCertificate) {
         return null;
     }
 
     /**
-     * @param modifyUid                   修改的租赁商uid
-     * @param name                        商家名称
-     * @param legalEntity                 法人姓名
-     * @param legalEntityIdNumber         法人身份证号
-     * @param provinceId                  省id
-     * @param cityId                      市id
-     * @param countyId                    县/地级市/区id
-     * @param consigneeAddress            收件详细地址
-     * @param businessListenNumber        营业执照编号
-     * @param businessListen              营业执照文件 2张
-     * @param highestDegreeDiploma        最高学历毕业证文件 2张
-     * @param drivingLicense              驾驶证文件 2张
-     * @param houseProprietaryCertificate 房产证文件 9张
-     * @return
      * @description 修改小B的信息
      * @author WangBin
      * @date 2018/8/9 17:49
      */
     @PostMapping("modifyRentMerchant")
-    public JsonResult modifyRentMerchant(Long modifyUid, String name, String legalEntity, String legalEntityIdNumber,
-                                         Integer provinceId, Integer cityId, Integer countyId, String consigneeAddress,
-                                         String businessListenNumber, String[] businessListen,
-                                         String[] highestDegreeDiploma, String[] drivingLicense,
-                                         String[] houseProprietaryCertificate) {
+    public JsonResult modifyRentMerchant(RentMerchantModifyDTO rentMerchantModifyDTO) {
         return null;
     }
 

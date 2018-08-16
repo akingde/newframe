@@ -54,7 +54,7 @@ public class WebBusinessController extends BaseController {
      */
     @PostMapping("addProduct")
     public JsonResult addProduct(String brand, String model, String specification, String color, BigDecimal guidePrice,
-                                 BigDecimal supplyPrice, Integer sotck) {
+                                 BigDecimal supplyPrice, Integer surplusStock) {
         return null;
     }
 
@@ -74,7 +74,7 @@ public class WebBusinessController extends BaseController {
      */
     @PostMapping("modifyProduct")
     public JsonResult modifyProduct(Long productId, String brand, String model, String specification, String color,
-                                    BigDecimal guidePrice, BigDecimal supplyPrice, Integer sotck) {
+                                    BigDecimal guidePrice, BigDecimal supplyPrice, Integer surplusStock) {
 
         return null;
     }

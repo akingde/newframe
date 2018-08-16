@@ -18,7 +18,14 @@ public interface UserService {
      */
     OperationResult<String> sendVerificationCode(String mobile, Integer codeType);
 
-
+    /**
+      * @Description 注册
+      * @Author WangBin
+      * @param mobile 手机号
+      * @param mCode
+      * @return
+      * @Date 2018/8/15 16:45
+      **/
     OperationResult<Boolean> register(String mobile, String mCode);
 
     /**
@@ -32,14 +39,14 @@ public interface UserService {
     OperationResult<UserBaseInfoDTO> passwordLogin(String mobile, String password);
 
     /**
-     * @Description 验证码登录
-     * @Author WangBin
-     * @Param mobile
-     * @Param code
-     * @Return
-     * @Date 2018/8/9 16:05
+     * @description 验证码登录
+     * @author WangBin
+     * @param mobile
+     * @param mCode
+     * @return
+     * @date 2018/8/15 16:50
      */
-    OperationResult<UserBaseInfoDTO> verificationCodeLogin();
+    OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode);
 
     /**
      * @Description 未登录设置密码

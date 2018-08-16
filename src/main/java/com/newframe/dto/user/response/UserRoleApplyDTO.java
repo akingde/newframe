@@ -2,22 +2,32 @@ package com.newframe.dto.user.response;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 角色查询返回类
  * @author WangBin
  */
 @Data
-public class RoleApplyDTO {
+public class UserRoleApplyDTO {
 
     private Long roleAppleId;//角色申请id
     private Integer roleId; //角色id
-
 
     /**
      * 角色申请列表
      */
     @Data
     public static class RoleApplyList{
+        private Long total;
+        private List<RoleApplyResult> result;
+    }
+
+    /**
+     * 角色申请信息
+     */
+    @Data
+    public static class RoleApplyResult extends UserRoleApplyDTO{
         private Integer status;//状态
         private Integer ctime;//申请时间
         private String remarks;//备注
@@ -27,7 +37,7 @@ public class RoleApplyDTO {
      * 角色申请详细信息
      */
     @Data
-    public static class RoleApplyInfo{
+    public static class RoleApplyInfo extends UserRoleApplyDTO{
         private Long uid;//用户id
         private String name;//商家名称
         private String legalEntity;//法人
