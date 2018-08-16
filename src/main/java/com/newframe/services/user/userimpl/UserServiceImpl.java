@@ -34,9 +34,23 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<String> sendVerificationCode(String mobile, Integer codeType) {
-        return null;
+        String str = "0123456789";
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < 4; i ++){
+            char ch=str.charAt(new Random().nextInt(str.length()));
+            result.append(ch);
+        }
+        return new OperationResult<String>(result.toString());
     }
 
+    /**
+     * @param mobile 手机号
+     * @param mCode
+     * @return
+     * @Description 注册
+     * @Author WangBin
+     * @Date 2018/8/15 16:45
+     **/
     @Override
     public OperationResult<Boolean> register(String mobile, String mCode) {
         return null;
@@ -58,15 +72,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @Description 验证码登录
-     * @Author WangBin
-     * @Param mobile
-     * @Param code
-     * @Return
-     * @Date 2018/8/9 16:05
+     * @param mobile
+     * @param mCode
+     * @return
+     * @description 验证码登录
+     * @author WangBin
+     * @date 2018/8/15 16:50
      */
     @Override
-    public OperationResult<UserBaseInfoDTO> verificationCodeLogin() {
+    public OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode) {
         return null;
     }
 

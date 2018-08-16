@@ -1,4 +1,4 @@
-package com.newframe.services.user.roleImpl;
+package com.newframe.services.user.roleimpl;
 
 import com.newframe.enums.RoleEnum;
 import com.newframe.services.user.RoleService;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
  * @author WangBin
  */
 @Service
-public class HirerServiceImpl implements RoleService {
+public class SupplierServiceImpl implements RoleService {
 
     @Override
     public Integer getRoleId() {
-        return RoleEnum.HIRER.getRoleId();
+        return RoleEnum.SUPPLIER.getRoleId();
     }
 }

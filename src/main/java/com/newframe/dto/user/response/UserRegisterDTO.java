@@ -3,10 +3,11 @@ package com.newframe.dto.user.response;
 import lombok.Data;
 
 /**
+ *  用户注册返回类
  * @author WangBin
  */
 @Data
-public class RegisterDTO {
+public class UserRegisterDTO {
 
     private Boolean mobile;
     private Boolean password;
