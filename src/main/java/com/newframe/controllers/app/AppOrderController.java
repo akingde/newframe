@@ -51,8 +51,9 @@ public class AppOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
     public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Integer supplierId){
-        GwsLogger.getLogger().info(orderId);
-        return null;
+        //
+        Long uid = 1231231L;
+        return orderService.renterFinancingBuy(uid,orderId,supplierId);
     }
 
     /**
@@ -61,6 +62,7 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("renter/rent")
     public JsonResult renterRent(@RequestParam List<Long> orderId){
+
         return null;
     }
 
