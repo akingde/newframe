@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,8 +65,34 @@ public class UserAddressServiceImpl implements UserAddressService {
         if (userAddress == null) {
             return 0;
         }
-//        userAddressMaster.save()
-        return 0;
+        List<String> updateFields = new ArrayList();
+        if(userAddress.getConsigneeName() != null){
+            updateFields.add("consigneeName");
+        }
+        if(userAddress.getMobile() != null){
+            updateFields.add("mobile");
+        }
+        if(userAddress.getProvinceId() != null){
+            updateFields.add("provinceId");
+            updateFields.add("provinceName");
+        }
+        if(userAddress.getCityId() != null){
+            updateFields.add("cityId");
+            updateFields.add("cityName");
+        }
+        if(userAddress.getCountyId() != null){
+            updateFields.add("countyId");
+            updateFields.add("countyName");
+        }
+        if(userAddress.getConsigneeAddress() != null){
+            updateFields.add("consigneeAddress");
+        }
+        if (userAddress.getDefaultAddress() != null){
+            updateFields.add("defaultAddress");
+        }
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+        return userAddressMaster.updateById(userAddress, userAddress.getId(), array);
     }
 
     /**

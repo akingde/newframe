@@ -32,7 +32,7 @@ public class Area {
      * area_code
      */
     @Column(name = "area_code")
-    private String areaCode;
+    private Integer areaCode;
 
     /**
      * 地区名

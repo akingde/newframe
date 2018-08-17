@@ -33,4 +33,10 @@ public interface UserPwdService {
      * @return
      */
     UserPwd insert(UserPwd userPwd);
+
+    /**
+     * 删除
+     * @param uid
+     */
+    void delete(Long uid);
 }

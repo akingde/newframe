@@ -26,4 +26,10 @@ public interface UserContractService {
      * @return
      */
     UserContract insert(UserContract userContract);
+
+    /**
+     * 删除
+     * @param uid
+     */
+    void delete(Long uid);
 }

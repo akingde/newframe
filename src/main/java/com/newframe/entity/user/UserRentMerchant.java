@@ -57,6 +57,13 @@ public class UserRentMerchant {
     private String legalEntityIdNumber;
 
     /**
+     * 商家地址
+     * rent_merchant_address
+     */
+    @Column(name = "rent_merchant_address")
+    private String rentMerchantAddress;
+
+    /**
      * 营业职业编号
      * business_license_number
      */
@@ -146,6 +153,13 @@ public class UserRentMerchant {
      */
     @Column(name = "consignee_address")
     private String consigneeAddress;
+
+    /**
+     * 是否指定供应商
+     * appoint
+     */
+    @Column(name = "appoint")
+    private Boolean appoint;
 
     /**
      * 创建时间

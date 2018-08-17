@@ -32,7 +32,7 @@ public interface UserWebTokenService {
      * @param uid
      * @return
      */
-    int deleteByUid(Long uid);
+    void deleteByUid(Long uid);
 
     /**
      * 插入用户的token记录

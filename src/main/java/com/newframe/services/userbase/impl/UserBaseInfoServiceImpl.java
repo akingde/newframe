@@ -1,8 +1,16 @@
 package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.UserBaseInfo;
+import com.newframe.repositories.dataMaster.user.UserBaseInfoMaster;
+import com.newframe.repositories.dataQuery.user.UserBaseInfoQuery;
+import com.newframe.repositories.dataSlave.user.UserBaseInfoSlave;
 import com.newframe.services.userbase.UserBaseInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -16,6 +24,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserBaseInfoServiceImpl implements UserBaseInfoService {
 
+    @Autowired
+    private UserBaseInfoMaster userBaseInfoMaster;
+    @Autowired
+    private UserBaseInfoSlave userBaseInfoSlave;
+
     /**
      * 插入用户基本信息
      *
@@ -24,7 +37,10 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
      */
     @Override
     public UserBaseInfo insert(UserBaseInfo userBaseInfo) {
-        return null;
+        if(userBaseInfo == null) {
+            return null;
+        }
+        return userBaseInfoMaster.save(userBaseInfo);
     }
 
     /**
@@ -35,7 +51,30 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
      */
     @Override
     public int updateByUid(UserBaseInfo userBaseInfo) {
-        return 0;
+        if(userBaseInfo == null){
+            return 0;
+        }
+        UserBaseInfoQuery query = new UserBaseInfoQuery();
+        query.setUid(userBaseInfo.getUid());
+        List<String> updateFields = new ArrayList();
+        if (userBaseInfo.getAvatar() != null){
+            updateFields.add("avatar");
+        }
+        if (userBaseInfo.getGender() != null){
+            updateFields.add("gender");
+        }
+        if (userBaseInfo.getUserName() != null){
+            updateFields.add("userName");
+        }
+        if (userBaseInfo.getUserStatus() != null){
+            updateFields.add("userStatus");
+        }
+        if(userBaseInfo.getPhoneNumber() != null){
+            updateFields.add("phoneNumber");
+        }
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+        return userBaseInfoMaster.update(userBaseInfo, query, array);
     }
 
     /**
@@ -46,7 +85,9 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
      */
     @Override
     public UserBaseInfo findOne(Long uid) {
-        return null;
+        UserBaseInfoQuery query = new UserBaseInfoQuery();
+        query.setUid(uid);
+        return userBaseInfoSlave.findOne(query);
     }
 
     /**
@@ -56,7 +97,7 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
      * @return
      */
     @Override
-    public int removeByUid(Long uid) {
-        return 0;
+    public void removeByUid(Long uid) {
+        userBaseInfoMaster.deleteById(uid);
     }
 }

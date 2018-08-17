@@ -22,11 +22,12 @@ public interface AreaService {
     List<Area> findAreaProvinceList();
 
     /**
-     * 查询市和区信息
-     * @param area
+     * 根据省的areaCode查询市和区信息
+     *
+     * @param areaCode
      * @return
      */
-    List<Area> findAreaCityAndCountylist(Area area);
+    List<Area> findAreaCityAndCountylist(Integer areaCode);
 
     /**
      *  根据areacode找地址

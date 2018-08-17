@@ -16,4 +16,7 @@ public class UserAddressQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "uid", where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "id", where = Where.equal)
+    private Long id;
 }
