@@ -20,8 +20,8 @@ public class CommonServiceImpl implements CommonService {
      * 根据快递公司和快递单号
      * 查询快递信息
      *
-     * @param expCode
-     * @param expNo
+     * @param expCode 快递公司
+     * @param expNo 快递单号
      * @return
      */
     @Override
