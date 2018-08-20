@@ -16,6 +16,8 @@ public enum OrderRenterStatus {
     WAITING_LESSOR_AUDIT(4),
     // 资金方审核不通过
     FUNDER_AUDIT_REFUSE(5),
+    // 订单融资已超过三次，不允许再融资
+    ORDER_FINANCING_OVER_THREE(21),
     // 出租方审核不通过
     LESSOR_AUDIT_REFUSE(6),
     // 资金方线上放款成功,代发货

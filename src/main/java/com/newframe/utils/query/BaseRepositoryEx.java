@@ -2,6 +2,7 @@ package com.newframe.utils.query;
 
 import com.newframe.utils.log.GwsLogger;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

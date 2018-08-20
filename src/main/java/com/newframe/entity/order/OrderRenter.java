@@ -20,6 +20,8 @@ public class OrderRenter {
     public static final String CTIME = "ctime";
     /** 未删除状态*/
     public static final Integer NO_DELETE_STATUS = 0;
+    /**租赁商订单状态*/
+    public static final String ORDER_STATUS = "orderStatus";
 
     @Id
     @Column(name = "order_id")

@@ -12,6 +12,6 @@ public interface OrderFunderSlave extends BaseRepository<OrderFunder,Long>  {
     @Query("select count(1) as times  from OrderFunder where orderFunderPK.orderId = ?1")
     Long getOrderFinancingTimes(Long orderId);
 
-    @Query("select * from OrderFunder where orderFunderPK.orderId = ?1")
+    @Query("from OrderFunder where orderFunderPK.orderId = ?1")
     List<OrderFunder> getOrderByOrderId(Long orderId);
 }

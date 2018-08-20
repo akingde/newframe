@@ -135,6 +135,8 @@ public class OrderServiceImpl implements OrderService {
                 failOrder.put("orderId", orderId);
                 failOrder.put("failMessage", SystemCode.ORDER_FINANCING_FAIL.getMessage());
                 failOrders.add(failOrder);
+                // 将租赁商状态改为不允许融资状态
+                orderRenterMaser.updateOrderStatus(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode(),orderId);
                 // 超过最大订单融资次数跳出本次循环
                 continue;
             }
@@ -210,6 +212,29 @@ public class OrderServiceImpl implements OrderService {
 
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方：" + lessorId);
         return new JsonResult(SystemCode.SUCCESS, true);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public JsonResult cancelOrder(List<Long> orders) {
+        if(orders == null || orders.size() == 0){
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
+        for(Long orderId:orders){
+            Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
+            if(optional.isPresent()){
+                OrderRenter orderRenter = optional.get();
+                orderRenter.setOrderStatus(OrderRenterStatus.ORDER_CANCEL.getCode());
+                OrderRenterQuery query = new OrderRenterQuery();
+                query.setOrderStatus(OrderRenterStatus.PENDING.getCode());
+                Integer row = orderRenterMaser.update(orderRenter,query,OrderRenter.ORDER_STATUS);
+                if(row != 1){
+                    throw new RuntimeException(SystemCode.ORDER_CANCEL_FAIL.getMessage());
+                }
+            }
+        }
+
+        return new JsonResult(SystemCode.SUCCESS,true);
     }
 
 

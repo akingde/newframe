@@ -41,4 +41,11 @@ public interface OrderService {
      * @return
      */
     JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment);
+
+    /**
+     * 租赁商取消订单
+     * @param orderId 订单id
+     * @return 处理结果
+     */
+    JsonResult cancelOrder(List<Long> orderId);
 }

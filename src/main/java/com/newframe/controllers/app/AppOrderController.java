@@ -89,9 +89,10 @@ public class AppOrderController extends BaseController {
      * 租赁商取消订单
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("renter/cancel")
     public JsonResult cancelOrder(@RequestParam List<Long> orderId){
-        return null;
+        return orderService.cancelOrder(orderId);
     }
 
     /**
