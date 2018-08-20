@@ -1,9 +1,18 @@
 package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.UserLoginHistory;
+import com.newframe.repositories.dataMaster.user.UserLoginHistoryMaster;
+import com.newframe.repositories.dataQuery.user.UserLoginHistoryQuery;
+import com.newframe.repositories.dataSlave.user.UserLoginHistorySlave;
 import com.newframe.services.userbase.UserLoginHistoryService;
+import com.newframe.utils.cache.IdGlobalGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,6 +27,13 @@ import java.util.List;
 @Service
 public class UserLoginHistoryServiceImpl implements UserLoginHistoryService {
 
+    @Autowired
+    private UserLoginHistoryMaster userLoginHistoryMaster;
+    @Autowired
+    private UserLoginHistorySlave userLoginHistorySlave;
+    @Autowired
+    private IdGlobalGenerator idGlobalGenerator;
+
     /**
      * 插入用户登录历史
      *
@@ -26,7 +42,11 @@ public class UserLoginHistoryServiceImpl implements UserLoginHistoryService {
      */
     @Override
     public UserLoginHistory insert(UserLoginHistory userLoginHistory) {
-        return null;
+        if (userLoginHistory == null) {
+            return null;
+        }
+        userLoginHistory.setId(idGlobalGenerator.getSeqId(UserLoginHistory.class));
+        return userLoginHistoryMaster.save(userLoginHistory);
     }
 
     /**
@@ -37,6 +57,11 @@ public class UserLoginHistoryServiceImpl implements UserLoginHistoryService {
      */
     @Override
     public List<UserLoginHistory> findByUid(Long uid) {
-        return null;
+        UserLoginHistoryQuery query = new UserLoginHistoryQuery();
+        query.setUid(uid);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(0,10, sort);
+        Page<UserLoginHistory> pageResult = userLoginHistorySlave.findAll(query, pageRequest);
+        return pageResult == null ? Collections.emptyList() : pageResult.getContent();
     }
 }

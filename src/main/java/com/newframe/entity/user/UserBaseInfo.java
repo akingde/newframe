@@ -28,13 +28,6 @@ public class UserBaseInfo {
     private Long uid;
 
     /**
-     * 商家名字
-     * name
-     */
-    @Column(name = "name")
-    private String name;
-
-    /**
      * 头像路径
      * avatar
      */

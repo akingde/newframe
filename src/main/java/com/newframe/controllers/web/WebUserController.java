@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 /**
  * @author:wangdong
  * @description:用户相关模块的Controller
@@ -266,6 +271,58 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * @description 获取租赁商信息
+     * @author WangBin
+     * @param
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 17:55
+     */
+    @PostMapping("getRentMerchantInfo")
+    public JsonResult getRentMerchantInfo(){
+        return null;
+    }
+
+    /**
+     * @description 设置指定供应商开关
+     * @author WangBin
+     * @param appoint
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 20:39
+     */
+    @PostMapping("setAppoint")
+    public JsonResult setAppoint(boolean appoint){
+        return null;
+    }
+
+    /**
+     * @description 指定供应商
+     * @author WangBin
+     * @param supplierUid
+     * @param revokeSupplierUid
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 20:15
+     */
+    @PostMapping("appointSupplier")
+    public JsonResult appointSupplier(Long[] supplierUid, Long[] revokeSupplierUid){
+        Set<Long> supplierUidList = Arrays.asList(supplierUid).stream().distinct().collect(toSet());
+        Set<Long> revokeSupplierUidList = Arrays.asList(revokeSupplierUid).stream().distinct().collect(toSet());
+        supplierUidList.stream().filter(item -> revokeSupplierUidList.contains(item)).count();
+        return null;
+    }
+
+    /**
+     * @description 供应商指定查询
+     * @author WangBin
+     * @param
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 18:51
+     */
+    @PostMapping("getMerchantAppoint")
+    public JsonResult getMerchantAppoint(){
+        return null;
+    }
+
+    /**
      * @param businessListen         营业执照文件 2张
      * @param letterOfAttorney       授权委托书 2张
      * @param businessQualification  经营资质 2张
@@ -304,6 +361,18 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * @description 获取资金方信息
+     * @author WangBin
+     * @param
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 17:57
+     */
+    @PostMapping("getFunderInfo")
+    public JsonResult getFunderInfo(){
+        return null;
+    }
+
+    /**
      * @param businessListen         营业执照文件 2张
      * @return
      * @description 出租方申请
@@ -338,6 +407,18 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * @description 获取出租方信息
+     * @author WangBin
+     * @param
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 17:58
+     */
+    @PostMapping("getHirerInfo")
+    public JsonResult getHirerInfo(){
+        return null;
+    }
+
+    /**
      * @param businessListen       营业执照文件 2张
      * @return
      * @description 供应商角色申请
@@ -368,6 +449,30 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifySupplierApplyInfo")
     public JsonResult modifySupplierApplyInfo(SupplierModifyDTO supplierModifyDTO) {
+        return null;
+    }
+
+    /**
+     * @description 获取供应商信息
+     * @author WangBin
+     * @param
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 18:00
+     */
+    @PostMapping("getSupplierInfo")
+    public JsonResult getSupplierInfo(){
+        return null;
+    }
+
+    /**
+     * @description  获取供应商列表
+     * @author WangBin
+     * @param
+     * @return com.newframe.controllers.JsonResult
+     * @date 2018/8/16 18:23
+     */
+    @PostMapping("getSupplierList")
+    public JsonResult getSupplierList(){
         return null;
     }
 

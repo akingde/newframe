@@ -2,10 +2,14 @@ package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.UserAppToken;
 import com.newframe.repositories.dataMaster.user.UserAppTokenMaster;
+import com.newframe.repositories.dataQuery.user.UserAppTokenQuery;
 import com.newframe.repositories.dataSlave.user.UserAppTokenSlave;
 import com.newframe.services.userbase.UserAppTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
 
@@ -32,7 +36,9 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
      */
     @Override
     public UserAppToken findOne(Long uid) {
-        return null;
+        UserAppTokenQuery query = new UserAppTokenQuery();
+        query.setUid(uid);
+        return userAppTokenSlave.findOne(query);
     }
 
     /**
@@ -43,7 +49,13 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
      */
     @Override
     public int updateByUid(UserAppToken userAppToken) {
-        return 0;
+        if(userAppToken == null) {
+            return 0;
+        }
+        UserAppTokenQuery query = new UserAppTokenQuery();
+        query.setUid(userAppToken.getUid());
+        String[] array = new String[]{"token"};
+        return userAppTokenMaster.update(userAppToken, query, array);
     }
 
     /**
@@ -53,8 +65,8 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
      * @return
      */
     @Override
-    public int deleteByUid(Long uid) {
-        return 0;
+    public void deleteByUid(Long uid) {
+        userAppTokenMaster.deleteById(uid);
     }
 
     /**
@@ -65,6 +77,9 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
      */
     @Override
     public UserAppToken insert(Long uid) {
-        return null;
+        UserAppToken userAppToken = new UserAppToken();
+        userAppToken.setUid(uid);
+        userAppToken.setToken("");
+        return userAppTokenMaster.save(userAppToken);
     }
 }

@@ -1,8 +1,16 @@
 package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.UserPwd;
+import com.newframe.repositories.dataMaster.user.UserPwdMaster;
+import com.newframe.repositories.dataQuery.user.UserPwdQuery;
+import com.newframe.repositories.dataSlave.user.UserPwdSlave;
 import com.newframe.services.userbase.UserPwdService;
+import com.newframe.utils.cache.IdGlobalGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,6 +24,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserPwdServiceImpl implements UserPwdService {
 
+    @Autowired
+    private UserPwdMaster userPwdMaster;
+    @Autowired
+    private UserPwdSlave userPwdSlave;
+
     /**
      * 根据uid 查询用户的密码
      *
@@ -24,7 +37,9 @@ public class UserPwdServiceImpl implements UserPwdService {
      */
     @Override
     public UserPwd findByUid(Long uid) {
-        return null;
+        UserPwdQuery query = new UserPwdQuery();
+        query.setUid(uid);
+        return userPwdSlave.findOne(query);
     }
 
     /**
@@ -35,7 +50,21 @@ public class UserPwdServiceImpl implements UserPwdService {
      */
     @Override
     public int updateByUid(UserPwd userPwd) {
-        return 0;
+        if (userPwd == null){
+            return 0;
+        }
+        UserPwdQuery query = new UserPwdQuery();
+        query.setUid(userPwd.getUid());
+        List<String> updateFields = new ArrayList();
+        if (userPwd.getLoginPwd() != null){
+            updateFields.add("loginPwd");
+        }
+        if(userPwd.getPayPwd() != null){
+            updateFields.add("payPwd");
+        }
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+        return userPwdMaster.update(userPwd, query, array);
     }
 
     /**
@@ -46,6 +75,18 @@ public class UserPwdServiceImpl implements UserPwdService {
      */
     @Override
     public UserPwd insert(UserPwd userPwd) {
-        return null;
+        if(userPwd == null)
+            return null;
+        return userPwdMaster.save(userPwd);
+    }
+
+    /**
+     * 删除
+     *
+     * @param uid
+     */
+    @Override
+    public void delete(Long uid) {
+        userPwdMaster.deleteById(uid);
     }
 }

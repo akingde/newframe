@@ -2,6 +2,7 @@ package com.newframe.services.userbase;
 
 import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.UserRoleApply;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -24,13 +25,21 @@ public interface UserRoleApplyService {
     UserRoleApply insert(UserRoleApply userRoleApply);
 
     /**
+     * 根据角色申请id和uid找出指定的记录
+     * @param roleApplyId
+     * @param uid 非必选
+     * @return
+     */
+    UserRoleApply findOne(Long roleApplyId, Long uid);
+
+    /**
      * 根据用户id找出申请记录，roleId选填
      * @param uid
      * @param roleId
      * @param pageSearchDTO
      * @return
      */
-    List<UserRoleApply> findListByUid(Long uid, Integer roleId, PageSearchDTO pageSearchDTO);
+    Page<UserRoleApply> findListByUid(Long uid, Integer roleId, PageSearchDTO pageSearchDTO);
 
     /**
      * 根据角色申请id去更新

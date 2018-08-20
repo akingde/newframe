@@ -1,7 +1,11 @@
 package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.UserContract;
+import com.newframe.repositories.dataMaster.user.UserContractMaster;
+import com.newframe.repositories.dataQuery.user.UserContractQuery;
+import com.newframe.repositories.dataSlave.user.UserContractSlave;
 import com.newframe.services.userbase.UserContractService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserContractServiceImpl implements UserContractService {
 
+    @Autowired
+    private UserContractMaster userContractMaster;
+    @Autowired
+    private UserContractSlave userContractSlave;
+
     /**
      * 根据uid查询用户公私钥信息
      *
@@ -24,7 +33,9 @@ public class UserContractServiceImpl implements UserContractService {
      */
     @Override
     public UserContract findOne(Long uid) {
-        return null;
+        UserContractQuery query = new UserContractQuery();
+        query.setUid(uid);
+        return userContractSlave.findOne(query);
     }
 
     /**
@@ -35,6 +46,19 @@ public class UserContractServiceImpl implements UserContractService {
      */
     @Override
     public UserContract insert(UserContract userContract) {
-        return null;
+        if(userContract == null){
+            return null;
+        }
+        return userContractMaster.save(userContract);
+    }
+
+    /**
+     * 删除
+     *
+     * @param uid
+     */
+    @Override
+    public void delete(Long uid) {
+        userContractMaster.deleteById(uid);
     }
 }

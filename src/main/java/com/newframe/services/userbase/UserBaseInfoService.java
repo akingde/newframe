@@ -39,5 +39,5 @@ public interface UserBaseInfoService {
      * @param uid
      * @return
      */
-    int removeByUid(Long uid);
+    void removeByUid(Long uid);
 }

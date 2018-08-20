@@ -1,7 +1,11 @@
 package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.UserWebToken;
+import com.newframe.repositories.dataMaster.user.UserWebTokenMaster;
+import com.newframe.repositories.dataQuery.user.UserWebTokenQuery;
+import com.newframe.repositories.dataSlave.user.UserWebTokenSlave;
 import com.newframe.services.userbase.UserWebTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserWebTokenServiceImpl implements UserWebTokenService {
 
+    @Autowired
+    private UserWebTokenMaster userWebTokenMaster;
+    @Autowired
+    private UserWebTokenSlave userWebTokenSlave;
+
     /**
      * 根据uid查询用户的webtoken
      *
@@ -24,7 +33,9 @@ public class UserWebTokenServiceImpl implements UserWebTokenService {
      */
     @Override
     public UserWebToken findOne(Long uid) {
-        return null;
+        UserWebTokenQuery query = new UserWebTokenQuery();
+        query.setUid(uid);
+        return userWebTokenSlave.findOne(query);
     }
 
     /**
@@ -35,7 +46,13 @@ public class UserWebTokenServiceImpl implements UserWebTokenService {
      */
     @Override
     public int updateByUid(UserWebToken userWebToken) {
-        return 0;
+        if(userWebToken == null){
+            return 0;
+        }
+        UserWebTokenQuery query = new UserWebTokenQuery();
+        query.setUid(userWebToken.getUid());
+        String[] array = new String[]{"token"};
+        return userWebTokenMaster.update(userWebToken, query, array);
     }
 
     /**
@@ -45,8 +62,8 @@ public class UserWebTokenServiceImpl implements UserWebTokenService {
      * @return
      */
     @Override
-    public int deleteByUid(Long uid) {
-        return 0;
+    public void deleteByUid(Long uid) {
+        userWebTokenMaster.deleteById(uid);
     }
 
     /**
@@ -57,6 +74,9 @@ public class UserWebTokenServiceImpl implements UserWebTokenService {
      */
     @Override
     public UserWebToken insert(Long uid) {
-        return null;
+        UserWebToken userWebToken = new UserWebToken();
+        userWebToken.setUid(uid);
+        userWebToken.setToken("");
+        return userWebTokenMaster.save(userWebToken);
     }
 }
