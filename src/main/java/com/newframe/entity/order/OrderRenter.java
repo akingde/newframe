@@ -43,6 +43,9 @@ public class OrderRenter {
     @Column(name = "user_mobile")
     private String userMobile;
 
+    @Column(name = "user_address")
+    private String userAddress;
+
     @Column(name = "user_credit_score")
     private Integer userCreditScore;
 

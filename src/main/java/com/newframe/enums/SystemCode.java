@@ -7,6 +7,7 @@ package com.newframe.enums;
  * @author
  */
 public enum SystemCode implements CodeStatus {
+
     SUCC("000", "成功"),
     SUCCESS("200", "成功"),
     NEED_LOGIN("201", "未登录"),
@@ -15,6 +16,7 @@ public enum SystemCode implements CodeStatus {
     ILLEGAL_ACTION("204", "不合法的接口"),
     HANDLE_EXCEPTION("205", "系统处理异常，请稍后再试"),
     NO_PAGE_PARAM("202","参数非法，缺少分页参数"),
+    ORDER_FINANCING_FAIL("206","订单融资超过最大次数限制"),
 
 
 

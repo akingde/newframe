@@ -2,8 +2,10 @@ package com.newframe.entity.order;
 
 import lombok.Data;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
@@ -12,24 +14,16 @@ import java.math.BigDecimal;
 
 @Data
 @Entity
-@Table(name = "order_funder")
-public class OrderFunder implements Serializable {
+@Table(name = "order_hirer")
+public class OrderHirer {
     /** 创建时间*/
     public static final String CTIME = "ctime";
     /** 未删除状态*/
     public static final Integer NO_DELETE_STATUS = 0;
 
-    @EmbeddedId
-    private OrderFunderPK orderFunderPK;
-
-    public OrderFunder(){
-        super();
-    }
-
-    public OrderFunder(OrderFunderPK orderFunderPK){
-        super();
-        this.orderFunderPK = orderFunderPK;
-    }
+    @Id
+    @Column(name = "order_id")
+    private Long orderId;
 
     @Column(name = "partner_order_id")
     private String partnerOrderId;
@@ -37,13 +31,14 @@ public class OrderFunder implements Serializable {
     @Column(name = "partner_id")
     private Integer partnerId;
 
-    @Column(name = "merchantId")
+    @Column(name = "merchant_id")
     private Long merchantId;
+
+    @Column(name = "merchant_mobile")
+    private String merchantMobile;
 
     @Column(name = "merchant_name")
     private String merchantName;
-
-
 
     @Column(name = "uid")
     private Long uid;
@@ -53,6 +48,9 @@ public class OrderFunder implements Serializable {
 
     @Column(name = "user_id_number")
     private String userIdNumber;
+
+    @Column(name = "user_address")
+    private String userAddress;
 
     @Column(name = "user_mobile")
     private String userMobile;
@@ -102,7 +100,8 @@ public class OrderFunder implements Serializable {
     @Column(name = "utime")
     private Integer utime;
 
+    @Column(name = "pattern_payment")
+    private Integer patternPayment;
 
 
 }
-
