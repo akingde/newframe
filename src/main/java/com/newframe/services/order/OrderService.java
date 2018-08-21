@@ -1,6 +1,7 @@
 package com.newframe.services.order;
 
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.order.request.FunderQueryOrderDTO;
 import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
 
@@ -63,4 +64,19 @@ public interface OrderService {
      * @return 查询结果
      */
     JsonResult getSupplierList(ProductInfoDTO productInfo);
+
+    /**
+     * 按产品信息查询有此机型的出租方列表
+     * @param productInfo 产品信息
+     * @return 查询结果
+     */
+    JsonResult getLessorList(ProductInfoDTO productInfo);
+
+    /**
+     * 查询资金方订单
+     * @param param 查询参数
+     * @param uid 资金方uid
+     * @return 查询结果
+     */
+    JsonResult getFunderOrder(FunderQueryOrderDTO param, Long uid);
 }

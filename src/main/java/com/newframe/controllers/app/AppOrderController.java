@@ -110,17 +110,19 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("/getLessorList")
     public JsonResult getLessorList(ProductInfoDTO productInfo){
-        return null;
+        return orderService.getLessorList(productInfo);
     }
 
     /****************资金方订单********************/
     /**
      * 查询资金方订单
-     * @return
+     * @return 返回结果
      */
     @RequestMapping("funder/getList")
     public JsonResult getFunderOrder(FunderQueryOrderDTO param){
-        return null;
+        // todo
+        Long uid = 123456L;
+        return orderService.getFunderOrder(param, uid);
     }
 
     /**

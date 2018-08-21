@@ -2,8 +2,10 @@ package com.newframe.services.order.impl;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
+import com.newframe.dto.order.request.FunderQueryOrderDTO;
 import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
+import com.newframe.dto.order.response.OrderFunderDTO;
 import com.newframe.dto.order.response.OrderRenterDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderFunderPK;
@@ -17,6 +19,7 @@ import com.newframe.enums.order.PatternPaymentEnum;
 import com.newframe.repositories.dataMaster.order.OrderFunderMaser;
 import com.newframe.repositories.dataMaster.order.OrderHirerMaser;
 import com.newframe.repositories.dataMaster.order.OrderRenterMaser;
+import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
@@ -24,6 +27,7 @@ import com.newframe.repositories.dataSlave.order.OrderRenterSlave;
 import com.newframe.services.order.OrderService;
 import com.newframe.utils.log.GwsLogger;
 import com.newframe.utils.query.QueryToSpecification;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -250,5 +254,45 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+    @Override
+    public JsonResult getLessorList(ProductInfoDTO productInfo) {
+        return null;
+    }
 
+    @Override
+    public JsonResult getFunderOrder(FunderQueryOrderDTO param, Long uid){
+        if (null == param.getPageSize() || null == param.getCurrentPage()) {
+            return new JsonResult(SystemCode.NO_PAGE_PARAM);
+        }
+        // 包装查询条件
+        OrderFunderQuery orderFunderQuery = new OrderFunderQuery();
+        if(StringUtils.isNotEmpty(param.getRenterName())){
+            orderFunderQuery.setMerchantName(param.getRenterName());
+        }
+        orderFunderQuery.setUid(uid);
+        if(param.getOrderStatus() != null){
+            orderFunderQuery.setOrderStatus(param.getOrderStatus());
+        }
+        // 封装排序
+        Sort sort ;
+        if(OrderSort.DESC.getValue().equals(param.getSort())){
+            sort = new Sort(Sort.Direction.DESC, OrderFunder.CTIME);
+        }else{
+            sort = new Sort(Sort.Direction.ASC,OrderFunder.CTIME);
+        }
+        // 设置分页
+        Pageable pageable = PageRequest.of(param.getCurrentPage()-1,param.getPageSize());
+        orderFunderQuery.setPage(pageable);
+        orderFunderQuery.setSort(sort);
+        // 查询数据
+        List<OrderFunder> orderFunders = orderFunderSlave.findAll(orderFunderQuery);
+        // 封装dto
+        List<OrderFunderDTO> orders = new ArrayList<>();
+        for(OrderFunder orderFunder: orderFunders){
+            OrderFunderDTO orderFunderDTO = new OrderFunderDTO();
+            BeanUtils.copyProperties(orderFunder,orderFunderDTO);
+            orders.add(orderFunderDTO);
+        }
+        return new JsonResult(SystemCode.SUCCESS,orders);
+    }
 }
