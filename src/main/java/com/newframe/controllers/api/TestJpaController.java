@@ -5,10 +5,8 @@ import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.test.TestUser;
 import com.newframe.services.test.TestManageService;
-import com.newframe.services.test.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -105,6 +103,38 @@ public class TestJpaController extends BaseController {
     private JsonResult listTestUser(String name, Integer currentPage, Integer pageSize) {
 
         OperationResult<Page<TestUser>> result = testManageService.listTestUser(name, currentPage, pageSize);
+
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
+    }
+
+    /**
+     * 更新，根据主键Id进行单个更新
+     * @param uid
+     * @return
+     */
+    @RequestMapping("updateTestUserByUid")
+    private JsonResult updateTestUserByUid(Long uid){
+
+        OperationResult<Boolean> result = testManageService.updateTestUserByUid(uid);
+
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
+    }
+
+    /**
+     * 根据查询条件
+     * 进行批量更新
+     */
+    @RequestMapping("updateTestUserByAge")
+    private JsonResult updateTestUserByAge(Integer age) {
+        OperationResult<Boolean> result = testManageService.updateTestUserByAge(age);
 
         if (result.getSucc()){
             return success(result.getEntity());

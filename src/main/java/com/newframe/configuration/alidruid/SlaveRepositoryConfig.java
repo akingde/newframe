@@ -22,7 +22,7 @@ import java.util.Map;
  * @description:主库的配置
  */
 @Configuration
-@EnableJpaRepositories(entityManagerFactoryRef = "localContainerEntityManagerFactoryBean" ,
+@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactorySlave" ,
         basePackages = "com.newframe.repositories.dataSlave",
         repositoryBaseClass = BaseRepositoryEx.class)
 public class SlaveRepositoryConfig {
@@ -34,19 +34,17 @@ public class SlaveRepositoryConfig {
     @Autowired
     private JpaProperties jpaProperties;
 
-    @Primary
-    @Bean("entityManager")
+    @Bean("entityManagerSecondary")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder){
-        return localContainerEntityManagerFactoryBean(builder).getObject().createEntityManager();
+        return entityManagerFactorySlave(builder).getObject().createEntityManager();
     }
 
-    @Primary
-    @Bean("localContainerEntityManagerFactoryBean")
-    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean(EntityManagerFactoryBuilder entityManagerFactoryBuilder){
+    @Bean("entityManagerFactorySlave")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactorySlave(EntityManagerFactoryBuilder entityManagerFactoryBuilder){
         return entityManagerFactoryBuilder.dataSource(slaveDS)
                 .properties(getProperties())
                 .packages("com.newframe.entity")
-                .persistenceUnit("primaryPersistenceUnit")
+                .persistenceUnit("secondaryPersistenceUnit")
                 .build();
     }
 

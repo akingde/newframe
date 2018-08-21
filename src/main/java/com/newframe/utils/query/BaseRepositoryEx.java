@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
@@ -33,14 +34,18 @@ import java.util.stream.Collectors;
 @NoRepositoryBean
 public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
 
-    private EntityManager entityManager;
+    private EntityManager baseEm;
+    private JpaEntityInformation<T, ?> baseEmInfo;
 
-    private JpaEntityInformation<T, ?> jpaEntityInformation;
+    @Autowired
+    @PersistenceContext
+    private EntityManager testEm;
+
 
     public BaseRepositoryEx(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
-        entityManager = entityManager;
-        jpaEntityInformation = entityInformation;
+        baseEm = entityManager;
+        baseEmInfo = entityInformation;
     }
 
     private Specification<T> getConditonByQuery(BaseQuery query) {
@@ -117,7 +122,7 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
     @Override
     public int update(T t, BaseQuery baseQuery, String... updateFileds) {
 
-        CriteriaBuilder criteriaBuilder = entityManager.getEntityManagerFactory().getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = baseEm.getEntityManagerFactory().getCriteriaBuilder();
         CriteriaUpdate<T> update =  (CriteriaUpdate<T>) criteriaBuilder.createCriteriaUpdate(t.getClass());
         Root<T> root = update.from((Class<T>) t.getClass());
 
@@ -139,7 +144,7 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
         }
 
         update.where(BaseQueryPredicateBuilder.getPredicate2(root, criteriaBuilder,baseQuery));
-        return entityManager.createQuery(update).executeUpdate();
+        return baseEm.createQuery(update).executeUpdate();
     }
 
     /**
@@ -154,7 +159,7 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
     @Override
     public int updateById(T t, ID id, String... updateFileds) {
 
-        CriteriaBuilder cb =entityManager.getEntityManagerFactory().getCriteriaBuilder();
+        CriteriaBuilder cb =baseEm.getEntityManagerFactory().getCriteriaBuilder();
         CriteriaUpdate<T> update =  (CriteriaUpdate<T>) cb.createCriteriaUpdate(t.getClass());
         Root<T> root = update.from((Class<T>) t.getClass());
         for(String fieldName:updateFileds){
@@ -176,7 +181,7 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
 
 
         //定位主键信息
-        Iterable<String> idAttributeNames = jpaEntityInformation.getIdAttributeNames();
+        Iterable<String> idAttributeNames = baseEmInfo.getIdAttributeNames();
 
         for(String key:idAttributeNames){
             if(key!=null&&key!=""){
@@ -184,7 +189,7 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
                 break;
             }
         }
-        return entityManager.createQuery(update).executeUpdate();
+        return baseEm.createQuery(update).executeUpdate();
     }
 
 
