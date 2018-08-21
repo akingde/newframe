@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @NoRepositoryBean
 public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
 
+    @PersistenceContext(unitName = "entityManagerPrimary")
     private EntityManager entityManager;
 
     private JpaEntityInformation<T, ?> jpaEntityInformation;

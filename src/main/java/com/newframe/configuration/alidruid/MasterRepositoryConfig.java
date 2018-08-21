@@ -23,7 +23,7 @@ import java.util.Map;
  * @description:主库的配置
  */
 @Configuration
-@EnableJpaRepositories(entityManagerFactoryRef = "localContainerEntityManagerFactoryBean" ,
+@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactoryPrimary" ,
         basePackages = "com.newframe.repositories.dataMaster",
         repositoryBaseClass = BaseRepositoryEx.class)
 public class MasterRepositoryConfig {
@@ -36,14 +36,14 @@ public class MasterRepositoryConfig {
     private JpaProperties jpaProperties;
 
     @Primary
-    @Bean("entityManager")
+    @Bean("entityManagerPrimary")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder){
-        return localContainerEntityManagerFactoryBean(builder).getObject().createEntityManager();
+        return entityManagerFactoryPrimary(builder).getObject().createEntityManager();
     }
 
     @Primary
-    @Bean("localContainerEntityManagerFactoryBean")
-    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean(EntityManagerFactoryBuilder entityManagerFactoryBuilder){
+    @Bean("entityManagerFactoryPrimary")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryPrimary(EntityManagerFactoryBuilder entityManagerFactoryBuilder){
         return entityManagerFactoryBuilder.dataSource(masterDS)
                 .properties(getProperties())
                 .packages("com.newframe.entity")

@@ -63,4 +63,11 @@ public interface TestManageService {
      * @return
      */
     OperationResult<Page<TestUser>> listTestUser(String name, Integer currentPage, Integer pageSize);
+
+    /**
+     * 更新
+     * @return
+     * @param uid
+     */
+    OperationResult<Boolean> updateTestUser(Long uid);
 }

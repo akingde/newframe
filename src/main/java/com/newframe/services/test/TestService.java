@@ -57,4 +57,11 @@ public interface TestService {
      * @return
      */
     Page<TestUser> listTestUser(String name, Integer currentPage, Integer pageSize);
+
+    /**
+     * 更新
+     * @return
+     * @param uid
+     */
+    Boolean updateTestUser(Long uid);
 }

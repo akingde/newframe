@@ -3,13 +3,11 @@ package com.newframe.services.test.impl;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.test.TestUser;
 import com.newframe.enums.BizErrorCode;
-import com.newframe.repositories.dataQuery.TestUserQuery;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.test.TestService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -147,5 +145,19 @@ public class TestManageServiceImpl implements TestManageService {
         Page<TestUser> testUserPage = testService.listTestUser(name,currentPage,pageSize);
 
         return new OperationResult<>(testUserPage);
+    }
+
+    /**
+     * 更新
+     *
+     * @return
+     * @param uid
+     */
+    @Override
+    public OperationResult<Boolean> updateTestUser(Long uid) {
+
+        Boolean result = testService.updateTestUser(uid);
+
+        return new OperationResult<>(result);
     }
 }

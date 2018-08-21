@@ -138,4 +138,24 @@ public class TestServiceImpl implements TestService {
 
         return testUserSlave.findAll(pageable);
     }
+
+    /**
+     * 更新
+     *
+     * @return
+     * @param uid
+     */
+    @Override
+    public Boolean updateTestUser(Long uid) {
+
+        //这里需要先查处一条数据
+        Optional<TestUser> result = testUserSlave.findById(uid);
+        TestUser testUser = result.get();
+        //TestUser testUser = new TestUser();
+        TestUserQuery query = new TestUserQuery();
+        query.setUid(testUser.getUid());
+        query.setAge(45);
+        testUserMaster.update(testUser,query,"age");
+        return true;
+    }
 }
