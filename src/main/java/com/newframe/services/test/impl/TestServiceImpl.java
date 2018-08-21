@@ -1,5 +1,6 @@
 package com.newframe.services.test.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.common.cache.CacheModule;
 import com.newframe.entity.test.TestUser;
 import com.newframe.repositories.dataMaster.test.TestUserMaster;
@@ -137,5 +138,46 @@ public class TestServiceImpl implements TestService {
         PageRequest pageable = PageRequest.of(currentPage-1,pageSize);
 
         return testUserSlave.findAll(pageable);
+    }
+
+    /**
+     * 更新
+     *
+     * @return
+     * @param uid
+     */
+    @Override
+    public Boolean updateTestUser(Long uid) {
+
+        TestUser testUser = new TestUser();
+        testUser.setUid(uid);
+        testUser.setName("hello");
+        testUser.setAge(100);
+
+        int update = testUserMaster.updateById(testUser,uid,"name","age");
+        return true;
+    }
+
+    /**
+     * 根据某个条件进行更新
+     *
+     * @param age
+     * @return
+     */
+    @Override
+    public Boolean updateTestUserByAge(Integer age) {
+
+        TestUser testUser = new TestUser();
+        testUser.setAge(120);
+        testUser.setName("wangdong");
+
+        /**
+         * 这个是将数据库中，所有age等于45的数据列，全部更新
+         */
+        TestUserQuery query = new TestUserQuery();
+        query.setAge(age);
+        int update = testUserMaster.update(testUser,query,"age","name");
+
+        return true;
     }
 }
