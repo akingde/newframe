@@ -149,14 +149,28 @@ public class TestManageServiceImpl implements TestManageService {
 
     /**
      * 更新
-     *
+     * 根据主键Id进行单个更新
      * @return
      * @param uid
      */
     @Override
-    public OperationResult<Boolean> updateTestUser(Long uid) {
+    public OperationResult<Boolean> updateTestUserByUid(Long uid) {
 
         Boolean result = testService.updateTestUser(uid);
+
+        return new OperationResult<>(result);
+    }
+
+    /**
+     * 根据数据库中的某个条件进行更新
+     *
+     * @param age
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> updateTestUserByAge(Integer age) {
+
+        Boolean result = testService.updateTestUserByAge(age);
 
         return new OperationResult<>(result);
     }

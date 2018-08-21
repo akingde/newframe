@@ -133,6 +133,14 @@
 			<version>1.9.3</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>26.0-jre</version>
+		</dependency>
+
+
 		<!-- RocketMQ起-->
 		<!--在pom.xml中添加依赖-->
 		<dependency>

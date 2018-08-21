@@ -60,8 +60,16 @@ public interface TestService {
 
     /**
      * 更新
+     * 根据主键Id进行单个更新
      * @return
      * @param uid
      */
     Boolean updateTestUser(Long uid);
+
+    /**
+     * 根据某个条件进行更新
+     * @param age
+     * @return
+     */
+    Boolean updateTestUserByAge(Integer age);
 }

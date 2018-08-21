@@ -66,8 +66,16 @@ public interface TestManageService {
 
     /**
      * 更新
+     * 根据主键Id进行单个更新
      * @return
      * @param uid
      */
-    OperationResult<Boolean> updateTestUser(Long uid);
+    OperationResult<Boolean> updateTestUserByUid(Long uid);
+
+    /**
+     * 根据数据库中的某个条件进行更新
+     * @param age
+     * @return
+     */
+    OperationResult<Boolean> updateTestUserByAge(Integer age);
 }

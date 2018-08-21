@@ -34,13 +34,11 @@ public class SlaveRepositoryConfig {
     @Autowired
     private JpaProperties jpaProperties;
 
-    @Primary
     @Bean("entityManagerSecondary")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder){
         return entityManagerFactorySlave(builder).getObject().createEntityManager();
     }
 
-    @Primary
     @Bean("entityManagerFactorySlave")
     public LocalContainerEntityManagerFactoryBean entityManagerFactorySlave(EntityManagerFactoryBuilder entityManagerFactoryBuilder){
         return entityManagerFactoryBuilder.dataSource(slaveDS)

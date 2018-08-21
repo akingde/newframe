@@ -35,7 +35,6 @@ public class MasterRepositoryConfig {
     @Autowired
     private JpaProperties jpaProperties;
 
-    @Primary
     @Bean("entityManagerPrimary")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder){
         return entityManagerFactoryPrimary(builder).getObject().createEntityManager();

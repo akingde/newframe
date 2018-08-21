@@ -111,10 +111,30 @@ public class TestJpaController extends BaseController {
         return error(result.getCode(),result.getMessage());
     }
 
-    @RequestMapping("updateTestUser")
-    private JsonResult updateTestUser(Long uid){
+    /**
+     * 更新，根据主键Id进行单个更新
+     * @param uid
+     * @return
+     */
+    @RequestMapping("updateTestUserByUid")
+    private JsonResult updateTestUserByUid(Long uid){
 
-        OperationResult<Boolean> result = testManageService.updateTestUser(uid);
+        OperationResult<Boolean> result = testManageService.updateTestUserByUid(uid);
+
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
+    }
+
+    /**
+     * 根据查询条件
+     * 进行批量更新
+     */
+    @RequestMapping("updateTestUserByAge")
+    private JsonResult updateTestUserByAge(Integer age) {
+        OperationResult<Boolean> result = testManageService.updateTestUserByAge(age);
 
         if (result.getSucc()){
             return success(result.getEntity());
