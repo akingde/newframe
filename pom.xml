@@ -127,46 +127,11 @@
             <version>26.0-jre</version>
         </dependency>
 
-
-        <!-- RocketMQ起-->
-        <!--在pom.xml中添加依赖-->
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>spring-boot-starter-rocketmq</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
             <version>5.0.8.RELEASE</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>4.2.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.9.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <version>2.0.4.RELEASE</version>
-        </dependency>
-        <!-- RocketMQ止-->
 
     </dependencies>
 
