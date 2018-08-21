@@ -46,7 +46,7 @@ public class AppOrderController extends BaseController {
     /**
      * 租赁商融资购机
      * 将租赁商订单转到资金方订单去审核
-     * @return
+     * @return 处理结果
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
@@ -76,13 +76,13 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商查看订单详情
-     *
-     * @return
+     * @param orderId 订单id
+     * @return 处理结果
      */
     @RequestMapping("renter/view/detail")
     public JsonResult renterViewDetail(Long orderId){
         // todo:文档
-        return null;
+        return orderService.renterViewDetail(orderId);
     }
 
     /**
@@ -101,7 +101,7 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("/getSupplierList")
     public JsonResult getSupplierList(ProductInfoDTO productInfo){
-        return null;
+        return orderService.getSupplierList(productInfo);
     }
 
     /**

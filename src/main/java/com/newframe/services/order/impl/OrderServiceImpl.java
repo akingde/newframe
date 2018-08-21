@@ -2,6 +2,7 @@ package com.newframe.services.order.impl;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
+import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
 import com.newframe.dto.order.response.OrderRenterDTO;
 import com.newframe.entity.order.OrderFunder;
@@ -126,7 +127,6 @@ public class OrderServiceImpl implements OrderService {
         for (Long orderId : orders) {
 
             // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
-            List<OrderFunder> orderFunderList = orderFunderSlave.getOrderByOrderId(orderId);
             //查询订单融资是否超过3次
             Long total = orderFunderSlave.getOrderFinancingTimes(orderId);
 
@@ -217,9 +217,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public JsonResult cancelOrder(List<Long> orders) {
+        // 参数校验
         if(orders == null || orders.size() == 0){
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
+        // 遍历取消订单
         for(Long orderId:orders){
             Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
             if(optional.isPresent()){
@@ -228,6 +230,7 @@ public class OrderServiceImpl implements OrderService {
                 OrderRenterQuery query = new OrderRenterQuery();
                 query.setOrderStatus(OrderRenterStatus.PENDING.getCode());
                 Integer row = orderRenterMaser.update(orderRenter,query,OrderRenter.ORDER_STATUS);
+                // 如果修改订单状态失败，说明存在异常，抛出异常回滚
                 if(row != 1){
                     throw new RuntimeException(SystemCode.ORDER_CANCEL_FAIL.getMessage());
                 }
@@ -235,6 +238,16 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return new JsonResult(SystemCode.SUCCESS,true);
+    }
+
+    @Override
+    public JsonResult renterViewDetail(Long orderId) {
+        return null;
+    }
+
+    @Override
+    public JsonResult getSupplierList(ProductInfoDTO productInfo) {
+        return null;
     }
 
 
