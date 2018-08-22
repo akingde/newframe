@@ -22,10 +22,11 @@ public interface UserWebTokenService {
 
     /**
      * 根据uid更新token
-     * @param userWebToken
+     * @param uid
+     * @param token
      * @return
      */
-    int updateByUid(UserWebToken userWebToken);
+    int updateByUid(Long uid, String token);
 
     /**
      * 根据uid删除记录

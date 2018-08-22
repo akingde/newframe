@@ -3,9 +3,9 @@ package com.newframe.dto.user.request;
 import lombok.Data;
 
 /**
- *  供应商信息修改
+ *  供应商申请
  * @author WangBin
  */
 @Data
-public class SupplierModifyDTO extends RoleModifyDTO{
+public class SupplierApplyDTO extends RoleApplyDTO {
 }

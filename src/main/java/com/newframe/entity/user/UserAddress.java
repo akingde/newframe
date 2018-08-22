@@ -1,11 +1,13 @@
 package com.newframe.entity.user;
 
+import com.newframe.dto.user.request.AddressDTO;
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  *  用户的地址管理表
@@ -116,4 +118,28 @@ public class UserAddress {
      */
     @Column(name = "utime")
     private Integer utime;
+
+    public UserAddress() {
+    }
+
+    public UserAddress(Long uid, AddressDTO address, List<Area> areas) {
+        this.id = address.getAddressId();
+        this.uid = uid;
+        this.consigneeName = address.getConsigneeName();
+        this.mobile = address.getMobile();
+        this.provinceId = address.getProvinceId();
+        this.cityId = address.getCityId();
+        this.countyId = address.getCountyId();
+        this.consigneeAddress = address.getConsigneeAddress();
+        this.defaultAddress = address.isDefaultAddress();
+        for (Area area : areas) {
+            if (area.getAreaLevel().equals(1)){
+                this.provinceName = area.getAreaName();
+            }else if (area.getAreaLevel().equals(2)){
+                this.cityName = area.getAreaName();
+            }else if (area.getAreaLevel().equals(3)){
+                this.countyName = area.getAreaName();
+            }
+        }
+    }
 }

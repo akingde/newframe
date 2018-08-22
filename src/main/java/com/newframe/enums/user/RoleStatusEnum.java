@@ -4,7 +4,7 @@ package com.newframe.enums.user;
  * 角色状态表
  * @author WangBin
  */
-public enum RoleEnum {
+public enum RoleStatusEnum {
 
     NORMAL(1),      //正常  审核通过
     UNDER_REVIEW(2),    //审核中
@@ -22,7 +22,7 @@ public enum RoleEnum {
         this.roleStatue = roleStatue;
     }
 
-    RoleEnum(Integer roleStatue) {
+    RoleStatusEnum(Integer roleStatue) {
         this.roleStatue = roleStatue;
     }
 }

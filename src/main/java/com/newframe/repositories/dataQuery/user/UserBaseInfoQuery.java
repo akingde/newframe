@@ -13,4 +13,7 @@ public class UserBaseInfoQuery  extends BaseQuery {
 
     @QBindAttrField(fieldName = "uid", where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "phoneNumber", where = Where.equal)
+    private Long mobile;
 }

@@ -1,5 +1,8 @@
 package com.newframe.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 角色枚举
  * @author WangBin
@@ -24,5 +27,13 @@ public enum  RoleEnum {
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
+    }
+
+    public static List<Integer> roleList(){
+        List<Integer> list = new ArrayList<>();
+        for(RoleEnum roleEnum : RoleEnum.values()){
+            list.add(roleEnum.getRoleId());
+        }
+        return null;
     }
 }

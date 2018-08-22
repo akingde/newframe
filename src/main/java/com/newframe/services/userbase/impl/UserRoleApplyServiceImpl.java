@@ -80,14 +80,12 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
      */
     @Override
     public Page<UserRoleApply> findListByUid(Long uid, Integer roleId, PageSearchDTO pageSearchDTO) {
-        if(uid == null){
+        if(uid == null || roleId == null){
             return null;
         }
         UserRoleApplyQuery query = new UserRoleApplyQuery();
         query.setUid(uid);
-        if(roleId != null){
-            query.setRoleId(roleId);
-        }
+        query.setRoleId(roleId);
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize(), sort);
         return userRoleApplySlave.findAll(query, pageRequest);
@@ -150,5 +148,18 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
         return userRoleApplyMaster.update(userRoleApply, query, array);
+    }
+
+    /**
+     * 根据uid获取角色申请列表
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<UserRoleApply> findApplyList(Long uid) {
+        UserRoleApplyQuery query = new UserRoleApplyQuery();
+        query.setUid(uid);
+        return userRoleApplySlave.findAll(query);
     }
 }

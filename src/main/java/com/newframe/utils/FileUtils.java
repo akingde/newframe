@@ -12,17 +12,42 @@ import java.io.IOException;
 public class FileUtils {
 
     public static boolean checkImage(MultipartFile ... files){
-        if(files == null || files.length == 0)
+        if(isEmpty(files)){
             return false;
+        }
         for (MultipartFile file : files) {
-            try {
-                BufferedImage image = ImageIO.read(file.getInputStream());
-                if(image == null){
-                    return false;
-                }
-            } catch (IOException e) {
+            if(!checkImage(file)){
                 return false;
             }
+        }
+        return true;
+    }
+
+    public static boolean checkImage(MultipartFile[] ... files){
+        for (MultipartFile[] file : files) {
+            for (MultipartFile multipartFile : file){
+                if(!checkImage(multipartFile)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isEmpty(MultipartFile ... files){
+        if(files == null || files.length == 0)
+            return true;
+        return false;
+    }
+
+    private static boolean checkImage(MultipartFile file){
+        try {
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            if(image == null){
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
         }
         return true;
     }

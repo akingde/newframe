@@ -1,6 +1,6 @@
 package com.newframe.repositories.dataQuery.user;
 
-import com.newframe.entity.user.UserAddress;
+import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.utils.query.BaseQuery;
 import com.newframe.utils.query.Where;
 import com.newframe.utils.query.annotation.QBindAttrField;
@@ -11,15 +11,12 @@ import lombok.Data;
  * @author WangBin
  */
 @Data
-@QBindEntity(entityClass = UserAddress.class)
-public class UserAddressQuery extends BaseQuery {
-
-    @QBindAttrField(fieldName = "uid", where = Where.equal)
-    private Long uid;
+@QBindEntity(entityClass = MerchantAppoint.class)
+public class MerchantAppointQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "id", where = Where.equal)
     private Long id;
 
-    @QBindAttrField(fieldName = "defaultAddress", where = Where.equal)
-    private Boolean defaultAddress;
+    @QBindAttrField(fieldName = "rentMerchantUid", where = Where.equal)
+    private Long rentMerchantUid;
 }

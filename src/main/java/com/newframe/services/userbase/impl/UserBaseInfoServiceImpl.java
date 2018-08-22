@@ -91,6 +91,17 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
     }
 
     /**
+     * 根据手机号查询
+     *
+     * @param mobile
+     * @return
+     */
+    @Override
+    public UserBaseInfo findOne(String mobile) {
+        return null;
+    }
+
+    /**
      * 根据uid删除角色基本信息
      *
      * @param uid

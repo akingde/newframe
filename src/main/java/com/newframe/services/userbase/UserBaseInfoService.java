@@ -35,6 +35,13 @@ public interface UserBaseInfoService {
     UserBaseInfo findOne(Long uid);
 
     /**
+     * 根据手机号查询
+     * @param mobile
+     * @return
+     */
+    UserBaseInfo findOne(String mobile);
+
+    /**
      * 根据uid删除角色基本信息
      * @param uid
      * @return

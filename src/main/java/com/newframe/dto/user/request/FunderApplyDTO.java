@@ -1,13 +1,14 @@
 package com.newframe.dto.user.request;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- *  资金方信息修改申请表
+ *  资金方信息申请表
  * @author WangBin
  */
 @Data
-public class FunderModifyDTO extends RoleModifyDTO{
+public class FunderApplyDTO extends RoleApplyDTO {
 
     /**
      *  紧急联系人
@@ -24,9 +25,9 @@ public class FunderModifyDTO extends RoleModifyDTO{
     /**
      *  委托授权书  资金方
      */
-    private String[] letterOfAttorney;
+    private MultipartFile[] letterOfAttorney;
     /**
      *  经营资质    资金方
      */
-    private String[] businessQualification;
+    private MultipartFile[] businessQualification;
 }
