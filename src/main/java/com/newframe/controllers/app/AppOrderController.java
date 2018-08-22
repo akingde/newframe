@@ -8,13 +8,13 @@ import com.newframe.dto.order.request.FunderQueryOrderDTO;
 import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
 import com.newframe.services.order.OrderService;
-import com.newframe.utils.log.GwsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -51,19 +51,27 @@ public class AppOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
     public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Integer supplierId){
-        //
+        // todo
         Long uid = 1231231L;
         return orderService.renterFinancingBuy(uid,orderId,supplierId);
     }
 
     /**
      * 租赁商租机
-     * @return
+     * @param accidentBenefit 意外保险金额
+     * @param orderId 订单id
+     * @param  lessorId 出租方id
+     * @param tenancyTerm 租期
+     * @param downPayment 首付
+     * @param patternPayment 支付方式，1：全款支付，2：分期支付
+     * @return 处理结果
      */
+    @Anonymous(true)
     @RequestMapping("renter/rent")
-    public JsonResult renterRent(@RequestParam List<Long> orderId){
-
-        return null;
+    public JsonResult renterRent(Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment,BigDecimal accidentBenefit,Integer patternPayment){
+        // todo
+        Long uid = 1231231L;
+        return orderService.renterRent(uid,orderId,lessorId,tenancyTerm ,downPayment ,accidentBenefit ,patternPayment );
     }
 
     /**
@@ -81,9 +89,10 @@ public class AppOrderController extends BaseController {
      * 租赁商取消订单
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("renter/cancel")
     public JsonResult cancelOrder(@RequestParam List<Long> orderId){
-        return null;
+        return orderService.cancelOrder(orderId);
     }
 
     /**

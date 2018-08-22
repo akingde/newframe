@@ -63,4 +63,19 @@ public interface TestManageService {
      * @return
      */
     OperationResult<Page<TestUser>> listTestUser(String name, Integer currentPage, Integer pageSize);
+
+    /**
+     * 更新
+     * 根据主键Id进行单个更新
+     * @return
+     * @param uid
+     */
+    OperationResult<Boolean> updateTestUserByUid(Long uid);
+
+    /**
+     * 根据数据库中的某个条件进行更新
+     * @param age
+     * @return
+     */
+    OperationResult<Boolean> updateTestUserByAge(Integer age);
 }
