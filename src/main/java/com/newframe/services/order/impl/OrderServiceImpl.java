@@ -8,7 +8,6 @@ import com.newframe.dto.order.request.QueryOrderDTO;
 import com.newframe.dto.order.response.OrderFunderDTO;
 import com.newframe.dto.order.response.OrderRenterDTO;
 import com.newframe.entity.order.OrderFunder;
-import com.newframe.entity.order.OrderFunderPK;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.enums.SystemCode;
@@ -16,11 +15,13 @@ import com.newframe.enums.order.OrderLessorStatus;
 import com.newframe.enums.order.OrderSort;
 import com.newframe.enums.order.OrderRenterStatus;
 import com.newframe.enums.order.PatternPaymentEnum;
+import com.newframe.repositories.dataMaster.order.FinancingBuyMachineMaster;
 import com.newframe.repositories.dataMaster.order.OrderFunderMaser;
 import com.newframe.repositories.dataMaster.order.OrderHirerMaser;
 import com.newframe.repositories.dataMaster.order.OrderRenterMaser;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
+import com.newframe.repositories.dataSlave.order.FinancingBuyMachineSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderRenterSlave;
@@ -63,6 +64,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderHirerSlave orderHirerSlave;
 
+    @Autowired
+    FinancingBuyMachineMaster financingBuyMachineMaster;
+    @Autowired
+    FinancingBuyMachineSlave financingBuyMachineSlave;
+
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
 
@@ -80,7 +86,8 @@ public class OrderServiceImpl implements OrderService {
         }
         // 设置查询条件
         OrderRenterQuery orderRenterQuery = new OrderRenterQuery();
-        orderRenterQuery.setUid(uid);
+        // 只查询此会话租赁商的订单
+        orderRenterQuery.setRenterId(uid);
         orderRenterQuery.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
         if (null != param.getOrderStatus()) {
             orderRenterQuery.setOrderStatus(param.getOrderStatus());
@@ -96,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderRenter orderRenter : orderRenters) {
             OrderRenterDTO orderRenterDTO = new OrderRenterDTO();
             BeanUtils.copyProperties(orderRenter, orderRenterDTO);
-            orderRenterDTO.setUid(orderRenter.getUid());
+            orderRenterDTO.setConsumerUid(orderRenter.getUid());
             orderRenterDTO.setOrderTime(orderRenter.getCtime());
             orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
             orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
@@ -105,6 +112,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenterDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
             orderRenterDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
             orderRenterDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
+            orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
             orderRenterDTOS.add(orderRenterDTO);
         }
         return new PageJsonResult(SystemCode.SUCCESS, orderRenterDTOS, orderRenterPage.getTotalElements());
@@ -118,11 +126,11 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
         // todo 根据uid查出租赁商信息
-        String renterName = "小米租赁旗舰店";
+        String renterName = "小米手机租赁店";
         // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
-        Long funderId = new Random().nextLong();
+        Long funderId = Math.abs(new Random().nextLong());
         // 存放融资失败的订单，需要返回给前端
         List<Map<String, Object>> failOrders = new ArrayList<>();
 
@@ -131,10 +139,14 @@ public class OrderServiceImpl implements OrderService {
         for (Long orderId : orders) {
 
             // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
-            //查询订单融资是否超过3次
-            Long total = orderFunderSlave.getOrderFinancingTimes(orderId);
 
-            if (total >= maxOrderFinancingTimes) {
+            //查询订单融资是否超过3次
+            Integer times = orderFunderSlave.getOrderFinancingTimes(orderId);
+            // 如果查出来融资次数是0次，则是首次融资
+            if(times == null){
+                times = 0;
+            }
+            if (times >= maxOrderFinancingTimes) {
                 Map<String, Object> failOrder = new HashMap<>(2);
                 failOrder.put("orderId", orderId);
                 failOrder.put("failMessage", SystemCode.ORDER_FINANCING_FAIL.getMessage());
@@ -149,15 +161,22 @@ public class OrderServiceImpl implements OrderService {
             Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
             if (optional.isPresent()) {
                 OrderRenter orderRenter = optional.get();
+                // 检查订单状态是否是不可融资状态
+                if(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode().equals(orderRenter.getOrderStatus())){
+                    Map<String, Object> failOrder = new HashMap<>(2);
+                    failOrder.put("orderId", orderId);
+                    failOrder.put("failMessage", SystemCode.ORDER_FINANCING_FAIL.getMessage());
+                    failOrders.add(failOrder);
+                }
                 OrderFunder orderFunder = new OrderFunder();
                 BeanUtils.copyProperties(orderRenter, orderFunder);
+                // 此处操作用户是租赁商，所以资金方的商家id应该是租赁商的id
                 orderFunder.setMerchantId(uid);
                 orderFunder.setMerchantName(renterName);
-                OrderFunderPK orderFunderPK = new OrderFunderPK();
-                orderFunderPK.setFunderId(funderId);
-                orderFunderPK.setOrderId(orderId);
-                orderFunder.setOrderFunderPK(orderFunderPK);
+                // 资金方的uid是从数据库中查出来的，暂时使用随机数代替
+                orderFunder.setFunderId(funderId);
                 orderFunder.setOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode());
+                orderFunder.setDispatchTimes(times+1);
                 orderFunders.add(orderFunder);
                 //修改租赁商订单状态，改为待资金方审核
                 orderRenterMaser.updateOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode(), orderId);
@@ -232,7 +251,7 @@ public class OrderServiceImpl implements OrderService {
                 OrderRenter orderRenter = optional.get();
                 orderRenter.setOrderStatus(OrderRenterStatus.ORDER_CANCEL.getCode());
                 OrderRenterQuery query = new OrderRenterQuery();
-                query.setOrderStatus(OrderRenterStatus.PENDING.getCode());
+                query.setOrderId(orderRenter.getOrderId());
                 Integer row = orderRenterMaser.update(orderRenter,query,OrderRenter.ORDER_STATUS);
                 // 如果修改订单状态失败，说明存在异常，抛出异常回滚
                 if(row != 1){
@@ -269,7 +288,7 @@ public class OrderServiceImpl implements OrderService {
         if(StringUtils.isNotEmpty(param.getRenterName())){
             orderFunderQuery.setMerchantName(param.getRenterName());
         }
-        orderFunderQuery.setUid(uid);
+        orderFunderQuery.setFunderId(uid);
         if(param.getOrderStatus() != null){
             orderFunderQuery.setOrderStatus(param.getOrderStatus());
         }
@@ -281,18 +300,28 @@ public class OrderServiceImpl implements OrderService {
             sort = new Sort(Sort.Direction.ASC,OrderFunder.CTIME);
         }
         // 设置分页
-        Pageable pageable = PageRequest.of(param.getCurrentPage()-1,param.getPageSize());
-        orderFunderQuery.setPage(pageable);
-        orderFunderQuery.setSort(sort);
+        Pageable pageable = PageRequest.of(param.getCurrentPage()-1,param.getPageSize(),sort);
+        Specification specification = new QueryToSpecification(orderFunderQuery);
         // 查询数据
-        List<OrderFunder> orderFunders = orderFunderSlave.findAll(orderFunderQuery);
+        Page<OrderFunder> page = orderFunderSlave.findAll(specification,pageable);
+        List<OrderFunder> orderFunders = page.getContent();
         // 封装dto
         List<OrderFunderDTO> orders = new ArrayList<>();
         for(OrderFunder orderFunder: orderFunders){
             OrderFunderDTO orderFunderDTO = new OrderFunderDTO();
             BeanUtils.copyProperties(orderFunder,orderFunderDTO);
+            orderFunderDTO.setOrderTime(orderFunder.getCtime());
+            orderFunderDTO.setConsumerName(orderFunder.getUserRealname());
+            orderFunderDTO.setConsumerPhone(orderFunder.getUserMobile());
+            orderFunderDTO.setConsumerIdentityNumber(orderFunder.getUserIdNumber());
+            orderFunderDTO.setConsumerCreditScore(orderFunder.getUserCreditScore());
+            orderFunderDTO.setRentDeadlineMonth(orderFunder.getNumberOfPayments());
+            orderFunderDTO.setRentDeadlineDay(orderFunder.getNumberOfPayments() * 30);
+            orderFunderDTO.setConsumerCreditLine(orderFunder.getUserCreditLine());
+            orderFunderDTO.setRenterId(orderFunder.getMerchantId());
+            orderFunderDTO.setRenterName(orderFunder.getMerchantName());
             orders.add(orderFunderDTO);
         }
-        return new JsonResult(SystemCode.SUCCESS,orders);
+        return new PageJsonResult(SystemCode.SUCCESS,orders,page.getTotalElements());
     }
 }

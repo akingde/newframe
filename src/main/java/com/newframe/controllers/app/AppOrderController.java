@@ -38,7 +38,7 @@ public class AppOrderController extends BaseController {
     @RequestMapping("renter/getList")
     public JsonResult getRenterOrder(QueryOrderDTO param){
         // todo 获取登陆用户uid
-        Long uid = 1231231L;
+        Long uid = 2L;
         JsonResult result = orderService.getRenterOrder(param, uid);
         return result;
     }
@@ -52,7 +52,7 @@ public class AppOrderController extends BaseController {
     @RequestMapping("renter/financing/buy")
     public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Integer supplierId){
         // todo
-        Long uid = 1231231L;
+        Long uid = 2L;
         return orderService.renterFinancingBuy(uid,orderId,supplierId);
     }
 
@@ -118,10 +118,11 @@ public class AppOrderController extends BaseController {
      * 查询资金方订单
      * @return 返回结果
      */
+    @Anonymous(true)
     @RequestMapping("funder/getList")
     public JsonResult getFunderOrder(FunderQueryOrderDTO param){
         // todo
-        Long uid = 123456L;
+        Long uid = 3436672695388700980L;
         return orderService.getFunderOrder(param, uid);
     }
 

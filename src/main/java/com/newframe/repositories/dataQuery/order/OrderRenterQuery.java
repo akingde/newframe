@@ -15,13 +15,16 @@ import lombok.Data;
 @Data
 public class OrderRenterQuery extends BaseQuery {
 
-    @QBindAttrField(fieldName = "uid",where = Where.equal)
-    private Long uid;
+    @QBindAttrField(fieldName = "renterId",where = Where.equal)
+    private Long renterId;
 
     @QBindAttrField(fieldName = "orderStatus",where = Where.equal)
     private Integer orderStatus;
 
     @QBindAttrField(fieldName = "deleteStatus",where = Where.equal)
     private Integer deleteStatus;
+
+    @QBindAttrField(fieldName = "orderId",where = Where.equal)
+    private Long orderId;
 
 }

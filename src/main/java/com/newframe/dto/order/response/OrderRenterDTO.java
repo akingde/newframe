@@ -15,8 +15,9 @@ public class OrderRenterDTO {
     private Integer orderTime;
     private String consumerName;
     private String consumerPhone;
-//    private Long consumerUid;
-    private Long uid;
+    private Long consumerUid;
+    private Long renterId;
+    private String renterName;
     private String consumerIdentityNumber;
     private Integer consumerCreditScore;
     private String productName;
@@ -33,4 +34,5 @@ public class OrderRenterDTO {
     private String productColor;
     private Integer deleteStatus;
     private Integer utime;
+    private String consumerAddress;
 }

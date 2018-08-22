@@ -31,6 +31,6 @@ public class OrderFunderDTO {
     private String productColor;
     private Integer deleteStatus;
     private String renterName;
-    private Integer renterId;
+    private Long renterId;
     private Integer utime;
 }

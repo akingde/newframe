@@ -13,8 +13,8 @@ import lombok.Data;
 @Data
 @QBindEntity(entityClass = OrderFunder.class)
 public class OrderFunderQuery extends BaseQuery {
-    @QBindAttrField(fieldName = "uid", where = Where.equal)
-    private Long uid;
+    @QBindAttrField(fieldName = "funderId", where = Where.equal)
+    private Long funderId;
 
     @QBindAttrField(fieldName = "merchantName", where = Where.like)
     private String merchantName;

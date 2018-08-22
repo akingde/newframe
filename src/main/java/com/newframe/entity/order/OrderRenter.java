@@ -33,6 +33,12 @@ public class OrderRenter {
     @Column(name = "partner_id")
     private Integer partnerId;
 
+    @Column(name = "renter_id")
+    private Long renterId;
+
+    @Column(name = "renter_name")
+    private String renterName;
+
     @Column(name = "uid")
     private Long uid;
 
