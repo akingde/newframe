@@ -23,10 +23,11 @@ public interface UserAppTokenService {
 
     /**
      * 根据uid更新token
-     * @param userAppToken
+     * @param uid
+     * @param token
      * @return
      */
-    int updateByUid(UserAppToken userAppToken);
+    int updateByUid(Long uid, String token);
 
     /**
      * 根据uid删除记录

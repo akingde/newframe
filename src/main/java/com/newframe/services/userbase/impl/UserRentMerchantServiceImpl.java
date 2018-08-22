@@ -29,15 +29,17 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
     private UserRentMerchantSlave userRentMerchantSlave;
 
     /**
-     * 获取用户租赁商信息
+     * 根据用户id和角色id获取租赁商信息
      *
      * @param uid
+     * @param roleId
      * @return
      */
     @Override
-    public UserRentMerchant findOne(Long uid) {
+    public UserRentMerchant findOne(Long uid, Integer roleId) {
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setUid(uid);
+        query.setRoleId(roleId);
         return userRentMerchantSlave.findOne(query);
     }
 

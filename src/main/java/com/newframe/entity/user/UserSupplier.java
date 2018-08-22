@@ -54,7 +54,7 @@ public class UserSupplier {
      * business_license_number
      */
     @Column(name = "business_license_number")
-    private Long businessLicenseNumber;
+    private String businessLicenseNumber;
 
     /**
      * 营业执照文件

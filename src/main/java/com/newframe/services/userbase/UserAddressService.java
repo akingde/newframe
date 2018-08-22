@@ -43,4 +43,19 @@ public interface UserAddressService {
      * @return
      */
     Page<UserAddress> findUserAddressList(Long uid, PageSearchDTO pageSearchDTO);
+
+    /**
+     * 获取默认地址
+     * @param uid
+     * @return
+     */
+    UserAddress findDefaultAddress(Long uid);
+
+    /**
+     * 根据地址id和用户id查找地址
+     * @param uid
+     * @param addressId
+     * @return
+     */
+    UserAddress findAddress(Long addressId, Long uid);
 }

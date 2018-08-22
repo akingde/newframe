@@ -1,5 +1,7 @@
 package com.newframe.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,6 +54,9 @@ public class IdNumberUtils {
      * @return
      */
     public static boolean isValidatedAllIdcard(String idcard) {
+        if(StringUtils.isEmpty(idcard)){
+            return false;
+        }
         if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);
         }

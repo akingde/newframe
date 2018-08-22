@@ -213,8 +213,8 @@ public class WebUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 17:48
      */
-    @PostMapping("getRoleApplyList")
-    public JsonResult getRoleApplyList(Integer roleId) {
+    @PostMapping("getRoleApply")
+    public JsonResult getRoleApply(Integer roleId) {
         return null;
     }
 
@@ -231,20 +231,14 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param roleApplyDTO                 参数类
-     * @param businessListen              营业执照文件 2张
-     * @param highestDegreeDiploma        最高学历毕业证文件 2张
-     * @param drivingLicense              驾驶证文件 2张
-     * @param houseProprietaryCertificate 房产证文件 9张
+     * @param rentMerchantApplyDTO
      * @return
      * @description 租赁商角色申请
      * @author WangBin
      * @date 2018/8/9 16:43
      */
     @PostMapping("rentMerchantRoleApply")
-    public JsonResult rentMerchantRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen,
-                                            MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
-                                            MultipartFile[] houseProprietaryCertificate) {
+    public JsonResult rentMerchantRoleApply(RentMerchantApplyDTO rentMerchantApplyDTO) {
         return null;
     }
 
@@ -257,16 +251,6 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getRentMechantApplyInfo")
     public JsonResult getRentMechantApplyInfo(Long roleApplyId) {
-        return null;
-    }
-
-    /**
-     * @description 租赁商申请信息修改
-     * @author WangBin
-     * @date 2018/8/15 11:14
-     */
-    @PostMapping("modifyRentMerchantApplyInfo")
-    public JsonResult modifyRentMerchantApplyInfo(RentMerchantModifyDTO rentMerchantModifyDTO) {
         return null;
     }
 
@@ -323,17 +307,14 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param businessListen         营业执照文件 2张
-     * @param letterOfAttorney       授权委托书 2张
-     * @param businessQualification  经营资质 2张
+     * @param funderApplyDTO
      * @return
      * @description 资金方角色申请
      * @author WangBin
      * @date 2018/8/9 16:50
      */
     @PostMapping("funderRoleApply")
-    public JsonResult funderRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen,
-                                      MultipartFile[] letterOfAttorney, MultipartFile[] businessQualification) {
+    public JsonResult funderRoleApply(FunderApplyDTO funderApplyDTO) {
         return null;
     }
 
@@ -350,17 +331,6 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @return
-     * @description 资金方角色申请信息修改
-     * @author WangBin
-     * @date 2018/8/9 16:50
-     */
-    @PostMapping("modifyFunderApplyInfo")
-    public JsonResult modifyFunderApplyInfo(FunderModifyDTO funderModifyDTO){
-        return null;
-    }
-
-    /**
      * @description 获取资金方信息
      * @author WangBin
      * @param
@@ -373,14 +343,14 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param businessListen         营业执照文件 2张
+     * @param hirerApplyDTO
      * @return
      * @description 出租方申请
      * @author WangBin
      * @date 2018/8/9 16:52
      */
     @PostMapping("hirerRoleApply")
-    public JsonResult hirerRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen) {
+    public JsonResult hirerRoleApply(HirerApplyDTO hirerApplyDTO) {
         return null;
     }
 
@@ -397,16 +367,6 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @description 修改出租方申请信息
-     * @author WangBin
-     * @date 2018/8/9 16:52
-     */
-    @PostMapping("modifyHirerApplyInfo")
-    public JsonResult modifyHirerApplyInfo(HirerModifyDTO hirerModifyDTO){
-        return null;
-    }
-
-    /**
      * @description 获取出租方信息
      * @author WangBin
      * @param
@@ -419,14 +379,14 @@ public class WebUserController extends BaseController {
     }
 
     /**
-     * @param businessListen       营业执照文件 2张
+     * @param supplierApplyDTO
      * @return
      * @description 供应商角色申请
      * @author WangBin
      * @date 2018/8/9 16:59
      */
     @PostMapping("supplierRoleApply")
-    public JsonResult supplierRoleApply(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen) {
+    public JsonResult supplierRoleApply(SupplierApplyDTO supplierApplyDTO) {
         return null;
     }
 
@@ -439,16 +399,6 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getSupplierApplyInfo")
     public JsonResult getSupplierApplyInfo(Long roleApplyId) {
-        return null;
-    }
-
-    /**
-     * @description 供应商角色信息修改
-     * @author WangBin
-     * @date 2018/8/9 16:59
-     */
-    @PostMapping("modifySupplierApplyInfo")
-    public JsonResult modifySupplierApplyInfo(SupplierModifyDTO supplierModifyDTO) {
         return null;
     }
 

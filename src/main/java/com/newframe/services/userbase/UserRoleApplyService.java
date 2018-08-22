@@ -47,4 +47,11 @@ public interface UserRoleApplyService {
      * @return
      */
     int updateByRoleApplyId(UserRoleApply userRoleApply);
+
+    /**
+     * 根据uid获取角色申请列表
+     * @param uid
+     * @return
+     */
+    List<UserRoleApply> findApplyList(Long uid);
 }

@@ -14,11 +14,12 @@ import com.newframe.entity.user.UserRentMerchant;
 public interface UserRentMerchantService {
 
     /**
-     * 获取用户租赁商信息
+     * 根据用户id和角色id获取租赁商信息
      * @param uid
+     * @param roleId
      * @return
      */
-    UserRentMerchant findOne(Long uid);
+    UserRentMerchant findOne(Long uid, Integer roleId);
 
     /**
      * 插入用户租赁商信息

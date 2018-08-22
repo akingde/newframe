@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
 
@@ -44,14 +45,16 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
     /**
      * 根据uid更新token
      *
-     * @param userAppToken
+     * @param uid
      * @return
      */
     @Override
-    public int updateByUid(UserAppToken userAppToken) {
-        if(userAppToken == null) {
+    public int updateByUid(Long uid, String token) {
+        if(uid == null) {
             return 0;
         }
+        UserAppToken userAppToken = new UserAppToken();
+        userAppToken.setToken(token);
         UserAppTokenQuery query = new UserAppTokenQuery();
         query.setUid(userAppToken.getUid());
         String[] array = new String[]{"token"};
@@ -79,7 +82,7 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
     public UserAppToken insert(Long uid) {
         UserAppToken userAppToken = new UserAppToken();
         userAppToken.setUid(uid);
-        userAppToken.setToken("");
+        userAppToken.setToken(UUID.randomUUID().toString());
         return userAppTokenMaster.save(userAppToken);
     }
 }

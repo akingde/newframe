@@ -27,4 +27,7 @@ public class AreaQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "areaCode", where = Where.in)
     private List<Integer> areaCode;
+
+    @QBindAttrField(fieldName = "parentId", where = Where.equal)
+    private Integer parentId;
 }

@@ -89,7 +89,7 @@ public class UserRoleApply {
      * business_license_number
      */
     @Column(name = "business_license_number")
-    private Long businessLicenseNumber;
+    private String businessLicenseNumber;
 
     /**
      * 营业执照文件
@@ -139,6 +139,13 @@ public class UserRoleApply {
      */
     @Column(name = "apply_status")
     private Integer applyStatus;
+
+    /**
+     * 备注
+     * remarks
+     */
+    @Column(name = "remarks")
+    private String remarks;
 
     /**
      * 创建时间

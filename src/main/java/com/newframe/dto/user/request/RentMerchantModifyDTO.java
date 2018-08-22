@@ -7,7 +7,7 @@ import lombok.Data;
  * @author WangBin
  */
 @Data
-public class RentMerchantModifyDTO extends RoleModifyDTO{
+public class RentMerchantModifyDTO{
     /**
      *  修改的小B的uid
      */
@@ -16,6 +16,22 @@ public class RentMerchantModifyDTO extends RoleModifyDTO{
      * 手机号(小B专属)
      */
     private String phoneNumber;
+    /**
+     * 商家名称
+     */
+    private String name;
+    /**
+     *  法人
+     */
+    private String legalEntity;
+    /**
+     *  法人身份证号
+     */
+    private String legalEntityIdNumber;
+    /**
+     *  营业执照编号
+     */
+    private String businessListenNumber;
     /**
      *  营业执照
      */

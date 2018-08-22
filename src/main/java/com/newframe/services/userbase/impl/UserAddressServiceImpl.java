@@ -125,6 +125,34 @@ public class UserAddressServiceImpl implements UserAddressService {
         Sort sort = new Sort(Sort.Direction.DESC, "defaultAddress");
         query.setSort(sort);
         PageRequest pageRequest = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize());
-        return userAddressMaster.findAll(query, pageRequest);
+        return userAddressSlave.findAll(query, pageRequest);
+    }
+
+    /**
+     * 获取默认地址
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public UserAddress findDefaultAddress(Long uid) {
+        UserAddressQuery query = new UserAddressQuery();
+        query.setUid(uid);
+        query.setDefaultAddress(true);
+        return userAddressSlave.findOne(query);
+    }
+
+    /**
+     * 根据地址id查找地址
+     *
+     * @param addressId
+     * @return
+     */
+    @Override
+    public UserAddress findAddress(Long addressId, Long uid) {
+        UserAddressQuery query = new UserAddressQuery();
+        query.setId(addressId);
+        query.setUid(uid);
+        return userAddressSlave.findOne(query);
     }
 }

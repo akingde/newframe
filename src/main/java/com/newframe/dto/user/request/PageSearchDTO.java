@@ -18,7 +18,13 @@ public class PageSearchDTO {
     }
 
     public Integer getPageSize() {
-
         return pageSize == null || pageSize < 1 ? 10 : pageSize;
+    }
+
+    public PageSearchDTO(){}
+
+    public PageSearchDTO(Integer currentPage, Integer pageSize) {
+        this.currentPage = currentPage;
+        this.pageSize = pageSize;
     }
 }

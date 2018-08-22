@@ -29,6 +29,16 @@ public class UserSupplierServiceImpl implements UserSupplierService {
     private UserSupplierSlave userSupplierSlave;
 
     /**
+     * 获取所有的供应商
+     *
+     * @return
+     */
+    @Override
+    public List<UserSupplier> findAll() {
+        return userSupplierSlave.findAll();
+    }
+
+    /**
      * 查询
      *
      * @param uid
