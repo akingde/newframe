@@ -197,4 +197,22 @@ public class TestServiceImpl implements TestService {
 
         return result;
     }
+
+    /**
+     * 根据Query条件查询
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public TestUser getTestUserByQuery(Long uid) {
+
+        if (null == uid){
+            return null;
+        }
+
+        TestUserQuery query = new TestUserQuery();
+        query.setUid(uid);
+        return testUserSlave.findOne(query);
+    }
 }

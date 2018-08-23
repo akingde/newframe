@@ -112,6 +112,22 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
     }
 
     /**
+     * 使用查询条件，定位单个记录
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public T findOne(BaseQuery query) {
+        Optional<T> optional = findOne(getConditonByQuery(query));
+
+        if (!optional.isPresent()){
+            return null;
+        }
+        return optional.get();
+    }
+
+    /**
      * 根据条件去更新
      * T为指定表对应的实体类
      * baseQuery 为满足条件的数据

@@ -158,4 +158,16 @@ public class TestJpaController extends BaseController {
 
         return error(result.getCode(),result.getMessage());
     }
+
+    @RequestMapping("getTestUserByQuery")
+    public JsonResult getTestUserByQuery(Long uid){
+
+        OperationResult<TestUser> result = testManageService.getTestUserByQuery(uid);
+
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
+    }
 }

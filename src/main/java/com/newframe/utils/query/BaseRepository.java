@@ -42,11 +42,18 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
     List<T> findAll(BaseQuery baseQuery, Sort sort);
 
     /**
-     * 使用查询条件定位单个记录
+     * 使用唯一索引定位单个记录
      * @param id
      * @return
      */
     T findOne(ID id);
+
+    /**
+     * 使用查询条件，定位单个记录
+     * @param query
+     * @return
+     */
+    T findOne(BaseQuery query);
 
     /**
      * 根据条件去更新
