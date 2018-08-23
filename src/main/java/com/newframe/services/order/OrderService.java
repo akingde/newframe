@@ -88,4 +88,12 @@ public interface OrderService {
      * @return 查询结果
      */
     JsonResult funderViewDetail(Long orderId, Long uid);
+
+    /**
+     * 资金方拒绝融资订单请求
+     * @param orderId 订单id
+     * @param uid 资金方uid
+     * @return 返回结果
+     */
+    JsonResult funderRefuse(Long orderId, Long uid);
 }

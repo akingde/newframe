@@ -360,6 +360,11 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
 
+    @Override
+    public JsonResult funderRefuse(Long orderId, Long uid) {
+        return null;
+    }
+
     /**
      * 将orderFunder转换成DTO返回给前端
      * @param orderFunder 从数据库中查出的orderFunder
