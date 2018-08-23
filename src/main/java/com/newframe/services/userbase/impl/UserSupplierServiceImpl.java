@@ -46,9 +46,10 @@ public class UserSupplierServiceImpl implements UserSupplierService {
      */
     @Override
     public UserSupplier findOne(Long uid) {
-        UserSupplierQuery query = new UserSupplierQuery();
-        query.setUid(uid);
-        return userSupplierSlave.findOne(query);
+        if (null == uid){
+            return null;
+        }
+        return userSupplierSlave.findOne(uid);
     }
 
     /**

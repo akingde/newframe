@@ -85,9 +85,10 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
      */
     @Override
     public UserBaseInfo findOne(Long uid) {
-        UserBaseInfoQuery query = new UserBaseInfoQuery();
-        query.setUid(uid);
-        return userBaseInfoSlave.findOne(query);
+        if (null == uid){
+            return null;
+        }
+        return userBaseInfoSlave.findOne(uid);
     }
 
     /**

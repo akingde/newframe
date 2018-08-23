@@ -78,4 +78,11 @@ public interface TestManageService {
      * @return
      */
     OperationResult<Boolean> updateTestUserByAge(Integer age);
+
+    /**
+     * 根据Uid查询
+     * @param uid
+     * @return
+     */
+    OperationResult<TestUser> getTestUserByUid(Long uid);
 }

@@ -37,9 +37,10 @@ public class UserPwdServiceImpl implements UserPwdService {
      */
     @Override
     public UserPwd findByUid(Long uid) {
-        UserPwdQuery query = new UserPwdQuery();
-        query.setUid(uid);
-        return userPwdSlave.findOne(query);
+        if (null == uid){
+            return null;
+        }
+        return userPwdSlave.findOne(uid);
     }
 
     /**

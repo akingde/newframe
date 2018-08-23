@@ -142,4 +142,20 @@ public class TestJpaController extends BaseController {
 
         return error(result.getCode(),result.getMessage());
     }
+
+    /**
+     * 查询其中的一个
+     * @param uid
+     */
+    @RequestMapping("getTestUserByUid")
+    public JsonResult getTestUserByUid(Long uid){
+
+        OperationResult<TestUser> result = testManageService.getTestUserByUid(uid);
+
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author:wangdong
@@ -42,10 +43,10 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
 
     /**
      * 使用查询条件定位单个记录
-     * @param baseQuery
+     * @param id
      * @return
      */
-    T findOne(BaseQuery baseQuery);
+    T findOne(ID id);
 
     /**
      * 根据条件去更新

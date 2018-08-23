@@ -180,4 +180,21 @@ public class TestServiceImpl implements TestService {
 
         return true;
     }
+
+    /**
+     * 根据uid查询
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public TestUser getTestUserByUid(Long uid) {
+        if (null == uid){
+            return null;
+        }
+
+        TestUser result = testUserSlave.findOne(uid);
+
+        return result;
+    }
 }

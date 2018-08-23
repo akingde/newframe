@@ -33,9 +33,8 @@ public class UserContractServiceImpl implements UserContractService {
      */
     @Override
     public UserContract findOne(Long uid) {
-        UserContractQuery query = new UserContractQuery();
-        query.setUid(uid);
-        return userContractSlave.findOne(query);
+
+        return userContractSlave.findOne(uid);
     }
 
     /**

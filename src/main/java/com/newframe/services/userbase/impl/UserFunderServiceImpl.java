@@ -36,9 +36,10 @@ public class UserFunderServiceImpl implements UserFunderService {
      */
     @Override
     public UserFunder findOne(Long uid) {
-        UserFunderQuery query = new UserFunderQuery();
-        query.setUid(uid);
-        return userFunderSlave.findOne(query);
+        if (null == uid){
+            return null;
+        }
+        return userFunderSlave.findOne(uid);
     }
 
     /**
