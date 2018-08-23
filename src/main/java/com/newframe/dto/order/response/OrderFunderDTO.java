@@ -33,4 +33,6 @@ public class OrderFunderDTO {
     private String renterName;
     private Long renterId;
     private Integer utime;
+    /**融资金额=月租金*租机期限+意外保障*/
+    private BigDecimal financingAmount;
 }

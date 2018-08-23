@@ -79,10 +79,12 @@ public class AppOrderController extends BaseController {
      * @param orderId 订单id
      * @return 处理结果
      */
+    @Anonymous(true)
     @RequestMapping("renter/view/detail")
     public JsonResult renterViewDetail(Long orderId){
         // todo:文档
-        return orderService.renterViewDetail(orderId);
+        Long uid = 2L;
+        return orderService.renterViewDetail(orderId, uid);
     }
 
     /**
@@ -130,10 +132,13 @@ public class AppOrderController extends BaseController {
      * 查看资金方订单详情
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("funder/view/detail")
     public JsonResult funderViewDetail(Long orderId){
         // todo: 文档
-        return null;
+        Long uid = 3436672695388700980L;
+
+        return orderService.funderViewDetail(orderId,uid);
     }
 
     /**

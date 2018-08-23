@@ -35,4 +35,6 @@ public class OrderRenterDTO {
     private Integer deleteStatus;
     private Integer utime;
     private String consumerAddress;
+    /** 用户坏账次数*/
+    private Integer consumerBedDebtTimes;
 }

@@ -54,9 +54,10 @@ public interface OrderService {
     /**
      * 租赁商查看订单详情
      * @param orderId 订单id
+     * @param renterId
      * @return 处理结果
      */
-    JsonResult renterViewDetail(Long orderId);
+    JsonResult renterViewDetail(Long orderId, Long renterId);
 
     /**
      * 按产品信息查询有此机型的供应商列表
@@ -79,4 +80,12 @@ public interface OrderService {
      * @return 查询结果
      */
     JsonResult getFunderOrder(FunderQueryOrderDTO param, Long uid);
+
+    /**
+     * 查询资金方订单详情
+     * @param orderId 订单id
+     * @param uid 资金方id
+     * @return 查询结果
+     */
+    JsonResult funderViewDetail(Long orderId, Long uid);
 }

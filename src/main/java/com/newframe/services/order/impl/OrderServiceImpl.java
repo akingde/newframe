@@ -264,8 +264,35 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult renterViewDetail(Long orderId) {
-        return null;
+    public JsonResult renterViewDetail(Long orderId, Long renterId) {
+        if(orderId == null){
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setRenterId(renterId);
+        query.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
+        query.setOrderId(orderId);
+        Object o = orderRenterSlave.findOne(query);
+        Optional<OrderRenter> optional = (Optional<OrderRenter>) o;
+        if(optional.isPresent()){
+            OrderRenter orderRenter = optional.get();
+            OrderRenterDTO orderRenterDTO = new OrderRenterDTO();
+            BeanUtils.copyProperties(orderRenter,orderRenterDTO);
+            orderRenterDTO.setConsumerUid(orderRenter.getUid());
+            orderRenterDTO.setOrderTime(orderRenter.getCtime());
+            orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
+            orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
+            orderRenterDTO.setConsumerIdentityNumber(orderRenter.getUserIdNumber());
+            orderRenterDTO.setConsumerCreditScore(orderRenter.getUserCreditScore());
+            orderRenterDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
+            orderRenterDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
+            orderRenterDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
+            orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
+            // todo 查出用户坏账次数
+            orderRenterDTO.setConsumerBedDebtTimes(new Random().nextInt(10));
+            return new JsonResult(SystemCode.SUCCESS,orderRenterDTO);
+        }
+        return new JsonResult(SystemCode.BAD_REQUEST);
     }
 
     @Override
@@ -308,20 +335,53 @@ public class OrderServiceImpl implements OrderService {
         // 封装dto
         List<OrderFunderDTO> orders = new ArrayList<>();
         for(OrderFunder orderFunder: orderFunders){
-            OrderFunderDTO orderFunderDTO = new OrderFunderDTO();
-            BeanUtils.copyProperties(orderFunder,orderFunderDTO);
-            orderFunderDTO.setOrderTime(orderFunder.getCtime());
-            orderFunderDTO.setConsumerName(orderFunder.getUserRealname());
-            orderFunderDTO.setConsumerPhone(orderFunder.getUserMobile());
-            orderFunderDTO.setConsumerIdentityNumber(orderFunder.getUserIdNumber());
-            orderFunderDTO.setConsumerCreditScore(orderFunder.getUserCreditScore());
-            orderFunderDTO.setRentDeadlineMonth(orderFunder.getNumberOfPayments());
-            orderFunderDTO.setRentDeadlineDay(orderFunder.getNumberOfPayments() * 30);
-            orderFunderDTO.setConsumerCreditLine(orderFunder.getUserCreditLine());
-            orderFunderDTO.setRenterId(orderFunder.getMerchantId());
-            orderFunderDTO.setRenterName(orderFunder.getMerchantName());
+            OrderFunderDTO orderFunderDTO = wrapOrderFunder2DTO(orderFunder);
             orders.add(orderFunderDTO);
         }
         return new PageJsonResult(SystemCode.SUCCESS,orders,page.getTotalElements());
+    }
+
+    @Override
+    public JsonResult funderViewDetail(Long orderId, Long uid) {
+        if (orderId == null) {
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(orderId);
+        query.setFunderId(uid);
+        query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
+        Object o = orderFunderSlave.findOne(query);
+        Optional<OrderFunder> optional = (Optional<OrderFunder>) o;
+        if(optional.isPresent()){
+            OrderFunder orderFunder = optional.get();
+            OrderFunderDTO orderFunderDTO = wrapOrderFunder2DTO(orderFunder);
+            return new JsonResult(SystemCode.SUCCESS,orderFunderDTO);
+        }
+        return new JsonResult(SystemCode.BAD_REQUEST);
+    }
+
+    /**
+     * 将orderFunder转换成DTO返回给前端
+     * @param orderFunder 从数据库中查出的orderFunder
+     * @return dto
+     */
+    private OrderFunderDTO wrapOrderFunder2DTO(OrderFunder orderFunder){
+        OrderFunderDTO orderFunderDTO = new OrderFunderDTO();
+        BeanUtils.copyProperties(orderFunder,orderFunderDTO);
+        orderFunderDTO.setOrderTime(orderFunder.getCtime());
+        orderFunderDTO.setConsumerName(orderFunder.getUserRealname());
+        orderFunderDTO.setConsumerPhone(orderFunder.getUserMobile());
+        orderFunderDTO.setConsumerIdentityNumber(orderFunder.getUserIdNumber());
+        orderFunderDTO.setConsumerCreditScore(orderFunder.getUserCreditScore());
+        orderFunderDTO.setRentDeadlineMonth(orderFunder.getNumberOfPayments());
+        orderFunderDTO.setRentDeadlineDay(orderFunder.getNumberOfPayments() * 30);
+        orderFunderDTO.setConsumerCreditLine(orderFunder.getUserCreditLine());
+        orderFunderDTO.setRenterId(orderFunder.getMerchantId());
+        orderFunderDTO.setRenterName(orderFunder.getMerchantName());
+        BigDecimal financingAmount = orderFunder.getMonthlyPayment().multiply(
+                new BigDecimal(orderFunder.getNumberOfPayments()));
+        financingAmount = financingAmount.add(orderFunder.getAccidentBenefit());
+        orderFunderDTO.setFinancingAmount(financingAmount);
+        return orderFunderDTO;
     }
 }

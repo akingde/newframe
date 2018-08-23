@@ -21,4 +21,10 @@ public class OrderFunderQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
     private Integer orderStatus;
+
+    @QBindAttrField(fieldName = "orderId", where = Where.equal)
+    private Long orderId;
+
+    @QBindAttrField(fieldName = "deleteStatus", where = Where.equal)
+    private Integer deleteStatus;
 }
