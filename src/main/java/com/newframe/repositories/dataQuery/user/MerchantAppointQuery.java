@@ -19,4 +19,7 @@ public class MerchantAppointQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "rentMerchantUid", where = Where.equal)
     private Long rentMerchantUid;
+
+    @QBindAttrField(fieldName = "supplierUid", where = Where.in)
+    private Long[] supplierUids;
 }

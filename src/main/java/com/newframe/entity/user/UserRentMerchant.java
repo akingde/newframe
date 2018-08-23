@@ -106,6 +106,13 @@ public class UserRentMerchant {
     private Integer roleStatus;
 
     /**
+     *  隶属的一级租赁商uid
+     *  parent_id
+     */
+    @Column(name = "parent_id")
+    private Long parentId;
+
+    /**
      * 省id
      * province_id
      */

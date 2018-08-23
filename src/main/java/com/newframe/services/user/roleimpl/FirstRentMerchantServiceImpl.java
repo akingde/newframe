@@ -1,24 +1,29 @@
 package com.newframe.services.user.roleimpl;
 
+import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.RentMerchantApplyDTO;
 import com.newframe.dto.user.request.RoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.user.RoleService;
+import com.newframe.services.userbase.MerchantAppointService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserRoleApplyService;
 import com.newframe.utils.FileUtils;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author WangBin
@@ -30,7 +35,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private UserRoleApplyService userRoleApplyService;
     @Autowired
     private UserRentMerchantService userRentMerchantService;
-
+    @Autowired
+    private IdGlobalGenerator idGlobalGenerator;
+    @Autowired
+    private MerchantAppointService merchantAppointService;
 
     @Override
     public Integer getRoleId() {
@@ -116,15 +124,30 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     }
 
     /**
-     * 获取指定的供应商
+     * 获取指定的供应商uid
      *
      * @param uid
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid) {
+    public List<Long> getAppointSupplierUid(Long uid) {
+        List<MerchantAppoint> appointList = merchantAppointService.findAll(uid);
+        if (appointList == null){
+            return Collections.emptyList();
+        }
+        return appointList.stream()
+                .map(MerchantAppoint::getSupplierUid)
+                .collect(Collectors.toList());
+    }
 
-
+    /**
+     * 根据供应商id找出供应商信息
+     *
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(List<Long> supplierUid) {
         return new OperationResult(Collections.emptyList());
     }
 
@@ -136,5 +159,102 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     @Override
     public OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier() {
         return new OperationResult(Collections.emptyList());
+    }
+
+    /**
+     * 批量添加指定供应商
+     *
+     * @param uid
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+        List<MerchantAppoint> merchantAppoints = Lists.newArrayList();
+        for (Long supplier : supplierUid) {
+            MerchantAppoint merchantAppoint = new MerchantAppoint();
+            merchantAppoint.setId(idGlobalGenerator.getSeqId(MerchantAppoint.class));
+            merchantAppoint.setRentMerchantUid(uid);
+            merchantAppoint.setSupplierUid(supplier);
+            merchantAppoints.add(merchantAppoint);
+        }
+        return new OperationResult(merchantAppointService.batchInsert(merchantAppoints));
+    }
+
+    /**
+     * 根据供应商id找出供应商信息
+     *
+     * @param uid
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+        return merchantAppointService.findAll(uid, supplierUid);
+    }
+
+    /**
+     * 删除操作
+     *
+     * @param merchantAppoints
+     */
+    @Override
+    public void removeAppointSupplier(List<MerchantAppoint> merchantAppoints) {
+        merchantAppointService.remove(merchantAppoints);
+    }
+
+    /**
+     * 根据uid获取小B列表
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid) {
+        List<UserRentMerchant> merchants = userRentMerchantService.findAll(uid);
+        if (merchants == null){
+            return new OperationResult(Collections.emptyList());
+        }
+        List<UserRoleDTO.SmallRentMechant> result = Lists.newArrayList();
+        for (UserRentMerchant merchant : merchants) {
+            result.add(new UserRoleDTO.SmallRentMechant(merchant));
+        }
+        return new OperationResult(result);
+    }
+
+    /**
+     * 新增小B
+     *
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return null;
+    }
+
+    /**
+     * 修改小B
+     *
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return null;
+    }
+
+    /**
+     * 删除小B
+     *
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> removeSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return null;
     }
 }

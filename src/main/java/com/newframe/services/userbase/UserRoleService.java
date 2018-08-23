@@ -17,10 +17,12 @@ public interface UserRoleService {
 
     /**
      * 根据用户id和角色id找出用户的角色关系 状态非必选
-     * @param userRole
+     * @param uid
+     * @param roleId
+     * @param status
      * @return
      */
-    UserRole findOne(UserRole userRole);
+    UserRole findOne(Long uid, Integer roleId, Integer status);
 
     /**
      * 根据uid获取用户的角色列表  状态，角色id非必选

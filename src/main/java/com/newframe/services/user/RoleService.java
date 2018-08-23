@@ -1,9 +1,11 @@
 package com.newframe.services.user;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.user.request.RentMerchantApplyDTO;
 import com.newframe.dto.user.request.RoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.entity.user.MerchantAppoint;
 
 import java.util.List;
 
@@ -50,11 +52,71 @@ public interface RoleService {
      * @param uid
      * @return
      */
-    OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid);
+    List<Long> getAppointSupplierUid(Long uid);
+
+    /**
+     * 根据供应商id找出供应商信息
+     * @param supplierUid
+     * @return
+     */
+    OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(List<Long> supplierUid);
 
     /**
      * 获取所有的供应商
      * @return
      */
     OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier();
+
+    /**
+     * 批量添加指定供应商
+     * @param uid
+     * @param supplierUid
+     * @return
+     */
+    OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid);
+
+    /**
+     * 根据供应商id找出供应商信息
+     * @param uid
+     * @param supplierUid
+     * @return
+     */
+    List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid);
+
+    /**
+     * 删除操作
+     * @param merchantAppoints
+     */
+    void removeAppointSupplier(List<MerchantAppoint> merchantAppoints);
+
+    /**
+     * 根据uid获取小B列表
+     * @param uid
+     * @return
+     */
+    OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid);
+
+    /**
+     * 新增小B
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO);
+
+    /**
+     * 修改小B
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO);
+
+    /**
+     * 删除小B
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    OperationResult<Boolean> removeSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO);
 }

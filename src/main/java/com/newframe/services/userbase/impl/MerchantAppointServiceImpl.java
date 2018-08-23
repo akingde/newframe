@@ -2,24 +2,24 @@ package com.newframe.services.userbase.impl;
 
 import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.repositories.dataMaster.user.MerchantAppointMaster;
+import com.newframe.repositories.dataQuery.user.MerchantAppointQuery;
 import com.newframe.repositories.dataSlave.user.MerchantAppointSlave;
 import com.newframe.services.userbase.MerchantAppointService;
-import com.newframe.utils.cache.IdGlobalGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @author WangBin
  */
+@Service
 public class MerchantAppointServiceImpl implements MerchantAppointService {
 
     @Autowired
     private MerchantAppointMaster merchantAppointMaster;
     @Autowired
     private MerchantAppointSlave merchantAppointSlave;
-    @Autowired
-    private IdGlobalGenerator idGlobalGenerator;
 
     /**
      * 根据租赁商id获取
@@ -29,7 +29,9 @@ public class MerchantAppointServiceImpl implements MerchantAppointService {
      */
     @Override
     public List<MerchantAppoint> findAll(Long rentMerchantUid) {
-        return null;
+        MerchantAppointQuery query = new MerchantAppointQuery();
+        query.setRentMerchantUid(rentMerchantUid);
+        return merchantAppointSlave.findAll(query);
     }
 
     /**
@@ -41,7 +43,10 @@ public class MerchantAppointServiceImpl implements MerchantAppointService {
      */
     @Override
     public List<MerchantAppoint> findAll(Long rentMerchantUid, Long[] supplierUids) {
-        return null;
+        MerchantAppointQuery query = new MerchantAppointQuery();
+        query.setRentMerchantUid(rentMerchantUid);
+        query.setSupplierUids(supplierUids);
+        return merchantAppointSlave.findAll(query);
     }
 
     /**
@@ -52,16 +57,16 @@ public class MerchantAppointServiceImpl implements MerchantAppointService {
      */
     @Override
     public List<MerchantAppoint> batchInsert(List<MerchantAppoint> merchantAppoints) {
-        return null;
+        return merchantAppointMaster.saveAll(merchantAppoints);
     }
 
     /**
      * 根据指定id去删除
      *
-     * @param appointIds
+     * @param merchantAppoints
      */
     @Override
-    public void remove(List<Long> appointIds) {
-
+    public void remove(List<MerchantAppoint> merchantAppoints) {
+        merchantAppointMaster.deleteAll(merchantAppoints);
     }
 }

@@ -288,9 +288,6 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("appointSupplier")
     public JsonResult appointSupplier(Long[] supplierUid, Long[] revokeSupplierUid){
-        Set<Long> supplierUidList = Arrays.asList(supplierUid).stream().distinct().collect(toSet());
-        Set<Long> revokeSupplierUidList = Arrays.asList(revokeSupplierUid).stream().distinct().collect(toSet());
-        supplierUidList.stream().filter(item -> revokeSupplierUidList.contains(item)).count();
         return null;
     }
 
