@@ -147,8 +147,9 @@ public class AppOrderController extends BaseController {
      * @return
      */
     @RequestMapping("funder/refuse")
-    public JsonResult funderRefuse(@RequestParam List<Long> orderId){
-        return null;
+    public JsonResult funderRefuse(Long orderId){
+        Long uid = 3436672695388700980L;
+        return orderService.funderRefuse(orderId,uid);
     }
 
     /**

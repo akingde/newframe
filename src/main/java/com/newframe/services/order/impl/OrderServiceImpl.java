@@ -272,10 +272,9 @@ public class OrderServiceImpl implements OrderService {
         query.setRenterId(renterId);
         query.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
         query.setOrderId(orderId);
-        Object o = orderRenterSlave.findOne(query);
-        Optional<OrderRenter> optional = (Optional<OrderRenter>) o;
-        if(optional.isPresent()){
-            OrderRenter orderRenter = optional.get();
+        List<OrderRenter> orderRenters = orderRenterSlave.findAll(query);
+        if(orderRenters != null && orderRenters.size() == 1){
+            OrderRenter orderRenter = orderRenters.get(0);
             OrderRenterDTO orderRenterDTO = new OrderRenterDTO();
             BeanUtils.copyProperties(orderRenter,orderRenterDTO);
             orderRenterDTO.setConsumerUid(orderRenter.getUid());
@@ -350,14 +349,18 @@ public class OrderServiceImpl implements OrderService {
         query.setOrderId(orderId);
         query.setFunderId(uid);
         query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
-        Object o = orderFunderSlave.findOne(query);
-        Optional<OrderFunder> optional = (Optional<OrderFunder>) o;
-        if(optional.isPresent()){
-            OrderFunder orderFunder = optional.get();
+        List<OrderFunder> orderFunders = orderFunderSlave.findAll(query);
+        if(orderFunders != null && orderFunders.size() == 1){
+            OrderFunder orderFunder = orderFunders.get(0);
             OrderFunderDTO orderFunderDTO = wrapOrderFunder2DTO(orderFunder);
             return new JsonResult(SystemCode.SUCCESS,orderFunderDTO);
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
+    }
+
+    @Override
+    public JsonResult funderRefuse(Long orderId, Long uid) {
+        return null;
     }
 
     /**
