@@ -35,9 +35,10 @@ public class UserWebTokenServiceImpl implements UserWebTokenService {
      */
     @Override
     public UserWebToken findOne(Long uid) {
-        UserWebTokenQuery query = new UserWebTokenQuery();
-        query.setUid(uid);
-        return userWebTokenSlave.findOne(query);
+        if (null == uid){
+            return null;
+        }
+        return userWebTokenSlave.findOne(uid);
     }
 
     /**

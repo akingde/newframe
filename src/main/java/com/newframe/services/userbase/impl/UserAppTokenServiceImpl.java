@@ -37,9 +37,9 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
      */
     @Override
     public UserAppToken findOne(Long uid) {
-        UserAppTokenQuery query = new UserAppTokenQuery();
-        query.setUid(uid);
-        return userAppTokenSlave.findOne(query);
+        //findOne，现在更新了，适用于根据唯一主键之间查，底层执行的是findByID
+        //其余均有可能有多个值，请使用findAll()，以免数据库存在多个值查询抛错
+        return userAppTokenSlave.findOne(uid);
     }
 
     /**

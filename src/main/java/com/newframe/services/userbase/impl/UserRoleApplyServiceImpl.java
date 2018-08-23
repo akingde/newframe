@@ -62,12 +62,12 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         if(roleApplyId == null){
             return null;
         }
-        UserRoleApplyQuery query = new UserRoleApplyQuery();
+        /*UserRoleApplyQuery query = new UserRoleApplyQuery();
         query.setId(roleApplyId);
         if(uid != null){
             query.setUid(uid);
-        }
-        return userRoleApplySlave.findOne(query);
+        }*/
+        return userRoleApplySlave.findOne(uid);
     }
 
     /**

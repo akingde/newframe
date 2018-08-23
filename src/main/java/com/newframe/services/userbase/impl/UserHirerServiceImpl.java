@@ -36,9 +36,11 @@ public class UserHirerServiceImpl implements UserHirerService {
      */
     @Override
     public UserHirer findOne(Long uid) {
-        UserHirerQuery query = new UserHirerQuery();
-        query.setUid(uid);
-        return userHirerSlave.findOne(query);
+        if (null == uid){
+            return null;
+        }
+
+        return userHirerSlave.findOne(uid);
     }
 
     /**

@@ -40,7 +40,8 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setUid(uid);
         query.setRoleId(roleId);
-        return userRentMerchantSlave.findOne(query);
+        //return userRentMerchantSlave.findOne(query).get();
+        return null;
     }
 
     /**

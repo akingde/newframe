@@ -47,7 +47,8 @@ public class UserRoleServiceImpl implements UserRoleService {
         if(userRole.getRoleStatus() != null){
             query.setRoleStatus(userRole.getRoleStatus());
         }
-        return userRoleSlave.findOne(query);
+        //return userRoleSlave.findOne(query).get();
+        return null;
     }
 
     /**

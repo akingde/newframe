@@ -156,6 +156,9 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<Boolean> updateTestUserByUid(Long uid) {
 
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
         Boolean result = testService.updateTestUser(uid);
 
         return new OperationResult<>(result);
@@ -170,8 +173,28 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<Boolean> updateTestUserByAge(Integer age) {
 
+        if (null == age){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
         Boolean result = testService.updateTestUserByAge(age);
 
         return new OperationResult<>(result);
+    }
+
+    /**
+     * 根据Uid查询
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<TestUser> getTestUserByUid(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        TestUser testUser = testService.getTestUserByUid(uid);
+
+        return new OperationResult<>(testUser);
     }
 }

@@ -72,4 +72,11 @@ public interface TestService {
      * @return
      */
     Boolean updateTestUserByAge(Integer age);
+
+    /**
+     * 根据uid查询
+     * @param uid
+     * @return
+     */
+    TestUser getTestUserByUid(Long uid);
 }
