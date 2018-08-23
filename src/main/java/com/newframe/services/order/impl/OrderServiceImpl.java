@@ -2,10 +2,12 @@ package com.newframe.services.order.impl;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
+import com.newframe.dto.order.request.FunderQueryOrderDTO;
+import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
+import com.newframe.dto.order.response.OrderFunderDTO;
 import com.newframe.dto.order.response.OrderRenterDTO;
 import com.newframe.entity.order.OrderFunder;
-import com.newframe.entity.order.OrderFunderPK;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.enums.SystemCode;
@@ -13,16 +15,20 @@ import com.newframe.enums.order.OrderLessorStatus;
 import com.newframe.enums.order.OrderSort;
 import com.newframe.enums.order.OrderRenterStatus;
 import com.newframe.enums.order.PatternPaymentEnum;
+import com.newframe.repositories.dataMaster.order.FinancingBuyMachineMaster;
 import com.newframe.repositories.dataMaster.order.OrderFunderMaser;
 import com.newframe.repositories.dataMaster.order.OrderHirerMaser;
 import com.newframe.repositories.dataMaster.order.OrderRenterMaser;
+import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
+import com.newframe.repositories.dataSlave.order.FinancingBuyMachineSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderRenterSlave;
 import com.newframe.services.order.OrderService;
 import com.newframe.utils.log.GwsLogger;
 import com.newframe.utils.query.QueryToSpecification;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +64,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderHirerSlave orderHirerSlave;
 
+    @Autowired
+    FinancingBuyMachineMaster financingBuyMachineMaster;
+    @Autowired
+    FinancingBuyMachineSlave financingBuyMachineSlave;
+
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
 
@@ -75,7 +86,8 @@ public class OrderServiceImpl implements OrderService {
         }
         // 设置查询条件
         OrderRenterQuery orderRenterQuery = new OrderRenterQuery();
-        orderRenterQuery.setUid(uid);
+        // 只查询此会话租赁商的订单
+        orderRenterQuery.setRenterId(uid);
         orderRenterQuery.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
         if (null != param.getOrderStatus()) {
             orderRenterQuery.setOrderStatus(param.getOrderStatus());
@@ -91,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderRenter orderRenter : orderRenters) {
             OrderRenterDTO orderRenterDTO = new OrderRenterDTO();
             BeanUtils.copyProperties(orderRenter, orderRenterDTO);
-            orderRenterDTO.setUid(orderRenter.getUid());
+            orderRenterDTO.setConsumerUid(orderRenter.getUid());
             orderRenterDTO.setOrderTime(orderRenter.getCtime());
             orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
             orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
@@ -100,6 +112,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenterDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
             orderRenterDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
             orderRenterDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
+            orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
             orderRenterDTOS.add(orderRenterDTO);
         }
         return new PageJsonResult(SystemCode.SUCCESS, orderRenterDTOS, orderRenterPage.getTotalElements());
@@ -113,11 +126,11 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
         // todo 根据uid查出租赁商信息
-        String renterName = "小米租赁旗舰店";
+        String renterName = "小米手机租赁店";
         // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
-        Long funderId = new Random().nextLong();
+        Long funderId = Math.abs(new Random().nextLong());
         // 存放融资失败的订单，需要返回给前端
         List<Map<String, Object>> failOrders = new ArrayList<>();
 
@@ -126,11 +139,14 @@ public class OrderServiceImpl implements OrderService {
         for (Long orderId : orders) {
 
             // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
-            List<OrderFunder> orderFunderList = orderFunderSlave.getOrderByOrderId(orderId);
-            //查询订单融资是否超过3次
-            Long total = orderFunderSlave.getOrderFinancingTimes(orderId);
 
-            if (total >= maxOrderFinancingTimes) {
+            //查询订单融资是否超过3次
+            Integer times = orderFunderSlave.getOrderFinancingTimes(orderId);
+            // 如果查出来融资次数是0次，则是首次融资
+            if(times == null){
+                times = 0;
+            }
+            if (times >= maxOrderFinancingTimes) {
                 Map<String, Object> failOrder = new HashMap<>(2);
                 failOrder.put("orderId", orderId);
                 failOrder.put("failMessage", SystemCode.ORDER_FINANCING_FAIL.getMessage());
@@ -145,15 +161,22 @@ public class OrderServiceImpl implements OrderService {
             Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
             if (optional.isPresent()) {
                 OrderRenter orderRenter = optional.get();
+                // 检查订单状态是否是不可融资状态
+                if(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode().equals(orderRenter.getOrderStatus())){
+                    Map<String, Object> failOrder = new HashMap<>(2);
+                    failOrder.put("orderId", orderId);
+                    failOrder.put("failMessage", SystemCode.ORDER_FINANCING_FAIL.getMessage());
+                    failOrders.add(failOrder);
+                }
                 OrderFunder orderFunder = new OrderFunder();
                 BeanUtils.copyProperties(orderRenter, orderFunder);
+                // 此处操作用户是租赁商，所以资金方的商家id应该是租赁商的id
                 orderFunder.setMerchantId(uid);
                 orderFunder.setMerchantName(renterName);
-                OrderFunderPK orderFunderPK = new OrderFunderPK();
-                orderFunderPK.setFunderId(funderId);
-                orderFunderPK.setOrderId(orderId);
-                orderFunder.setOrderFunderPK(orderFunderPK);
+                // 资金方的uid是从数据库中查出来的，暂时使用随机数代替
+                orderFunder.setFunderId(funderId);
                 orderFunder.setOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode());
+                orderFunder.setDispatchTimes(times+1);
                 orderFunders.add(orderFunder);
                 //修改租赁商订单状态，改为待资金方审核
                 orderRenterMaser.updateOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode(), orderId);
@@ -217,17 +240,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public JsonResult cancelOrder(List<Long> orders) {
+        // 参数校验
         if(orders == null || orders.size() == 0){
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
+        // 遍历取消订单
         for(Long orderId:orders){
             Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
             if(optional.isPresent()){
                 OrderRenter orderRenter = optional.get();
                 orderRenter.setOrderStatus(OrderRenterStatus.ORDER_CANCEL.getCode());
                 OrderRenterQuery query = new OrderRenterQuery();
-                query.setOrderStatus(OrderRenterStatus.PENDING.getCode());
+                query.setOrderId(orderRenter.getOrderId());
                 Integer row = orderRenterMaser.update(orderRenter,query,OrderRenter.ORDER_STATUS);
+                // 如果修改订单状态失败，说明存在异常，抛出异常回滚
                 if(row != 1){
                     throw new RuntimeException(SystemCode.ORDER_CANCEL_FAIL.getMessage());
                 }
@@ -237,5 +263,125 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.SUCCESS,true);
     }
 
+    @Override
+    public JsonResult renterViewDetail(Long orderId, Long renterId) {
+        if(orderId == null){
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setRenterId(renterId);
+        query.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
+        query.setOrderId(orderId);
+        Object o = orderRenterSlave.findOne(query);
+        Optional<OrderRenter> optional = (Optional<OrderRenter>) o;
+        if(optional.isPresent()){
+            OrderRenter orderRenter = optional.get();
+            OrderRenterDTO orderRenterDTO = new OrderRenterDTO();
+            BeanUtils.copyProperties(orderRenter,orderRenterDTO);
+            orderRenterDTO.setConsumerUid(orderRenter.getUid());
+            orderRenterDTO.setOrderTime(orderRenter.getCtime());
+            orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
+            orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
+            orderRenterDTO.setConsumerIdentityNumber(orderRenter.getUserIdNumber());
+            orderRenterDTO.setConsumerCreditScore(orderRenter.getUserCreditScore());
+            orderRenterDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
+            orderRenterDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
+            orderRenterDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
+            orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
+            // todo 查出用户坏账次数
+            orderRenterDTO.setConsumerBedDebtTimes(new Random().nextInt(10));
+            return new JsonResult(SystemCode.SUCCESS,orderRenterDTO);
+        }
+        return new JsonResult(SystemCode.BAD_REQUEST);
+    }
 
+    @Override
+    public JsonResult getSupplierList(ProductInfoDTO productInfo) {
+        return null;
+    }
+
+    @Override
+    public JsonResult getLessorList(ProductInfoDTO productInfo) {
+        return null;
+    }
+
+    @Override
+    public JsonResult getFunderOrder(FunderQueryOrderDTO param, Long uid){
+        if (null == param.getPageSize() || null == param.getCurrentPage()) {
+            return new JsonResult(SystemCode.NO_PAGE_PARAM);
+        }
+        // 包装查询条件
+        OrderFunderQuery orderFunderQuery = new OrderFunderQuery();
+        if(StringUtils.isNotEmpty(param.getRenterName())){
+            orderFunderQuery.setMerchantName(param.getRenterName());
+        }
+        orderFunderQuery.setFunderId(uid);
+        if(param.getOrderStatus() != null){
+            orderFunderQuery.setOrderStatus(param.getOrderStatus());
+        }
+        // 封装排序
+        Sort sort ;
+        if(OrderSort.DESC.getValue().equals(param.getSort())){
+            sort = new Sort(Sort.Direction.DESC, OrderFunder.CTIME);
+        }else{
+            sort = new Sort(Sort.Direction.ASC,OrderFunder.CTIME);
+        }
+        // 设置分页
+        Pageable pageable = PageRequest.of(param.getCurrentPage()-1,param.getPageSize(),sort);
+        Specification specification = new QueryToSpecification(orderFunderQuery);
+        // 查询数据
+        Page<OrderFunder> page = orderFunderSlave.findAll(specification,pageable);
+        List<OrderFunder> orderFunders = page.getContent();
+        // 封装dto
+        List<OrderFunderDTO> orders = new ArrayList<>();
+        for(OrderFunder orderFunder: orderFunders){
+            OrderFunderDTO orderFunderDTO = wrapOrderFunder2DTO(orderFunder);
+            orders.add(orderFunderDTO);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS,orders,page.getTotalElements());
+    }
+
+    @Override
+    public JsonResult funderViewDetail(Long orderId, Long uid) {
+        if (orderId == null) {
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(orderId);
+        query.setFunderId(uid);
+        query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
+        Object o = orderFunderSlave.findOne(query);
+        Optional<OrderFunder> optional = (Optional<OrderFunder>) o;
+        if(optional.isPresent()){
+            OrderFunder orderFunder = optional.get();
+            OrderFunderDTO orderFunderDTO = wrapOrderFunder2DTO(orderFunder);
+            return new JsonResult(SystemCode.SUCCESS,orderFunderDTO);
+        }
+        return new JsonResult(SystemCode.BAD_REQUEST);
+    }
+
+    /**
+     * 将orderFunder转换成DTO返回给前端
+     * @param orderFunder 从数据库中查出的orderFunder
+     * @return dto
+     */
+    private OrderFunderDTO wrapOrderFunder2DTO(OrderFunder orderFunder){
+        OrderFunderDTO orderFunderDTO = new OrderFunderDTO();
+        BeanUtils.copyProperties(orderFunder,orderFunderDTO);
+        orderFunderDTO.setOrderTime(orderFunder.getCtime());
+        orderFunderDTO.setConsumerName(orderFunder.getUserRealname());
+        orderFunderDTO.setConsumerPhone(orderFunder.getUserMobile());
+        orderFunderDTO.setConsumerIdentityNumber(orderFunder.getUserIdNumber());
+        orderFunderDTO.setConsumerCreditScore(orderFunder.getUserCreditScore());
+        orderFunderDTO.setRentDeadlineMonth(orderFunder.getNumberOfPayments());
+        orderFunderDTO.setRentDeadlineDay(orderFunder.getNumberOfPayments() * 30);
+        orderFunderDTO.setConsumerCreditLine(orderFunder.getUserCreditLine());
+        orderFunderDTO.setRenterId(orderFunder.getMerchantId());
+        orderFunderDTO.setRenterName(orderFunder.getMerchantName());
+        BigDecimal financingAmount = orderFunder.getMonthlyPayment().multiply(
+                new BigDecimal(orderFunder.getNumberOfPayments()));
+        financingAmount = financingAmount.add(orderFunder.getAccidentBenefit());
+        orderFunderDTO.setFinancingAmount(financingAmount);
+        return orderFunderDTO;
+    }
 }

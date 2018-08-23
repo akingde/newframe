@@ -140,4 +140,17 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
     public void delete(Long uid) {
         userRentMerchantMaster.deleteById(uid);
     }
+
+    /**
+     * 获取小B列表
+     *
+     * @param parentUid
+     * @return
+     */
+    @Override
+    public List<UserRentMerchant> findAll(Long parentUid) {
+        UserRentMerchantQuery query = new UserRentMerchantQuery();
+        query.setParentId(parentUid);
+        return userRentMerchantSlave.findAll(query);
+    }
 }

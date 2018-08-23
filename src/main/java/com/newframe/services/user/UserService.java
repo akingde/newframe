@@ -3,6 +3,7 @@ package com.newframe.services.user;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.AddressDTO;
 import com.newframe.dto.user.request.PageSearchDTO;
+import com.newframe.dto.user.request.RentMerchantApplyDTO;
 import com.newframe.dto.user.request.RoleApplyDTO;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.Area;
@@ -238,4 +239,76 @@ public interface UserService {
      * @return
      */
     OperationResult<UserRoleDTO> getUserRoleInfo(Long uid, Integer roleId);
+
+    /**
+     * 获取所有的供应商
+     * @param roleId
+     * @return
+     */
+    OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier(Integer roleId);
+
+    /**
+     * 获取指定的供应商
+     * @param uid
+     * @return
+     */
+    OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid);
+
+    /**
+     * 设置指定供应商开关
+     * @param uid
+     * @param roleId
+     * @param appoint
+     * @return
+     */
+    OperationResult<Boolean> setAppoint(Long uid, Integer roleId, boolean appoint);
+
+    /**
+     * 修改指定供应商
+     * @param uid
+     * @param roleId
+     * @param supplierUid
+     * @param revokeSupplierUid
+     * @return
+     */
+    OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId,Long[] supplierUid, Long[] revokeSupplierUid);
+
+    /**
+     * 获取小B列表
+     * @param uid
+     * @param roleId
+     * @return
+     */
+    OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId);
+
+    /**
+     * 新增小B
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    OperationResult<Boolean> addSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO);
+
+    /**
+     * 修改小B
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    OperationResult<Boolean> modifySmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO);
+
+    /**
+     * 删除小B
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    OperationResult<Boolean> removeSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO);
+
+    /**
+     * 校验修改小B的权限
+     * @param uid
+     * @return
+     */
+    boolean checkModifySmallRentMechantAuthorization(Long uid);
 }

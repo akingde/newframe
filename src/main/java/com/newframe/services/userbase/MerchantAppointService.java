@@ -33,7 +33,7 @@ public interface MerchantAppointService {
 
     /**
      * 根据指定id去删除
-     * @param appointIds
+     * @param merchantAppoints
      */
-    void remove(List<Long> appointIds);
+    void remove(List<MerchantAppoint> merchantAppoints);
 }

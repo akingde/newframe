@@ -6,22 +6,28 @@ package com.newframe.enums.order;
  * @date 2018年8月16日 11点38分
  */
 public enum OrderFunderStatus {
-    // 待处理
-    PENDING(1),
-    // 待资金方审核
-    WATIING_FUNDER_AUDIT(2),
-    // 待出租方审核
-    WAITING_LESSOR_AUDIT(3),
-    // 资金方审核不通过
-    FUNDER_AUDIT_REFUSE(4),
-    // 出租方审核不通过
-    LESSOR_AUDIT_REFUSE(5),
-    // 待发货
-    WAITING_DELIVER(6),
-    // 待收货
+    // 待审核
+    WAITING_AUDIT(1),
+    // 审核不通过
+    AUDIT_REFUSE(2),
+    // 线上放款成功，待发货
+    WAITING_DELIVER(3),
+    // 放款中
+    PAYMENTING(4),
+    // 线下放款，有凭证，待发货
+    WAITING_DELIVER_EVIDENCE(5),
+    // 线下放款，无凭证，待发货
+    WAITING_DELIVER_NO_EVIDENCE(6),
+    // 供应商发货，待收货
     WAITING_RECEIVE(7),
-    // 已确认收货
-    CONFIRM_RECEIPT(8),
+    // 还款中
+    WAITING_REPAYMENT(8),
+    // 逾期
+    OVERDUE(9),
+    // 坏账
+    BES_DEBT(10),
+    // 还款完成
+    REPAYMENT_COMPLETE(11),
     ;
 
     private Integer code;

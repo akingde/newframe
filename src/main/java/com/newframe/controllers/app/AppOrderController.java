@@ -38,7 +38,7 @@ public class AppOrderController extends BaseController {
     @RequestMapping("renter/getList")
     public JsonResult getRenterOrder(QueryOrderDTO param){
         // todo 获取登陆用户uid
-        Long uid = 1231231L;
+        Long uid = 2L;
         JsonResult result = orderService.getRenterOrder(param, uid);
         return result;
     }
@@ -46,13 +46,13 @@ public class AppOrderController extends BaseController {
     /**
      * 租赁商融资购机
      * 将租赁商订单转到资金方订单去审核
-     * @return
+     * @return 处理结果
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
     public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Integer supplierId){
         // todo
-        Long uid = 1231231L;
+        Long uid = 2L;
         return orderService.renterFinancingBuy(uid,orderId,supplierId);
     }
 
@@ -76,13 +76,15 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商查看订单详情
-     *
-     * @return
+     * @param orderId 订单id
+     * @return 处理结果
      */
+    @Anonymous(true)
     @RequestMapping("renter/view/detail")
     public JsonResult renterViewDetail(Long orderId){
         // todo:文档
-        return null;
+        Long uid = 2L;
+        return orderService.renterViewDetail(orderId, uid);
     }
 
     /**
@@ -101,7 +103,7 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("/getSupplierList")
     public JsonResult getSupplierList(ProductInfoDTO productInfo){
-        return null;
+        return orderService.getSupplierList(productInfo);
     }
 
     /**
@@ -110,27 +112,33 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("/getLessorList")
     public JsonResult getLessorList(ProductInfoDTO productInfo){
-        return null;
+        return orderService.getLessorList(productInfo);
     }
 
     /****************资金方订单********************/
     /**
      * 查询资金方订单
-     * @return
+     * @return 返回结果
      */
+    @Anonymous(true)
     @RequestMapping("funder/getList")
     public JsonResult getFunderOrder(FunderQueryOrderDTO param){
-        return null;
+        // todo
+        Long uid = 3436672695388700980L;
+        return orderService.getFunderOrder(param, uid);
     }
 
     /**
      * 查看资金方订单详情
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("funder/view/detail")
     public JsonResult funderViewDetail(Long orderId){
         // todo: 文档
-        return null;
+        Long uid = 3436672695388700980L;
+
+        return orderService.funderViewDetail(orderId,uid);
     }
 
     /**

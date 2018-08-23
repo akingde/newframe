@@ -32,20 +32,21 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     /**
      * 根据用户id和角色id找出用户的角色关系 状态非必选
-     *
-     * @param userRole
+     * @param uid
+     * @param roleId
+     * @param status
      * @return
      */
     @Override
-    public UserRole findOne(UserRole userRole) {
-        if( userRole == null || userRole.getUid()==null || userRole.getRoleId() == null) {
+    public UserRole findOne(Long uid, Integer roleId, Integer status) {
+        if(uid==null || roleId == null) {
             return null;
         }
         UserRoleQuery query = new UserRoleQuery();
-        query.setUid(userRole.getUid());
-        query.setRoleId(userRole.getRoleId());
-        if(userRole.getRoleStatus() != null){
-            query.setRoleStatus(userRole.getRoleStatus());
+        query.setUid(uid);
+        query.setRoleId(roleId);
+        if(status != null){
+            query.setRoleStatus(status);
         }
         //return userRoleSlave.findOne(query).get();
         return null;

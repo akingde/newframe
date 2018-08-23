@@ -6,25 +6,16 @@ package com.newframe.enums.order;
  * @date 2018年8月16日 11点38分
  */
 public enum OrderSupplierStatus {
-    // 待处理
-    PENDING(1),
-    // 待资金方审核
-    WATIING_FUNDER_AUDIT(2),
-    // 待出租方审核
-    WAITING_LESSOR_AUDIT(3),
-    // 资金方审核不通过
-    FUNDER_AUDIT_REFUSE(4),
-    // 出租方审核不通过
-    LESSOR_AUDIT_REFUSE(5),
-    // 待发货
-    WAITING_DELIVER(6),
-    // 待收货
-    WAITING_RECEIVE(7),
-    // 已确认收货
-    CONFIRM_RECEIPT(8),
-    // 租赁商已取消订单
-    RENTER_CANCEL_ORDER(9),
-    //
+    // 收到发货订单，待付款
+    WAITING_PAYMENT(1),
+    // 资金方线下付款中，下单成功还未确认已放款，放款中
+    PAYMENTING(2),
+    // 资金方付款完成，变为待发货
+    WAITING_DELIVER(3),
+    // 供应商发货，待收货
+    WAITING_RECEIVE(4),
+    // 用户已签收
+    CONSUMER_CONFIRM_RECEIVE(5),
     ;
 
     private Integer code;

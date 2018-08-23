@@ -19,17 +19,17 @@ public class OrderFunder implements Serializable {
     /** 未删除状态*/
     public static final Integer NO_DELETE_STATUS = 0;
 
-    @EmbeddedId
-    private OrderFunderPK orderFunderPK;
 
-    public OrderFunder(){
-        super();
-    }
 
-    public OrderFunder(OrderFunderPK orderFunderPK){
-        super();
-        this.orderFunderPK = orderFunderPK;
-    }
+    @Id
+    @Column(name = "order_id")
+    private Long orderId;
+
+    @Column(name = "funder_id")
+    private Long funderId;
+
+    @Column(name = "uid")
+    private Long uid;
 
     @Column(name = "partner_order_id")
     private String partnerOrderId;
@@ -42,11 +42,6 @@ public class OrderFunder implements Serializable {
 
     @Column(name = "merchant_name")
     private String merchantName;
-
-
-
-    @Column(name = "uid")
-    private Long uid;
 
     @Column(name = "user_realname")
     private String userRealname;
@@ -102,6 +97,8 @@ public class OrderFunder implements Serializable {
     @Column(name = "utime")
     private Integer utime;
 
+    @Column(name = "dispatch_times")
+    private Integer dispatchTimes;
 
 
 }

@@ -1,6 +1,8 @@
 package com.newframe.services.order;
 
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.order.request.FunderQueryOrderDTO;
+import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
 
 import java.math.BigDecimal;
@@ -15,17 +17,17 @@ public interface OrderService {
     /**
      * 获取租赁商所有订单
      * @param param 查询参数
-     * @param uid
+     * @param uid 租赁商uid
      * @return jsonResult
      */
     JsonResult getRenterOrder(QueryOrderDTO param, Long uid);
 
     /**
      * 租赁商融资购机
-     * @param uid
-     * @param orderId
-     * @param supplierId
-     * @return
+     * @param uid 租赁商uid
+     * @param orderId 订单id
+     * @param supplierId 供应商id
+     * @return 处理结果
      */
     JsonResult renterFinancingBuy(Long uid, List<Long> orderId, Integer supplierId);
 
@@ -38,7 +40,7 @@ public interface OrderService {
      * @param downPayment 首付租金
      * @param accidentBenefit 意外保险
      * @param patternPayment 支付方式
-     * @return
+     * @return 处理结果
      */
     JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment);
 
@@ -48,4 +50,42 @@ public interface OrderService {
      * @return 处理结果
      */
     JsonResult cancelOrder(List<Long> orderId);
+
+    /**
+     * 租赁商查看订单详情
+     * @param orderId 订单id
+     * @param renterId
+     * @return 处理结果
+     */
+    JsonResult renterViewDetail(Long orderId, Long renterId);
+
+    /**
+     * 按产品信息查询有此机型的供应商列表
+     * @param productInfo 产品信息
+     * @return 查询结果
+     */
+    JsonResult getSupplierList(ProductInfoDTO productInfo);
+
+    /**
+     * 按产品信息查询有此机型的出租方列表
+     * @param productInfo 产品信息
+     * @return 查询结果
+     */
+    JsonResult getLessorList(ProductInfoDTO productInfo);
+
+    /**
+     * 查询资金方订单
+     * @param param 查询参数
+     * @param uid 资金方uid
+     * @return 查询结果
+     */
+    JsonResult getFunderOrder(FunderQueryOrderDTO param, Long uid);
+
+    /**
+     * 查询资金方订单详情
+     * @param orderId 订单id
+     * @param uid 资金方id
+     * @return 查询结果
+     */
+    JsonResult funderViewDetail(Long orderId, Long uid);
 }

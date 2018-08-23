@@ -6,18 +6,15 @@ import java.math.BigDecimal;
 
 /**
  * @author kfm
- * 租赁商订单查询数据封装
+ * 资金方订单查询dto
  */
 @Data
-public class OrderRenterDTO {
-
+public class OrderFunderDTO {
+    private Long uid;
     private Long orderId;
     private Integer orderTime;
     private String consumerName;
     private String consumerPhone;
-    private Long consumerUid;
-    private Long renterId;
-    private String renterName;
     private String consumerIdentityNumber;
     private Integer consumerCreditScore;
     private String productName;
@@ -33,8 +30,9 @@ public class OrderRenterDTO {
     private Integer orderStatus;
     private String productColor;
     private Integer deleteStatus;
+    private String renterName;
+    private Long renterId;
     private Integer utime;
-    private String consumerAddress;
-    /** 用户坏账次数*/
-    private Integer consumerBedDebtTimes;
+    /**融资金额=月租金*租机期限+意外保障*/
+    private BigDecimal financingAmount;
 }
