@@ -1,9 +1,12 @@
 package com.newframe.services.user.roleimpl;
 
+import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.user.request.RentMerchantApplyDTO;
 import com.newframe.dto.user.request.RoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.RoleEnum;
@@ -90,8 +93,24 @@ public class SupplierServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid) {
-        return new OperationResult(Collections.emptyList());
+    public List<Long> getAppointSupplierUid(Long uid) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * 根据供应商id找出供应商信息
+     *
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(List<Long> supplierUid) {
+        List<UserSupplier> supplierList = userSupplierService.findAll(supplierUid);
+        List<UserRoleDTO.Supplier> suppliers = Lists.newArrayList();
+        for (UserSupplier supplier : supplierList) {
+            suppliers.add(new UserRoleDTO.Supplier(supplier));
+        }
+        return new OperationResult(suppliers);
     }
 
     /**
@@ -102,10 +121,89 @@ public class SupplierServiceImpl implements RoleService {
     @Override
     public OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier() {
         List<UserSupplier> supplierList = userSupplierService.findAll();
-        List<UserRoleDTO.Supplier> suppliers = Collections.emptyList();
+        List<UserRoleDTO.Supplier> suppliers = Lists.newArrayList();
         for (UserSupplier supplier : supplierList) {
             suppliers.add(new UserRoleDTO.Supplier(supplier));
         }
         return new OperationResult(suppliers);
+    }
+
+    /**
+     * 批量添加指定供应商
+     *
+     * @param uid
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+        return null;
+    }
+
+    /**
+     * 根据供应商id找出供应商信息
+     *
+     * @param uid
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * 删除操作
+     *
+     * @param merchantAppoints
+     */
+    @Override
+    public void removeAppointSupplier(List<MerchantAppoint> merchantAppoints) {}
+
+    /**
+     * 根据uid获取小B列表
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid) {
+        return new OperationResult(Collections.emptyList());
+    }
+
+    /**
+     * 新增小B
+     *
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
+    }
+
+    /**
+     * 修改小B
+     *
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
+    }
+
+    /**
+     * 删除小B
+     *
+     * @param uid
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> removeSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
     }
 }

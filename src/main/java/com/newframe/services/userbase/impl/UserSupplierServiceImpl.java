@@ -52,6 +52,19 @@ public class UserSupplierServiceImpl implements UserSupplierService {
     }
 
     /**
+     * 根据uid获取
+     *
+     * @param supplierUids
+     * @return
+     */
+    @Override
+    public List<UserSupplier> findAll(List<Long> supplierUids) {
+        UserSupplierQuery query = new UserSupplierQuery();
+        query.setUids(supplierUids);
+        return userSupplierSlave.findAll(query);
+    }
+
+    /**
      * 添加
      *
      * @param userSupplier

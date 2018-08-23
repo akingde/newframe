@@ -2,6 +2,8 @@ package com.newframe.services.userbase;
 
 import com.newframe.entity.user.UserRentMerchant;
 
+import java.util.List;
+
 /**
  *
  *  租赁商
@@ -40,4 +42,11 @@ public interface UserRentMerchantService {
      * @param uid
      */
     void delete(Long uid);
+
+    /**
+     * 获取小B列表
+     * @param parentUid
+     * @return
+     */
+    List<UserRentMerchant> findAll(Long parentUid);
 }

@@ -3,9 +3,11 @@ package com.newframe.services.user.userimpl;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.AddressDTO;
 import com.newframe.dto.user.request.PageSearchDTO;
+import com.newframe.dto.user.request.RentMerchantApplyDTO;
 import com.newframe.dto.user.request.RoleApplyDTO;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
+import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
@@ -21,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * @author WangBin
@@ -44,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private UserAddressService userAddressService;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private UserRentMerchantService userRentMerchantService;
 
     private Map<Integer, RoleService> roleServiceMap = new HashMap<>();
 
@@ -627,5 +633,146 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<UserRoleDTO> getUserRoleInfo(Long uid, Integer roleId) {
         return roleServiceMap.get(roleId).getUserRoleInfo(uid);
+    }
+
+    /**
+     * 获取所有的供应商
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier(Integer roleId) {
+        return roleServiceMap.get(roleId).getAllSupplier();
+    }
+
+    /**
+     * 获取指定的供应商
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid) {
+        return roleServiceMap.get(RoleEnum.SUPPLIER.getRoleId())
+                                .getAppointSupplier(
+                                        roleServiceMap.get(RoleEnum.FIRST_RENT_MERCHANT.getRoleId())
+                                        .getAppointSupplierUid(uid)
+                                );
+    }
+
+    /**
+     * 设置指定供应商开关
+     *
+     * @param uid
+     * @param roleId
+     * @param appoint
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> setAppoint(Long uid, Integer roleId, boolean appoint) {
+        return roleServiceMap.get(roleId)
+                            .setAppoint(uid, appoint);
+    }
+
+    /**
+     * 修改指定供应商
+     *
+     * @param uid
+     * @param roleId
+     * @param supplierUid
+     * @param revokeSupplierUid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, Long[] supplierUid,
+                                                          Long[] revokeSupplierUid) {
+        Set<Long> inSet = Arrays.asList(supplierUid).stream().distinct().collect(toSet());
+        Set<Long> reSet = Arrays.asList(revokeSupplierUid).stream().distinct().collect(toSet());
+        long count = inSet.stream().filter(item -> reSet.contains(item)).count();
+        if(supplierUid.length + revokeSupplierUid.length != inSet.size() + reSet.size() || count > 0){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());
+        if (userRole == null){
+            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
+        }
+        if(!userRentMerchantService.findOne(uid, roleId).getAppoint()){
+            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
+        }
+        List<MerchantAppoint> insertList = roleServiceMap.get(roleId).getAppointSupplier(uid, supplierUid);
+        List<MerchantAppoint> removeList = roleServiceMap.get(roleId).getAppointSupplier(uid, revokeSupplierUid);
+        if (inSet.size() != insertList.size() || reSet.size() != removeList.size()){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        roleServiceMap.get(roleId).removeAppointSupplier(removeList);
+        roleServiceMap.get(roleId).batchInsert(uid, supplierUid);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 获取小B列表
+     *
+     * @param uid
+     * @param  roleId
+     * @return
+     */
+    @Override
+    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId) {
+        return roleServiceMap.get(roleId).getSmallRentMechantList(uid);
+    }
+
+    /**
+     * 新增小B
+     *
+     * @param uid
+     * @param roleId
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return null;
+    }
+
+    /**
+     * 修改小B
+     *
+     * @param uid
+     * @param roleId
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifySmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return null;
+    }
+
+    /**
+     * 删除小B
+     *
+     * @param uid
+     * @param roleId
+     * @param rentMerchantApplyDTO
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> removeSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO) {
+        return null;
+    }
+
+    /**
+     * 校验修改小B的权限
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public boolean checkModifySmallRentMechantAuthorization(Long uid) {
+        UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid, RoleEnum.FIRST_RENT_MERCHANT.getRoleId());
+        if (rentMerchant == null) {
+            return false;
+        }
+        return true;
     }
 }

@@ -28,6 +28,13 @@ public interface UserSupplierService {
     UserSupplier findOne(Long uid);
 
     /**
+     * 根据uid获取
+     * @param supplierUids
+     * @return
+     */
+    List<UserSupplier> findAll(List<Long> supplierUids);
+
+    /**
      * 添加
      * @param userSupplier
      * @return
