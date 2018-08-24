@@ -3,10 +3,7 @@ package com.newframe.controllers.app;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
-import com.newframe.dto.order.request.DeliverInfoDTO;
-import com.newframe.dto.order.request.FunderQueryOrderDTO;
-import com.newframe.dto.order.request.ProductInfoDTO;
-import com.newframe.dto.order.request.QueryOrderDTO;
+import com.newframe.dto.order.request.*;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +47,7 @@ public class AppOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
-    public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Integer supplierId){
+    public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Long supplierId){
         // todo
         Long uid = 2L;
         return orderService.renterFinancingBuy(uid,orderId,supplierId);
@@ -143,52 +140,51 @@ public class AppOrderController extends BaseController {
 
     /**
      * 资金方审核订单不通过
-     * @param orderId
-     * @return
+     * @param orderId 订单id
+     * @param reason 不通过原因
+     * @return 操作结果
      */
     @RequestMapping("funder/refuse")
-    public JsonResult funderRefuse(Long orderId){
+    public JsonResult funderRefuse(Long orderId,String reason){
+        // todo 拒绝原因怎么存
         Long uid = 3436672695388700980L;
         return orderService.funderRefuse(orderId,uid);
     }
 
     /**
      * 资金方放款(审核通过)
-     * @param orderId
-     * @return
+     * 线上放款，放款成功即生成供应商订单
+     * 线下放款，要确认线下放款成功后才生成供应商订单（放款凭证可以不上传）
+     * @param loanDTO 放款信息
+     * @return 操作结果
      */
+    @Anonymous(true)
     @RequestMapping("funder/loan")
-    public JsonResult funderLoan(@RequestParam List<Long> orderId){
-        return null;
+    public JsonResult funderLoan(LoanDTO loanDTO){
+        Long uid = 3436672695388700980L;
+        return orderService.funderLoan(loanDTO,uid);
     }
 
     /**
-     * 资金方确认放款
-     * @param orderId
-     * @return
-     */
-    @RequestMapping("funder/confirm/loan")
-    public JsonResult funderConfirmLoan(Long orderId){
-        return null;
-    }
-
-    /**
-     * 上传放款凭证
+     * 确认放款，上传放款凭证
      * @param orderId
      * @return
      */
     @RequestMapping("funder/upload/evidence")
+    @Anonymous(true)
     public JsonResult funderUploadEvidence(Long orderId, MultipartFile file){
-        return null;
+        Long uid = 3436672695388700980L;
+        return orderService.funderUploadEvidence(uid,orderId,file);
     }
     /************供应商订单****************/
     /**
      * 查询供应商订单
-     * @return
+     * @return 查询结果
      */
     @RequestMapping("supplier/getList")
     public JsonResult getsSupplierOrder(QueryOrderDTO param){
-        return null;
+        return orderService.getsSupplierOrder(param);
+
     }
 
     /**

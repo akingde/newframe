@@ -100,6 +100,9 @@ public class OrderFunder implements Serializable {
     @Column(name = "dispatch_times")
     private Integer dispatchTimes;
 
+    @Column(name = "supplier_id")
+    private Long supplierId;
+
 
 }
 

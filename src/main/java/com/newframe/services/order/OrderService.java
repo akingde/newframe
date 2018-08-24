@@ -2,8 +2,10 @@ package com.newframe.services.order;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.order.request.FunderQueryOrderDTO;
+import com.newframe.dto.order.request.LoanDTO;
 import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.request.QueryOrderDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,7 +31,7 @@ public interface OrderService {
      * @param supplierId 供应商id
      * @return 处理结果
      */
-    JsonResult renterFinancingBuy(Long uid, List<Long> orderId, Integer supplierId);
+    JsonResult renterFinancingBuy(Long uid, List<Long> orderId, Long supplierId);
 
     /**
      * 租赁商租机
@@ -54,7 +56,7 @@ public interface OrderService {
     /**
      * 租赁商查看订单详情
      * @param orderId 订单id
-     * @param renterId
+     * @param renterId 租赁商id
      * @return 处理结果
      */
     JsonResult renterViewDetail(Long orderId, Long renterId);
@@ -96,4 +98,28 @@ public interface OrderService {
      * @return 返回结果
      */
     JsonResult funderRefuse(Long orderId, Long uid);
+
+    /**
+     * 资金方放款
+     * @param loanDTO 放款信息
+     * @param uid 资金方uid
+     * @return 操作结果
+     */
+    JsonResult funderLoan(LoanDTO loanDTO, Long uid);
+
+    /**
+     * 资金方确认线下放款，上传放款凭证
+     * @param uid 资金方id
+     * @param orderId 订单id
+     * @param file 凭证图片
+     * @return 返回结果
+     */
+    JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file);
+
+    /**
+     * 查询供应商订单
+     * @param param 查询参数
+     * @return 返回结果
+     */
+    JsonResult getsSupplierOrder(QueryOrderDTO param);
 }
