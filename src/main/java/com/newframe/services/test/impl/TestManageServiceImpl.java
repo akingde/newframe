@@ -197,4 +197,21 @@ public class TestManageServiceImpl implements TestManageService {
 
         return new OperationResult<>(testUser);
     }
+
+    /**
+     * 根据Query查询单个数据
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<TestUser> getTestUserByQuery(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        TestUser testUser = testService.getTestUserByQuery(uid);
+
+        return new OperationResult<>(testUser);
+    }
 }

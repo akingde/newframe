@@ -85,4 +85,11 @@ public interface TestManageService {
      * @return
      */
     OperationResult<TestUser> getTestUserByUid(Long uid);
+
+    /**
+     * 根据Query查询单个数据
+     * @param uid
+     * @return
+     */
+    OperationResult<TestUser> getTestUserByQuery(Long uid);
 }

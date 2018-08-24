@@ -79,4 +79,11 @@ public interface TestService {
      * @return
      */
     TestUser getTestUserByUid(Long uid);
+
+    /**
+     * 根据Query条件查询
+     * @param uid
+     * @return
+     */
+    TestUser getTestUserByQuery(Long uid);
 }
