@@ -22,8 +22,8 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -99,12 +99,32 @@ public class BaseRepositoryEx<T, ID extends Serializable> extends SimpleJpaRepos
     /**
      * 使用查询条件定位单个记录
      *
-     * @param baseQuery
+     *
+     * @param id@return
+     */
+    @Override
+    public T findOne(ID id) {
+        Optional<T> optional = findById(id);
+        if (!optional.isPresent()){
+            return null;
+        }
+        return optional.get();
+    }
+
+    /**
+     * 使用查询条件，定位单个记录
+     *
+     * @param query
      * @return
      */
     @Override
-    public T findOne(BaseQuery baseQuery) {
-        return (T) findOne(getConditonByQuery(baseQuery));
+    public T findOne(BaseQuery query) {
+        Optional<T> optional = findOne(getConditonByQuery(query));
+
+        if (!optional.isPresent()){
+            return null;
+        }
+        return optional.get();
     }
 
     /**

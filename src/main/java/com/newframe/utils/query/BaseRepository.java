@@ -9,6 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author:wangdong
@@ -41,11 +42,18 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
     List<T> findAll(BaseQuery baseQuery, Sort sort);
 
     /**
-     * 使用查询条件定位单个记录
-     * @param baseQuery
+     * 使用唯一索引定位单个记录
+     * @param id
      * @return
      */
-    T findOne(BaseQuery baseQuery);
+    T findOne(ID id);
+
+    /**
+     * 使用查询条件，定位单个记录
+     * @param query
+     * @return
+     */
+    T findOne(BaseQuery query);
 
     /**
      * 根据条件去更新
