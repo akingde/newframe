@@ -204,11 +204,13 @@ public class AppOrderController extends BaseController {
 
     /**
      * 供应商查看物流信息
-     * @return
+     * @return 物流信息
      */
+    @Anonymous(true)
     @RequestMapping("supplier/logistics")
     public JsonResult supplierGetLogistics(Long orderId){
-        return null;
+        Long uid = 4L;
+        return orderService.supplierGetLogistics(orderId,uid);
     }
 
     /**

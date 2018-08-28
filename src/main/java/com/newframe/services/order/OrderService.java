@@ -128,4 +128,12 @@ public interface OrderService {
      * @return 返回结果
      */
     JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo);
+
+    /**
+     * 供应商查询物流信息
+     * @param orderId 订单id
+     * @param uid 供应商ID
+     * @return 物流信息
+     */
+    JsonResult supplierGetLogistics(Long orderId, Long uid);
 }

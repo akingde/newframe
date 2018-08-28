@@ -1,7 +1,14 @@
 package com.newframe.services.order.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
+import com.newframe.dto.OperationResult;
+import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.OrderFunderDTO;
 import com.newframe.dto.order.response.OrderRenterDTO;
@@ -10,11 +17,13 @@ import com.newframe.entity.order.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
+import com.newframe.repositories.dataQuery.order.ExpressCompanyQuery;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
 import com.newframe.repositories.dataQuery.order.OrderSupplierQuery;
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.order.OrderService;
 import com.newframe.utils.log.GwsLogger;
@@ -31,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -72,6 +82,13 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderSupplierSlave orderSupplierSlave;
 
+    @Autowired
+    ExpressCompanyMaster expressCompanyMaster;
+    @Autowired
+    ExpressCompanySlave expressCompanySlave;
+
+    @Autowired
+    CommonService commonService;
     @Autowired
     OkHttpService okHttpService;
     @Autowired
@@ -558,6 +575,36 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.SUCCESS,true);
     }
 
+    @Override
+    public JsonResult supplierGetLogistics(Long orderId, Long uid) {
+        if(orderId == null){
+            return new JsonResult(SystemCode.BAD_REQUEST,false);
+        }
+        Optional<OrderSupplier> orderSupplierOptional = orderSupplierSlave.findById(orderId);
+        if(orderSupplierOptional.isPresent()){
+            OrderSupplier orderSupplier = orderSupplierOptional.get();
+            String expressNumber = orderSupplier.getExpressNumber();
+            if(StringUtils.isEmpty(expressNumber)){
+                return new JsonResult(SystemCode.NO_EXPRESS_INFO,false);
+            }
+            ExpressCompanyQuery query = new ExpressCompanyQuery();
+            query.setCompanyName(orderSupplier.getExpressCompany());
+            ExpressCompany expressCompany = expressCompanySlave.findOne(query);
+            if(expressCompany == null){
+                return new JsonResult(SystemCode.NO_EXPRESS_INFO);
+            }
+            String expressCode = expressCompany.getCompanyCode();
+            OperationResult<ExpressInfo> result = commonService.getExpressMessage(expressCode,expressNumber);
+            ExpressInfo expressInfo = result.getEntity();
+            String expressData = expressInfo.getExpStatus();
+            if(!StringUtils.isEmpty(expressData)){
+                expressData = "["+expressData +"]";
+                return new JsonResult(SystemCode.SUCCESS,expressData);
+            }
+        }
+        return new JsonResult(SystemCode.NO_EXPRESS_INFO,false);
+    }
+
     /**
      * 将orderFunder转换成DTO返回给前端
      *
@@ -638,6 +685,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private boolean onlineLoan(LoanDTO loanDTO, OrderFunder orderFunder, OrderRenter orderRenter) {
         // todo 这里应该是要操作账户表的，等先研究一下账户再写
+
         return false;
     }
 
