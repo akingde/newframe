@@ -3,6 +3,7 @@ package com.newframe.controllers.api;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.user.User;
 import com.newframe.entity.rabbitmq.MessageEntity;
 import com.newframe.entity.test.TestUser;
 import com.newframe.provider.MessageProvider;
@@ -24,7 +25,7 @@ public class TestRabbitMQController extends BaseController {
 
 
     /**
-     * 根据redis去获取数据
+     * 测试一下RabbitMQ是否OK
      * @param messageEntity
      * @return
      */
@@ -33,6 +34,15 @@ public class TestRabbitMQController extends BaseController {
 
         // 将实体实例写入消息队列
         messageProvider.sendMessage(messageEntity);
+
+        return success(true);
+    }
+
+    @RequestMapping("sendTestUser")
+    private JsonResult sendTestUser(User user){
+
+        //将实体信息写入消息队列
+        messageProvider.sendMessage(user);
 
         return success(true);
     }
