@@ -7,6 +7,8 @@ import com.newframe.utils.query.annotation.QBindAttrField;
 import com.newframe.utils.query.annotation.QBindEntity;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author kfm
  */
@@ -21,6 +23,9 @@ public class OrderFunderQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
     private Integer orderStatus;
+
+    @QBindAttrField(fieldName = "orderStatus",where = Where.in)
+    private List<Integer> orderStatuses;
 
     @QBindAttrField(fieldName = "orderId", where = Where.equal)
     private Long orderId;

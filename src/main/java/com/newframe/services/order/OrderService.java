@@ -1,10 +1,7 @@
 package com.newframe.services.order;
 
 import com.newframe.controllers.JsonResult;
-import com.newframe.dto.order.request.FunderQueryOrderDTO;
-import com.newframe.dto.order.request.LoanDTO;
-import com.newframe.dto.order.request.ProductInfoDTO;
-import com.newframe.dto.order.request.QueryOrderDTO;
+import com.newframe.dto.order.request.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -119,7 +116,16 @@ public interface OrderService {
     /**
      * 查询供应商订单
      * @param param 查询参数
+     * @param uid 供应商id
      * @return 返回结果
      */
-    JsonResult getsSupplierOrder(QueryOrderDTO param);
+    JsonResult getsSupplierOrder(QueryOrderDTO param, Long uid);
+
+    /**
+     * 供应商发货
+     * @param uid 供应商uid
+     * @param deliverInfo 发货信息
+     * @return 返回结果
+     */
+    JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo);
 }

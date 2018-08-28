@@ -2,20 +2,18 @@ package com.newframe.services.order.impl;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
-import com.newframe.dto.order.request.FunderQueryOrderDTO;
-import com.newframe.dto.order.request.LoanDTO;
-import com.newframe.dto.order.request.ProductInfoDTO;
-import com.newframe.dto.order.request.QueryOrderDTO;
+import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.OrderFunderDTO;
 import com.newframe.dto.order.response.OrderRenterDTO;
+import com.newframe.dto.order.response.OrderSupplierDTO;
 import com.newframe.entity.order.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
+import com.newframe.repositories.dataQuery.order.OrderSupplierQuery;
 import com.newframe.repositories.dataSlave.order.*;
-import com.newframe.resp.file.CommonResp;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.order.OrderService;
@@ -34,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -107,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
         orderRenterQuery.setRenterId(uid);
         orderRenterQuery.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
         if (null != param.getOrderStatus()) {
-            orderRenterQuery.setOrderStatus(param.getOrderStatus());
+            orderRenterQuery.setOrderStatuses(param.getOrderStatus());
         }
         // 设置分页参数
         Pageable pageable = PageRequest.of(param.getCurrentPage() - 1, param.getPageSize(), sort);
@@ -334,7 +331,7 @@ public class OrderServiceImpl implements OrderService {
         }
         orderFunderQuery.setFunderId(uid);
         if (param.getOrderStatus() != null) {
-            orderFunderQuery.setOrderStatus(param.getOrderStatus());
+            orderFunderQuery.setOrderStatuses(param.getOrderStatus());
         }
         // 封装排序
         Sort sort;
@@ -494,7 +491,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult getsSupplierOrder(QueryOrderDTO param) {
+    public JsonResult getsSupplierOrder(QueryOrderDTO param, Long uid) {
         if (null == param.getPageSize() || null == param.getCurrentPage()) {
             return new JsonResult(SystemCode.NO_PAGE_PARAM);
         }
@@ -505,8 +502,60 @@ public class OrderServiceImpl implements OrderService {
         } else {
             sort = new Sort(Sort.Direction.ASC, OrderRenter.CTIME);
         }
+        // 设置分页条件
+        Pageable pageable = PageRequest.of(param.getCurrentPage()-1,param.getPageSize(),sort);
         // 设置查询条件
-        return null;
+        OrderSupplierQuery query = new OrderSupplierQuery();
+        query.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
+        query.setSupplierId(uid);
+        query.setOrderStatuses(param.getOrderStatus());
+        Page<OrderSupplier> page = orderSupplierSlave.findAll(query,pageable);
+        List<OrderSupplier> suppliers = page.getContent();
+        List<OrderSupplierDTO> orderSupplierDTOS = new ArrayList<>();
+        for (OrderSupplier orderSupplier: suppliers){
+            OrderSupplierDTO orderSupplierDTO = wrapOrderSupplier2DTO(orderSupplier);
+            orderSupplierDTOS.add(orderSupplierDTO);
+        }
+        return new JsonResult(SystemCode.SUCCESS,orderSupplierDTOS);
+    }
+
+    @Override
+    public JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo) {
+        // 参数校验
+        if(StringUtils.isEmpty(deliverInfo.getDeliverCompany()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
+                || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
+                || deliverInfo.getOrderId() == null){
+            return new JsonResult(SystemCode.BAD_REQUEST,false);
+        }
+        OrderSupplierQuery query = new OrderSupplierQuery();
+        query.setOrderId(deliverInfo.getOrderId());
+        query.setSupplierId(uid);
+        OrderSupplier orderSupplier = orderSupplierSlave.findOne(query);
+        if(orderSupplier == null){
+            return new JsonResult(SystemCode.BAD_REQUEST,false);
+        }
+        orderSupplier.setExpressCompany(deliverInfo.getDeliverCompany());
+        orderSupplier.setExpressNumber(deliverInfo.getDeliverId());
+        orderSupplier.setExpressTime(deliverInfo.getDeliverTime());
+        orderSupplier.setSerialNumber(deliverInfo.getSerialNumber());
+        // 待收货状态
+        orderSupplier.setOrderStatus(OrderSupplierStatus.WAITING_RECEIVE.getCode());
+        orderSupplierMaster.save(orderSupplier);
+        // 修改资金方订单为待收货状态
+        Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(deliverInfo.getOrderId());
+        if(orderFunderOptional.isPresent()){
+            OrderFunder orderFunder = orderFunderOptional.get();
+            orderFunder.setOrderStatus(OrderFunderStatus.WAITING_RECEIVE.getCode());
+            orderFunderMaser.save(orderFunder);
+        }
+        // 修改租赁商订单状态
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(deliverInfo.getOrderId());
+        if(orderRenterOptional.isPresent()){
+            OrderRenter orderRenter = orderRenterOptional.get();
+            orderRenter.setOrderStatus(OrderRenterStatus.WAITING_SUPPLIER_RECEIVE.getCode());
+            orderRenterMaser.save(orderRenter);
+        }
+        return new JsonResult(SystemCode.SUCCESS,true);
     }
 
     /**
@@ -533,6 +582,50 @@ public class OrderServiceImpl implements OrderService {
         financingAmount = financingAmount.add(orderFunder.getAccidentBenefit());
         orderFunderDTO.setFinancingAmount(financingAmount);
         return orderFunderDTO;
+    }
+
+    /**
+     * 将供应商订单转化为dto
+     * @param orderSupplier 供应商订单
+     * @return dto
+     */
+    private OrderSupplierDTO wrapOrderSupplier2DTO(OrderSupplier orderSupplier){
+
+        OrderSupplierDTO orderSupplierDTO = new OrderSupplierDTO();
+        BeanUtils.copyProperties(orderSupplier,orderSupplierDTO);
+        orderSupplierDTO.setConsumerPhone(orderSupplier.getReceiverMobile());
+        orderSupplierDTO.setConsumerAddress(orderSupplier.getReceiverAddress());
+        orderSupplierDTO.setConsumerName(orderSupplier.getReceiverName());
+        orderSupplierDTO.setLoanTime(orderSupplier.getCtime());
+        // 默认机器数量为1
+        orderSupplierDTO.setMachineNumber(1);
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderSupplier.getOrderId());
+        if(orderRenterOptional.isPresent()){
+            OrderRenter orderRenter = orderRenterOptional.get();
+            orderSupplierDTO.setRenterId(orderRenter.getRenterId());
+            orderSupplierDTO.setRenterName(orderRenter.getRenterName());
+            // todo 获取租赁商联系方式
+            orderSupplierDTO.setRenterPhone("15957180382");
+            orderSupplierDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
+            orderSupplierDTO.setMonthlyPayment(orderRenter.getMonthlyPayment());
+            orderSupplierDTO.setDownPayment(orderRenter.getDownPayment());
+            orderSupplierDTO.setAccidentBenefit(orderRenter.getAccidentBenefit());
+            orderSupplierDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
+            orderSupplierDTO.setConsumerUid(orderRenter.getUid());
+        }
+        // todo 查询用户坏账次数
+        orderSupplierDTO.setConsumerBedDebtTimes(1);
+        Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(orderSupplier.getOrderId());
+        if(orderFunderOptional.isPresent()){
+            OrderFunder orderFunder = orderFunderOptional.get();
+            orderSupplierDTO.setFunderId(orderFunder.getFunderId());
+
+        }
+        orderSupplierDTO.setDeliverCompany(orderSupplier.getExpressCompany());
+        orderSupplierDTO.setDeliverTime(orderSupplier.getExpressTime());
+        orderSupplierDTO.setDeliverCode(orderSupplier.getExpressNumber());
+        orderSupplierDTO.setSerialNumber(orderSupplier.getSerialNumber());
+        return orderSupplierDTO;
     }
 
     /**

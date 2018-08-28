@@ -54,6 +54,10 @@ public class OrderSupplier {
     private String expressCompany;
     @Column(name = "express_number")
     private String expressNumber;
+    @Column(name = "express_time")
+    private Long expressTime;
+    @Column(name = "serial_number")
+    private String serialNumber;
     @Column(name = "order_status")
     private Integer orderStatus;
     @Column(name = "delete_status")

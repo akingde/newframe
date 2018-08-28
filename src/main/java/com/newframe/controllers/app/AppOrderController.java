@@ -8,6 +8,7 @@ import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -172,7 +173,7 @@ public class AppOrderController extends BaseController {
      */
     @RequestMapping("funder/upload/evidence")
     @Anonymous(true)
-    public JsonResult funderUploadEvidence(Long orderId, MultipartFile file){
+    public JsonResult funderUploadEvidence(Long orderId,@RequestPart(name = "file") MultipartFile file){
         Long uid = 3436672695388700980L;
         return orderService.funderUploadEvidence(uid,orderId,file);
     }
@@ -182,19 +183,23 @@ public class AppOrderController extends BaseController {
      * @return 查询结果
      */
     @RequestMapping("supplier/getList")
+    @Anonymous(true)
     public JsonResult getsSupplierOrder(QueryOrderDTO param){
-        return orderService.getsSupplierOrder(param);
+        Long uid = 4L;
+        return orderService.getsSupplierOrder(param,uid );
 
     }
 
     /**
      * 供应商发货
      * 批量发货怎么填写订单物流信息？
-     * @return
+     * @return 操作结果
      */
+    @Anonymous(true)
     @RequestMapping("supplier/deliver")
     public JsonResult supplierDeliver(DeliverInfoDTO deliverInfo){
-        return null;
+        Long uid = 4L;
+        return orderService.supplierDeliver(uid,deliverInfo);
     }
 
     /**

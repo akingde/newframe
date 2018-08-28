@@ -7,6 +7,8 @@ import com.newframe.utils.query.annotation.QBindAttrField;
 import com.newframe.utils.query.annotation.QBindEntity;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 租赁商订单查询封装
  * @author kfm
@@ -20,6 +22,9 @@ public class OrderRenterQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderStatus",where = Where.equal)
     private Integer orderStatus;
+
+    @QBindAttrField(fieldName = "orderStatus",where = Where.in)
+    private List<Integer> orderStatuses;
 
     @QBindAttrField(fieldName = "deleteStatus",where = Where.equal)
     private Integer deleteStatus;
