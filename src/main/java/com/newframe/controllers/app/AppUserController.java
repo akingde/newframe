@@ -1,6 +1,7 @@
 package com.newframe.controllers.app;
 
 import com.newframe.common.anony.Anonymous;
+import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
@@ -8,6 +9,7 @@ import com.newframe.dto.RequestUser;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.TypeEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
@@ -47,6 +49,22 @@ public class AppUserController extends BaseController {
     @PostMapping("register")
     public JsonResult register(String mobile, String mCode) {
         OperationResult<UserBaseInfoDTO> result = userService.register(mobile, mCode, true);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 更新token
+     * @param uid
+     * @param token
+     * @return
+     */
+    @Anonymous(true)
+    @PostMapping("refreshToken")
+    public JsonResult refreshToken(Long uid, String token){
+        OperationResult<UserBaseInfoDTO> result = userService.refreshToken(uid, token);
         if (result.getEntity() == null) {
             return error(result.getErrorCode());
         }
@@ -120,6 +138,7 @@ public class AppUserController extends BaseController {
      * 注销登录
      * @return
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("logout")
     public JsonResult logout(){
         Long uid = RequestUser.getCurrentUid();
@@ -135,6 +154,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:08
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("setPassword")
     public JsonResult setPassword(String password, String confirmPassword) {
         Long uid = RequestUser.getCurrentUid();
@@ -173,6 +193,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:10
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("modifyPassword")
     public JsonResult modifyPassword(String oldPassword, String newPassword, String confirmPassword) {
         Long uid = RequestUser.getCurrentUid();
@@ -210,6 +231,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:16
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("modifyMobile")
     public JsonResult modifyMobile(String newMobile, String mobileCode) {
         Long uid = RequestUser.getCurrentUid();
@@ -227,6 +249,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:19
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("removeMobile")
     public JsonResult removeMobile(String mobileCode) {
         Long uid = RequestUser.getCurrentUid();
@@ -244,6 +267,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 17:48
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getRoleApply")
     public JsonResult getRoleApply(Integer roleId) {
         Long uid = RequestUser.getCurrentUid();
@@ -258,6 +282,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 10:29
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("revokeRoleApple")
     public JsonResult revokeRoleApple(Long roleApplyId){
         Long uid = RequestUser.getCurrentUid();
@@ -275,6 +300,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:43
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("rentMerchantRoleApply")
     public JsonResult rentMerchantRoleApply(RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException {
         Long uid = RequestUser.getCurrentUid();
@@ -293,6 +319,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:34
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getRentMechantApplyInfo")
     public JsonResult getRentMechantApplyInfo(Long roleApplyId) {
         Long uid = RequestUser.getCurrentUid();
@@ -308,6 +335,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 17:55
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getRentMerchantInfo")
     public JsonResult getRentMerchantInfo(){
         Long uid = RequestUser.getCurrentUid();
@@ -323,6 +351,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 20:39
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("setAppoint")
     public JsonResult setAppoint(boolean appoint){
         Long uid = RequestUser.getCurrentUid();
@@ -342,6 +371,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 20:15
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("appointSupplier")
     public JsonResult appointSupplier(Long[] supplierUid, Long[] revokeSupplierUid){
         Long uid = RequestUser.getCurrentUid();
@@ -360,6 +390,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 18:51
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getMerchantAppoint")
     public JsonResult getMerchantAppoint(){
         Long uid = RequestUser.getCurrentUid();
@@ -374,6 +405,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:50
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("funderRoleApply")
     public JsonResult funderRoleApply(FunderApplyDTO funderApplyDTO) throws IOException{
         Long uid = RequestUser.getCurrentUid();
@@ -392,6 +424,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:37
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getFunderApplyInfo")
     public JsonResult getFunderApplyInfo(Long roleApplyId) {
         Long uid = RequestUser.getCurrentUid();
@@ -410,6 +443,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 17:57
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getFunderInfo")
     public JsonResult getFunderInfo(){
         Long uid = RequestUser.getCurrentUid();
@@ -425,6 +459,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:52
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("hirerRoleApply")
     public JsonResult hirerRoleApply(HirerApplyDTO hirerApplyDTO) throws IOException{
         Long uid = RequestUser.getCurrentUid();
@@ -443,6 +478,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:39
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getHirerApplyInfo")
     public JsonResult getHirerApplyInfo(Long roleApplyId) {
         Long uid = RequestUser.getCurrentUid();
@@ -458,6 +494,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 17:58
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getHirerInfo")
     public JsonResult getHirerInfo(){
         Long uid = RequestUser.getCurrentUid();
@@ -473,6 +510,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:59
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("supplierRoleApply")
     public JsonResult supplierRoleApply(SupplierApplyDTO supplierApplyDTO) throws IOException {
         Long uid = RequestUser.getCurrentUid();
@@ -491,6 +529,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:40
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getSupplierApplyInfo")
     public JsonResult getSupplierApplyInfo(Long roleApplyId) {
         Long uid = RequestUser.getCurrentUid();
@@ -506,6 +545,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 18:00
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getSupplierInfo")
     public JsonResult getSupplierInfo(){
         Long uid = RequestUser.getCurrentUid();
@@ -521,6 +561,7 @@ public class AppUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 18:23
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getSupplierList")
     public JsonResult getSupplierList(){
         Integer roleId = RoleEnum.SUPPLIER.getRoleId();
@@ -534,6 +575,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 14:35
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getAddress")
     public JsonResult getAddress() {
         Long uid = RequestUser.getCurrentUid();
@@ -546,6 +588,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:27
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("addAddress")
     public JsonResult addAddress(AddressDTO addressDTO) {
         Long uid = RequestUser.getCurrentUid();
@@ -561,6 +604,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:34
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("modifyAddress")
     public JsonResult modifyAddress(AddressDTO addressDTO) {
         Long uid = RequestUser.getCurrentUid();
@@ -578,6 +622,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 17:52
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("removeAddress")
     public JsonResult removeAddress(Long addressId) {
         Long uid = RequestUser.getCurrentUid();
@@ -595,6 +640,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 14:36
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("setDefaultAddress")
     public JsonResult setDefaultAddress(Long addressId) {
         Long uid = RequestUser.getCurrentUid();
@@ -611,6 +657,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 18:04
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("getRentMerchantList")
     public JsonResult getRentMerchantList() {
         Long uid = RequestUser.getCurrentUid();
@@ -625,6 +672,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:46
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("addRentMerchant")
     public JsonResult addRentMerchant(RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException{
         Long uid = RequestUser.getCurrentUid();
@@ -640,6 +688,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:49
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("modifyRentMerchant")
     public JsonResult modifyRentMerchant(RentMerchantModifyDTO rentMerchantModifyDTO) {
         Long uid = RequestUser.getCurrentUid();
@@ -657,6 +706,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 18:00
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("removeRentmerchant")
     public JsonResult removeRentmerchant(Long removeUid) {
         Long uid = RequestUser.getCurrentUid();
@@ -675,6 +725,7 @@ public class AppUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/15 10:46
      */
+    @UserType(type = TypeEnum.app)
     @PostMapping("uploadFile")
     public JsonResult uploadFile(List<MultipartFile> files) throws IOException{
         String bucket = "fzmsupplychain";

@@ -19,7 +19,7 @@ public class HirerDeliver {
     private Long lessorId;
     private String expressName;
     private String expressNumber;
-    private Integer expressTime;
+    private Long expressTime;
     private String serialNumber;
     private Integer ctime;
     private Integer utime;

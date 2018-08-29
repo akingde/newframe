@@ -179,4 +179,20 @@ public interface OrderService {
      * @return 返回结果
      */
     JsonResult lessorViewDetail(Long uid, Long orderId);
+
+    /**
+     * 出租方发货
+     * @param uid uid
+     * @param deliverInfo 发货信息
+     * @return 操作结果
+     */
+    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo);
+
+    /**
+     * 出租方审核不通过
+     * @param orderId 订单id
+     * @param uid 用户uid
+     * @return 操作结果
+     */
+    JsonResult lessorRefuse(Long orderId, Long uid);
 }

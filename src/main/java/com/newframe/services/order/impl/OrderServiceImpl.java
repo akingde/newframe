@@ -77,6 +77,11 @@ public class OrderServiceImpl implements OrderService {
     ExpressCompanySlave expressCompanySlave;
 
     @Autowired
+    HirerDeliverMaster hirerDeliverMaster;
+    @Autowired
+    HirerDeliverSlave hirerDeliverSlave;
+
+    @Autowired
     CommonService commonService;
     @Autowired
     OkHttpService okHttpService;
@@ -661,6 +666,55 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.SUCCESS,orderHirerDTO);
         }
         return new JsonResult(SystemCode.BAD_REQUEST,false);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) {
+        // 参数校验
+        if(StringUtils.isEmpty(deliverInfo.getDeliverCompany()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
+                || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
+                || deliverInfo.getOrderId() == null){
+            return new JsonResult(SystemCode.BAD_REQUEST,false);
+        }
+        HirerDeliver hirerDeliver = new HirerDeliver();
+        hirerDeliver.setExpressName(deliverInfo.getDeliverCompany());
+        hirerDeliver.setExpressNumber(deliverInfo.getDeliverId());
+        hirerDeliver.setExpressTime(deliverInfo.getDeliverTime());
+        hirerDeliver.setLessorId(uid);
+        hirerDeliver.setOrderId(deliverInfo.getOrderId());
+        hirerDeliver.setSerialNumber(deliverInfo.getSerialNumber());
+        hirerDeliverMaster.save(hirerDeliver);
+        // 修改出租方订单状态为待收货
+        Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(deliverInfo.getOrderId());
+        if(optionalOrderHirer.isPresent()){
+            OrderHirer orderHirer = optionalOrderHirer.get();
+            orderHirer.setOrderStatus(OrderLessorStatus.WAITING_RECEIVE.getCode());
+            orderHirerMaser.save(orderHirer);
+        }
+        // 修改资金方订单状态为待收货
+        Optional<OrderRenter> optionalOrderRenter = orderRenterSlave.findById(deliverInfo.getOrderId());
+        if(optionalOrderRenter.isPresent()){
+            OrderRenter orderRenter = optionalOrderRenter.get();
+            orderRenter.setOrderStatus(OrderRenterStatus.WAITING_LESSOR_RECEIVE.getCode());
+            orderRenterMaser.save(orderRenter);
+        }
+        return new JsonResult(SystemCode.SUCCESS,true);
+    }
+
+    @Override
+    public JsonResult lessorRefuse(Long orderId, Long uid) {
+        if(orderId == null){
+            return new JsonResult(SystemCode.BAD_REQUEST,false);
+        }
+        // 修改出租方订单状态为待收货
+        Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(orderId);
+        if(optionalOrderHirer.isPresent()){
+            OrderHirer orderHirer = optionalOrderHirer.get();
+            orderHirer.setOrderStatus(OrderLessorStatus.LESSOR_AUDIT_REFUSE.getCode());
+            orderHirerMaser.save(orderHirer);
+        }
+        return new JsonResult(SystemCode.SUCCESS,true);
     }
 
     /**

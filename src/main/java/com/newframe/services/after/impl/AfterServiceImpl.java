@@ -1,14 +1,17 @@
 package com.newframe.services.after.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.after.response.*;
+import com.newframe.entity.user.UserFunder;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.after.AfterService;
 import com.newframe.services.user.RoleBaseService;
+import com.newframe.services.userbase.UserFunderService;
 import com.newframe.services.userbase.UserRoleApplyService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,8 @@ public class AfterServiceImpl implements AfterService {
     private UserRoleApplyService userRoleApplyService;
     @Autowired
     private RoleBaseService roleBaseService;
+    @Autowired
+    private UserFunderService userFunderService;
 
     /**
      * 后台登陆
@@ -118,7 +123,8 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<WhiteFunderListDTO> getWhiteList(FunderSearchDTO condiiton) {
-        return null;
+        Page<UserFunder> page = userFunderService.findAll(condiiton);
+        return new OperationResult(new WhiteFunderListDTO(page));
     }
 
     /**
@@ -127,8 +133,13 @@ public class AfterServiceImpl implements AfterService {
      * @return
      */
     @Override
-    public OperationResult<FunderDTO> getBlackFunderList() {
-        return null;
+    public OperationResult<List<FunderDTO>> getBlackFunderList() {
+        List<UserFunder> funders = userFunderService.findAll();
+        List<FunderDTO> list = Lists.newArrayList();
+        for (UserFunder funder : funders) {
+            list.add(new FunderDTO(funder));
+        }
+        return new OperationResult(list);
     }
 
     /**
@@ -140,7 +151,15 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<Boolean> addFunder(Long uid, List<Long> funderUids) {
-        return null;
+        if(funderUids == null || funderUids.size() == 0){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        List<UserFunder> funders = userFunderService.findAll(funderUids);
+        if (funderUids.size() != funders.size()) {
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        userFunderService.update(true, funderUids);
+        return new OperationResult(true);
     }
 
     /**
@@ -152,6 +171,14 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<Boolean> removeFunder(Long uid, Long funderUid) {
-        return null;
+        if(funderUid == null){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        UserFunder userFunder = userFunderService.findOne(funderUid);
+        if (userFunder == null || !userFunder.getIsWhite()) {
+            return new OperationResult(RequestResultEnum.INVALID_ACCESS , false);
+        }
+        userFunderService.update(false, funderUid);
+        return new OperationResult(true);
     }
 }
