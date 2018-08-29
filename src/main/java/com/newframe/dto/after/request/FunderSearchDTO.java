@@ -15,5 +15,4 @@ public class FunderSearchDTO extends PageSearchDTO {
     private String legalEntityIdNumber;
     private Integer startTime;
     private Integer endTime;
-
 }
