@@ -133,6 +133,13 @@
             <version>5.0.8.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.xinge</groupId>
+            <artifactId>xinge</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -5,12 +5,18 @@ import com.newframe.entity.test.TestUser;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.test.TestService;
+import com.tencent.xinge.Message;
+import com.tencent.xinge.XingeApp;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -22,6 +28,21 @@ public class TestManageServiceImpl implements TestManageService {
 
     @Autowired
     private TestService testService;
+
+    /**androidAccessId*/
+    @Value("${android.accessId}")
+    private Long andAccessId;
+
+    /**androidsecretKey*/
+    @Value("${android.secretKey}")
+    private String andSecretKey;
+
+    /**超时时间*/
+    @Value("${message.expireTime}")
+    private Integer expireTime;
+
+    /**默认值为0,无需配置和更改*/
+    private Integer deviceType = 0;
 
     /**
      * 保存TestUser的操作
@@ -174,4 +195,66 @@ public class TestManageServiceImpl implements TestManageService {
 
         return new OperationResult<>(result);
     }
+
+    /**
+     * 单个账号的推送
+     * 根据用户的uid给用户推送消息
+     *
+     * @param uid
+     * @param orderId
+     * @param messTitle
+     * @param messType    消息的类型：1:融资类消息，2:租机类消息，3:发货申请类的消息
+     * @param messContent
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> sendMessToAllByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent) {
+        if (null ==uid || null == orderId || StringUtils.isEmpty(messTitle) || null == messType ||
+                StringUtils.isEmpty(messContent) ){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        OperationResult<Boolean> result = andSendMessageByUid(uid,orderId,messTitle,messType,messContent);
+
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 给安卓设备推送消息
+     *
+     * @param uid
+     * @param orderId
+     * @param messTitle
+     * @param messType
+     * @param messContent
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> andSendMessageByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent) {
+        if (null == uid || null == uid || StringUtils.isEmpty(messTitle) || null == messType ||
+                StringUtils.isEmpty(messContent)){
+
+        }
+        XingeApp xingeApp = new XingeApp(andAccessId, andSecretKey);
+        Message message = new Message();
+        message.setType(Message.TYPE_NOTIFICATION);
+        message.setExpireTime(expireTime);
+
+        message.setTitle(messTitle);
+        message.setContent(messContent);
+
+        //附加参数
+        Map<String,String> paramMap = new HashMap<>();
+        //一定要是String类型的
+        paramMap.put("uid",uid.toString());
+        paramMap.put("orderId",orderId.toString());
+        paramMap.put("messType",messType.toString());
+
+        JSONObject ret = xingeApp.pushSingleAccount(deviceType, uid.toString(), message);
+        System.out.println("发送消息成功");
+
+        return new OperationResult<>(true);
+    }
+
+
 }
