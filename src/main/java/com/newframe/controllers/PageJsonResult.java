@@ -2,36 +2,61 @@ package com.newframe.controllers;
 
 import com.newframe.enums.CodeStatus;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * 分页参数封装
+ *
  * @author kfm
  */
 
 public class PageJsonResult extends JsonResult {
-    private Long total;
-    public PageJsonResult(CodeStatus codeStatus) {
+    /**
+     * 设置分页信息
+     *
+     * @param page
+     */
+    public PageJsonResult setPage(Page page) {
+        JsonPage jsonPage = new JsonPage();
+        jsonPage.setTotal(page.getTotalElements());
+        jsonPage.setData(page.getContent());
+        setData(jsonPage);
+        return this;
+    }
+
+
+    /**
+     * List不需要转化
+     *
+     * @param codeStatus
+     * @param page
+     */
+    public PageJsonResult(CodeStatus codeStatus, Page page) {
         super(codeStatus);
+        setPage(page);
     }
 
-    public PageJsonResult(CodeStatus codeStatus, Object data) {
-        super(codeStatus, data);
+    /**
+     * List需要转化
+     *
+     * @param codeStatus
+     * @param data
+     * @param total
+     */
+    public PageJsonResult(CodeStatus codeStatus, List data, Long total) {
+        super(codeStatus);
+        JsonPage jsonPage = new JsonPage();
+        jsonPage.setData(data);
+        jsonPage.setTotal(total);
+        setData(jsonPage);
     }
 
-    public PageJsonResult(String code, String message) {
-        super(code, message);
-    }
 
-    public PageJsonResult(CodeStatus codeStatus, Object data, Long total) {
-        super(codeStatus, data);
-        this.total = total;
-    }
-
-    public Long getTotal() {
-        return total;
-    }
-
-    public void setTotal(Long total) {
-        this.total = total;
+    @Data
+    class JsonPage {
+        private Long total;
+        private List data;
     }
 }
