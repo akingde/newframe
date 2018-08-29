@@ -3,6 +3,8 @@ package com.newframe.dto.user.request;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  *  角色申请
  * @author WangBin
@@ -28,26 +30,5 @@ public class RoleApplyDTO {
     /**
      *  营业执照
      */
-    private MultipartFile[] businessListen;
+    private List<MultipartFile> businessListen;
 }
-//    public String getName() {
-//        return name == null || name.length() == 0 ? null : name;
-//    }
-//
-//    public String getLegalEntity() {
-//        return legalEntity == null || legalEntity.length() == 0 ? null : legalEntity;
-//    }
-//
-//    public String checkLegalEntityIdNumber() {
-//        return IdNumberUtils.isValidatedAllIdcard(legalEntityIdNumber) ? legalEntityIdNumber : null;
-//    }
-//
-//    public String checkBusinessListenNumber() {
-//        return businessListenNumber == null ? null : businessListenNumber;
-//    }
-//
-//    public MultipartFile[] checkBusinessListen() {
-//        if(businessListen == null || businessListen.length > 2)
-//            return null;
-//        return FileUtils.checkImage(businessListen) ? businessListen : null;
-//    }

@@ -1,5 +1,6 @@
 package com.newframe.services.userbase.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.UserAddress;
 import com.newframe.repositories.dataMaster.user.UserAddressMaster;
@@ -112,20 +113,17 @@ public class UserAddressServiceImpl implements UserAddressService {
      * 根据用户id查询用户的地址列表
      *
      * @param uid
-     * @param pageSearchDTO
      * @return
      */
     @Override
-    public Page<UserAddress> findUserAddressList(Long uid, PageSearchDTO pageSearchDTO) {
+    public List<UserAddress> findUserAddressList(Long uid) {
         if(uid == null){
-            return Page.empty();
+            return Lists.newArrayList();
         }
         UserAddressQuery query = new UserAddressQuery();
         query.setUid(uid);
         Sort sort = new Sort(Sort.Direction.DESC, "defaultAddress");
-        query.setSort(sort);
-        PageRequest pageRequest = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize());
-        return userAddressSlave.findAll(query, pageRequest);
+        return userAddressSlave.findAll(query, sort);
     }
 
     /**

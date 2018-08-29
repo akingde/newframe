@@ -18,6 +18,13 @@ public interface UserRentMerchantService {
     /**
      * 根据用户id和角色id获取租赁商信息
      * @param uid
+     * @return
+     */
+    UserRentMerchant findOne(Long uid);
+
+    /**
+     * 根据用户id和角色id获取租赁商信息
+     * @param uid
      * @param roleId
      * @return
      */

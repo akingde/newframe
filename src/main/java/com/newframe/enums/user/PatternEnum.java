@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum PatternEnum {
 
-    mobile("1[\\\\d]{10}"),
+    mobile("^1[\\d]{10}"),
     ;
     private String pattern;
 

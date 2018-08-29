@@ -42,7 +42,7 @@ public interface UserAddressService {
      * @param pageSearchDTO
      * @return
      */
-    Page<UserAddress> findUserAddressList(Long uid, PageSearchDTO pageSearchDTO);
+    List<UserAddress> findUserAddressList(Long uid);
 
     /**
      * 获取默认地址

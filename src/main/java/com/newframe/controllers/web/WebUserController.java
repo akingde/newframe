@@ -3,7 +3,13 @@ package com.newframe.controllers.web;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
+import com.newframe.dto.RequestUser;
 import com.newframe.dto.user.request.*;
+import com.newframe.dto.user.response.*;
+import com.newframe.enums.RoleEnum;
+import com.newframe.services.common.AliossService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,21 +17,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * @author:wangdong
  * @description:用户相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/user/")
+@RequestMapping("/web/user/")
 public class WebUserController extends BaseController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleBaseService roleBaseService;
+    @Autowired
+    private AliossService aliossService;
 
     /**
      * @param mobile 手机号
@@ -38,11 +46,11 @@ public class WebUserController extends BaseController {
     @Anonymous(true)
     @PostMapping("register")
     public JsonResult register(String mobile, String mCode) {
-        /*
-            1.手机号合法性校验和验证码校验
-            2.判断手机号是否注册过
-         */
-        return null;
+        OperationResult<UserBaseInfoDTO> result = userService.register(mobile, mCode, true);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -55,22 +63,21 @@ public class WebUserController extends BaseController {
     @Anonymous(true)
     @PostMapping("checkMobileAndPasswordExists")
     public JsonResult checkMobileExists(String mobile) {
-        /*
-            1.手机号合法性校验
-            2.判断手机号是否存在
-         */
-        return null;
+        OperationResult<UserRegisterDTO> result = userService.checkExistsMobileAndPassword(mobile);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     @Anonymous(true)
     @PostMapping("passwordLogin")
     public JsonResult passwordLogin(String mobile, String password) {
-        /*
-            1.手机号和密码合法性校验
-            2.密码是否正确
-            3.生成新的token 和 查询出用户的信息返回给前端
-         */
-        return null;
+        OperationResult<UserBaseInfoDTO> result = userService.passwordLogin(mobile, password, true);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -84,11 +91,11 @@ public class WebUserController extends BaseController {
     @Anonymous(true)
     @PostMapping("sendVerificationCode")
     public JsonResult sendVerificationCode(String mobile, Integer codeType) {
-        /*
-            1.判断手机号是否合法 和 验证码类型是非正确
-            2.发送验证码
-         */
-        return null;
+        OperationResult<String> result = userService.sendVerificationCode(mobile, null);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -102,12 +109,22 @@ public class WebUserController extends BaseController {
     @Anonymous(true)
     @PostMapping("verificationCodeLogin")
     public JsonResult verificationCodeLogin(String mobile, String code) {
-        /*
-            1.校验手机号的合法性
-            2.对手机号和验证码 进行校验
-            3.登录成功 生成新的 token，和 查询新的用户信息并返回
-         */
-        return null;
+        OperationResult<UserBaseInfoDTO> result = userService.verificationCodeLogin(mobile, code, true);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 注销登录
+     * @return
+     */
+    @PostMapping("logout")
+    public JsonResult logout(){
+        Long uid = RequestUser.getCurrentUid();
+        userService.logout(uid, true);
+        return success(true);
     }
 
     /**
@@ -120,11 +137,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("setPassword")
     public JsonResult setPassword(String password, String confirmPassword) {
-        /*
-            1.判断密码和确认密码 进行合法性验证
-            2.判断用户是否有密码
-         */
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.setPassword(uid, password, confirmPassword);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -139,7 +157,11 @@ public class WebUserController extends BaseController {
     @Anonymous(true)
     @PostMapping("setLoginPassword")
     public JsonResult setLoginPassword(String mobile, String mCode, String password) {
-        return null;
+        OperationResult<Boolean> result = userService.setLoginPassword(mobile, mCode, password);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -153,7 +175,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifyPassword")
     public JsonResult modifyPassword(String oldPassword, String newPassword, String confirmPassword) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.modifyPassword(uid, oldPassword, newPassword, confirmPassword);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -164,9 +191,15 @@ public class WebUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/14 16:02
      */
+    @Anonymous(true)
     @PostMapping("forgetPassword")
     public JsonResult forgetPassword(String mobile, String mCode, String password) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.forgetPassword(mobile, mCode, password);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -179,19 +212,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifyMobile")
     public JsonResult modifyMobile(String newMobile, String mobileCode) {
-        return null;
-    }
-
-    /**
-     * @param mobileCode 验证码
-     * @return
-     * @description 冻结手机号
-     * @author WangBin
-     * @date 2018/8/9 16:17
-     */
-    @PostMapping("freezeMobile")
-    public JsonResult freezeMobile(String mobile, String mobileCode) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.modifyMobile(uid, newMobile, mobileCode);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -203,19 +229,26 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("removeMobile")
     public JsonResult removeMobile(String mobileCode) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.removeMobile(uid, mobileCode);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
      * @param roleId 角色id
      * @return
-     * @description 获取角色申请列表
+     * @description 获取角色申请
      * @author WangBin
      * @date 2018/8/8 17:48
      */
     @PostMapping("getRoleApply")
     public JsonResult getRoleApply(Integer roleId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<UserRoleApplyDTO.RoleApplyResult> result = userService.getUserApply(uid);
+        return success(result.getEntity());
     }
 
     /**
@@ -227,7 +260,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("revokeRoleApple")
     public JsonResult revokeRoleApple(Long roleApplyId){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = roleBaseService.revokeRoleApply(uid, roleApplyId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -238,8 +276,14 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:43
      */
     @PostMapping("rentMerchantRoleApply")
-    public JsonResult rentMerchantRoleApply(RentMerchantApplyDTO rentMerchantApplyDTO) {
-        return null;
+    public JsonResult rentMerchantRoleApply(RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException {
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.roleApply(uid, rentMerchantApplyDTO, roleId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -251,7 +295,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getRentMechantApplyInfo")
     public JsonResult getRentMechantApplyInfo(Long roleApplyId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
+        return success(result.getEntity());
     }
 
     /**
@@ -263,7 +310,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getRentMerchantInfo")
     public JsonResult getRentMerchantInfo(){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
+        return success(result.getEntity());
     }
 
     /**
@@ -275,7 +325,13 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("setAppoint")
     public JsonResult setAppoint(boolean appoint){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.setAppoint(uid, roleId, appoint);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -288,7 +344,13 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("appointSupplier")
     public JsonResult appointSupplier(Long[] supplierUid, Long[] revokeSupplierUid){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.modifyAppointSupplier(uid, roleId, supplierUid, revokeSupplierUid);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -300,7 +362,9 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getMerchantAppoint")
     public JsonResult getMerchantAppoint(){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<List<UserRoleDTO.Supplier>> result = roleBaseService.getAppointSupplier(uid);
+        return success(result.getEntity());
     }
 
     /**
@@ -311,8 +375,14 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:50
      */
     @PostMapping("funderRoleApply")
-    public JsonResult funderRoleApply(FunderApplyDTO funderApplyDTO) {
-        return null;
+    public JsonResult funderRoleApply(FunderApplyDTO funderApplyDTO) throws IOException{
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FUNDER.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.roleApply(uid, funderApplyDTO, roleId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -324,7 +394,13 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getFunderApplyInfo")
     public JsonResult getFunderApplyInfo(Long roleApplyId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FUNDER.getRoleId();
+        OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
+        if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -336,7 +412,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getFunderInfo")
     public JsonResult getFunderInfo(){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FUNDER.getRoleId();
+        OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
+        return success(result.getEntity());
     }
 
     /**
@@ -347,8 +426,14 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:52
      */
     @PostMapping("hirerRoleApply")
-    public JsonResult hirerRoleApply(HirerApplyDTO hirerApplyDTO) {
-        return null;
+    public JsonResult hirerRoleApply(HirerApplyDTO hirerApplyDTO) throws IOException{
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.HIRER.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.roleApply(uid, hirerApplyDTO, roleId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -360,7 +445,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getHirerApplyInfo")
     public JsonResult getHirerApplyInfo(Long roleApplyId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.HIRER.getRoleId();
+        OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
+        return success(result.getEntity());
     }
 
     /**
@@ -372,7 +460,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getHirerInfo")
     public JsonResult getHirerInfo(){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.HIRER.getRoleId();
+        OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
+        return success(result.getEntity());
     }
 
     /**
@@ -383,8 +474,14 @@ public class WebUserController extends BaseController {
      * @date 2018/8/9 16:59
      */
     @PostMapping("supplierRoleApply")
-    public JsonResult supplierRoleApply(SupplierApplyDTO supplierApplyDTO) {
-        return null;
+    public JsonResult supplierRoleApply(SupplierApplyDTO supplierApplyDTO) throws IOException {
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.SUPPLIER.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.roleApply(uid, supplierApplyDTO, roleId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -396,7 +493,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getSupplierApplyInfo")
     public JsonResult getSupplierApplyInfo(Long roleApplyId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.SUPPLIER.getRoleId();
+        OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
+        return success(result.getEntity());
     }
 
     /**
@@ -408,7 +508,10 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getSupplierInfo")
     public JsonResult getSupplierInfo(){
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.SUPPLIER.getRoleId();
+        OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
+        return success(result.getEntity());
     }
 
     /**
@@ -420,31 +523,9 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getSupplierList")
     public JsonResult getSupplierList(){
-        return null;
-    }
-
-    /**
-     * @param roleId 角色id
-     * @return
-     * @description 冻结角色
-     * @author WangBin
-     * @date 2018/8/8 17:55
-     */
-    @PostMapping("freezeRole")
-    public JsonResult freezeRole(Long roleId) {
-        return null;
-    }
-
-    /**
-     * @param roleId 角色id
-     * @return
-     * @description 删除角色
-     * @author WangBin
-     * @date 2018/8/8 17:55
-     */
-    @PostMapping("removeRole")
-    public JsonResult removeRole(Long roleId) {
-        return null;
+        Integer roleId = RoleEnum.SUPPLIER.getRoleId();
+        OperationResult<List<UserRoleDTO.Supplier>> result = roleBaseService.getAllSupplier(roleId);
+        return success(result.getEntity());
     }
 
     /**
@@ -455,7 +536,9 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getAddress")
     public JsonResult getAddress() {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<List<UserAddressDTO>> result = userService.getUserAddressList(uid);
+        return success(result.getEntity());
     }
 
     /**
@@ -465,7 +548,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("addAddress")
     public JsonResult addAddress(AddressDTO addressDTO) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.addUserAddress(uid, addressDTO);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -475,7 +563,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifyAddress")
     public JsonResult modifyAddress(AddressDTO addressDTO) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.modifyAddress(uid, addressDTO);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -487,7 +580,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("removeAddress")
     public JsonResult removeAddress(Long addressId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.removeAddress(uid, addressId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -499,7 +597,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("setDefaultAddress")
     public JsonResult setDefaultAddress(Long addressId) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = userService.setDefaultAddress(uid, addressId);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -510,24 +613,26 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("getRentMerchantList")
     public JsonResult getRentMerchantList() {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<List<UserRoleDTO.SmallRentMechant>> result = roleBaseService.getSmallRentMechantList(uid, roleId);
+        return success(result.getEntity());
     }
 
     /**
-     * @param businessListen              营业执照文件 2张
-     * @param highestDegreeDiploma        最高学历毕业证文件 2张
-     * @param drivingLicense              驾驶证文件 2张
-     * @param houseProprietaryCertificate 房产证文件 9张
      * @return
      * @description 大B添加小B
      * @author WangBin
      * @date 2018/8/9 17:46
      */
     @PostMapping("addRentMerchant")
-    public JsonResult addRentMerchant(RoleApplyDTO roleApplyDTO, MultipartFile[] businessListen,
-                                      MultipartFile[] highestDegreeDiploma, MultipartFile[] drivingLicense,
-                                      MultipartFile[] houseProprietaryCertificate) {
-        return null;
+    public JsonResult addRentMerchant(RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException{
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = roleBaseService.addSmallRentMechant(uid, rentMerchantApplyDTO);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -537,7 +642,12 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("modifyRentMerchant")
     public JsonResult modifyRentMerchant(RentMerchantModifyDTO rentMerchantModifyDTO) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = roleBaseService.modifySmallRentMechant(uid, rentMerchantModifyDTO);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -549,7 +659,13 @@ public class WebUserController extends BaseController {
      */
     @PostMapping("removeRentmerchant")
     public JsonResult removeRentmerchant(Long removeUid) {
-        return null;
+        Long uid = RequestUser.getCurrentUid();
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.removeSmallRentMechant(uid, roleId, removeUid);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -560,7 +676,9 @@ public class WebUserController extends BaseController {
      * @date 2018/8/15 10:46
      */
     @PostMapping("uploadFile")
-    public JsonResult uploadFile(MultipartFile[] files) {
-        return null;
+    public JsonResult uploadFile(List<MultipartFile> files) throws IOException{
+        String bucket = "fzmsupplychain";
+        List<String> urls = aliossService.uploadFilesToBasetool(files, bucket);
+        return success(urls);
     }
 }

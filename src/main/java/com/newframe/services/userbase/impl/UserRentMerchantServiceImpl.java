@@ -5,6 +5,7 @@ import com.newframe.repositories.dataMaster.user.UserRentMerchantMaster;
 import com.newframe.repositories.dataQuery.user.UserRentMerchantQuery;
 import com.newframe.repositories.dataSlave.user.UserRentMerchantSlave;
 import com.newframe.services.userbase.UserRentMerchantService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,19 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
      * 根据用户id和角色id获取租赁商信息
      *
      * @param uid
+     * @return
+     */
+    @Override
+    public UserRentMerchant findOne(Long uid) {
+        UserRentMerchantQuery query = new UserRentMerchantQuery();
+        query.setUid(uid);
+        return userRentMerchantSlave.findOne(query);
+    }
+
+    /**
+     * 根据用户id和角色id获取租赁商信息
+     *
+     * @param uid
      * @param roleId
      * @return
      */
@@ -40,8 +54,7 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setUid(uid);
         query.setRoleId(roleId);
-        //return userRentMerchantSlave.findOne(query).get();
-        return null;
+        return userRentMerchantSlave.findOne(query);
     }
 
     /**
@@ -74,6 +87,9 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         query.setUid(userRentMerchant.getUid());
         if (userRentMerchant.getMerchantName() != null){
             updateFields.add("merchantName");
+        }
+        if (StringUtils.isNotEmpty(userRentMerchant.getMerchantPhoneNumber())){
+            updateFields.add("merchantPhoneNumber");
         }
         if(userRentMerchant.getLegalEntity() != null){
             updateFields.add("legalEntity");

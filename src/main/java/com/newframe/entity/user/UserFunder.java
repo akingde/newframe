@@ -1,5 +1,6 @@
 package com.newframe.entity.user;
 
+import com.newframe.enums.user.RoleStatusEnum;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -27,6 +28,13 @@ public class UserFunder {
     @Id
     @Column(name = "uid")
     private Long uid;
+
+    /**
+     * 手机号
+     * phone_number
+     */
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     /**
      * 商家名称
@@ -106,6 +114,13 @@ public class UserFunder {
     private Integer roleStatus;
 
     /**
+     * 是否在白名单
+     * is_white
+     */
+    @Column(name = "is_white")
+    private Boolean isWhite;
+
+    /**
      * 创建时间
      * ctime
      */
@@ -118,4 +133,24 @@ public class UserFunder {
      */
     @Column(name = "utime")
     private Integer utime;
+
+    public UserFunder() {
+    }
+
+    public UserFunder(UserRoleApply userRoleApply) {
+        this.uid = userRoleApply.getUid();
+        this.phoneNumber = userRoleApply.getPhoneNumber();
+        this.merchantName = userRoleApply.getMerchantName();
+        this.legalEntity = userRoleApply.getLegalEntity();
+        this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
+        this.topContacts = userRoleApply.getTopContacts();
+        this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
+        this.relationship = userRoleApply.getRelationship();
+        this.businessLicenseNumber = userRoleApply.getBusinessLicenseNumber();
+        this.businessLicenseFile = userRoleApply.getBusinessLicenseFile();
+        this.letterOfAttorneyFile = userRoleApply.getLetterOfAttorneyFile();
+        this.businessQualificationFile = userRoleApply.getBusinessQualificationFile();
+        this.roleStatus = RoleStatusEnum.NORMAL.getRoleStatue();
+        this.isWhite = false;
+    }
 }

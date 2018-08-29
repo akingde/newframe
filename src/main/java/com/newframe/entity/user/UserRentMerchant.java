@@ -1,5 +1,6 @@
 package com.newframe.entity.user;
 
+import com.newframe.enums.user.RoleStatusEnum;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -41,6 +42,13 @@ public class UserRentMerchant {
      */
     @Column(name = "merchant_name")
     private String merchantName;
+
+    /**
+     * 商家手机号
+     * merchant_photo_number
+     */
+    @Column(name = "merchant_photo_number")
+    private String merchantPhoneNumber;
 
     /**
      * 法人名称
@@ -181,4 +189,22 @@ public class UserRentMerchant {
      */
     @Column(name = "utime")
     private Integer utime;
+
+    public UserRentMerchant() {
+    }
+
+    public UserRentMerchant(UserRoleApply userRoleApply) {
+        this.uid = userRoleApply.getUid();
+        this.roleId = userRoleApply.getRoleId();
+        this.merchantName = userRoleApply.getMerchantName();
+        this.merchantPhoneNumber = userRoleApply.getPhoneNumber();
+        this.legalEntity = userRoleApply.getLegalEntity();
+        this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
+        this.businessLicenseNumber = userRoleApply.getBusinessLicenseNumber();
+        this.businessLicenseFile = userRoleApply.getBusinessLicenseFile();
+        this.highestDegreeDiplomaFile = userRoleApply.getHighestDegreeDiplomaFile();
+        this.drivingLicenseFile = userRoleApply.getDrivingLicenseFile();
+        this.houseProprietaryCertificateFile = userRoleApply.getHouseProprietaryCertificateFile();
+        this.roleStatus = RoleStatusEnum.NORMAL.getRoleStatue();
+    }
 }

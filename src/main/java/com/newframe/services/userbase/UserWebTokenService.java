@@ -40,5 +40,5 @@ public interface UserWebTokenService {
      * @param uid
      * @return
      */
-    UserWebToken insert(Long uid);
+    UserWebToken insert(Long uid, String token);
 }
