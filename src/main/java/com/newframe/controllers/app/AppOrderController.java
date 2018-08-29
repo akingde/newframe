@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * @author:wangdong
- * @description:订单相关模块的Controller
+ * @author wangdong
+ * 订单相关模块的Controller
  */
 @RestController
 @RequestMapping("/app/order")
@@ -29,16 +29,16 @@ public class AppOrderController extends BaseController {
 
     /**
      * 查询租赁商订单列表
-     * @param param
-     * @return
+     * @param param 查询参数
+     * @return 查询结果
      */
     @Anonymous(true)
     @RequestMapping("renter/getList")
     public JsonResult getRenterOrder(QueryOrderDTO param){
         // todo 获取登陆用户uid
         Long uid = 2L;
-        JsonResult result = orderService.getRenterOrder(param, uid);
-        return result;
+
+        return orderService.getRenterOrder(param, uid);
     }
 
     /**
@@ -87,7 +87,7 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商取消订单
-     * @return
+     * @return 操作结果
      */
     @Anonymous(true)
     @RequestMapping("renter/cancel")
@@ -97,7 +97,7 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商进行融资购机时需要查询有订单所需机型的供应商列表
-     * @return
+     * @return 查询结果
      */
     @RequestMapping("/getSupplierList")
     public JsonResult getSupplierList(ProductInfoDTO productInfo){
@@ -106,14 +106,14 @@ public class AppOrderController extends BaseController {
 
     /**
      * 租赁商进行租机时需要查询有订单所需机型的出租方列表（单个订单操作）
-     * @return
+     * @return 查询结果
      */
     @RequestMapping("/getLessorList")
     public JsonResult getLessorList(ProductInfoDTO productInfo){
         return orderService.getLessorList(productInfo);
     }
 
-    /****************资金方订单********************/
+    //****************资金方订单********************
     /**
      * 查询资金方订单
      * @return 返回结果
@@ -128,7 +128,7 @@ public class AppOrderController extends BaseController {
 
     /**
      * 查看资金方订单详情
-     * @return
+     * @return 查询结果
      */
     @Anonymous(true)
     @RequestMapping("funder/view/detail")
@@ -168,8 +168,8 @@ public class AppOrderController extends BaseController {
 
     /**
      * 确认放款，上传放款凭证
-     * @param orderId
-     * @return
+     * @param orderId 订单id
+     * @return 操作结果
      */
     @RequestMapping("funder/upload/evidence")
     @Anonymous(true)
@@ -177,7 +177,7 @@ public class AppOrderController extends BaseController {
         Long uid = 3436672695388700980L;
         return orderService.funderUploadEvidence(uid,orderId,file);
     }
-    /************供应商订单****************/
+    //************供应商订单****************
     /**
      * 查询供应商订单
      * @return 查询结果
@@ -188,6 +188,18 @@ public class AppOrderController extends BaseController {
         Long uid = 4L;
         return orderService.getsSupplierOrder(param,uid );
 
+    }
+
+    /**
+     * 查询供应商订单详情
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    @Anonymous(true)
+    @RequestMapping("supplier/view/detail")
+    public JsonResult supplierViewDetail(Long orderId){
+        Long uid = 4L;
+        return orderService.supplierViewDetail(orderId,uid);
     }
 
     /**
@@ -215,21 +227,36 @@ public class AppOrderController extends BaseController {
 
     /**
      * 供应商编辑物流
-     * @return
+     * @return 操作结果
      */
     @RequestMapping("supplier/edit/logistics")
     public JsonResult supplierEditLogistics(DeliverInfoDTO deliverInfo){
+        Long uid = 4L;
         return null;
     }
 
-    /*****************出租方订单***********************/
+    //*****************出租方订单***********************
     /**
      * 查询出租方订单
-     * @return
+     * @return 查询结果
      */
+    @Anonymous(true)
     @RequestMapping("lessor/getList")
     public JsonResult getLessorOrder(QueryOrderDTO param){
-        return null;
+        Long uid = 5L;
+        return orderService.getLessorOrder(uid,param);
+    }
+
+    /**
+     * 出租方查看订单详情
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("lessor/view/detail")
+    public JsonResult lessorViewDetail(Long orderId){
+        Long uid = 5L;
+        return orderService.lessorViewDetail(uid,orderId);
     }
 
     /**
