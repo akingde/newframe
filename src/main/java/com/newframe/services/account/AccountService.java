@@ -1,30 +1,15 @@
-package com.newframe.controllers.app;
+package com.newframe.services.account;
 
-import com.newframe.common.anony.Anonymous;
-import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
-import com.newframe.services.account.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 
 /**
- * @author:wangdong 31个接口
- * @description:账户相关模块的Controller
+ * @author:zww 31个接口
+ * @description:账户相关模块的接口
  */
-@RestController
-@RequestMapping("/app/account/")
-public class AppAccountController extends BaseController {
+public interface AccountService {
 
-    @Autowired
-    private AccountService accountService;
-
-    private Long getUid() {
-        return 3436672695388700980L;
-    }
 
     /**
      * 充值
@@ -33,10 +18,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("recharge")
-    public JsonResult recharge(BigDecimal amount) {
-        return null;
-    }
+    JsonResult recharge(BigDecimal amount);
 
     /**
      * 提现
@@ -44,10 +26,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("withdrawDeposit")
-    public JsonResult withdrawDeposit() {
-        return null;
-    }
+    JsonResult withdrawDeposit();
 
 
     /**
@@ -64,10 +43,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterAccountInfo")
-    public JsonResult getRenterAccountInfo() {
-        return null;
-    }
+    JsonResult getRenterAccountInfo();
 
     /**
      * 租赁商获取账户资产
@@ -81,10 +57,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterAssetAccount")
-    public JsonResult getRenterAssetAccount() {
-        return null;
-    }
+    JsonResult getRenterAssetAccount();
 
     /**
      * 获取租赁商租赁明细
@@ -92,10 +65,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterRentDetail")
-    public JsonResult getRenterRentDetail(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult getRenterRentDetail(Integer currentPage, Integer pageSize);
 
     /**
      * 获取租赁商订单融资账户
@@ -107,10 +77,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterOrderFinanceAccount")
-    public JsonResult getRenterOrderFinanceAccount() {
-        return null;
-    }
+    JsonResult getRenterOrderFinanceAccount();
 
     /**
      * 订单融资列表
@@ -120,10 +87,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listRenterOrderFinance")
-    public JsonResult listRenterOrderFinance(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listRenterOrderFinance(Integer currentPage, Integer pageSize);
 
     /**
      * 租赁商订单融资列列表
@@ -132,10 +96,7 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getRenterOrderFinanceDetail")
-    public JsonResult getRenterOrderFinanceDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getRenterOrderFinanceDetail(Long orderId);
 
     /**
      * 获取租赁商租赁账户
@@ -147,10 +108,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterOrderRentAccount")
-    public JsonResult getRenterOrderRentAccount() {
-        return null;
-    }
+    JsonResult getRenterOrderRentAccount();
 
     /**
      * 租赁商租赁账户下
@@ -161,10 +119,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize);
 
     /**
      * 租赁商租赁账户下
@@ -174,10 +129,7 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getRenterOrderRentDetail")
-    public JsonResult getRenterOrderRentDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getRenterOrderRentDetail(Long orderId);
 
 
     /**
@@ -189,10 +141,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterOrderOverdueAccount")
-    public JsonResult getRenterOrderOverdueAccount() {
-        return null;
-    }
+    JsonResult getRenterOrderOverdueAccount();
 
     /**
      * 租赁商订单逾期账户下
@@ -203,10 +152,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listRenterOrderOverdue")
-    public JsonResult listRenterOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listRenterOrderOverdue(Integer currentPage, Integer pageSize);
 
     /**
      * 租赁商订单逾期账户下
@@ -216,10 +162,7 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getRenterOrderOverdueDetail")
-    public JsonResult getRenterOrderOverdueDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getRenterOrderOverdueDetail(Long orderId);
 
     /**
      * 资金方相关的接口
@@ -237,11 +180,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @Anonymous(value = true)
-    @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
-    public JsonResult getFunderAssetAccount() {
-        return accountService.getFunderAssetAccount(getUid());
-    }
+    JsonResult getFunderAssetAccount(Long uid);
 
 
     /**
@@ -252,10 +191,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getFunderOrderFinancialAssets")
-    public JsonResult getFunderOrderFinancialAssets() {
-        return null;
-    }
+    JsonResult getFunderOrderFinancialAssets();
 
     /**
      * 获取资金方金融资产下
@@ -266,10 +202,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listFunderOrderInvestment")
-    public JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize);
 
     /**
      * 获取资金方金融资产下
@@ -279,10 +212,7 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getFunderOrderInvestmentDetail")
-    public JsonResult getFunderOrderInvestmentDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getFunderOrderInvestmentDetail(Long orderId);
 
     /**
      * 获取资金方逾期资产账户
@@ -293,10 +223,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getFunderOrderOverdueAssets")
-    public JsonResult getFunderOrderOverdueAssets() {
-        return null;
-    }
+    JsonResult getFunderOrderOverdueAssets();
 
     /**
      * 获取资金方逾期资产
@@ -307,10 +234,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listFunderOrderOverdue")
-    public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize);
 
     /**
      * 获取资金方逾期资产
@@ -320,10 +244,7 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getFunderOrderOverdueDetail")
-    public JsonResult getFunderOrderOverdueDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getFunderOrderOverdueDetail(Long orderId);
 
     /**
      * 供应商相关账户接口
@@ -337,10 +258,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getSupplierAssetAccount")
-    public JsonResult getSupplierAssetAccount() {
-        return null;
-    }
+    JsonResult getSupplierAssetAccount();
 
 
     /**
@@ -352,10 +270,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getSupplierOrderSellAssets")
-    public JsonResult getSupplierOrderSellAssets() {
-        return null;
-    }
+    JsonResult getSupplierOrderSellAssets();
 
     /**
      * 获取供应商销售账户下
@@ -366,10 +281,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listSupplierOrderSell")
-    public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize);
 
     /**
      * 出租方相关接口
@@ -386,10 +298,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerAssetAccount")
-    public JsonResult getHirerAssetAccount() {
-        return null;
-    }
+    JsonResult getHirerAssetAccount();
 
 
     /**
@@ -401,10 +310,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderOverdueAssets")
-    public JsonResult getHirerOrderOverdueAssets() {
-        return null;
-    }
+    JsonResult getHirerOrderOverdueAssets();
 
     /**
      * 获取出租方逾期资产账户下
@@ -415,10 +321,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listHirerOrderOverdue")
-    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize);
 
     /**
      * 获取出租方逾期资产账户下
@@ -426,10 +329,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderOverdueDetail")
-    public JsonResult getHirerOrderOverdueDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getHirerOrderOverdueDetail(Long orderId);
 
     /**
      * 获取出租方实物资产账户
@@ -443,10 +343,7 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderMaterialAssets")
-    public JsonResult getHirerOrderMaterialAssets() {
-        return null;
-    }
+    JsonResult getHirerOrderMaterialAssets();
 
     /**
      * 获取出租方实物资产账户下
@@ -457,10 +354,7 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listHirerOrderMaterial")
-    public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize) {
-        return null;
-    }
+    JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize);
 
     /**
      * 获取出租方实物资产账户下
@@ -468,9 +362,6 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderMaterialDetail")
-    public JsonResult getHirerOrderMaterialDetail(Long orderId) {
-        return null;
-    }
+    JsonResult getHirerOrderMaterialDetail(Long orderId);
 
 }
