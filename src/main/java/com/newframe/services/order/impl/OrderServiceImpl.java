@@ -643,8 +643,7 @@ public class OrderServiceImpl implements OrderService {
             OrderHirerDTO orderHirerDTO = wrapOrderHirer2DTO(orderHirer);
             orderHirerDTOS.add(orderHirerDTO);
         }
-        result.setData(orderHirerDTOS);
-        result.setTotal(page.getTotalElements());
+        result.setPage(page);
         return new JsonResult(SystemCode.SUCCESS,result);
     }
 
