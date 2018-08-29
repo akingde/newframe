@@ -34,6 +34,14 @@ public interface UserService {
     OperationResult<UserBaseInfoDTO> register(String mobile, String mCode, boolean isWeb);
 
     /**
+     * 刷新token
+     * @param uid
+     * @param token
+     * @return
+     */
+    OperationResult<UserBaseInfoDTO> refreshToken(Long uid, String token);
+
+    /**
      * @Description 密码登录
      * @Author WangBin
      * @Param mobile 手机号
@@ -137,14 +145,6 @@ public interface UserService {
      * @date 2018/8/8 14:31
      */
     OperationResult<UserRegisterDTO> checkExistsMobileAndPassword(String mobile);
-
-    /**
-     * 修改appToken
-     * @param uid
-     * @param oldToken
-     * @return
-     */
-    OperationResult<UserBaseInfoDTO> modifyAppToken(Long uid, String oldToken);
 
     /**
      * 根据手机号修改密码

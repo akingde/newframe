@@ -62,7 +62,7 @@ public interface AfterService {
      * 获取非白名单列表
      * @return
      */
-    OperationResult<FunderDTO> getBlackFunderList();
+    OperationResult<List<FunderDTO>> getBlackFunderList();
 
     /**
      * 添加资金方

@@ -88,7 +88,27 @@ public class UserServiceImpl implements UserService {
         String appToken = sessionService.setAppUserToken(baseInfo.getUid());
         String webToken = sessionService.setWebUserToken(baseInfo.getUid());
         String token = isWeb ? webToken : appToken;
-        return new OperationResult(new UserBaseInfoDTO(baseInfo.getUid(), token, UserStatusEnum.NORMAL.getUserStatus()));
+        return new OperationResult(new UserBaseInfoDTO(baseInfo.getUid(), token, mobile));
+    }
+
+    /**
+     * 刷新token
+     *
+     * @param uid
+     * @param token
+     * @return
+     */
+    @Override
+    public OperationResult<UserBaseInfoDTO> refreshToken(Long uid, String token) {
+        OperationResult<String> result = sessionService.modifyAppUserToken(uid, token);
+        if (result.getEntity() == null){
+            return new OperationResult(result.getErrorCode());
+        }
+        UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
+        UserRole userRole = new UserRole();
+        userRole.setUid(uid);
+        List<UserRole> userRoles = userRoleService.findUserRole(userRole);
+        return new OperationResult(new UserBaseInfoDTO(uid, result.getEntity(), baseInfo.getPhoneNumber(), userRoles));
     }
 
     /**
@@ -121,7 +141,7 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole();
         userRole.setUid(userBaseInfo.getUid());
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, userBaseInfo.getUserStatus(), userRoles));
+        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, mobile, userRoles));
     }
 
     /**
@@ -145,7 +165,7 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole();
         userRole.setUid(userBaseInfo.getUid());
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, userBaseInfo.getUserStatus(), userRoles));
+        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, userBaseInfo.getPhoneNumber(), userRoles));
     }
 
     /**
@@ -360,27 +380,6 @@ public class UserServiceImpl implements UserService {
         userRegisterDTO.setMobile(true);
         userRegisterDTO.setPassword(userPwd == null ? false: true);
         return new OperationResult<UserRegisterDTO>(userRegisterDTO);
-    }
-
-    /**
-     * 修改appToken
-     *
-     * @param uid
-     * @param oldToken
-     * @return
-     */
-    @Override
-    public OperationResult<UserBaseInfoDTO> modifyAppToken(Long uid, String oldToken) {
-        OperationResult<String> result = sessionService.modifyAppUserToken(uid, oldToken);
-        if (StringUtils.isEmpty(result.getEntity())){
-            return new OperationResult(result.getErrorCode());
-        }
-        String token = result.getEntity();
-        UserBaseInfo userBaseInfo = userBaseInfoService.findOne(uid);
-        UserRole userRole = new UserRole();
-        userRole.setUid(uid);
-        List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(uid, token, userBaseInfo.getUserStatus(), userRoles));
     }
 
     /**
