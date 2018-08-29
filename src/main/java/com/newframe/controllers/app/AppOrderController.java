@@ -263,27 +263,22 @@ public class AppOrderController extends BaseController {
      * 出租方发货
      * @return
      */
+    @Anonymous(true)
     @RequestMapping("lessor/deliver")
     public JsonResult lessorLogistics(DeliverInfoDTO deliverInfo){
-        return null;
+        Long uid = 5L;
+        return orderService.lessorLogistics(uid,deliverInfo);
     }
 
     /**
      * 出租方取消订单
-     * @return
+     * @return 操作结果
      */
     @RequestMapping("lessor/refuse")
-    public JsonResult lessorRefuse(List<Long> orderId){
-        return null;
-    }
-
-    /**
-     * 出租方购机
-     * @return
-     */
-    @RequestMapping("lessor/buy")
-    public JsonResult lessorBuy(List<Long> orderId,Long supplierId){
-        return null;
+    @Anonymous(true)
+    public JsonResult lessorRefuse(Long orderId){
+        Long uid = 5L;
+        return orderService.lessorRefuse(orderId,uid);
     }
 
 }
