@@ -78,10 +78,10 @@ public class UserWebTokenServiceImpl implements UserWebTokenService {
      * @return
      */
     @Override
-    public UserWebToken insert(Long uid) {
+    public UserWebToken insert(Long uid, String token) {
         UserWebToken userWebToken = new UserWebToken();
         userWebToken.setUid(uid);
-        userWebToken.setToken(UUID.randomUUID().toString());
+        userWebToken.setToken(token);
         return userWebTokenMaster.save(userWebToken);
     }
 }

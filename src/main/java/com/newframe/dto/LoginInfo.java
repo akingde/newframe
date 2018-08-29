@@ -16,6 +16,10 @@ public class LoginInfo {
 
     private String token;
 
+    public LoginInfo(){
+
+    }
+
     public LoginInfo(Long uid, String token) {
         this.uid = uid;
         this.token = token;

@@ -41,5 +41,5 @@ public interface UserAppTokenService {
      * @param uid
      * @return
      */
-    UserAppToken insert(Long uid);
+    UserAppToken insert(Long uid, String token);
 }
