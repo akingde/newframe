@@ -7,9 +7,11 @@ import com.newframe.repositories.dataQuery.user.UserRoleApplyQuery;
 import com.newframe.repositories.dataSlave.user.UserRoleApplySlave;
 import com.newframe.services.userbase.UserRoleApplyService;
 import com.newframe.utils.cache.IdGlobalGenerator;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -161,5 +163,25 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         UserRoleApplyQuery query = new UserRoleApplyQuery();
         query.setUid(uid);
         return userRoleApplySlave.findAll(query);
+    }
+
+    /**
+     * 根据uid找出指定的记录
+     *
+     * @param uid 非必选
+     * @return
+     */
+    @Override
+    public UserRoleApply findOne(Long uid) {
+        UserRoleApplyQuery query = new UserRoleApplyQuery();
+        query.setUid(uid);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        Pageable pageable = PageRequest.of(0, 1, sort);
+        Page<UserRoleApply> page = userRoleApplySlave.findAll(query, pageable);
+        List<UserRoleApply> pageContent = page.getContent();
+        if (CollectionUtils.isEmpty(pageContent)){
+            return new UserRoleApply();
+        }
+        return pageContent.get(0);
     }
 }

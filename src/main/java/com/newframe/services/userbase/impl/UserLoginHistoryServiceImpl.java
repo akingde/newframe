@@ -1,5 +1,6 @@
 package com.newframe.services.userbase.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.entity.user.UserLoginHistory;
 import com.newframe.repositories.dataMaster.user.UserLoginHistoryMaster;
 import com.newframe.repositories.dataQuery.user.UserLoginHistoryQuery;
@@ -62,6 +63,6 @@ public class UserLoginHistoryServiceImpl implements UserLoginHistoryService {
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(0,10, sort);
         Page<UserLoginHistory> pageResult = userLoginHistorySlave.findAll(query, pageRequest);
-        return pageResult == null ? Collections.emptyList() : pageResult.getContent();
+        return pageResult == null ? Lists.newArrayList() : pageResult.getContent();
     }
 }

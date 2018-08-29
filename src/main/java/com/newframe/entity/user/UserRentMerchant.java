@@ -43,6 +43,13 @@ public class UserRentMerchant {
     private String merchantName;
 
     /**
+     * 商家手机号
+     * merchant_photo_number
+     */
+    @Column(name = "merchant_photo_number")
+    private String merchantPhoneNumber;
+
+    /**
      * 法人名称
      * legal_entity
      */

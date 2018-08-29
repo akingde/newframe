@@ -54,4 +54,11 @@ public interface UserRoleApplyService {
      * @return
      */
     List<UserRoleApply> findApplyList(Long uid);
+
+    /**
+     * 根据uid找出指定的记录
+     * @param uid 非必选
+     * @return
+     */
+    UserRoleApply findOne(Long uid);
 }

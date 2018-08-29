@@ -2,26 +2,32 @@ package com.newframe.services.user.roleimpl;
 
 import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.user.request.RentMerchantApplyDTO;
-import com.newframe.dto.user.request.RoleApplyDTO;
+import com.newframe.dto.user.request.*;
+import com.newframe.dto.user.response.ProductDTO;
+import com.newframe.dto.user.response.ProductSupplierDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.entity.user.Area;
 import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.MerchantAppointService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserRoleApplyService;
 import com.newframe.utils.FileUtils;
+import com.newframe.utils.IdNumberUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +45,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private IdGlobalGenerator idGlobalGenerator;
     @Autowired
     private MerchantAppointService merchantAppointService;
+    @Autowired
+    private AliossService aliossService;
+
+    private static final String bucket = "fzmsupplychain";
 
     @Override
     public Integer getRoleId() {
@@ -53,21 +63,25 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) {
+    public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) throws IOException {
         RentMerchantApplyDTO roleApply = (RentMerchantApplyDTO)roleApplyDTO;
-        if(roleApply.getHighestDegreeDiploma() == null || roleApply.getHighestDegreeDiploma().length > 2){
-            return new OperationResult(RequestResultEnum.FILE_TOO_MUCH, false);
+        if(!FileUtils.checkImageAndEmpty(2, roleApply.getHighestDegreeDiploma())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(roleApply.getDrivingLicense() == null || roleApply.getDrivingLicense().length > 2){
-            return new OperationResult(RequestResultEnum.FILE_TOO_MUCH, false);
+        if(!FileUtils.checkImageAndEmpty(2, roleApply.getDrivingLicense())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(roleApply.getHouseProprietaryCertificate() == null || roleApply.getHouseProprietaryCertificate().length > 9){
-            return new OperationResult(RequestResultEnum.FILE_TOO_MUCH, false);
+        if(!FileUtils.checkImageAndEmpty(2, roleApply.getHouseProprietaryCertificate())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(FileUtils.checkImage(roleApply.getHighestDegreeDiploma(), roleApply.getDrivingLicense(),
-                roleApply.getHouseProprietaryCertificate())){
-            return new OperationResult(RequestResultEnum.FILE_FORMAT_ERROR, false);
-        }
+        List<String> businessUrls =
+                aliossService.uploadFilesToBasetool(roleApply.getBusinessListen(), bucket);
+        List<String> highestUrls =
+                aliossService.uploadFilesToBasetool(roleApply.getHighestDegreeDiploma(), bucket);
+        List<String> drivindUrls =
+                aliossService.uploadFilesToBasetool(roleApply.getDrivingLicense(), bucket);
+        List<String> houseUrls =
+                aliossService.uploadFilesToBasetool(roleApply.getHouseProprietaryCertificate(), bucket);
         UserRoleApply userRoleApply = new UserRoleApply();
         userRoleApply.setUid(uid);
         userRoleApply.setRoleId(getRoleId());
@@ -75,9 +89,13 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
+        userRoleApply.setBusinessLicenseFile(String.join(",", businessUrls));
+        userRoleApply.setHighestDegreeDiplomaFile(String.join(",", highestUrls));
+        userRoleApply.setDrivingLicenseFile(String.join(",", drivindUrls));
+        userRoleApply.setHouseProprietaryCertificateFile(String.join(",", houseUrls));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
-        UserRoleApply roleResult = userRoleApplyService.insert(userRoleApply);
-        return null;
+        userRoleApplyService.insert(userRoleApply);
+        return new OperationResult(true);
     }
 
     /**
@@ -101,7 +119,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<UserRoleDTO> getUserRoleInfo(Long uid) {
-        UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid, getRoleId());
+        UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid);
         return new OperationResult(rentMerchant == null ? new UserRoleDTO() : new UserRoleDTO.RentMechant(rentMerchant));
     }
 
@@ -133,7 +151,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     public List<Long> getAppointSupplierUid(Long uid) {
         List<MerchantAppoint> appointList = merchantAppointService.findAll(uid);
         if (appointList == null){
-            return Collections.emptyList();
+            return Lists.newArrayList();
         }
         return appointList.stream()
                 .map(MerchantAppoint::getSupplierUid)
@@ -148,7 +166,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(List<Long> supplierUid) {
-        return new OperationResult(Collections.emptyList());
+        return new OperationResult(Lists.newArrayList());
     }
 
     /**
@@ -158,7 +176,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier() {
-        return new OperationResult(Collections.emptyList());
+        return new OperationResult(Lists.newArrayList());
     }
 
     /**
@@ -213,7 +231,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid) {
         List<UserRentMerchant> merchants = userRentMerchantService.findAll(uid);
         if (merchants == null){
-            return new OperationResult(Collections.emptyList());
+            return new OperationResult(Lists.newArrayList());
         }
         List<UserRoleDTO.SmallRentMechant> result = Lists.newArrayList();
         for (UserRentMerchant merchant : merchants) {
@@ -230,31 +248,142 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
-        return null;
+    public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO,
+                                                        List<Area> areaList) throws  IOException{
+        if (FileUtils.checkImageAndEmpty(2, rentMerchantApplyDTO.getBusinessListen())) {
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if(!FileUtils.checkImage(2, rentMerchantApplyDTO.getHighestDegreeDiploma())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if(!FileUtils.checkImage(2, rentMerchantApplyDTO.getDrivingLicense())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if(!FileUtils.checkImage(2, rentMerchantApplyDTO.getHouseProprietaryCertificate())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if (StringUtils.isEmpty(rentMerchantApplyDTO.getConsigneeAddress())){
+            return new OperationResult(RequestResultEnum.ADDRESS_ERROR, false);
+        }
+        return new OperationResult(true);
     }
 
     /**
      * 修改小B
      *
      * @param uid
-     * @param rentMerchantApplyDTO
+     * @param rentMerchantModifyDTO
+     * @param areaList
      * @return
      */
     @Override
-    public OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
-        return null;
+    public OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantModifyDTO rentMerchantModifyDTO, List<Area> areaList) {
+        if (rentMerchantModifyDTO.getModifyUid() == null){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        UserRentMerchant small = userRentMerchantService.findOne(rentMerchantModifyDTO.getModifyUid(),
+                RoleEnum.SECOND_RENT_MERCHANT.getRoleId());
+        if (small == null || !small.getParentId().equals(uid)){
+            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
+        }
+        if(!PatternEnum.checkPattern(rentMerchantModifyDTO.getMerchantPhone(), PatternEnum.mobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
+        }
+        if (StringUtils.isEmpty(rentMerchantModifyDTO.getName())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if (StringUtils.isEmpty(rentMerchantModifyDTO.getLegalEntity())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(IdNumberUtils.isValidatedAllIdcard(rentMerchantModifyDTO.getLegalEntityIdNumber())){
+            return new OperationResult(RequestResultEnum.ID_NUMBER_ERROR, false);
+        }
+        if(!FileUtils.isAllCorrect(2, rentMerchantModifyDTO.getBusinessListen())) {
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if (FileUtils.isAllCorrect(2, rentMerchantModifyDTO.getHighestDegreeDiploma())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if (FileUtils.isAllCorrect(2, rentMerchantModifyDTO.getDrivingLicense())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if(FileUtils.isAllCorrect(9, rentMerchantModifyDTO.getHouseProprietaryCertificate())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if (StringUtils.isEmpty(rentMerchantModifyDTO.getConsigneeAddress())){
+            return new OperationResult(RequestResultEnum.ADDRESS_ERROR, false);
+        }
+        return new OperationResult(true);
     }
 
     /**
      * 删除小B
      *
      * @param uid
-     * @param rentMerchantApplyDTO
+     * @param removeUid
      * @return
      */
     @Override
-    public OperationResult<Boolean> removeSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) {
+    public OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid) {
         return null;
+    }
+
+    /**
+     * 生成角色记录
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> insertRole(Integer roleId) {
+        return null;
+    }
+
+    /**
+     * 获取商品列表
+     *
+     * @param uid
+     * @param condition
+     * @return
+     */
+    @Override
+    public OperationResult<ProductDTO> getProductList(Long uid, PageSearchDTO condition) {
+        return new OperationResult(RequestResultEnum.ROLE_ERROR);
+    }
+
+    /**
+     * 添加商品
+     *
+     * @param uid
+     * @param condition
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addProduct(Long uid, ProductModifyDTO condition) {
+        return new OperationResult(RequestResultEnum.ROLE_ERROR, false);
+    }
+
+    /**
+     * 修改商品
+     *
+     * @param uid
+     * @param condition
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyProduct(Long uid, ProductModifyDTO condition) {
+        return new OperationResult(RequestResultEnum.ROLE_ERROR, false);
+    }
+
+    /**
+     * 下架商品
+     *
+     * @param uid
+     * @param productId
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> removeProduct(Long uid, Long productId) {
+        return new OperationResult(RequestResultEnum.ROLE_ERROR, false);
     }
 }

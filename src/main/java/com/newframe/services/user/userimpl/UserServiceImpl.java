@@ -1,30 +1,21 @@
 package com.newframe.services.user.userimpl;
 
+import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.user.request.AddressDTO;
-import com.newframe.dto.user.request.PageSearchDTO;
-import com.newframe.dto.user.request.RentMerchantApplyDTO;
-import com.newframe.dto.user.request.RoleApplyDTO;
+import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
-import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
-import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.enums.user.UserStatusEnum;
-import com.newframe.services.user.RoleService;
+import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.*;
-import com.newframe.utils.FileUtils;
-import com.newframe.utils.IdNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static java.util.stream.Collectors.toSet;
 
 /**
  * @author WangBin
@@ -37,27 +28,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserPwdService userPwdService;
     @Autowired
-    private UserWebTokenService userWebTokenService;
-    @Autowired
-    private UserAppTokenService userAppTokenService;
-    @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private UserRoleApplyService userRoleApplyService;
     @Autowired
     private UserAddressService userAddressService;
     @Autowired
     private AreaService areaService;
     @Autowired
-    private UserRentMerchantService userRentMerchantService;
-
-    private Map<Integer, RoleService> roleServiceMap = new HashMap<>();
-
-    public UserServiceImpl(List<RoleService> roleServices) {
-        for (RoleService roleService : roleServices) {
-            roleServiceMap.put(roleService.getRoleId(), roleService);
-        }
-    }
+    private SessionService sessionService;
+    @Autowired
+    private UserRoleApplyService userRoleApplyService;
 
     /**
      * @param mobile
@@ -90,13 +69,13 @@ public class UserServiceImpl implements UserService {
      **/
     @Override
     public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode, boolean isWeb) {
-        if(PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
         if(mCode == null){
             return new OperationResult<>(RequestResultEnum.VERIFICATION_CODE_INVALID);
         }
-        if(!checkExistsMobileAndPassword(mobile).getEntity().getMobile()){
+        if(checkExistsMobileAndPassword(mobile).getEntity().getMobile()){
             return new OperationResult<>(RequestResultEnum.MOBILE_EXISTS);
         }
         UserBaseInfo userBaseInfo = new UserBaseInfo();
@@ -106,9 +85,9 @@ public class UserServiceImpl implements UserService {
         UserPwd userPwd = new UserPwd();
         userPwd.setUid(baseInfo.getUid());
         userPwdService.insert(userPwd);
-        UserAppToken appToken = userAppTokenService.insert(baseInfo.getUid());
-        UserWebToken webToken = userWebTokenService.insert(baseInfo.getUid());
-        String token = isWeb?webToken.getToken():appToken.getToken();
+        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
+        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
+        String token = isWeb ? webToken : appToken;
         return new OperationResult(new UserBaseInfoDTO(baseInfo.getUid(), token, UserStatusEnum.NORMAL.getUserStatus()));
     }
 
@@ -124,7 +103,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<UserBaseInfoDTO> passwordLogin(String mobile, String password, boolean isWeb) {
-        if(PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
         if(password == null){
@@ -155,7 +134,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode, boolean isWeb) {
-        if(PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
         UserBaseInfo userBaseInfo = userBaseInfoService.findOne(mobile);
@@ -167,6 +146,23 @@ public class UserServiceImpl implements UserService {
         userRole.setUid(userBaseInfo.getUid());
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
         return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, userBaseInfo.getUserStatus(), userRoles));
+    }
+
+    /**
+     * 注销登录
+     *
+     * @param uid
+     * @param isWeb
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> logout(Long uid, boolean isWeb) {
+        if(isWeb){
+            sessionService.cleanWebUserToken(uid);
+        }else {
+            sessionService.cleanAppUserToken(uid);
+        }
+        return new OperationResult(true);
     }
 
     /**
@@ -183,7 +179,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> setLoginPassword(String mobile, String mCode, String password) {
-        if(PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
         if(mCode == null){
@@ -262,7 +258,6 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @param uid
      * @param mobile
      * @param mCode
      * @param password
@@ -275,8 +270,8 @@ public class UserServiceImpl implements UserService {
      * @Date 2018/8/14 15:24
      */
     @Override
-    public OperationResult<Boolean> forgetPassword(Long uid, String mobile, String mCode, String password) {
-        if(PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
+    public OperationResult<Boolean> forgetPassword(String mobile, String mCode, String password) {
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
         if(mCode == null){
@@ -305,7 +300,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> modifyMobile(Long uid, String newMobile, String mobileCode) {
-        if(PatternEnum.checkPattern(newMobile, PatternEnum.mobile)){
+        if(!PatternEnum.checkPattern(newMobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
         if(mobileCode == null){
@@ -351,7 +346,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<UserRegisterDTO> checkExistsMobileAndPassword(String mobile) {
-        if(!mobile.matches(PatternEnum.mobile.getPattern())){
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<UserRegisterDTO>(RequestResultEnum.MOBILE_INVALID);
         }
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
@@ -368,21 +363,24 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 对token进行更新
+     * 修改appToken
      *
      * @param uid
-     * @param isWeb
+     * @param oldToken
      * @return
      */
     @Override
-    public String modifyToken(Long uid, boolean isWeb) {
-        if(isWeb) {
-            userWebTokenService.updateByUid(uid, UUID.randomUUID().toString());
-            return userWebTokenService.findOne(uid).getToken();
-        }else{
-            userAppTokenService.updateByUid(uid, UUID.randomUUID().toString());
-            return userAppTokenService.findOne(uid).getToken();
+    public OperationResult<UserBaseInfoDTO> modifyAppToken(Long uid, String oldToken) {
+        OperationResult<String> result = sessionService.modifyAppUserToken(uid, oldToken);
+        if (StringUtils.isEmpty(result.getEntity())){
+            return new OperationResult(result.getErrorCode());
         }
+        String token = result.getEntity();
+        UserBaseInfo userBaseInfo = userBaseInfoService.findOne(uid);
+        UserRole userRole = new UserRole();
+        userRole.setUid(uid);
+        List<UserRole> userRoles = userRoleService.findUserRole(userRole);
+        return new OperationResult(new UserBaseInfoDTO(uid, token, userBaseInfo.getUserStatus(), userRoles));
     }
 
     /**
@@ -418,13 +416,16 @@ public class UserServiceImpl implements UserService {
      * 根据uid获取用户的地址列表
      *
      * @param uid
-     * @param pageSearchDTO
      * @return
      */
     @Override
-    public OperationResult<UserAddressDTO> getUserAddressList(Long uid, PageSearchDTO pageSearchDTO) {
-        Page<UserAddress> page = userAddressService.findUserAddressList(uid, pageSearchDTO);
-        return new OperationResult(new UserAddressDTO(page));
+    public OperationResult<List<UserAddressDTO>> getUserAddressList(Long uid) {
+        List<UserAddress> addresses = userAddressService.findUserAddressList(uid);
+        List<UserAddressDTO> result = Lists.newArrayList();
+        for (UserAddress address : addresses){
+            result.add(new UserAddressDTO(address));
+        }
+        return new OperationResult(result);
     }
 
     /**
@@ -463,7 +464,7 @@ public class UserServiceImpl implements UserService {
         }
         UserAddress userAddress = new UserAddress(uid, addressDTO, areas);
         if (addressDTO.isDefaultAddress()){
-            serDefaultAddress(uid, userAddress.getId());
+            setDefaultAddress(uid, userAddress.getId());
         }
         userAddressService.updateByAddressId(userAddress);
         return new OperationResult<Boolean>(true);
@@ -477,7 +478,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> serDefaultAddress(Long uid, Long addressId) {
+    public OperationResult<Boolean> setDefaultAddress(Long uid, Long addressId) {
         if (userAddressService.findAddress(addressId, uid) == null){
             return new OperationResult(RequestResultEnum.ADDRESS_NOT_EXISTS, false);
         }
@@ -507,7 +508,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<Area> checkAddress(Integer provinceId, Integer cityId, Integer countyId) {
-        List<Integer> areaCode = Collections.emptyList();
+        List<Integer> areaCode = Lists.newArrayList();
         if (provinceId != null && cityId != null && countyId != null){
             if (countyId > cityId || cityId > provinceId ) {
                 return null;
@@ -547,232 +548,46 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 角色申请
+     * 更换手机号
      *
      * @param uid
-     * @param role
-     * @param roleId
+     * @param phoneNumber
      * @return
      */
     @Override
-    public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO role, Integer roleId) {
-        List<UserRoleApply> applyList = userRoleApplyService.findApplyList(uid);
-        if(applyList != null || applyList.size() > 0){
-            return new OperationResult(RequestResultEnum.ROLE_APPLY_TOO_MUCH, false);
+    public OperationResult<Boolean> modifyPhoneNumber(Long uid, String phoneNumber) {
+        UserBaseInfo userBaseInfo = userBaseInfoService.findOne(phoneNumber);
+        UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
+        if (phoneNumber.equals(baseInfo.getPhoneNumber())){
+            return new OperationResult(true);
         }
-        if(StringUtils.isAnyEmpty(role.getName(), role.getLegalEntity(), role.getBusinessListenNumber())){
-            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        if (userBaseInfo != null){
+            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
         }
-        if(!IdNumberUtils.isValidatedAllIdcard(role.getLegalEntityIdNumber())){
-            return new OperationResult(RequestResultEnum.ID_NUMBER_ERROR, false);
-        }
-        if (FileUtils.isEmpty(role.getBusinessListen()) || role.getBusinessListen().length > 2) {
-            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
-        }
-        if(!FileUtils.checkImage(role.getBusinessListen())){
-            return new OperationResult(RequestResultEnum.FILE_FORMAT_ERROR, false);
-        }
-        return roleServiceMap.get(roleId).roleApply(uid, role);
-    }
-
-    /**
-     * 获取角色申请详细信息
-     * @param uid
-     * @param roleId
-     * @param roleApplyId
-     * @return
-     */
-    public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Integer roleId, Long roleApplyId){
-        return roleServiceMap.get(roleId).getUserRoleApplyInfo(uid, roleApplyId);
-    }
-
-    /**
-     * 撤销申请
-     *
-     * @param uid
-     * @param roleApplyId
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> revokeRoleApply(Long uid, Long roleApplyId) {
-        UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, uid);
-        if(roleApply == null){
-            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
-        }
-        if (!roleApply.getApplyStatus().equals(RoleStatusEnum.UNDER_REVIEW.getRoleStatue())){
-            return new OperationResult(RequestResultEnum.ROLE_REVOKE_RPPLY_ERROR, false);
-        }
-        UserRoleApply userRoleApply = new UserRoleApply();
-        userRoleApply.setUid(uid);
-        userRoleApply.setId(roleApplyId);
-        userRoleApply.setApplyStatus(RoleStatusEnum.REVOKE.getRoleStatue());
-        userRoleApplyService.updateByRoleApplyId(userRoleApply);
+        userBaseInfo.setPhoneNumber(phoneNumber);
+        userBaseInfoService.updateByUid(userBaseInfo);
         return new OperationResult(true);
     }
 
     /**
-     * 获取角色申请详细信息
-     *
-     * @param uid
-     * @param roleId
-     * @param roleApplyId
-     * @return
-     */
-    @Override
-    public OperationResult<UserRoleApplyDTO> getUserApplyInfo(Long uid, Integer roleId, Long roleApplyId) {
-        return roleServiceMap.get(roleId).getUserRoleApplyInfo(uid, roleApplyId);
-    }
-
-    /**
-     * 获取用户角色信息
-     *
-     * @param uid
-     * @param roleId
-     * @return
-     */
-    @Override
-    public OperationResult<UserRoleDTO> getUserRoleInfo(Long uid, Integer roleId) {
-        return roleServiceMap.get(roleId).getUserRoleInfo(uid);
-    }
-
-    /**
-     * 获取所有的供应商
-     *
-     * @param roleId
-     * @return
-     */
-    @Override
-    public OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier(Integer roleId) {
-        return roleServiceMap.get(roleId).getAllSupplier();
-    }
-
-    /**
-     * 获取指定的供应商
+     * 获取角色申请记录
      *
      * @param uid
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid) {
-        return roleServiceMap.get(RoleEnum.SUPPLIER.getRoleId())
-                                .getAppointSupplier(
-                                        roleServiceMap.get(RoleEnum.FIRST_RENT_MERCHANT.getRoleId())
-                                        .getAppointSupplierUid(uid)
-                                );
+    public OperationResult<UserRoleApplyDTO.RoleApplyResult> getUserApply(Long uid) {
+        UserRoleApply roleApply = userRoleApplyService.findOne(uid);
+        return new OperationResult(new UserRoleApplyDTO.RoleApplyResult(roleApply));
     }
 
     /**
-     * 设置指定供应商开关
-     *
-     * @param uid
-     * @param roleId
-     * @param appoint
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> setAppoint(Long uid, Integer roleId, boolean appoint) {
-        return roleServiceMap.get(roleId)
-                            .setAppoint(uid, appoint);
-    }
-
-    /**
-     * 修改指定供应商
-     *
-     * @param uid
-     * @param roleId
-     * @param supplierUid
-     * @param revokeSupplierUid
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, Long[] supplierUid,
-                                                          Long[] revokeSupplierUid) {
-        Set<Long> inSet = Arrays.asList(supplierUid).stream().distinct().collect(toSet());
-        Set<Long> reSet = Arrays.asList(revokeSupplierUid).stream().distinct().collect(toSet());
-        long count = inSet.stream().filter(item -> reSet.contains(item)).count();
-        if(supplierUid.length + revokeSupplierUid.length != inSet.size() + reSet.size() || count > 0){
-            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
-        }
-        UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());
-        if (userRole == null){
-            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
-        }
-        if(!userRentMerchantService.findOne(uid, roleId).getAppoint()){
-            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
-        }
-        List<MerchantAppoint> insertList = roleServiceMap.get(roleId).getAppointSupplier(uid, supplierUid);
-        List<MerchantAppoint> removeList = roleServiceMap.get(roleId).getAppointSupplier(uid, revokeSupplierUid);
-        if (inSet.size() != insertList.size() || reSet.size() != removeList.size()){
-            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
-        }
-        roleServiceMap.get(roleId).removeAppointSupplier(removeList);
-        roleServiceMap.get(roleId).batchInsert(uid, supplierUid);
-        return new OperationResult(true);
-    }
-
-    /**
-     * 获取小B列表
-     *
-     * @param uid
-     * @param  roleId
-     * @return
-     */
-    @Override
-    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId) {
-        return roleServiceMap.get(roleId).getSmallRentMechantList(uid);
-    }
-
-    /**
-     * 新增小B
-     *
-     * @param uid
-     * @param roleId
-     * @param rentMerchantApplyDTO
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> addSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO) {
-        return null;
-    }
-
-    /**
-     * 修改小B
-     *
-     * @param uid
-     * @param roleId
-     * @param rentMerchantApplyDTO
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> modifySmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO) {
-        return null;
-    }
-
-    /**
-     * 删除小B
-     *
-     * @param uid
-     * @param roleId
-     * @param rentMerchantApplyDTO
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> removeSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO) {
-        return null;
-    }
-
-    /**
-     * 校验修改小B的权限
+     * 对token进行更新
      *
      * @param uid
      * @return
      */
-    @Override
-    public boolean checkModifySmallRentMechantAuthorization(Long uid) {
-        UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid, RoleEnum.FIRST_RENT_MERCHANT.getRoleId());
-        if (rentMerchant == null) {
-            return false;
-        }
-        return true;
+    public String modifyToken(Long uid, boolean isWeb) {
+        return isWeb ? sessionService.modifyWebUserToken(uid) : sessionService.modifyAppUserToken(uid);
     }
 }

@@ -5,11 +5,11 @@ import com.newframe.repositories.dataMaster.user.UserBaseInfoMaster;
 import com.newframe.repositories.dataQuery.user.UserBaseInfoQuery;
 import com.newframe.repositories.dataSlave.user.UserBaseInfoSlave;
 import com.newframe.services.userbase.UserBaseInfoService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,6 +28,8 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
     private UserBaseInfoMaster userBaseInfoMaster;
     @Autowired
     private UserBaseInfoSlave userBaseInfoSlave;
+    @Autowired
+    private IdGlobalGenerator idGlobalGenerator;
 
     /**
      * 插入用户基本信息
@@ -40,6 +42,7 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
         if(userBaseInfo == null) {
             return null;
         }
+        userBaseInfo.setUid(idGlobalGenerator.getSeqId(UserBaseInfo.class));
         return userBaseInfoMaster.save(userBaseInfo);
     }
 
