@@ -5,6 +5,7 @@ import com.newframe.repositories.dataMaster.user.UserRentMerchantMaster;
 import com.newframe.repositories.dataQuery.user.UserRentMerchantQuery;
 import com.newframe.repositories.dataSlave.user.UserRentMerchantSlave;
 import com.newframe.services.userbase.UserRentMerchantService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,6 +87,9 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         query.setUid(userRentMerchant.getUid());
         if (userRentMerchant.getMerchantName() != null){
             updateFields.add("merchantName");
+        }
+        if (StringUtils.isNotEmpty(userRentMerchant.getMerchantPhoneNumber())){
+            updateFields.add("merchantPhoneNumber");
         }
         if(userRentMerchant.getLegalEntity() != null){
             updateFields.add("legalEntity");

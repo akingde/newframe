@@ -35,14 +35,14 @@ public class ProductSupplier {
      * 供应商id
      * supplier_id
      */
-    @Column(name = "supplierId")
+    @Column(name = "supplier_id")
     private Long supplierId;
 
     /**
      * 品牌
      * brand
      */
-    @Column(name = "id")
+    @Column(name = "brand")
     private String brand;
 
     /**

@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class FunderSearchDTO extends PageSearchDTO {
 
-    private String mechantName;
+    private String merchantName;
     private String phoneNumber;
     private String legalEntity;
     private String legalEntityIdNumber;

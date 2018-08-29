@@ -13,9 +13,7 @@ import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
-import com.newframe.services.userbase.ProductSupplierService;
-import com.newframe.services.userbase.UserRoleApplyService;
-import com.newframe.services.userbase.UserSupplierService;
+import com.newframe.services.userbase.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -37,6 +35,10 @@ public class SupplierServiceImpl implements RoleService {
     private AliossService aliossService;
     @Autowired
     private ProductSupplierService productSupplierService;
+    @Autowired
+    private UserBaseInfoService userBaseInfoService;
+    @Autowired
+    private UserHirerService userHirerService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -60,6 +62,7 @@ public class SupplierServiceImpl implements RoleService {
         UserRoleApply userRoleApply = new UserRoleApply();
         userRoleApply.setUid(uid);
         userRoleApply.setRoleId(getRoleId());
+        userRoleApply.setPhoneNumber(userBaseInfoService.findOne(uid).getPhoneNumber());
         userRoleApply.setMerchantName(roleApply.getName());
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
@@ -81,6 +84,19 @@ public class SupplierServiceImpl implements RoleService {
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, uid);
         return new OperationResult(roleApply == null ? new UserRoleDTO() : new UserRoleApplyDTO.Supplier(roleApply));
+    }
+
+    /**
+     * 通过角色审核
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+        userSupplierService.insert(new UserSupplier(userRoleApply));
+        userHirerService.insert(new UserHirer(userRoleApply));
+        return new OperationResult(true);
     }
 
     /**

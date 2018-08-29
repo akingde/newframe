@@ -43,6 +43,13 @@ public class UserRoleApply {
     private Integer roleId;
 
     /**
+     * 手机号
+     * phone_number
+     */
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    /**
      * 商家名称
      * merchant_name
      */
@@ -139,6 +146,20 @@ public class UserRoleApply {
      */
     @Column(name = "apply_status")
     private Integer applyStatus;
+
+    /**
+     * 审核的后台uid
+     * check_uid
+     */
+    @Column(name = "check_uid")
+    private Long checkUid;
+
+    /**
+     * 后台审核人姓名
+     * check_person
+     */
+    @Column(name = "check_person")
+    private String checkPerson;
 
     /**
      * 备注

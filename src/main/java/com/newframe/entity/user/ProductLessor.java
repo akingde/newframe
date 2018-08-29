@@ -33,7 +33,7 @@ public class ProductLessor {
      * 供应商id
      * supplier_id
      */
-    @Column(name = "supplierId")
+    @Column(name = "supplier_id")
     private Long supplierId;
 
     /**

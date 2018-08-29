@@ -6,6 +6,7 @@ import com.newframe.dto.user.response.ProductDTO;
 import com.newframe.dto.user.response.ProductSupplierDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.entity.user.UserRoleApply;
 
 import java.io.IOException;
 import java.util.List;
@@ -115,28 +116,10 @@ public interface RoleBaseService {
     OperationResult<Boolean> removeSmallRentMechant(Long uid, Integer roleId, Long removeUid);
 
     /**
-     * 后台审核租赁商通过
+     * 后台审核角色通过
      * @return
      */
-    OperationResult<Boolean> addRentMechant();
-
-    /**
-     * 后台审核资金方通过
-     * @return
-     */
-    OperationResult<Boolean> addFunder();
-
-    /**
-     *后台审核出租方通过
-     * @return
-     */
-    OperationResult<Boolean> addHirer();
-
-    /**
-     * 后台审核供应商通过
-     * @return
-     */
-    OperationResult<Boolean> addSupplier();
+    OperationResult<Boolean> passRoleApply(UserRoleApply userRoleApply);
 
     /**
      * 获取商品列表

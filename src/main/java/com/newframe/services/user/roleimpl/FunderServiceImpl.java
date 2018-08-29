@@ -4,13 +4,9 @@ import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.ProductDTO;
-import com.newframe.dto.user.response.ProductSupplierDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
-import com.newframe.entity.user.Area;
-import com.newframe.entity.user.MerchantAppoint;
-import com.newframe.entity.user.UserFunder;
-import com.newframe.entity.user.UserRoleApply;
+import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RelationshipEnum;
@@ -18,7 +14,9 @@ import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
+import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.services.userbase.UserFunderService;
+import com.newframe.services.userbase.UserHirerService;
 import com.newframe.services.userbase.UserRoleApplyService;
 import com.newframe.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +38,10 @@ public class FunderServiceImpl implements RoleService {
     private UserFunderService userFunderService;
     @Autowired
     private AliossService aliossService;
+    @Autowired
+    private UserBaseInfoService userBaseInfoService;
+    @Autowired
+    private UserHirerService userHirerService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -79,6 +81,7 @@ public class FunderServiceImpl implements RoleService {
         UserRoleApply userRoleApply = new UserRoleApply();
         userRoleApply.setUid(uid);
         userRoleApply.setRoleId(getRoleId());
+        userRoleApply.setPhoneNumber(userBaseInfoService.findOne(uid).getPhoneNumber());
         userRoleApply.setMerchantName(roleApply.getName());
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
@@ -105,6 +108,19 @@ public class FunderServiceImpl implements RoleService {
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, uid);
         return new OperationResult(roleApply == null ? new UserRoleDTO() : new UserRoleApplyDTO.Funder(roleApply));
+    }
+
+    /**
+     * 通过角色审核
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+        userFunderService.insert(new UserFunder(userRoleApply));
+        userHirerService.insert(new UserHirer(userRoleApply));
+        return new OperationResult(true);
     }
 
     /**

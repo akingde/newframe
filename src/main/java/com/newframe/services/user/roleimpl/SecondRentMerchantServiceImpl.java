@@ -7,15 +7,19 @@ import com.newframe.dto.user.response.ProductDTO;
 import com.newframe.dto.user.response.ProductSupplierDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
-import com.newframe.entity.user.Area;
-import com.newframe.entity.user.MerchantAppoint;
-import com.newframe.entity.user.UserRentMerchant;
+import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.enums.user.UserStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
+import com.newframe.services.user.SessionService;
+import com.newframe.services.user.UserService;
+import com.newframe.services.userbase.UserBaseInfoService;
+import com.newframe.services.userbase.UserPwdService;
 import com.newframe.services.userbase.UserRentMerchantService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +38,14 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     private UserRentMerchantService userRentMerchantService;
     @Autowired
     private AliossService aliossService;
+    @Autowired
+    private UserBaseInfoService userBaseInfoService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SessionService sessionService;
+    @Autowired
+    private UserPwdService userPwdService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -51,7 +63,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) throws IOException {
-        return null;
+        return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
     }
 
     /**
@@ -64,6 +76,17 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     @Override
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
         return new OperationResult(new UserRoleApplyDTO());
+    }
+
+    /**
+     * 通过角色审核
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+        return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
     }
 
     /**
@@ -174,6 +197,19 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      */
     public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO,
                                                         List<Area> areaList) throws  IOException{
+
+        if (userBaseInfoService.findOne(rentMerchantApplyDTO.getMerchantPhone()) != null){
+            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
+        }
+        UserBaseInfo userBaseInfo = new UserBaseInfo();
+        userBaseInfo.setPhoneNumber(rentMerchantApplyDTO.getMerchantPhone());
+        userBaseInfo.setUserStatus(RoleStatusEnum.NORMAL.getRoleStatue());
+        UserBaseInfo baseInfo = userBaseInfoService.insert(userBaseInfo);
+        UserPwd userPwd = new UserPwd();
+        userPwd.setUid(baseInfo.getUid());
+        userPwdService.insert(userPwd);
+        sessionService.setAppUserToken(baseInfo.getUid());
+        sessionService.setWebUserToken(baseInfo.getUid());
         List<String> businessUrls =
                 aliossService.uploadFilesToBasetool(rentMerchantApplyDTO.getBusinessListen(), bucket);
         List<String> highestUrls =
@@ -188,8 +224,9 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         String countyName = areas.get(2).getAreaName();
         String address = provinceName + cityName + countyName + rentMerchantApplyDTO.getConsigneeAddress();
         UserRentMerchant rentMerchant = new UserRentMerchant();
-        rentMerchant.setUid(uid);
+        rentMerchant.setUid(baseInfo.getUid());
         rentMerchant.setRoleId(RoleEnum.SECOND_RENT_MERCHANT.getRoleId());
+        rentMerchant.setMerchantPhoneNumber(rentMerchantApplyDTO.getMerchantPhone());
         rentMerchant.setMerchantName(rentMerchantApplyDTO.getName());
         rentMerchant.setLegalEntity(rentMerchantApplyDTO.getLegalEntity());
         rentMerchant.setLegalEntityIdNumber(rentMerchantApplyDTO.getLegalEntityIdNumber());
@@ -222,6 +259,18 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantModifyDTO rentMerchantModifyDTO, List<Area> areaList) {
+        if(StringUtils.isNotEmpty(rentMerchantModifyDTO.getMerchantPhone())){
+            String phoneNumber = userBaseInfoService.findOne(rentMerchantModifyDTO.getModifyUid()).getPhoneNumber();
+            if (!phoneNumber.equals(rentMerchantModifyDTO.getMerchantPhone())) {
+                if (userBaseInfoService.findOne(rentMerchantModifyDTO.getMerchantPhone()) != null) {
+                    return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
+                }
+            }
+        }
+        UserBaseInfo userBaseInfo = new UserBaseInfo();
+        userBaseInfo.setUid(rentMerchantModifyDTO.getModifyUid());
+        userBaseInfo.setPhoneNumber(rentMerchantModifyDTO.getMerchantPhone());
+        userBaseInfoService.updateByUid(userBaseInfo);
         List<Area> areas = areaList.stream().sorted(Comparator.comparing(Area::getAreaLevel)).collect(Collectors.toList());
         String provinceName = areas.get(0).getAreaName();
         String cityName = areas.get(1).getAreaName();
@@ -230,7 +279,6 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         UserRentMerchant small = new UserRentMerchant();
         small.setUid(rentMerchantModifyDTO.getModifyUid());
         small.setMerchantPhoneNumber(rentMerchantModifyDTO.getMerchantPhone());
-        small.setMerchantName(rentMerchantModifyDTO.getName());
         small.setMerchantName(rentMerchantModifyDTO.getName());
         small.setLegalEntity(rentMerchantModifyDTO.getLegalEntity());
         small.setLegalEntityIdNumber(rentMerchantModifyDTO.getLegalEntityIdNumber());

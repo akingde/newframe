@@ -8,6 +8,7 @@ import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
 import com.newframe.entity.user.Area;
 import com.newframe.entity.user.MerchantAppoint;
+import com.newframe.entity.user.UserRoleApply;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +35,13 @@ public interface RoleService {
      * @return
      */
     OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId);
+
+    /**
+     * 通过角色审核
+     * @param userRoleApply
+     * @return
+     */
+    OperationResult<Boolean> passCheck(UserRoleApply userRoleApply);
 
     /**
      * 根据uid获取角色信息

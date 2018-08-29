@@ -2,6 +2,8 @@ package com.newframe.dto.after.response;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author WangBin
  */
@@ -9,5 +11,5 @@ import lombok.Data;
 public class WhiteFunderListDTO {
 
     private Long total;
-    private FunderDTO result;
+    private List<FunderDTO> result;
 }

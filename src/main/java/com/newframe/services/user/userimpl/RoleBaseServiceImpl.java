@@ -1,6 +1,7 @@
 package com.newframe.services.user.userimpl;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.after.response.UserDTO;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.ProductDTO;
 import com.newframe.dto.user.response.ProductSupplierDTO;
@@ -280,43 +281,17 @@ public class RoleBaseServiceImpl implements RoleBaseService {
     }
 
     /**
-     * 后台审核租赁商通过
+     * 后台审核角色通过
      *
      * @return
      */
     @Override
-    public OperationResult<Boolean> addRentMechant() {
-        return null;
-    }
-
-    /**
-     * 后台审核资金方通过
-     *
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> addFunder() {
-        return null;
-    }
-
-    /**
-     * 后台审核出租方通过
-     *
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> addHirer() {
-        return null;
-    }
-
-    /**
-     * 后台审核供应商通过
-     *
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> addSupplier() {
-        return null;
+    public OperationResult<Boolean> passRoleApply(UserRoleApply userRoleApply) {
+        userRoleApply.setApplyStatus(RoleStatusEnum.NORMAL.getRoleStatue());
+        userRoleApply.setCheckUid(new UserDTO().getUid());
+        userRoleApply.setCheckPerson(new UserDTO().getUserName());
+        userRoleApplyService.updateByRoleApplyId(userRoleApply);
+        return roleServiceMap.get(userRoleApply.getRoleId()).passCheck(userRoleApply);
     }
 
     /**

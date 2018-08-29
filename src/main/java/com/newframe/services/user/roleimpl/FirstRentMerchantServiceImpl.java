@@ -7,19 +7,14 @@ import com.newframe.dto.user.response.ProductDTO;
 import com.newframe.dto.user.response.ProductSupplierDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
-import com.newframe.entity.user.Area;
-import com.newframe.entity.user.MerchantAppoint;
-import com.newframe.entity.user.UserRentMerchant;
-import com.newframe.entity.user.UserRoleApply;
+import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
-import com.newframe.services.userbase.MerchantAppointService;
-import com.newframe.services.userbase.UserRentMerchantService;
-import com.newframe.services.userbase.UserRoleApplyService;
+import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
 import com.newframe.utils.IdNumberUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
@@ -47,6 +42,12 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private MerchantAppointService merchantAppointService;
     @Autowired
     private AliossService aliossService;
+    @Autowired
+    private UserBaseInfoService userBaseInfoService;
+    @Autowired
+    private UserHirerService userHirerService;
+    @Autowired
+    private UserSupplierService userSupplierService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -82,9 +83,11 @@ public class FirstRentMerchantServiceImpl implements RoleService {
                 aliossService.uploadFilesToBasetool(roleApply.getDrivingLicense(), bucket);
         List<String> houseUrls =
                 aliossService.uploadFilesToBasetool(roleApply.getHouseProprietaryCertificate(), bucket);
+
         UserRoleApply userRoleApply = new UserRoleApply();
         userRoleApply.setUid(uid);
         userRoleApply.setRoleId(getRoleId());
+        userRoleApply.setPhoneNumber(userBaseInfoService.findOne(uid).getPhoneNumber());
         userRoleApply.setMerchantName(roleApply.getName());
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
@@ -109,6 +112,21 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, uid);
         return new OperationResult(roleApply == null ? new UserRoleDTO() : new UserRoleApplyDTO.RentMechant(roleApply));
+    }
+
+    /**
+     * 通过角色审核
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+
+        userRentMerchantService.insert(new UserRentMerchant(userRoleApply));
+        userSupplierService.insert(new UserSupplier(userRoleApply));
+        userHirerService.insert(new UserHirer(userRoleApply));
+        return new OperationResult(true);
     }
 
     /**

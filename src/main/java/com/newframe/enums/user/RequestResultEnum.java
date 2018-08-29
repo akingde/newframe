@@ -47,6 +47,8 @@ public enum RequestResultEnum implements CodeStatus {
     ID_NUMBER_ERROR("80002", "身份证号不正确"),
     PARAMETER_ERROR("80003", "请求数据非法"),
 
+    MODIFY_ERROR("90000", "操作失败"),
+
     INVALID_ACCESS("100000", "无效的访问"),
     ;
 

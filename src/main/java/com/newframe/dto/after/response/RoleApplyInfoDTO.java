@@ -1,5 +1,6 @@
 package com.newframe.dto.after.response;
 
+import com.newframe.entity.user.UserRoleApply;
 import lombok.Data;
 
 /**
@@ -17,4 +18,12 @@ public class RoleApplyInfoDTO extends RoleApplyListDTO{
     private String[] highestDegreeDiploma;
     private String[] drivingLicense;
     private String[] houseProprietaryCertificate;
+
+    public RoleApplyInfoDTO() {
+    }
+
+    public RoleApplyInfoDTO(UserRoleApply userRoleApply) {
+        super(userRoleApply);
+
+    }
 }

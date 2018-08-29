@@ -9,7 +9,7 @@ import lombok.Data;
 public class FunderDTO {
 
     private Long funderUid;
-    private String mechantName;
+    private String merchantName;
     private String legalEntity;
     private String legalEntityIdNumber;
     private String topContacts;

@@ -1,5 +1,6 @@
 package com.newframe.services.userbase.impl;
 
+import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.repositories.dataMaster.user.UserRoleApplyMaster;
@@ -8,6 +9,7 @@ import com.newframe.repositories.dataSlave.user.UserRoleApplySlave;
 import com.newframe.services.userbase.UserRoleApplyService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,11 +66,11 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         if(roleApplyId == null){
             return null;
         }
-        /*UserRoleApplyQuery query = new UserRoleApplyQuery();
+        UserRoleApplyQuery query = new UserRoleApplyQuery();
         query.setId(roleApplyId);
         if(uid != null){
             query.setUid(uid);
-        }*/
+        }
         return userRoleApplySlave.findOne(uid);
     }
 
@@ -91,6 +93,44 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize(), sort);
         return userRoleApplySlave.findAll(query, pageRequest);
+    }
+
+    /**
+     * 获取所有
+     *
+     * @param condition
+     * @return
+     */
+    @Override
+    public Page<UserRoleApply> findAll(RoleListSearchDTO condition) {
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        Pageable page = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), sort);
+        if(condition == null){
+            return userRoleApplySlave.findAll(page);
+        }
+        UserRoleApplyQuery query = new UserRoleApplyQuery();
+        if(condition.getRoleType() != null){
+            query.setRoleId(condition.getRoleType());
+        }
+        if(StringUtils.isNotEmpty(condition.getMerchantName())){
+            query.setMerchantName(condition.getMerchantName());
+        }
+        if(StringUtils.isNotEmpty(condition.getLegalEntity())){
+            query.setLegalEntity(condition.getLegalEntity());
+        }
+        if(StringUtils.isNotEmpty(condition.getPhoneNumber())){
+            query.setPhoneNumber(condition.getPhoneNumber());
+        }
+        if(condition.getRoleStatus() != null){
+            query.setApplyStatus(condition.getRoleStatus());
+        }
+        if(condition.getStartTime() != null){
+            query.setStartTime(condition.getStartTime());
+        }
+        if(condition.getEndTime() != null){
+            query.setEndTime(condition.getEndTime());
+        }
+        return userRoleApplySlave.findAll(query, page);
     }
 
     /**
@@ -146,6 +186,12 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         }
         if(userRoleApply.getHouseProprietaryCertificateFile() == null){
             updateFields.add("houseProprietaryCertificateFile");
+        }
+        if (userRoleApply.getCheckUid() != null){
+            updateFields.add("checkUid");
+        }
+        if(StringUtils.isNotEmpty(userRoleApply.getCheckPerson())){
+            updateFields.add("checkPerson");
         }
         String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
