@@ -1,26 +1,16 @@
 package com.newframe.services.order.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
-import com.newframe.dto.order.response.OrderFunderDTO;
-import com.newframe.dto.order.response.OrderRenterDTO;
-import com.newframe.dto.order.response.OrderSupplierDTO;
+import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
-import com.newframe.repositories.dataQuery.order.ExpressCompanyQuery;
-import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
-import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
-import com.newframe.repositories.dataQuery.order.OrderSupplierQuery;
+import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
@@ -40,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -258,6 +247,7 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setAccidentBenefit(accidentBenefit);
             orderHirer.setNumberOfPayments(tenancyTerm);
             orderHirer.setPatternPayment(patternPayment);
+            orderHirer.setLessorId(lessorId);
             // 修改租赁商订单状态
             orderRenter.setOrderStatus(OrderRenterStatus.WAITING_LESSOR_AUDIT.getCode());
             orderRenterMaser.updateOrderStatus(orderRenter.getOrderStatus(), orderRenter.getOrderId());
@@ -603,6 +593,101 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return new JsonResult(SystemCode.NO_EXPRESS_INFO,false);
+    }
+
+    @Override
+    public JsonResult supplierViewDetail(Long orderId, Long uid) {
+        if(null == orderId){
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
+        OrderSupplierQuery query = new OrderSupplierQuery();
+        query.setOrderId(orderId);
+        query.setSupplierId(uid);
+        query.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
+        OrderSupplier orderSupplier = orderSupplierSlave.findOne(query);
+        if(null != orderSupplier){
+            OrderSupplierDTO orderSupplierDTO = wrapOrderSupplier2DTO(orderSupplier);
+            return new JsonResult(SystemCode.SUCCESS,orderSupplierDTO);
+        }
+        return new JsonResult(SystemCode.BAD_REQUEST,false);
+    }
+
+    @Override
+    public JsonResult getLessorOrder(Long uid, QueryOrderDTO param) {
+        if (null == param.getPageSize() || null == param.getCurrentPage()) {
+            return new JsonResult(SystemCode.NO_PAGE_PARAM);
+        }
+        // 查询排序规则
+        Sort sort;
+        if (param.getSort() == null || OrderSort.DESC.getValue().equals(param.getSort())) {
+            sort = new Sort(Sort.Direction.DESC, OrderRenter.CTIME);
+        } else {
+            sort = new Sort(Sort.Direction.ASC, OrderRenter.CTIME);
+        }
+        // 设置查询条件
+        OrderHirerQuery query = new OrderHirerQuery();
+        query.setLessorId(uid);
+        query.setDeleteStatus(OrderHirer.NO_DELETE_STATUS);
+        if(param.getOrderStatus() != null && param.getOrderStatus().size()>0){
+            query.setOrderStatuses(param.getOrderStatus());
+        }
+
+        // 设置分页参数
+        Pageable pageable = PageRequest.of(param.getCurrentPage()-1,param.getPageSize(),sort);
+        Page<OrderHirer> page = orderHirerSlave.findAll(query,pageable);
+        PageResult result = new PageResult();
+
+        List<OrderHirer> orderHirers = page.getContent();
+        List<OrderHirerDTO> orderHirerDTOS = new ArrayList<>();
+        for(OrderHirer orderHirer: orderHirers){
+            OrderHirerDTO orderHirerDTO = wrapOrderHirer2DTO(orderHirer);
+            orderHirerDTOS.add(orderHirerDTO);
+        }
+        result.setData(orderHirerDTOS);
+        result.setTotal(page.getTotalElements());
+        return new JsonResult(SystemCode.SUCCESS,result);
+    }
+
+    @Override
+    public JsonResult lessorViewDetail(Long uid, Long orderId) {
+        if(orderId == null){
+            return new JsonResult(SystemCode.BAD_REQUEST,false);
+        }
+        OrderHirerQuery query = new OrderHirerQuery();
+        query.setLessorId(uid);
+        query.setOrderId(orderId);
+        OrderHirer orderHirer = orderHirerSlave.findOne(query);
+        if(orderHirer != null){
+            OrderHirerDTO orderHirerDTO = wrapOrderHirer2DTO(orderHirer);
+            return new JsonResult(SystemCode.SUCCESS,orderHirerDTO);
+        }
+        return new JsonResult(SystemCode.BAD_REQUEST,false);
+    }
+
+    /**
+     *
+     * @param orderHirer 出租方订单
+     * @return dto
+     */
+    private OrderHirerDTO wrapOrderHirer2DTO(OrderHirer orderHirer){
+        OrderHirerDTO dto = new OrderHirerDTO();
+        BeanUtils.copyProperties(orderHirer,dto);
+        dto.setConsumerName(orderHirer.getUserRealname());
+        dto.setConsumerPhone(orderHirer.getUserMobile());
+        dto.setConsumerIdentityNumber(orderHirer.getUserIdNumber());
+        dto.setConsumerCreditLine(orderHirer.getUserCreditLine());
+        dto.setConsumerCreditScore(orderHirer.getUserCreditScore());
+        dto.setConsumerUid(orderHirer.getUid());
+        dto.setProductStorage(orderHirer.getProductStorage());
+        dto.setProductRandomMemory(orderHirer.getProductRandomMemory());
+        dto.setRentDeadlineMonth(orderHirer.getNumberOfPayments());
+        dto.setRentDeadlineDay(orderHirer.getNumberOfPayments()*30);
+        dto.setOrderTime(orderHirer.getCtime());
+        dto.setRenterId(orderHirer.getMerchantId());
+        dto.setRenterName(orderHirer.getMerchantName());
+        dto.setRenterPhone(orderHirer.getMerchantMobile());
+        dto.setMachineNumber(1);
+        return dto;
     }
 
     /**

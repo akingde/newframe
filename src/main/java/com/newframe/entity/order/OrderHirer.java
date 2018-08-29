@@ -103,5 +103,7 @@ public class OrderHirer {
     @Column(name = "pattern_payment")
     private Integer patternPayment;
 
+    @Column(name = "lessor_id")
+    private Long lessorId;
 
 }

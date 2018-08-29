@@ -136,4 +136,28 @@ public interface OrderService {
      * @return 物流信息
      */
     JsonResult supplierGetLogistics(Long orderId, Long uid);
+
+    /**
+     * 供应商查看订单详情
+     * @param orderId 订单id
+     * @param uid 供应商id
+     * @return 返回结果
+     */
+    JsonResult supplierViewDetail(Long orderId, Long uid);
+
+    /**
+     * 查询出租方订单列表
+     * @param uid uid
+     * @param param 参数
+     * @return 返回数据
+     */
+    JsonResult getLessorOrder(Long uid, QueryOrderDTO param);
+
+    /**
+     * 出租方查看订单详情
+     * @param uid 出租方id
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    JsonResult lessorViewDetail(Long uid, Long orderId);
 }
