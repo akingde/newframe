@@ -55,6 +55,10 @@ public class AccountFundingFinanceAsset {
      */
     private Long renterId;
     /**
+     * 租赁商的名字
+     */
+    private String renterName;
+    /**
      * ctime
      */
     private Long ctime;
@@ -62,5 +66,15 @@ public class AccountFundingFinanceAsset {
      * utime
      */
     private Long utime;
+
+
+    /**
+     * 投资回报率
+     */
+    private BigDecimal investReturnRate;
+    /**
+     * 市场平均投资回报率
+     */
+    private BigDecimal averageInvestReturnRate;
 
 }
