@@ -223,7 +223,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getFunderOrderOverdueAssets();
+    JsonResult getFunderOrderOverdueAssets(Long uid);
 
     /**
      * 获取资金方逾期资产
@@ -234,7 +234,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize);
+    JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 获取资金方逾期资产
@@ -244,7 +244,7 @@ public interface AccountService {
      * @param orderId
      * @return
      */
-    JsonResult getFunderOrderOverdueDetail(Long orderId);
+    JsonResult getFunderOrderOverdueDetail(Long uid, Long orderId);
 
     /**
      * 供应商相关账户接口

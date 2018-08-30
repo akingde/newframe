@@ -41,5 +41,6 @@ public class AccountOrderFundingDTO {
     /**
      * 是否扣款。1:扣款，2:未扣款
      */
-    private Integer withhold;
+    private Short withhold;
+
 }

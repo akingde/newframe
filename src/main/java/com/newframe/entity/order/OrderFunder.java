@@ -104,5 +104,8 @@ public class OrderFunder implements Serializable {
     private Long supplierId;
 
 
+    private Integer numberOfPeriods;
+    private BigDecimal orderAmount;
+    private Short withhold;
 }
 

@@ -9,14 +9,12 @@ import com.newframe.dto.account.RenterAccountInfo;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
-import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.nio.file.LinkOption;
 
 /**
  * @author:wangdong 31个接口
@@ -31,9 +29,6 @@ public class ApIAccountController extends BaseController {
 
     @Autowired
     private AccountManageService accountManageService;
-
-    @Autowired
-    private OrderService orderService;
 
     private Long getUid() {
         return 3436672695388700980L;
@@ -255,7 +250,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getFunderAssetAccount")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
     public JsonResult getFunderAssetAccount(Long uid) {
         return accountService.getFunderAssetAccount(getUid());
     }
@@ -320,7 +317,7 @@ public class ApIAccountController extends BaseController {
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderOrderOverdueAssets", method = RequestMethod.POST)
     public JsonResult getFunderOrderOverdueAssets() {
-        return null;
+        return accountService.getFunderOrderOverdueAssets(getUid());
     }
 
     /**
@@ -336,7 +333,7 @@ public class ApIAccountController extends BaseController {
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "listFunderOrderOverdue", method = RequestMethod.POST)
     public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listFunderOrderOverdue(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -351,7 +348,7 @@ public class ApIAccountController extends BaseController {
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderOrderOverdueDetail", method = RequestMethod.POST)
     public JsonResult getFunderOrderOverdueDetail(Long orderId) {
-        return null;
+        return accountService.getFunderOrderOverdueDetail(getUid(), orderId);
     }
 
     /**

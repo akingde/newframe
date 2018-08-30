@@ -2,15 +2,14 @@ package com.newframe.services.account.impl;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
-import com.newframe.dto.account.response.AccountFundingDTO;
-import com.newframe.dto.account.response.AccountFundingFinanceAssetDTO;
-import com.newframe.dto.account.response.AccountFundingFinanceAssetListDTO;
-import com.newframe.dto.account.response.AccountOrderFundingDTO;
+import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.AccountFunding;
 import com.newframe.entity.account.AccountFundingFinanceAsset;
+import com.newframe.entity.account.AccountFundingOverdueAsset;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
+import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
@@ -227,6 +226,7 @@ public class AccountServiceImpl implements AccountService {
         OrderFunder entity = orderFunderSlave.findOne(query);
         AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
         BeanUtils.copyProperties(entity, dto);
+
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -240,8 +240,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getFunderOrderOverdueAssets() {
-        return null;
+    public JsonResult getFunderOrderOverdueAssets(Long uid) {
+        AccountFundingOverdueAsset entity = accountFundingOverdueAssetSlave.findOne(uid);
+        if (null != entity) {
+            AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
+            BeanUtils.copyProperties(entity, dto);
+            return new JsonResult(SystemCode.SUCCESS, dto);
+        }
+        return new JsonResult(SystemCode.SUCCESS, null);
     }
 
     /**
@@ -254,8 +260,27 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        AccountFundingOverdueAssetQuery query = new AccountFundingOverdueAssetQuery();
+        query.setUid(uid);
+        Page<AccountFundingOverdueAsset> page = accountFundingOverdueAssetSlave.findAll(query, pageable);
+
+        List<AccountFundingOverdueAssetListDTO> dtoList = new ArrayList<>();
+        for (AccountFundingOverdueAsset entity : page.getContent()) {
+            AccountFundingOverdueAssetListDTO dto = new AccountFundingOverdueAssetListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setInvestType(entity.getInvestWay());
+            dto.setInvestMonth(entity.getInvestDeadline());
+            dto.setPayedAmount(entity.getRepayAmount());
+            dto.setUnpayAmount(entity.getDueAmount());
+            dto.setOverdueDays(entity.getOverdueDay());
+            dto.setPayType(entity.getRepayWay());
+            dto.setOrderStatus(1);
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
     }
 
     /**
@@ -267,8 +292,9 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getFunderOrderOverdueDetail(Long orderId) {
-        return null;
+    public JsonResult getFunderOrderOverdueDetail(Long uid, Long orderId) {
+        //查询相同数据表，返回结果相同
+        return getFunderOrderInvestmentDetail(uid, orderId);
     }
 
     /**
