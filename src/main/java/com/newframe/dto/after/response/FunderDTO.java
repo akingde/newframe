@@ -22,6 +22,10 @@ public class FunderDTO {
     private String[] letterOfAttorney;
     private String[] businessQualification;
 
+    public FunderDTO(){
+
+    }
+
     public FunderDTO(UserFunder userFunder) {
         this.funderUid = userFunder.getUid();
         this.merchantName = userFunder.getMerchantName();

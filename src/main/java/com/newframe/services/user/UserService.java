@@ -27,11 +27,10 @@ public interface UserService {
       * @Author WangBin
       * @param mobile 手机号
       * @param mCode
-     * @param isWeb 是否是pc
       * @return
       * @Date 2018/8/15 16:45
       **/
-    OperationResult<UserBaseInfoDTO> register(String mobile, String mCode, boolean isWeb);
+    OperationResult<UserBaseInfoDTO> register(String mobile, String mCode);
 
     /**
      * 刷新token
@@ -46,30 +45,27 @@ public interface UserService {
      * @Author WangBin
      * @Param mobile 手机号
      * @Param password 密码
-     * @param isWeb 是否是pc
      * @Return
      * @Date 2018/8/8 14:32
      */
-    OperationResult<UserBaseInfoDTO> passwordLogin(String mobile, String password, boolean isWeb);
+    OperationResult<UserBaseInfoDTO> passwordLogin(String mobile, String password);
 
     /**
      * @description 验证码登录
      * @author WangBin
      * @param mobile
      * @param mCode
-     * @param isWeb 是否是pc
      * @return
      * @date 2018/8/15 16:50
      */
-    OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode, boolean isWeb);
+    OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode);
 
     /**
      * 注销登录
      * @param uid
-     * @param isWeb
      * @return
      */
-    OperationResult<Boolean> logout(Long uid, boolean isWeb);
+    OperationResult<Boolean> logout(Long uid);
 
     /**
      * @Description 未登录设置密码

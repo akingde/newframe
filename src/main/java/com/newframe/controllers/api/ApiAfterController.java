@@ -24,7 +24,6 @@ public class ApiAfterController extends BaseController {
      * @param password
      * @return
      */
-    @Anonymous(true)
     @PostMapping("login")
     public JsonResult login(String userName, String password){
         return null;
@@ -35,7 +34,6 @@ public class ApiAfterController extends BaseController {
      * @param condition
      * @return
      */
-    @Anonymous(true)
     @PostMapping("mechantList")
     public JsonResult getMechantList(RoleListSearchDTO condition){
         return null;
@@ -46,7 +44,6 @@ public class ApiAfterController extends BaseController {
      * @param roleApplyId
      * @return
      */
-    @Anonymous(true)
     @PostMapping("mechantInfo")
     public JsonResult getMechantInfo(Long roleApplyId){
         return null;
@@ -58,7 +55,6 @@ public class ApiAfterController extends BaseController {
      * @param roleApplyId
      * @return
      */
-    @Anonymous(true)
     @PostMapping("passCheck")
     public JsonResult passCheck(Long uid, Long roleApplyId){
         return null;
@@ -71,7 +67,6 @@ public class ApiAfterController extends BaseController {
      * @param remarks
      * @return
      */
-    @Anonymous(true)
     @PostMapping("failCheck")
     public JsonResult failCheck(Long uid, Long roleApplyId, String remarks){
         return null;
@@ -82,7 +77,6 @@ public class ApiAfterController extends BaseController {
      * @param condiiton
      * @return
      */
-    @Anonymous(true)
     @PostMapping("whiteList")
     public JsonResult getWhiteList(FunderSearchDTO condiiton){
         return null;
@@ -92,7 +86,6 @@ public class ApiAfterController extends BaseController {
      * 获取非白名单列表
      * @return
      */
-    @Anonymous(true)
     @PostMapping("blackFunderList")
     public JsonResult getBlackFunderList(){
         return null;
@@ -102,7 +95,6 @@ public class ApiAfterController extends BaseController {
      * 添加资金方
      * @return
      */
-    @Anonymous(true)
     @PostMapping("addFunder")
     public JsonResult addFunder(Long uid, List<Long> funderUids){
         return null;
@@ -112,7 +104,6 @@ public class ApiAfterController extends BaseController {
      * 删除资金方
      * @return
      */
-    @Anonymous(true)
     @PostMapping("removeFunder")
     public JsonResult removeFunder(Long uid, Long funderUid){
         return null;
