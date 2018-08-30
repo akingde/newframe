@@ -23,7 +23,6 @@ public class FunderDTO {
     private String[] businessQualification;
 
     public FunderDTO(){
-
     }
 
     public FunderDTO(UserFunder userFunder) {

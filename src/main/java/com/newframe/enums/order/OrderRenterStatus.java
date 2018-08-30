@@ -20,6 +20,8 @@ public enum OrderRenterStatus {
     ORDER_FINANCING_OVER_THREE(21),
     // 出租方审核不通过
     LESSOR_AUDIT_REFUSE(6),
+    //出租方审核不通过超过三次，不允许再租赁
+    ORDER_RENT_OVER_THREE(22),
     // 资金方线上放款成功,代发货
     FUNDER_ONLINE_LOAN_SUCCESS(7),
     // 资金方线下放款成功，代发货
