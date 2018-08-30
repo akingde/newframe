@@ -1,10 +1,13 @@
-package com.newframe.controllers.app;
+package com.newframe.controllers.api;
 
 import com.newframe.common.anony.Anonymous;
 import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RenterAccountInfo;
 import com.newframe.enums.TypeEnum;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +23,14 @@ import java.math.BigDecimal;
  */
 @RestController
 @RequestMapping("/app/account/")
-public class AppAccountController extends BaseController {
+public class ApIAccountController extends BaseController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AccountManageService accountManageService;
+
     @Autowired
     private OrderService orderService;
 
@@ -70,8 +77,13 @@ public class AppAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterAccountInfo")
-    public JsonResult getRenterAccountInfo() {
-        return null;
+    public JsonResult getRenterAccountInfo(Long uid) {
+
+        OperationResult<RenterAccountInfo> result = accountManageService.getRenterAccountInfo(uid);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**

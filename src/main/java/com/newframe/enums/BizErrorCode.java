@@ -11,6 +11,7 @@ public enum BizErrorCode implements CodeStatus {
 
     PARAM_INFO_ERROR("400101","参数非法"),
     SAVE_INFO_ERROR("400102","保存信息失败"),
+    NOT_LOGIN("400103","未登录"),
     ;
     private String code;
     private String message;

@@ -1,4 +1,4 @@
-package com.newframe.controllers.app;
+package com.newframe.controllers.api;
 
 import com.newframe.common.anony.Anonymous;
 import com.newframe.common.anony.UserType;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/app/user/")
-public class AppUserController extends BaseController {
+public class ApiUserController extends BaseController {
 
     @Autowired
     private UserService userService;

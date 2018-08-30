@@ -1,4 +1,4 @@
-package com.newframe.controllers.web;
+package com.newframe.controllers.api;
 
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/inner/after/")
-public class WebAfterController extends BaseController {
+public class ApiAfterController extends BaseController {
 
     /**
      * 后台登陆

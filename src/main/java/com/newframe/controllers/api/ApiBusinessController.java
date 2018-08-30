@@ -1,4 +1,4 @@
-package com.newframe.controllers.web;
+package com.newframe.controllers.api;
 
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
@@ -13,15 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-
 /**
  * @author:wangdong
  * @description:商家商户产品相关模块的Controller
  */
 @RestController
-@RequestMapping("/web/business/")
-public class WebBusinessController extends BaseController {
+@RequestMapping("/app/business/")
+public class ApiBusinessController extends BaseController {
 
     @Autowired
     private RoleBaseService roleBaseService;

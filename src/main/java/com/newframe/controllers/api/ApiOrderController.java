@@ -1,4 +1,4 @@
-package com.newframe.controllers.app;
+package com.newframe.controllers.api;
 
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/order")
 
-public class AppOrderController extends BaseController {
+public class ApiOrderController extends BaseController {
 
     @Autowired
     OrderService orderService;
