@@ -1,6 +1,5 @@
 package com.newframe.repositories.dataSlave.account;
 
-
 import com.newframe.entity.account.AccountFundingOverdueAsset;
 import com.newframe.utils.query.BaseRepository;
 

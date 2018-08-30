@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 @Data
 @Entity
 public class AccountFundingOverdueAsset implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     /**
@@ -88,4 +87,16 @@ public class AccountFundingOverdueAsset implements Serializable {
     private Long utime;
 
 
+    /**
+     * 逾期金额合计
+     */
+    private BigDecimal totalOverdueAccount;
+    /**
+     * 逾期笔数
+     */
+    private Integer overdueNumber;
+    /**
+     * 逾期率
+     */
+    private Double overdueRate;
 }
