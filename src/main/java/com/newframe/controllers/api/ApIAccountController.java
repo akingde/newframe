@@ -412,7 +412,7 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerAssetAccount")
+    @RequestMapping(value = "getHirerAssetAccount", method = RequestMethod.POST)
     public JsonResult getHirerAssetAccount() {
         return accountService.getHirerAssetAccount(getUid());
     }
@@ -429,9 +429,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderMaterialAssets")
+    @RequestMapping(value = "getHirerOrderMaterialAssets", method = RequestMethod.POST)
     public JsonResult getHirerOrderMaterialAssets() {
-        return null;
+        return accountService.getHirerOrderMaterialAssets(getUid());
     }
 
     /**
@@ -443,9 +443,9 @@ public class ApIAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listHirerOrderMaterial")
+    @RequestMapping(value = "listHirerOrderMaterial", method = RequestMethod.POST)
     public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listHirerOrderMaterial(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -454,9 +454,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderMaterialDetail")
+    @RequestMapping(value = "getHirerOrderMaterialDetail", method = RequestMethod.POST)
     public JsonResult getHirerOrderMaterialDetail(Long orderId) {
-        return null;
+        return accountService.getHirerOrderMaterialDetail(getUid(), orderId);
     }
 
     /**
@@ -468,9 +468,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderOverdueAssets")
+    @RequestMapping(value = "getHirerOrderOverdueAssets", method = RequestMethod.POST)
     public JsonResult getHirerOrderOverdueAssets() {
-        return null;
+        return accountService.getHirerOrderOverdueAssets(getUid());
     }
 
     /**
@@ -482,9 +482,9 @@ public class ApIAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listHirerOrderOverdue")
+    @RequestMapping(value = "listHirerOrderOverdue", method = RequestMethod.POST)
     public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listHirerOrderOverdue(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -493,8 +493,8 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderOverdueDetail")
+    @RequestMapping(value = "getHirerOrderOverdueDetail", method = RequestMethod.POST)
     public JsonResult getHirerOrderOverdueDetail(Long orderId) {
-        return null;
+        return accountService.getHirerOrderOverdueDetail(getUid(), orderId);
     }
 }

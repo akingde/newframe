@@ -312,7 +312,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderMaterialAssets();
+    JsonResult getHirerOrderMaterialAssets(Long uid);
 
     /**
      * 27.获取出租方实物资产账户下
@@ -323,7 +323,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize);
+    JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 28.获取出租方实物资产账户下
@@ -331,7 +331,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderMaterialDetail(Long orderId);
+    JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId);
 
     /**
      * 29.获取出租方逾期资产账户
@@ -342,7 +342,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderOverdueAssets();
+    JsonResult getHirerOrderOverdueAssets(Long uid);
 
     /**
      * 30.获取出租方逾期资产账户下
@@ -353,7 +353,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize);
+    JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 31.获取出租方逾期资产账户下
@@ -361,6 +361,6 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderOverdueDetail(Long orderId);
+    JsonResult getHirerOrderOverdueDetail(Long uid, Long orderId);
 
 }
