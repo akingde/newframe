@@ -34,6 +34,6 @@ public enum  RoleEnum {
         for(RoleEnum roleEnum : RoleEnum.values()){
             list.add(roleEnum.getRoleId());
         }
-        return null;
+        return list;
     }
 }

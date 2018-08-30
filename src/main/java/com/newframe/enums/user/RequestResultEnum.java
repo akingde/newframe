@@ -57,16 +57,16 @@ public enum RequestResultEnum implements CodeStatus {
 
     @Override
     public String getCode() {
-        return null;
+        return code;
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return message;
     }
 
     RequestResultEnum(String code, String message) {
         this.code = code;
         this.message = message;
     }
-    }
+}

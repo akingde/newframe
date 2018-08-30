@@ -226,7 +226,7 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         Page<UserRoleApply> page = userRoleApplySlave.findAll(query, pageable);
         List<UserRoleApply> pageContent = page.getContent();
         if (CollectionUtils.isEmpty(pageContent)){
-            return new UserRoleApply();
+            return null;
         }
         return pageContent.get(0);
     }

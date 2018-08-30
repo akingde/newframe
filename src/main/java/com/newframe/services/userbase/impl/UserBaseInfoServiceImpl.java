@@ -102,7 +102,9 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
      */
     @Override
     public UserBaseInfo findOne(String mobile) {
-        return null;
+        UserBaseInfoQuery query = new UserBaseInfoQuery();
+        query.setMobile(mobile);
+        return userBaseInfoSlave.findOne(query);
     }
 
     /**
