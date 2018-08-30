@@ -9,6 +9,7 @@ import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
+import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.order.*;
@@ -594,7 +595,14 @@ public class OrderServiceImpl implements OrderService {
             String expressData = expressInfo.getExpStatus();
             if(!StringUtils.isEmpty(expressData)){
                 expressData = "["+expressData +"]";
-                return new JsonResult(SystemCode.SUCCESS,expressData);
+                DeliverDTO deliverDTO = new DeliverDTO();
+                deliverDTO.setDeliverInfo(expressData);
+                deliverDTO.setExpressCompany(orderSupplier.getExpressCompany());
+                deliverDTO.setExpressNumber(orderSupplier.getExpressNumber());
+                deliverDTO.setExpressTime(orderSupplier.getExpressTime());
+                deliverDTO.setSerialNumber(orderSupplier.getSerialNumber());
+                return new JsonResult(SystemCode.SUCCESS,deliverDTO);
+
             }
         }
         return new JsonResult(SystemCode.NO_EXPRESS_INFO,false);
@@ -716,6 +724,20 @@ public class OrderServiceImpl implements OrderService {
             orderHirerMaser.save(orderHirer);
         }
         return new JsonResult(SystemCode.SUCCESS,true);
+    }
+
+    @Override
+    public OperationResult<List<ExpressCompanyDTO>> getExpressList() {
+        List<ExpressCompany> expressCompanies = expressCompanySlave.findAll();
+        List<ExpressCompanyDTO> dtos = new ArrayList<>();
+        for(ExpressCompany expressCompany:expressCompanies){
+            ExpressCompanyDTO dto = new ExpressCompanyDTO();
+            dto.setExpressCode(expressCompany.getCompanyCode());
+            dto.setExpressName(expressCompany.getCompanyName());
+            dtos.add(dto);
+        }
+
+        return new OperationResult<>(OrderResultEnum.SUCCESS,dtos);
     }
 
     /**
