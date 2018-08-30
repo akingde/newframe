@@ -7,7 +7,7 @@ import lombok.Data;
  * @description:
  */
 @Data
-public class RenterAddresses {
+public class RenterAddress {
 
     private String country;
 

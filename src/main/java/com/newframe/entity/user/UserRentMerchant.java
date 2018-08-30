@@ -47,7 +47,7 @@ public class UserRentMerchant {
      * 商家手机号
      * merchant_photo_number
      */
-    @Column(name = "merchant_photo_number")
+    @Column(name = "merchant_phone_number")
     private String merchantPhoneNumber;
 
     /**

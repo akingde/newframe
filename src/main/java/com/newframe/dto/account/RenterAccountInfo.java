@@ -13,7 +13,13 @@ public class RenterAccountInfo {
 
     private RenterBaseInfo renterBaseInfo;
 
-    private List<RenterAddresses> renterAddresses;
+    private List<RenterAddress> renterAddresses;
 
     private RenterAuthorization renterAuthorization;
+
+    public RenterAccountInfo(RenterBaseInfo renterBaseInfo, List<RenterAddress> renterAddresses, RenterAuthorization renterAuthorization){
+        this.renterBaseInfo = renterBaseInfo;
+        this.renterAddresses = renterAddresses;
+        this.renterAuthorization=renterAuthorization;
+    }
 }
