@@ -3,7 +3,9 @@ package com.newframe.controllers.api;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
+import com.newframe.dto.order.response.ExpressCompanyDTO;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -288,7 +290,11 @@ public class ApiOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("express/list")
     public JsonResult getExpressList(){
-        return null;
+        OperationResult<List<ExpressCompanyDTO>> result = orderService.getExpressList();
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
 
     /**
@@ -361,6 +367,7 @@ public class ApiOrderController extends BaseController {
 
     /**
      * 查询租赁商信息
+     * 租赁商信息的逾期次数和融资金额、逾期金额等可以先写死，
      * @param renterId 租赁商id
      * @return 查询结果
      */
@@ -372,6 +379,8 @@ public class ApiOrderController extends BaseController {
 
     /**
      * 查询订单融资信息
+     * 查询order_hirer
+     * 保证金暂时先写死，忘记这个字段了
      * @param orderId 订单id
      * @return 返回结果
      */
@@ -383,6 +392,7 @@ public class ApiOrderController extends BaseController {
 
     /**
      * 查询租机信息
+     * 查询order_hirer,出租方名称表中没有存，需要从其他地方读取
      * @param orderId 订单id
      * @return 查询结果
      */
