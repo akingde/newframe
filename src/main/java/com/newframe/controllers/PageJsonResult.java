@@ -21,7 +21,7 @@ public class PageJsonResult extends JsonResult {
     public PageJsonResult setPage(Page page) {
         JsonPage jsonPage = new JsonPage();
         jsonPage.setTotal(page.getTotalElements());
-        jsonPage.setData(page.getContent());
+        jsonPage.setList(page.getContent());
         setData(jsonPage);
         return this;
     }
@@ -48,7 +48,7 @@ public class PageJsonResult extends JsonResult {
     public PageJsonResult(CodeStatus codeStatus, List data, Long total) {
         super(codeStatus);
         JsonPage jsonPage = new JsonPage();
-        jsonPage.setData(data);
+        jsonPage.setList(data);
         jsonPage.setTotal(total);
         setData(jsonPage);
     }
@@ -57,6 +57,6 @@ public class PageJsonResult extends JsonResult {
     @Data
     class JsonPage {
         private Long total;
-        private List data;
+        private List list;
     }
 }
