@@ -648,7 +648,8 @@ public class OrderServiceImpl implements OrderService {
             OrderHirerDTO orderHirerDTO = wrapOrderHirer2DTO(orderHirer);
             orderHirerDTOS.add(orderHirerDTO);
         }
-        result.setPage(page);
+        result.setTotal(page.getTotalElements());
+        result.setData(orderHirerDTOS);
         return new JsonResult(SystemCode.SUCCESS,result);
     }
 
@@ -740,6 +741,7 @@ public class OrderServiceImpl implements OrderService {
         dto.setRenterName(orderHirer.getMerchantName());
         dto.setRenterPhone(orderHirer.getMerchantMobile());
         dto.setMachineNumber(1);
+        dto.setUid(orderHirer.getLessorId());
         return dto;
     }
 

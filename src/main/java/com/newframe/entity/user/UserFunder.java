@@ -114,6 +114,20 @@ public class UserFunder {
     private Integer roleStatus;
 
     /**
+     * 审核的后台uid
+     * check_uid
+     */
+    @Column(name = "check_uid")
+    private Long checkUid;
+
+    /**
+     * 后台审核人姓名
+     * check_person
+     */
+    @Column(name = "check_person")
+    private String checkPerson;
+
+    /**
      * 是否在白名单
      * is_white
      */
@@ -151,6 +165,8 @@ public class UserFunder {
         this.letterOfAttorneyFile = userRoleApply.getLetterOfAttorneyFile();
         this.businessQualificationFile = userRoleApply.getBusinessQualificationFile();
         this.roleStatus = RoleStatusEnum.NORMAL.getRoleStatue();
+        this.checkUid = userRoleApply.getCheckUid();
+        this.checkPerson = userRoleApply.getCheckPerson();
         this.isWhite = false;
     }
 }

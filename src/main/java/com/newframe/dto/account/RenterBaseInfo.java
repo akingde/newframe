@@ -12,4 +12,5 @@ public class RenterBaseInfo {
     private String mobile;
 
     private Boolean hasPassword;
+
 }

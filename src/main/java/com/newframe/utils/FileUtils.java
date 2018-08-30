@@ -27,7 +27,7 @@ public class FileUtils {
         if(CollectionUtils.isEmpty(files)){
             return true;
         }
-        if(!checkLength(length, files)){
+        if(checkLength(length, files)){
             return true;
         }
         return !checkImageAndEmpty(files);
@@ -43,7 +43,7 @@ public class FileUtils {
             return false;
         }
         for (MultipartFile file : files) {
-            if (file == null || files.size() == 1){
+            if (file == null && files.size() == 1){
                 return false;
             }
             if(file == null){
