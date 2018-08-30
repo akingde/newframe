@@ -1,15 +1,22 @@
-package com.newframe.controllers.app;
+package com.newframe.controllers.api;
 
 import com.newframe.common.anony.Anonymous;
+import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RenterAccountInfo;
+import com.newframe.enums.TypeEnum;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
+import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.nio.file.LinkOption;
 
 /**
  * @author:wangdong 31个接口
@@ -17,10 +24,16 @@ import java.math.BigDecimal;
  */
 @RestController
 @RequestMapping("/app/account/")
-public class AppAccountController extends BaseController {
+public class ApIAccountController extends BaseController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AccountManageService accountManageService;
+
+    @Autowired
+    private OrderService orderService;
 
     private Long getUid() {
         return 3436672695388700980L;
@@ -65,8 +78,13 @@ public class AppAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterAccountInfo")
-    public JsonResult getRenterAccountInfo() {
-        return null;
+    public JsonResult getRenterAccountInfo(Long uid) {
+
+        OperationResult<RenterAccountInfo> result = accountManageService.getRenterAccountInfo(uid);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -237,9 +255,8 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @Anonymous(value = true)
-    @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
-    public JsonResult getFunderAssetAccount() {
+    @RequestMapping("getFunderAssetAccount")
+    public JsonResult getFunderAssetAccount(Long uid) {
         return accountService.getFunderAssetAccount(getUid());
     }
 
@@ -252,9 +269,11 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getFunderOrderFinancialAssets")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderFinancialAssets", method = RequestMethod.POST)
     public JsonResult getFunderOrderFinancialAssets() {
-        return null;
+        return accountService.getFunderOrderFinancialAssets(getUid());
     }
 
     /**
@@ -266,9 +285,11 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listFunderOrderInvestment")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "listFunderOrderInvestment", method = RequestMethod.POST)
     public JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listFunderOrderInvestment(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -279,9 +300,11 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getFunderOrderInvestmentDetail")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderInvestmentDetail", method = RequestMethod.POST)
     public JsonResult getFunderOrderInvestmentDetail(Long orderId) {
-        return null;
+        return accountService.getFunderOrderInvestmentDetail(getUid(), orderId);
     }
 
     /**
@@ -293,7 +316,9 @@ public class AppAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getFunderOrderOverdueAssets")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderOverdueAssets", method = RequestMethod.POST)
     public JsonResult getFunderOrderOverdueAssets() {
         return null;
     }
@@ -307,7 +332,9 @@ public class AppAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listFunderOrderOverdue")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "listFunderOrderOverdue", method = RequestMethod.POST)
     public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize) {
         return null;
     }
@@ -320,7 +347,9 @@ public class AppAccountController extends BaseController {
      * @param orderId
      * @return
      */
-    @RequestMapping("getFunderOrderOverdueDetail")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderOverdueDetail", method = RequestMethod.POST)
     public JsonResult getFunderOrderOverdueDetail(Long orderId) {
         return null;
     }

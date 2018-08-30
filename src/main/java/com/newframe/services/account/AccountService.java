@@ -191,7 +191,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getFunderOrderFinancialAssets();
+    JsonResult getFunderOrderFinancialAssets(Long uid);
 
     /**
      * 获取资金方金融资产下
@@ -202,7 +202,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize);
+    JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 获取资金方金融资产下
@@ -212,7 +212,7 @@ public interface AccountService {
      * @param orderId
      * @return
      */
-    JsonResult getFunderOrderInvestmentDetail(Long orderId);
+    JsonResult getFunderOrderInvestmentDetail(Long uid, Long orderId);
 
     /**
      * 获取资金方逾期资产账户
