@@ -6,6 +6,7 @@ import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.AccountFunding;
 import com.newframe.entity.account.AccountFundingFinanceAsset;
 import com.newframe.entity.account.AccountFundingOverdueAsset;
+import com.newframe.entity.account.AccountLessor;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
@@ -173,6 +174,18 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    /**
+     * 15.资金方获取账户资产
+     * 1、可用余额
+     * 2、资产总额
+     * 3、冻结资产
+     * 4、保证金余额
+     * 5、保证金垫付金额
+     * 6、代收金额
+     * 7、本月应收
+     *
+     * @return
+     */
     @Override
     public JsonResult getFunderAssetAccount(Long uid) {
         AccountFunding entity = accountFundingSlave.findOne(uid);
@@ -186,6 +199,14 @@ public class AccountServiceImpl implements AccountService {
         return new JsonResult(SystemCode.SUCCESS, null);
     }
 
+    /**
+     * 16.获取资金方金融资产账户
+     * 涉及到
+     * 1、投资回报率
+     * 2、市场平均投资回报率
+     *
+     * @return
+     */
     @Override
     public JsonResult getFunderOrderFinancialAssets(Long uid) {
         AccountFundingFinanceAsset entity = accountFundingFinanceAssetSlave.findOne(uid);
@@ -197,6 +218,15 @@ public class AccountServiceImpl implements AccountService {
         return new JsonResult(SystemCode.SUCCESS, null);
     }
 
+    /**
+     * 17.获取资金方金融资产下
+     * 投资明细列表
+     * 涉及到分页
+     *
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
     @Override
     public JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize) {
         currentPage--;
@@ -217,6 +247,14 @@ public class AccountServiceImpl implements AccountService {
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
     }
 
+    /**
+     * 18.获取资金方金融资产下
+     * 获取资金方金融资产下
+     * 根据订单的Id,去查看详情
+     *
+     * @param orderId
+     * @return
+     */
     @Override
     public JsonResult getFunderOrderInvestmentDetail(Long uid, Long orderId) {
         OrderFunderQuery query = new OrderFunderQuery();
@@ -231,7 +269,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取资金方逾期资产账户
+     * 19.获取资金方逾期资产账户
      * 涉及到
      * 1、逾期金融合计
      * 2、逾期笔数
@@ -251,7 +289,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取资金方逾期资产
+     * 20.获取资金方逾期资产
      * 逾期明细列表
      * 涉及到分页
      *
@@ -284,7 +322,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取资金方逾期资产
+     * 21.获取资金方逾期资产
      * 逾期明细列表
      * 根据订单的Id,去查看详情
      *
@@ -298,7 +336,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 供应商获取账户资产
+     * 22.供应商获取账户资产
      * 1、可用余额
      * 2、资产总额
      * 3、冻结资产
@@ -311,7 +349,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取供应商销售账户
+     * 23.获取供应商销售账户
      * 涉及到
      * 1、累计营收
      * 2、累计销售数量
@@ -325,7 +363,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取供应商销售账户下
+     * 24.获取供应商销售账户下
      * 销售明细列表
      * 涉及到分页
      *
@@ -339,7 +377,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 出租方获取账户资产
+     * 25.出租方获取账户资产
      * 1、可用余额
      * 2、资产总额
      * 3、冻结资产
@@ -350,52 +388,13 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerAssetAccount() {
-        return null;
+    public JsonResult getHirerAssetAccount(Long uid) {
+        AccountLessor entity = accountLessorSlave.findOne(uid);
+        return new JsonResult(SystemCode.SUCCESS, entity);
     }
 
     /**
-     * 获取出租方逾期资产账户
-     * 涉及到
-     * 1、逾期金额合计
-     * 2、逾期笔数
-     * 3、逾期率
-     *
-     * @return
-     */
-    @Override
-    public JsonResult getHirerOrderOverdueAssets() {
-        return null;
-    }
-
-    /**
-     * 获取出租方逾期资产账户下
-     * 逾期明细列表
-     * 涉及到分页
-     *
-     * @param currentPage
-     * @param pageSize
-     * @return
-     */
-    @Override
-    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
-    }
-
-    /**
-     * 获取出租方逾期资产账户下
-     * 逾期明细列表
-     *
-     * @param orderId
-     * @return
-     */
-    @Override
-    public JsonResult getHirerOrderOverdueDetail(Long orderId) {
-        return null;
-    }
-
-    /**
-     * 获取出租方实物资产账户
+     * 26.获取出租方实物资产账户
      * 涉及到
      * 1、租赁总额
      * 2、累计应付租金
@@ -412,7 +411,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取出租方实物资产账户下
+     * 27.获取出租方实物资产账户下
      * 实物明细列表
      * 涉及到分页
      *
@@ -426,14 +425,52 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 获取出租方实物资产账户下
+     * 28.获取出租方实物资产账户下
      * 实物明细列表
      *
-     * @param orderId
      * @return
      */
     @Override
     public JsonResult getHirerOrderMaterialDetail(Long orderId) {
+        return null;
+    }
+
+    /**
+     * 29.获取出租方逾期资产账户
+     * 涉及到
+     * 1、逾期金额合计
+     * 2、逾期笔数
+     * 3、逾期率
+     *
+     * @return
+     */
+    @Override
+    public JsonResult getHirerOrderOverdueAssets() {
+        return null;
+    }
+
+    /**
+     * 30.获取出租方逾期资产账户下
+     * 逾期明细列表
+     * 涉及到分页
+     *
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
+        return null;
+    }
+
+    /**
+     * 31.获取出租方逾期资产账户下
+     * 逾期明细列表
+     *
+     * @return
+     */
+    @Override
+    public JsonResult getHirerOrderOverdueDetail(Long orderId) {
         return null;
     }
 }

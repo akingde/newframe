@@ -45,7 +45,11 @@ public class AccountLessor implements Serializable {
     /**
      * 待收金额
      */
-    private BigDecimal dueAmount;
+    private BigDecimal payAmount;
+    /**
+     * 每月应收金额
+     */
+    private BigDecimal monthPayableAccount;
     /**
      * 账号状态,1:正常,2:冻结
      */

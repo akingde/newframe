@@ -414,7 +414,7 @@ public class ApIAccountController extends BaseController {
      */
     @RequestMapping("getHirerAssetAccount")
     public JsonResult getHirerAssetAccount() {
-        return null;
+        return accountService.getHirerAssetAccount(getUid());
     }
 
 

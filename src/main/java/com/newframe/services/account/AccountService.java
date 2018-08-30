@@ -169,7 +169,7 @@ public interface AccountService {
      */
 
     /**
-     * 资金方获取账户资产
+     * 15.资金方获取账户资产
      * 1、可用余额
      * 2、资产总额
      * 3、冻结资产
@@ -184,7 +184,7 @@ public interface AccountService {
 
 
     /**
-     * 获取资金方金融资产账户
+     * 16.获取资金方金融资产账户
      * 涉及到
      * 1、投资回报率
      * 2、市场平均投资回报率
@@ -194,7 +194,7 @@ public interface AccountService {
     JsonResult getFunderOrderFinancialAssets(Long uid);
 
     /**
-     * 获取资金方金融资产下
+     * 17.获取资金方金融资产下
      * 投资明细列表
      * 涉及到分页
      *
@@ -205,7 +205,7 @@ public interface AccountService {
     JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize);
 
     /**
-     * 获取资金方金融资产下
+     * 18.获取资金方金融资产下
      * 获取资金方金融资产下
      * 根据订单的Id,去查看详情
      *
@@ -215,7 +215,7 @@ public interface AccountService {
     JsonResult getFunderOrderInvestmentDetail(Long uid, Long orderId);
 
     /**
-     * 获取资金方逾期资产账户
+     * 19.获取资金方逾期资产账户
      * 涉及到
      * 1、逾期金融合计
      * 2、逾期笔数
@@ -226,7 +226,7 @@ public interface AccountService {
     JsonResult getFunderOrderOverdueAssets(Long uid);
 
     /**
-     * 获取资金方逾期资产
+     * 20.获取资金方逾期资产
      * 逾期明细列表
      * 涉及到分页
      *
@@ -237,7 +237,7 @@ public interface AccountService {
     JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
 
     /**
-     * 获取资金方逾期资产
+     * 21.获取资金方逾期资产
      * 逾期明细列表
      * 根据订单的Id,去查看详情
      *
@@ -246,12 +246,13 @@ public interface AccountService {
      */
     JsonResult getFunderOrderOverdueDetail(Long uid, Long orderId);
 
+
     /**
      * 供应商相关账户接口
      */
 
     /**
-     * 供应商获取账户资产
+     * 22.供应商获取账户资产
      * 1、可用余额
      * 2、资产总额
      * 3、冻结资产
@@ -260,9 +261,8 @@ public interface AccountService {
      */
     JsonResult getSupplierAssetAccount();
 
-
     /**
-     * 获取供应商销售账户
+     * 23.获取供应商销售账户
      * 涉及到
      * 1、累计营收
      * 2、累计销售数量
@@ -273,7 +273,7 @@ public interface AccountService {
     JsonResult getSupplierOrderSellAssets();
 
     /**
-     * 获取供应商销售账户下
+     * 24.获取供应商销售账户下
      * 销售明细列表
      * 涉及到分页
      *
@@ -288,7 +288,7 @@ public interface AccountService {
      */
 
     /**
-     * 出租方获取账户资产
+     * 25.出租方获取账户资产
      * 1、可用余额
      * 2、资产总额
      * 3、冻结资产
@@ -298,41 +298,10 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerAssetAccount();
-
-
-    /**
-     * 获取出租方逾期资产账户
-     * 涉及到
-     * 1、逾期金额合计
-     * 2、逾期笔数
-     * 3、逾期率
-     *
-     * @return
-     */
-    JsonResult getHirerOrderOverdueAssets();
+    JsonResult getHirerAssetAccount(Long uid);
 
     /**
-     * 获取出租方逾期资产账户下
-     * 逾期明细列表
-     * 涉及到分页
-     *
-     * @param currentPage
-     * @param pageSize
-     * @return
-     */
-    JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize);
-
-    /**
-     * 获取出租方逾期资产账户下
-     * 逾期明细列表
-     *
-     * @return
-     */
-    JsonResult getHirerOrderOverdueDetail(Long orderId);
-
-    /**
-     * 获取出租方实物资产账户
+     * 26.获取出租方实物资产账户
      * 涉及到
      * 1、租赁总额
      * 2、累计应付租金
@@ -346,7 +315,7 @@ public interface AccountService {
     JsonResult getHirerOrderMaterialAssets();
 
     /**
-     * 获取出租方实物资产账户下
+     * 27.获取出租方实物资产账户下
      * 实物明细列表
      * 涉及到分页
      *
@@ -357,11 +326,41 @@ public interface AccountService {
     JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize);
 
     /**
-     * 获取出租方实物资产账户下
+     * 28.获取出租方实物资产账户下
      * 实物明细列表
      *
      * @return
      */
     JsonResult getHirerOrderMaterialDetail(Long orderId);
+
+    /**
+     * 29.获取出租方逾期资产账户
+     * 涉及到
+     * 1、逾期金额合计
+     * 2、逾期笔数
+     * 3、逾期率
+     *
+     * @return
+     */
+    JsonResult getHirerOrderOverdueAssets();
+
+    /**
+     * 30.获取出租方逾期资产账户下
+     * 逾期明细列表
+     * 涉及到分页
+     *
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize);
+
+    /**
+     * 31.获取出租方逾期资产账户下
+     * 逾期明细列表
+     *
+     * @return
+     */
+    JsonResult getHirerOrderOverdueDetail(Long orderId);
 
 }
