@@ -50,7 +50,7 @@ public class AfterServiceImpl implements AfterService {
         if(StringUtils.isEmpty(password) || !password.equals(pwd)){
             return new OperationResult(RequestResultEnum.LOGIN_ERROR);
         }
-        return new OperationResult();
+        return new OperationResult(new UserDTO());
     }
 
     /**
@@ -74,7 +74,7 @@ public class AfterServiceImpl implements AfterService {
     @Override
     public OperationResult<RoleApplyInfoDTO> getMechantInfo(Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, null);
-        return new OperationResult(new RoleApplyInfoDTO(roleApply));
+        return roleApply == null ? new OperationResult() : new OperationResult(new RoleApplyInfoDTO(roleApply));
     }
 
     /**
