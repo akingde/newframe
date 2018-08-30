@@ -5,7 +5,9 @@ import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.AccountRenterRentInfo;
 import com.newframe.dto.account.RenterAccountInfo;
+import com.newframe.entity.account.AccountRenter;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.nio.file.LinkOption;
 
 /**
  * @author:wangdong 31个接口
@@ -100,8 +101,13 @@ public class ApIAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterAssetAccount")
-    public JsonResult getRenterAssetAccount() {
-        return null;
+    public JsonResult getRenterAssetAccount(Long uid) {
+
+        OperationResult<AccountRenter> result = accountManageService.getRenterAssetAccount(uid);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -110,9 +116,14 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getRenterRentDetail")
-    public JsonResult getRenterRentDetail(Integer currentPage, Integer pageSize) {
-        return null;
+    @RequestMapping("listRenterOrderRentAccount")
+    public JsonResult listRenterOrderRentAccount(Long uid,Integer orderStatus,Integer currentPage, Integer pageSize) {
+
+        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRentAccount(uid, orderStatus, currentPage, pageSize);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -179,10 +190,10 @@ public class ApIAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listRenterOrderRentAccount")
+    /*@RequestMapping("listRenterOrderRentAccount")
     public JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize) {
         return null;
-    }
+    }*/
 
     /**
      * 租赁商租赁账户下
