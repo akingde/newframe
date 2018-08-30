@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.nio.file.LinkOption;
 
 /**
  * @author:wangdong 31个接口
@@ -254,10 +255,8 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @Anonymous(true)
-    @UserType(type = TypeEnum.app)
-    @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
-    public JsonResult getFunderAssetAccount() {
+    @RequestMapping("getFunderAssetAccount")
+    public JsonResult getFunderAssetAccount(Long uid) {
         return accountService.getFunderAssetAccount(getUid());
     }
 
