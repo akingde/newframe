@@ -5,11 +5,14 @@ import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.AccountFunding;
 import com.newframe.entity.account.AccountFundingFinanceAsset;
+import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterRent;
 import com.newframe.entity.account.AccountFundingOverdueAsset;
 import com.newframe.entity.account.AccountLessor;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
+import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
 import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
@@ -20,11 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author:zww 31个接口
@@ -49,6 +54,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     OrderFunderSlave orderFunderSlave;
+
+    @Autowired
+    private AccountRenterSlave accountRenterSlave;
+
+    @Autowired
+    private AccountRenterRentSlave accountRenterRentSlave;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -472,5 +483,49 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getHirerOrderOverdueDetail(Long orderId) {
         return null;
+    }
+
+    /**
+     * 获取租赁商账户资产
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenter getAccountRenter(Long uid) {
+        if (null == uid){
+            return null;
+        }
+
+        Optional<AccountRenter> result = accountRenterSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
+    }
+
+    /**
+     * 获取租赁商账户资产下的租赁明细表
+     *
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+        if (null == uid || null == currentPage || null == pageSize){
+            return null;
+        }
+
+        AccountRenterRentQuery query = new AccountRenterRentQuery();
+        query.setUid(uid);
+        query.setOrderStatus(orderStatus);
+        Sort sort = new Sort(Sort.Direction.DESC,"ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage-1,pageSize,sort);
+
+        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(pageRequest);
+        return rents;
     }
 }

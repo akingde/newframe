@@ -1,6 +1,9 @@
 package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
+import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterRent;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 
@@ -363,4 +366,20 @@ public interface AccountService {
      */
     JsonResult getHirerOrderOverdueDetail(Long orderId);
 
+    /**
+     * 获取租赁商账户资产
+     * @param uid
+     * @return
+     */
+    AccountRenter getAccountRenter(Long uid);
+
+    /**
+     * 获取租赁商账户资产下的租赁明细表
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
 }
