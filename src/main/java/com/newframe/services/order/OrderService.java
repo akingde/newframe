@@ -1,7 +1,9 @@
 package com.newframe.services.order;
 
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
+import com.newframe.dto.order.response.ExpressCompanyDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -195,4 +197,10 @@ public interface OrderService {
      * @return 操作结果
      */
     JsonResult lessorRefuse(Long orderId, Long uid);
+
+    /**
+     * 查询快递公司列表
+     * @return 查询结果
+     */
+    OperationResult<List<ExpressCompanyDTO>> getExpressList();
 }

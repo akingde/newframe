@@ -9,6 +9,7 @@ import com.newframe.dto.RequestUser;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.SystemCode;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
@@ -45,10 +46,9 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 14:31
      */
-    @Anonymous(true)
     @PostMapping("register")
     public JsonResult register(String mobile, String mCode) {
-        OperationResult<UserBaseInfoDTO> result = userService.register(mobile, mCode, true);
+        OperationResult<UserBaseInfoDTO> result = userService.register(mobile, mCode);
         if (result.getEntity() == null) {
             return error(result.getErrorCode());
         }
@@ -61,7 +61,6 @@ public class ApiUserController extends BaseController {
      * @param token
      * @return
      */
-    @Anonymous(true)
     @PostMapping("refreshToken")
     public JsonResult refreshToken(Long uid, String token){
         OperationResult<UserBaseInfoDTO> result = userService.refreshToken(uid, token);
@@ -78,7 +77,6 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 14:31
      */
-    @Anonymous(true)
     @PostMapping("checkMobileAndPasswordExists")
     public JsonResult checkMobileExists(String mobile) {
         OperationResult<UserRegisterDTO> result = userService.checkExistsMobileAndPassword(mobile);
@@ -88,10 +86,9 @@ public class ApiUserController extends BaseController {
         return success(result.getEntity());
     }
 
-    @Anonymous(true)
     @PostMapping("passwordLogin")
     public JsonResult passwordLogin(String mobile, String password) {
-        OperationResult<UserBaseInfoDTO> result = userService.passwordLogin(mobile, password, true);
+        OperationResult<UserBaseInfoDTO> result = userService.passwordLogin(mobile, password);
         if (result.getEntity() == null) {
             return error(result.getErrorCode());
         }
@@ -106,7 +103,6 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 15:48
      */
-    @Anonymous(true)
     @PostMapping("sendVerificationCode")
     public JsonResult sendVerificationCode(String mobile, Integer codeType) {
         OperationResult<String> result = userService.sendVerificationCode(mobile, null);
@@ -124,10 +120,9 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:05
      */
-    @Anonymous(true)
     @PostMapping("verificationCodeLogin")
     public JsonResult verificationCodeLogin(String mobile, String code) {
-        OperationResult<UserBaseInfoDTO> result = userService.verificationCodeLogin(mobile, code, true);
+        OperationResult<UserBaseInfoDTO> result = userService.verificationCodeLogin(mobile, code);
         if (result.getEntity() == null) {
             return error(result.getErrorCode());
         }
@@ -138,11 +133,13 @@ public class ApiUserController extends BaseController {
      * 注销登录
      * @return
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("logout")
-    public JsonResult logout(){
-        Long uid = RequestUser.getCurrentUid();
-        userService.logout(uid, true);
+    public JsonResult logout(Long uid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        userService.logout(uid);
         return success(true);
     }
 
@@ -154,10 +151,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:08
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("setPassword")
-    public JsonResult setPassword(String password, String confirmPassword) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult setPassword(Long uid, String password, String confirmPassword) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.setPassword(uid, password, confirmPassword);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -174,7 +173,6 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 16:35
      */
-    @Anonymous(true)
     @PostMapping("setLoginPassword")
     public JsonResult setLoginPassword(String mobile, String mCode, String password) {
         OperationResult<Boolean> result = userService.setLoginPassword(mobile, mCode, password);
@@ -193,10 +191,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:10
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("modifyPassword")
-    public JsonResult modifyPassword(String oldPassword, String newPassword, String confirmPassword) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult modifyPassword(Long uid, String oldPassword, String newPassword, String confirmPassword) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.modifyPassword(uid, oldPassword, newPassword, confirmPassword);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -212,7 +212,6 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/14 16:02
      */
-    @Anonymous(true)
     @PostMapping("forgetPassword")
     public JsonResult forgetPassword(String mobile, String mCode, String password) {
         Long uid = RequestUser.getCurrentUid();
@@ -231,10 +230,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:16
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("modifyMobile")
-    public JsonResult modifyMobile(String newMobile, String mobileCode) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult modifyMobile(Long uid, String newMobile, String mobileCode) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.modifyMobile(uid, newMobile, mobileCode);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -249,10 +250,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:19
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("removeMobile")
-    public JsonResult removeMobile(String mobileCode) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult removeMobile(Long uid, String mobileCode) {
+//      Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.removeMobile(uid, mobileCode);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -267,10 +270,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 17:48
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getRoleApply")
-    public JsonResult getRoleApply(Integer roleId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getRoleApply(Long uid, Integer roleId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<UserRoleApplyDTO.RoleApplyResult> result = userService.getUserApply(uid);
         return success(result.getEntity());
     }
@@ -282,10 +287,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 10:29
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("revokeRoleApple")
-    public JsonResult revokeRoleApple(Long roleApplyId){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult revokeRoleApple(Long uid, Long roleApplyId){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = roleBaseService.revokeRoleApply(uid, roleApplyId);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -300,10 +307,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:43
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("rentMerchantRoleApply")
-    public JsonResult rentMerchantRoleApply(RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult rentMerchantRoleApply(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<Boolean> result = roleBaseService.roleApply(uid, rentMerchantApplyDTO, roleId);
         if (!result.getEntity()) {
@@ -319,10 +328,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:34
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getRentMechantApplyInfo")
-    public JsonResult getRentMechantApplyInfo(Long roleApplyId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getRentMechantApplyInfo(Long uid, Long roleApplyId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
         return success(result.getEntity());
@@ -335,10 +346,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 17:55
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getRentMerchantInfo")
-    public JsonResult getRentMerchantInfo(){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getRentMerchantInfo(Long uid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
         return success(result.getEntity());
@@ -351,10 +364,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 20:39
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("setAppoint")
-    public JsonResult setAppoint(boolean appoint){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult setAppoint(Long uid, boolean appoint){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<Boolean> result = roleBaseService.setAppoint(uid, roleId, appoint);
         if (!result.getEntity()) {
@@ -371,10 +386,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 20:15
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("appointSupplier")
-    public JsonResult appointSupplier(Long[] supplierUid, Long[] revokeSupplierUid){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult appointSupplier(Long uid, Long[] supplierUid, Long[] revokeSupplierUid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<Boolean> result = roleBaseService.modifyAppointSupplier(uid, roleId, supplierUid, revokeSupplierUid);
         if (!result.getEntity()) {
@@ -390,10 +407,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 18:51
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getMerchantAppoint")
-    public JsonResult getMerchantAppoint(){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getMerchantAppoint(Long uid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<List<UserRoleDTO.Supplier>> result = roleBaseService.getAppointSupplier(uid);
         return success(result.getEntity());
     }
@@ -405,10 +424,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:50
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("funderRoleApply")
-    public JsonResult funderRoleApply(FunderApplyDTO funderApplyDTO) throws IOException{
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult funderRoleApply(Long uid, FunderApplyDTO funderApplyDTO) throws IOException{
+//      Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FUNDER.getRoleId();
         OperationResult<Boolean> result = roleBaseService.roleApply(uid, funderApplyDTO, roleId);
         if (!result.getEntity()) {
@@ -424,10 +445,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:37
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getFunderApplyInfo")
-    public JsonResult getFunderApplyInfo(Long roleApplyId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getFunderApplyInfo(Long uid, Long roleApplyId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FUNDER.getRoleId();
         OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
         if (result.getEntity() == null) {
@@ -443,10 +466,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 17:57
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getFunderInfo")
-    public JsonResult getFunderInfo(){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getFunderInfo(Long uid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FUNDER.getRoleId();
         OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
         return success(result.getEntity());
@@ -459,10 +484,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:52
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("hirerRoleApply")
-    public JsonResult hirerRoleApply(HirerApplyDTO hirerApplyDTO) throws IOException{
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult hirerRoleApply(Long uid, HirerApplyDTO hirerApplyDTO) throws IOException{
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.HIRER.getRoleId();
         OperationResult<Boolean> result = roleBaseService.roleApply(uid, hirerApplyDTO, roleId);
         if (!result.getEntity()) {
@@ -478,10 +505,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:39
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getHirerApplyInfo")
-    public JsonResult getHirerApplyInfo(Long roleApplyId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getHirerApplyInfo(Long uid, Long roleApplyId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.HIRER.getRoleId();
         OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
         return success(result.getEntity());
@@ -494,10 +523,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 17:58
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getHirerInfo")
-    public JsonResult getHirerInfo(){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getHirerInfo(Long uid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.HIRER.getRoleId();
         OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
         return success(result.getEntity());
@@ -510,10 +541,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 16:59
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("supplierRoleApply")
-    public JsonResult supplierRoleApply(SupplierApplyDTO supplierApplyDTO) throws IOException {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult supplierRoleApply(Long uid, SupplierApplyDTO supplierApplyDTO) throws IOException {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.SUPPLIER.getRoleId();
         OperationResult<Boolean> result = roleBaseService.roleApply(uid, supplierApplyDTO, roleId);
         if (!result.getEntity()) {
@@ -529,10 +562,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/13 14:40
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getSupplierApplyInfo")
-    public JsonResult getSupplierApplyInfo(Long roleApplyId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getSupplierApplyInfo(Long uid, Long roleApplyId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.SUPPLIER.getRoleId();
         OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
         return success(result.getEntity());
@@ -545,10 +580,12 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 18:00
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getSupplierInfo")
-    public JsonResult getSupplierInfo(){
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getSupplierInfo(Long uid){
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.SUPPLIER.getRoleId();
         OperationResult<UserRoleDTO> result = roleBaseService.getUserRoleInfo(uid, roleId);
         return success(result.getEntity());
@@ -561,9 +598,11 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 18:23
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getSupplierList")
-    public JsonResult getSupplierList(){
+    public JsonResult getSupplierList(Long uid){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.SUPPLIER.getRoleId();
         OperationResult<List<UserRoleDTO.Supplier>> result = roleBaseService.getAllSupplier(roleId);
         return success(result.getEntity());
@@ -575,10 +614,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 14:35
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getAddress")
-    public JsonResult getAddress() {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getAddress(Long uid) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<List<UserAddressDTO>> result = userService.getUserAddressList(uid);
         return success(result.getEntity());
     }
@@ -588,10 +629,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:27
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("addAddress")
-    public JsonResult addAddress(AddressDTO addressDTO) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult addAddress(Long uid, AddressDTO addressDTO) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.addUserAddress(uid, addressDTO);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -604,10 +647,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:34
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("modifyAddress")
-    public JsonResult modifyAddress(AddressDTO addressDTO) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult modifyAddress(Long uid, AddressDTO addressDTO) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.modifyAddress(uid, addressDTO);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -622,10 +667,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 17:52
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("removeAddress")
-    public JsonResult removeAddress(Long addressId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult removeAddress(Long uid, Long addressId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.removeAddress(uid, addressId);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -640,10 +687,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 14:36
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("setDefaultAddress")
-    public JsonResult setDefaultAddress(Long addressId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult setDefaultAddress(Long uid, Long addressId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.setDefaultAddress(uid, addressId);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -657,10 +706,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 18:04
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("getRentMerchantList")
-    public JsonResult getRentMerchantList() {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getRentMerchantList(Long uid) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<List<UserRoleDTO.SmallRentMechant>> result = roleBaseService.getSmallRentMechantList(uid, roleId);
         return success(result.getEntity());
@@ -672,10 +723,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:46
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("addRentMerchant")
-    public JsonResult addRentMerchant(RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException{
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult addRentMerchant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException{
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = roleBaseService.addSmallRentMechant(uid, rentMerchantApplyDTO);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -688,10 +741,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:49
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("modifyRentMerchant")
-    public JsonResult modifyRentMerchant(RentMerchantModifyDTO rentMerchantModifyDTO) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult modifyRentMerchant(Long uid, RentMerchantModifyDTO rentMerchantModifyDTO) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = roleBaseService.modifySmallRentMechant(uid, rentMerchantModifyDTO);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
@@ -706,10 +761,12 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/8 18:00
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("removeRentmerchant")
-    public JsonResult removeRentmerchant(Long removeUid) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult removeRentmerchant(Long uid, Long removeUid) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
         OperationResult<Boolean> result = roleBaseService.removeSmallRentMechant(uid, roleId, removeUid);
         if (!result.getEntity()) {
@@ -725,9 +782,11 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/15 10:46
      */
-    @UserType(type = TypeEnum.app)
     @PostMapping("uploadFile")
-    public JsonResult uploadFile(List<MultipartFile> files) throws IOException{
+    public JsonResult uploadFile(Long uid, List<MultipartFile> files) throws IOException{
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         String bucket = "fzmsupplychain";
         List<String> urls = aliossService.uploadFilesToBasetool(files, bucket);
         return success(urls);

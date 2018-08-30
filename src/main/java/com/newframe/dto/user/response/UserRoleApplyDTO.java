@@ -3,6 +3,7 @@ package com.newframe.dto.user.response;
 import com.newframe.entity.user.UserRoleApply;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,6 +33,9 @@ public class UserRoleApplyDTO {
         private Integer ctime;//申请时间
         private String remarks;//备注
 
+        public RoleApplyResult() {
+        }
+
         public RoleApplyResult(UserRoleApply userRoleApply) {
             super(userRoleApply);
             this.status = userRoleApply.getApplyStatus();
@@ -51,6 +55,9 @@ public class UserRoleApplyDTO {
         private String legalEntityIdNumber;//法人身份证号
         private String businessListenNumber;//营业执照
         private String[] businessListen;//营业执照文件url
+
+        public RoleApplyInfo() {
+        }
 
         public RoleApplyInfo(UserRoleApply userRoleApply) {
             super(userRoleApply);
@@ -72,6 +79,9 @@ public class UserRoleApplyDTO {
         private String[] drivingLicense;//行驶证
         private String[] houseProprietaryCertificate;//房产证
 
+        public RentMechant() {
+        }
+
         public RentMechant(UserRoleApply userRoleApply) {
             super(userRoleApply);
             this.highestDegreeDiploma = userRoleApply.getHighestDegreeDiplomaFile().split(",");
@@ -90,6 +100,9 @@ public class UserRoleApplyDTO {
         private Integer relationship;//关系
         private String[] letterOfAttorney;//委托授权书
         private String[] businessQualification;//经营资质
+
+        public Funder() {
+        }
 
         public Funder(UserRoleApply userRoleApply) {
             super(userRoleApply);
@@ -110,6 +123,9 @@ public class UserRoleApplyDTO {
         private String topContactsPhoneNumber;//基金联系人手机号
         private Integer relationship;//关系
 
+        public Hirer() {
+        }
+
         public Hirer(UserRoleApply userRoleApply) {
             super(userRoleApply);
             this.topContacts = userRoleApply.getTopContacts();
@@ -123,6 +139,9 @@ public class UserRoleApplyDTO {
      */
     @Data
     public static class Supplier extends RoleApplyInfo {
+        public Supplier() {
+        }
+
         public Supplier(UserRoleApply userRoleApply) {
             super(userRoleApply);
         }

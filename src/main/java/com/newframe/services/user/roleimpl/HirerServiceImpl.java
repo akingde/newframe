@@ -92,7 +92,7 @@ public class HirerServiceImpl implements RoleService {
     @Override
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, uid);
-        return new OperationResult(roleApply == null ? new UserRoleDTO() : new UserRoleApplyDTO.Hirer(roleApply));
+        return roleApply == null ? new OperationResult() : new OperationResult(new UserRoleApplyDTO.Hirer(roleApply));
     }
 
     /**
@@ -116,7 +116,7 @@ public class HirerServiceImpl implements RoleService {
     @Override
     public OperationResult<UserRoleDTO> getUserRoleInfo(Long uid) {
         UserHirer hirer = userHirerService.findOne(uid);
-        return new OperationResult(hirer == null ? new UserRoleDTO() : new UserRoleDTO.Hirer(hirer));
+        return hirer == null ? new OperationResult() : new OperationResult(new UserRoleDTO.Hirer(hirer));
     }
 
     /**

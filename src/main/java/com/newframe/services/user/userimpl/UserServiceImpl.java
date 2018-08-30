@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
      * @Date 2018/8/15 16:45
      **/
     @Override
-    public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode, boolean isWeb) {
+    public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode) {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
@@ -85,10 +85,10 @@ public class UserServiceImpl implements UserService {
         UserPwd userPwd = new UserPwd();
         userPwd.setUid(baseInfo.getUid());
         userPwdService.insert(userPwd);
-        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
-        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
-        String token = isWeb ? webToken : appToken;
-        return new OperationResult(new UserBaseInfoDTO(baseInfo.getUid(), token, mobile));
+//        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
+//        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
+//        String token = isWeb ? webToken : appToken;
+        return new OperationResult(new UserBaseInfoDTO(baseInfo.getUid(), UUID.randomUUID().toString(), mobile));
     }
 
     /**
@@ -100,15 +100,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<UserBaseInfoDTO> refreshToken(Long uid, String token) {
-        OperationResult<String> result = sessionService.modifyAppUserToken(uid, token);
-        if (result.getEntity() == null){
-            return new OperationResult(result.getErrorCode());
-        }
+//        OperationResult<String> result = sessionService.modifyAppUserToken(uid, token);
+//        if (result.getEntity() == null){
+//            return new OperationResult(result.getErrorCode());
+//        }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
+        if (baseInfo == null){
+            return new OperationResult(RequestResultEnum.USER_NOT_EXISTS);
+        }
         UserRole userRole = new UserRole();
         userRole.setUid(uid);
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(uid, result.getEntity(), baseInfo.getPhoneNumber(), userRoles));
+        return new OperationResult(new UserBaseInfoDTO(uid, UUID.randomUUID().toString(), baseInfo.getPhoneNumber(), userRoles));
     }
 
     /**
@@ -122,7 +125,7 @@ public class UserServiceImpl implements UserService {
      * @Date 2018/8/8 14:32
      */
     @Override
-    public OperationResult<UserBaseInfoDTO> passwordLogin(String mobile, String password, boolean isWeb) {
+    public OperationResult<UserBaseInfoDTO> passwordLogin(String mobile, String password) {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
@@ -134,14 +137,14 @@ public class UserServiceImpl implements UserService {
             return new OperationResult<>(RequestResultEnum.MOBILE_NOT_EXISTS);
         }
         UserPwd userPwd = userPwdService.findByUid(userBaseInfo.getUid());
-        if(password.equals(userPwd.getLoginPwd())){
+        if(!password.equals(userPwd.getLoginPwd())){
             return new OperationResult<>(RequestResultEnum.LOGIN_ERROR);
         }
-        String token = modifyToken(userBaseInfo.getUid(), isWeb);
+//        String token = modifyToken(userBaseInfo.getUid(), isWeb);
         UserRole userRole = new UserRole();
         userRole.setUid(userBaseInfo.getUid());
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, mobile, userRoles));
+        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), UUID.randomUUID().toString(), mobile, userRoles));
     }
 
     /**
@@ -153,35 +156,35 @@ public class UserServiceImpl implements UserService {
      * @date 2018/8/15 16:50
      */
     @Override
-    public OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode, boolean isWeb) {
+    public OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode) {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
         UserBaseInfo userBaseInfo = userBaseInfoService.findOne(mobile);
         if(userBaseInfo == null){
-            return register(mobile, mCode, isWeb);
+            return register(mobile, mCode);
         }
-        String token = modifyToken(userBaseInfo.getUid(), isWeb);
+//        String token = modifyToken(userBaseInfo.getUid(), isWeb);
         UserRole userRole = new UserRole();
         userRole.setUid(userBaseInfo.getUid());
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, userBaseInfo.getPhoneNumber(), userRoles));
+        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), UUID.randomUUID().toString(),
+                                                         userBaseInfo.getPhoneNumber(), userRoles));
     }
 
     /**
      * 注销登录
      *
      * @param uid
-     * @param isWeb
      * @return
      */
     @Override
-    public OperationResult<Boolean> logout(Long uid, boolean isWeb) {
-        if(isWeb){
-            sessionService.cleanWebUserToken(uid);
-        }else {
-            sessionService.cleanAppUserToken(uid);
-        }
+    public OperationResult<Boolean> logout(Long uid) {
+//        if(isWeb){
+//            sessionService.cleanWebUserToken(uid);
+//        }else {
+//            sessionService.cleanAppUserToken(uid);
+//        }
         return new OperationResult(true);
     }
 
@@ -202,10 +205,10 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
-        if(mCode == null){
+        if(StringUtils.isEmpty(mCode)){
             return new OperationResult(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
         }
-        if(password == null || password.length() < 6 && password.length() > 16){
+        if(StringUtils.isEmpty(password) || password.length() < 6 && password.length() > 16){
             return new OperationResult<>(RequestResultEnum.PASSWORD_INVALID, false);
         }
         UserRegisterDTO registerDTO = checkExistsMobileAndPassword(mobile).getEntity();
@@ -234,12 +237,19 @@ public class UserServiceImpl implements UserService {
         if (confirmPassword == null || password == null) {
             return new OperationResult(RequestResultEnum.PASSWORD_INVALID, false);
         }
-        UserPwd userPwd = userPwdService.findByUid(uid);
-        if (userPwd.getLoginPwd() == null) {
-            return new OperationResult(RequestResultEnum.PASSWORD_NOT_EXISTS, false);
-        }
         if (password.length() < 6 || password.length() > 16){
             return new OperationResult(RequestResultEnum.PASSWORD_INVALID, false);
+        }
+        if(!password.equals(confirmPassword)){
+            return new OperationResult(RequestResultEnum.PASSWORD_NOT_AGREEMENT, false);
+        }
+        UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
+        if (baseInfo == null){
+            return new OperationResult(RequestResultEnum.USER_NOT_EXISTS, false);
+        }
+        UserPwd userPwd = userPwdService.findByUid(uid);
+        if (StringUtils.isNotEmpty(userPwd.getLoginPwd())) {
+            return new OperationResult(RequestResultEnum.PASSWORD_EXISTS, false);
         }
         return new OperationResult(modifyPasswordByUid(uid, password));
     }
@@ -258,21 +268,25 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> modifyPassword(Long uid, String oldPassword, String newPassword, String confirmPassword) {
-        if (oldPassword == null || confirmPassword == null || newPassword == null) {
+        if (StringUtils.isAnyEmpty(oldPassword, newPassword, confirmPassword)) {
             return new OperationResult(RequestResultEnum.PASSWORD_INVALID, false);
-        }
-        UserPwd userPwd = userPwdService.findByUid(uid);
-        if (userPwd.getLoginPwd() == null) {
-            return new OperationResult(RequestResultEnum.PASSWORD_NOT_EXISTS, false);
-        }
-        if (oldPassword.equals(userPwd.getLoginPwd()) || oldPassword.equals(confirmPassword)) {
-            return new OperationResult(RequestResultEnum.PASSWORD_ERROR, false);
         }
         if (newPassword.length() < 6 || newPassword.length() > 16){
             return new OperationResult(RequestResultEnum.PASSWORD_INVALID, false);
         }
         if(newPassword.equals(oldPassword)){
             return new OperationResult(RequestResultEnum.PASSWORD_AGREEMENT, false);
+        }
+        UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
+        if (baseInfo == null){
+            return new OperationResult(RequestResultEnum.USER_NOT_EXISTS);
+        }
+        UserPwd userPwd = userPwdService.findByUid(uid);
+        if (StringUtils.isEmpty(userPwd.getLoginPwd())) {
+            return new OperationResult(RequestResultEnum.PASSWORD_NOT_EXISTS, false);
+        }
+        if (!oldPassword.equals(userPwd.getLoginPwd())) {
+            return new OperationResult(RequestResultEnum.PASSWORD_ERROR, false);
         }
         return new OperationResult(modifyPasswordByUid(uid, newPassword));
     }
@@ -294,10 +308,10 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
-        if(mCode == null){
+        if(StringUtils.isEmpty(mCode)){
             return new OperationResult(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
         }
-        if(password == null || password.length() < 6 && password.length() > 16){
+        if(StringUtils.isEmpty(password) || password.length() < 6 && password.length() > 16){
             return new OperationResult<>(RequestResultEnum.PASSWORD_INVALID, false);
         }
         UserBaseInfo userBaseInfo = userBaseInfoService.findOne(mobile);
@@ -323,7 +337,7 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(newMobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
-        if(mobileCode == null){
+        if(StringUtils.isEmpty(mobileCode)){
             return new OperationResult(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
         }
         UserBaseInfo info = userBaseInfoService.findOne(uid);
@@ -378,7 +392,7 @@ public class UserServiceImpl implements UserService {
         }
         UserPwd userPwd = userPwdService.findByUid(userBaseInfo.getUid());
         userRegisterDTO.setMobile(true);
-        userRegisterDTO.setPassword(userPwd == null ? false: true);
+        userRegisterDTO.setPassword(StringUtils.isEmpty(userPwd.getLoginPwd())? false: true);
         return new OperationResult<UserRegisterDTO>(userRegisterDTO);
     }
 
@@ -557,6 +571,9 @@ public class UserServiceImpl implements UserService {
     public OperationResult<Boolean> modifyPhoneNumber(Long uid, String phoneNumber) {
         UserBaseInfo userBaseInfo = userBaseInfoService.findOne(phoneNumber);
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
+        if (baseInfo == null){
+            return new OperationResult(RequestResultEnum.USER_NOT_EXISTS, false);
+        }
         if (phoneNumber.equals(baseInfo.getPhoneNumber())){
             return new OperationResult(true);
         }
@@ -577,6 +594,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<UserRoleApplyDTO.RoleApplyResult> getUserApply(Long uid) {
         UserRoleApply roleApply = userRoleApplyService.findOne(uid);
+        if (roleApply == null){
+            return new OperationResult();
+        }
         return new OperationResult(new UserRoleApplyDTO.RoleApplyResult(roleApply));
     }
 

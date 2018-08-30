@@ -3,7 +3,9 @@ package com.newframe.controllers.api;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
+import com.newframe.dto.order.response.ExpressCompanyDTO;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -261,7 +263,7 @@ public class ApiOrderController extends BaseController {
 
     /**
      * 出租方发货
-     * @return
+     * @return 返回结果
      */
     @Anonymous(true)
     @RequestMapping("lessor/deliver")
@@ -281,4 +283,133 @@ public class ApiOrderController extends BaseController {
         return orderService.lessorRefuse(orderId,uid);
     }
 
+    /**
+     * 查询快递公司列表
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("express/list")
+    public JsonResult getExpressList(){
+        OperationResult<List<ExpressCompanyDTO>> result = orderService.getExpressList();
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
+    }
+
+    /**
+     * 出租方查询物流信息
+     * 物流单号存在hirer_deliver表中
+     * @param uid 出租方uid
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("lessor/logistics")
+    public JsonResult lessorLogistics(Long uid,Long orderId){
+        return null;
+    }
+
+    /**
+     * 租赁商查询物流信息
+     * 租赁商订单需要判断是租赁订单还是融资购机订单
+     * 租赁订单：从hirer_deliver表中查询快递单号
+     * 融资购机订单：从order_supplier表中查询快递单号
+     * @param uid 租赁商uid
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("renter/logistics")
+    public JsonResult renterLogistics(Long uid,Long orderId){
+        return null;
+    }
+
+    /**
+     * 租赁商删除订单
+     * 只有已取消的订单可以删除
+     * @param uid 租赁商uid
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    @Anonymous(true)
+    @RequestMapping("renter/delete")
+    public JsonResult renterDeleteOrder(Long uid,Long orderId){
+        return null;
+    }
+
+    /**
+     * 判断订单是否可融资
+     * 账户余额大于保证金即可
+     * 保证金=（手机的供应价-用户租机首付）*15%
+     * 手机供应价要读取供应商的山坡价格表
+     * @param uid 租赁商uid
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    @Anonymous(true)
+    @RequestMapping("renter/financingable")
+    public JsonResult orderFinancingable(Long uid,Long orderId){
+        return null;
+    }
+
+    /**
+     * 查询不同租期平台商品的租赁价格
+     * @param productInfoDTO 产品信息
+     * @param paymentTimes 租期
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("renter/getProductPrice")
+    public JsonResult getProductPrice(ProductInfoDTO productInfoDTO,Integer paymentTimes){
+        return null;
+    }
+
+    /**
+     * 查询租赁商信息
+     * 租赁商信息的逾期次数和融资金额、逾期金额等可以先写死，
+     * @param renterId 租赁商id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("renterInfo")
+    public JsonResult renterInfo(Long renterId){
+        return null;
+    }
+
+    /**
+     * 查询订单融资信息
+     * 查询order_hirer
+     * 保证金暂时先写死，忘记这个字段了
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    @Anonymous(true)
+    @RequestMapping("financingInfo")
+    public JsonResult financingInfo(Long orderId){
+        return null;
+    }
+
+    /**
+     * 查询租机信息
+     * 查询order_hirer,出租方名称表中没有存，需要从其他地方读取
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("rentInfo")
+    public JsonResult rentInfo(Long orderId){
+        return null;
+    }
+
+    /**
+     * 查询还机地址
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("returnAddress")
+    public JsonResult returnAddress(Long orderId){
+        return null;
+    }
 }

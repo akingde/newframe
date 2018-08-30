@@ -75,7 +75,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
-        return new OperationResult(new UserRoleApplyDTO());
+        return new OperationResult();
     }
 
     /**
@@ -98,7 +98,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     @Override
     public OperationResult<UserRoleDTO> getUserRoleInfo(Long uid) {
         UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid, getRoleId());
-        return new OperationResult(rentMerchant == null ? new UserRoleDTO() : new UserRoleDTO.SmallRentMechant(rentMerchant));
+        return rentMerchant == null ? new OperationResult() : new OperationResult(new UserRoleDTO.RentMechant(rentMerchant));
     }
 
     /**
