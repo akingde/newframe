@@ -30,6 +30,7 @@ public enum RequestResultEnum implements CodeStatus {
     ROLE_APPLY_ERROR("40001", "角色申请失败"),
     ROLE_REVOKE_RPPLY_ERROR("40003", "角色申请撤销失败"),
     ROLE_APPLY_TOO_MUCH("40002", "有角色正在申请"),
+    ROLE_ERROR("40004", "角色权限不足"),
 
     RENT_MERCHANT_ADD_ERROR("50000", "供应商添加失败"),
     RENT_MERCHANT_EXISTS("50001", "此供应商已隶属于其他人"),
@@ -45,6 +46,8 @@ public enum RequestResultEnum implements CodeStatus {
     PARAMETER_LOSS("80001", "缺少必须的参数"),
     ID_NUMBER_ERROR("80002", "身份证号不正确"),
     PARAMETER_ERROR("80003", "请求数据非法"),
+
+    MODIFY_ERROR("90000", "操作失败"),
 
     INVALID_ACCESS("100000", "无效的访问"),
     ;

@@ -1,40 +1,56 @@
 package com.newframe.controllers.app;
 
+import com.newframe.common.anony.Anonymous;
+import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.enums.TypeEnum;
+import com.newframe.services.account.AccountService;
+import com.newframe.services.order.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 
 /**
- * @author:wangdong
- * 31个接口
+ * @author:wangdong 31个接口
  * @description:账户相关模块的Controller
  */
 @RestController
 @RequestMapping("/app/account/")
 public class AppAccountController extends BaseController {
 
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private OrderService orderService;
+
+    private Long getUid() {
+        return 3436672695388700980L;
+    }
 
     /**
      * 充值
      * 这里应该有一个公共的账户系统
      * 直接往里面充值人民币
+     *
      * @return
      */
     @RequestMapping("recharge")
-    public JsonResult recharge(BigDecimal amount){
+    public JsonResult recharge(BigDecimal amount) {
         return null;
     }
 
     /**
      * 提现
      * 这里提现的金额只允许可用金额提现
+     *
      * @return
      */
     @RequestMapping("withdrawDeposit")
-    public JsonResult withdrawDeposit(){
+    public JsonResult withdrawDeposit() {
         return null;
     }
 
@@ -50,6 +66,7 @@ public class AppAccountController extends BaseController {
      * 2、设置过密码
      * 3、收货地址
      * 4、授权申请信息
+     *
      * @return
      */
     @RequestMapping("getRenterAccountInfo")
@@ -66,6 +83,7 @@ public class AppAccountController extends BaseController {
      * 5、保证金垫付金额
      * 6、代收金额
      * 7、本月应收
+     *
      * @return
      */
     @RequestMapping("getRenterAssetAccount")
@@ -76,6 +94,7 @@ public class AppAccountController extends BaseController {
     /**
      * 获取租赁商租赁明细
      * 涉及到分页
+     *
      * @return
      */
     @RequestMapping("getRenterRentDetail")
@@ -90,6 +109,7 @@ public class AppAccountController extends BaseController {
      * 2、已结清融资本息
      * 3、未结清融资本息
      * 4、本月应还
+     *
      * @return
      */
     @RequestMapping("getRenterOrderFinanceAccount")
@@ -100,6 +120,7 @@ public class AppAccountController extends BaseController {
     /**
      * 订单融资列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
@@ -110,9 +131,9 @@ public class AppAccountController extends BaseController {
     }
 
     /**
-     *
      * 租赁商订单融资列列表
      * 根据订单的ID去查询订单融资的金额
+     *
      * @param orderId
      * @return
      */
@@ -128,6 +149,7 @@ public class AppAccountController extends BaseController {
      * 2、累计应付租金
      * 3、已付租金
      * 4、待付租金
+     *
      * @return
      */
     @RequestMapping("getRenterOrderRentAccount")
@@ -139,6 +161,7 @@ public class AppAccountController extends BaseController {
      * 租赁商租赁账户下
      * 租赁明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
@@ -152,6 +175,7 @@ public class AppAccountController extends BaseController {
      * 租赁商租赁账户下
      * 租赁明细列表
      * 根据订单的Id,去查看详情
+     *
      * @param orderId
      * @return
      */
@@ -167,6 +191,7 @@ public class AppAccountController extends BaseController {
      * 1、逾期金额合计
      * 2、逾期笔数
      * 3、逾期率
+     *
      * @return
      */
     @RequestMapping("getRenterOrderOverdueAccount")
@@ -178,6 +203,7 @@ public class AppAccountController extends BaseController {
      * 租赁商订单逾期账户下
      * 租赁明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
@@ -191,6 +217,7 @@ public class AppAccountController extends BaseController {
      * 租赁商订单逾期账户下
      * 逾期订单租赁明细列表
      * 根据订单的Id,去查看详情
+     *
      * @param orderId
      * @return
      */
@@ -212,11 +239,14 @@ public class AppAccountController extends BaseController {
      * 5、保证金垫付金额
      * 6、代收金额
      * 7、本月应收
+     *
      * @return
      */
-    @RequestMapping("getFunderAssetAccount")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
     public JsonResult getFunderAssetAccount() {
-        return null;
+        return accountService.getFunderAssetAccount(getUid());
     }
 
 
@@ -225,36 +255,45 @@ public class AppAccountController extends BaseController {
      * 涉及到
      * 1、投资回报率
      * 2、市场平均投资回报率
+     *
      * @return
      */
-    @RequestMapping("getFunderOrderFinancialAssets")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderFinancialAssets", method = RequestMethod.POST)
     public JsonResult getFunderOrderFinancialAssets() {
-        return null;
+        return accountService.getFunderOrderFinancialAssets(getUid());
     }
 
     /**
      * 获取资金方金融资产下
      * 投资明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
      */
-    @RequestMapping("listFunderOrderInvestment")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "listFunderOrderInvestment", method = RequestMethod.POST)
     public JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listFunderOrderInvestment(getUid(), currentPage, pageSize);
     }
 
     /**
      * 获取资金方金融资产下
      * 获取资金方金融资产下
      * 根据订单的Id,去查看详情
+     *
      * @param orderId
      * @return
      */
-    @RequestMapping("getFunderOrderInvestmentDetail")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderInvestmentDetail", method = RequestMethod.POST)
     public JsonResult getFunderOrderInvestmentDetail(Long orderId) {
-        return null;
+        return accountService.getFunderOrderInvestmentDetail(getUid(), orderId);
     }
 
     /**
@@ -263,9 +302,12 @@ public class AppAccountController extends BaseController {
      * 1、逾期金融合计
      * 2、逾期笔数
      * 3、逾期率
+     *
      * @return
      */
-    @RequestMapping("getFunderOrderOverdueAssets")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderOverdueAssets", method = RequestMethod.POST)
     public JsonResult getFunderOrderOverdueAssets() {
         return null;
     }
@@ -274,11 +316,14 @@ public class AppAccountController extends BaseController {
      * 获取资金方逾期资产
      * 逾期明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
      */
-    @RequestMapping("listFunderOrderOverdue")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "listFunderOrderOverdue", method = RequestMethod.POST)
     public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize) {
         return null;
     }
@@ -287,10 +332,13 @@ public class AppAccountController extends BaseController {
      * 获取资金方逾期资产
      * 逾期明细列表
      * 根据订单的Id,去查看详情
+     *
      * @param orderId
      * @return
      */
-    @RequestMapping("getFunderOrderOverdueDetail")
+    @Anonymous(true)
+    @UserType(type = TypeEnum.app)
+    @RequestMapping(value = "getFunderOrderOverdueDetail", method = RequestMethod.POST)
     public JsonResult getFunderOrderOverdueDetail(Long orderId) {
         return null;
     }
@@ -304,6 +352,7 @@ public class AppAccountController extends BaseController {
      * 1、可用余额
      * 2、资产总额
      * 3、冻结资产
+     *
      * @return
      */
     @RequestMapping("getSupplierAssetAccount")
@@ -318,6 +367,7 @@ public class AppAccountController extends BaseController {
      * 1、累计营收
      * 2、累计销售数量
      * 3、待发货数量
+     *
      * @return
      */
     @RequestMapping("getSupplierOrderSellAssets")
@@ -329,6 +379,7 @@ public class AppAccountController extends BaseController {
      * 获取供应商销售账户下
      * 销售明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
@@ -350,6 +401,7 @@ public class AppAccountController extends BaseController {
      * 4、保证金
      * 5、代收金额
      * 6、本月应收
+     *
      * @return
      */
     @RequestMapping("getHirerAssetAccount")
@@ -364,6 +416,7 @@ public class AppAccountController extends BaseController {
      * 1、逾期金额合计
      * 2、逾期笔数
      * 3、逾期率
+     *
      * @return
      */
     @RequestMapping("getHirerOrderOverdueAssets")
@@ -375,6 +428,7 @@ public class AppAccountController extends BaseController {
      * 获取出租方逾期资产账户下
      * 逾期明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
@@ -387,6 +441,7 @@ public class AppAccountController extends BaseController {
     /**
      * 获取出租方逾期资产账户下
      * 逾期明细列表
+     *
      * @return
      */
     @RequestMapping("getHirerOrderOverdueDetail")
@@ -403,6 +458,7 @@ public class AppAccountController extends BaseController {
      * 4、待付租金
      * 5、投资回报率
      * 6、市场平均投资回报率
+     *
      * @return
      */
     @RequestMapping("getHirerOrderMaterialAssets")
@@ -414,6 +470,7 @@ public class AppAccountController extends BaseController {
      * 获取出租方实物资产账户下
      * 实物明细列表
      * 涉及到分页
+     *
      * @param currentPage
      * @param pageSize
      * @return
@@ -426,6 +483,7 @@ public class AppAccountController extends BaseController {
     /**
      * 获取出租方实物资产账户下
      * 实物明细列表
+     *
      * @return
      */
     @RequestMapping("getHirerOrderMaterialDetail")

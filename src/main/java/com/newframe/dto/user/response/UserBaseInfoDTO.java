@@ -19,16 +19,16 @@ public class UserBaseInfoDTO {
 
     private Long uid;
     private String token;
-    private Integer status;
+    private String phoneNumber;
     private List<Role> role;
 
     public UserBaseInfoDTO() {
     }
 
-    public UserBaseInfoDTO(Long uid, String token, Integer status) {
+    public UserBaseInfoDTO(Long uid, String token, String phoneNumber) {
         this.uid = uid;
         this.token = token;
-        this.status = status;
+        this.phoneNumber = phoneNumber;
         List<Role> roles = new ArrayList();
         for(RoleEnum roleEnum : RoleEnum.values()){
             Role role = new Role();
@@ -39,10 +39,10 @@ public class UserBaseInfoDTO {
         this.role = roles;
     }
 
-    public UserBaseInfoDTO(Long uid, String token, Integer status, List<UserRole> userRoles) {
+    public UserBaseInfoDTO(Long uid, String token, String phoneNumber, List<UserRole> userRoles) {
         this.uid = uid;
         this.token = token;
-        this.status = status;
+        this.phoneNumber = phoneNumber;
         List<Role> roles = new ArrayList();
         List<Integer> roleList = RoleEnum.roleList();
         List<Integer> list = userRoles.stream().map(UserRole::getRoleId).collect(toList());

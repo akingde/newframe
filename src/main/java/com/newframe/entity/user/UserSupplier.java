@@ -1,5 +1,6 @@
 package com.newframe.entity.user;
 
+import com.newframe.enums.user.RoleStatusEnum;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -27,6 +28,13 @@ public class UserSupplier {
     @Id
     @Column(name = "uid")
     private Long uid;
+
+    /**
+     * 手机号
+     * phone_number
+     */
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     /**
      * 商家名称
@@ -84,4 +92,17 @@ public class UserSupplier {
     @Column(name = "utime")
     private Integer utime;
 
+    public UserSupplier() {
+    }
+
+    public UserSupplier(UserRoleApply userRoleApply) {
+        this.uid = userRoleApply.getUid();
+        this.phoneNumber = userRoleApply.getPhoneNumber();
+        this.merchantName = userRoleApply.getMerchantName();
+        this.legalEntity = userRoleApply.getLegalEntity();
+        this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
+        this.businessLicenseNumber = userRoleApply.getBusinessLicenseNumber();
+        this.businessLicenseFile = userRoleApply.getBusinessLicenseFile();
+        this.roleStatus = RoleStatusEnum.NORMAL.getRoleStatue();
+    }
 }

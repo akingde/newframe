@@ -1,12 +1,16 @@
 package com.newframe.services.user;
 
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.user.request.RentMerchantApplyDTO;
-import com.newframe.dto.user.request.RoleApplyDTO;
+import com.newframe.dto.user.request.*;
+import com.newframe.dto.user.response.ProductDTO;
+import com.newframe.dto.user.response.ProductSupplierDTO;
 import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.entity.user.Area;
 import com.newframe.entity.user.MerchantAppoint;
+import com.newframe.entity.user.UserRoleApply;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,7 +26,7 @@ public interface RoleService {
      * @param roleApplyDTO
      * @return
      */
-    OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO);
+    OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) throws IOException;
 
     /**
      * 获取角色申请详细信息
@@ -31,6 +35,13 @@ public interface RoleService {
      * @return
      */
     OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId);
+
+    /**
+     * 通过角色审核
+     * @param userRoleApply
+     * @return
+     */
+    OperationResult<Boolean> passCheck(UserRoleApply userRoleApply);
 
     /**
      * 根据uid获取角色信息
@@ -100,23 +111,62 @@ public interface RoleService {
      * 新增小B
      * @param uid
      * @param rentMerchantApplyDTO
+     * @param areaList
      * @return
      */
-    OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO);
+    OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO, List<Area> areaList) throws IOException;
 
     /**
      * 修改小B
      * @param uid
-     * @param rentMerchantApplyDTO
+     * @param rentMerchantModifyDTO
+     * @param areaList
      * @return
      */
-    OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO);
+    OperationResult<Boolean> modifySmallRentMechant(Long uid, RentMerchantModifyDTO rentMerchantModifyDTO, List<Area> areaList);
 
     /**
      * 删除小B
      * @param uid
-     * @param rentMerchantApplyDTO
+     * @param removeUid
      * @return
      */
-    OperationResult<Boolean> removeSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO);
+    OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid);
+
+    /**
+     * 生成角色记录
+     * @param roleId
+     * @return
+     */
+    OperationResult<Boolean> insertRole(Integer roleId);
+
+    /**
+     * 获取商品列表
+     * @param uid
+     * @param condition
+     * @return
+     */
+    OperationResult<ProductDTO> getProductList(Long uid, PageSearchDTO condition);
+
+    /**
+     * 添加商品
+     * @param condition
+     * @return
+     */
+    OperationResult<Boolean> addProduct(Long uid, ProductModifyDTO condition);
+
+    /**
+     * 修改商品
+     * @param condition
+     * @return
+     */
+    OperationResult<Boolean> modifyProduct(Long uid, ProductModifyDTO condition);
+
+    /**
+     * 下架商品
+     * @param uid
+     * @param productId
+     * @return
+     */
+    OperationResult<Boolean> removeProduct(Long uid, Long productId);
 }

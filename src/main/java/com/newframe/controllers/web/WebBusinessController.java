@@ -2,6 +2,13 @@ package com.newframe.controllers.web;
 
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
+import com.newframe.dto.RequestUser;
+import com.newframe.dto.user.request.PageSearchDTO;
+import com.newframe.dto.user.request.ProductModifyDTO;
+import com.newframe.dto.user.response.ProductDTO;
+import com.newframe.services.user.RoleBaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +20,11 @@ import java.math.BigDecimal;
  * @description:商家商户产品相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/business/")
+@RequestMapping("/web/business/")
 public class WebBusinessController extends BaseController {
+
+    @Autowired
+    private RoleBaseService roleBaseService;
 
     /**
      * @Description 获取产品列表
@@ -23,20 +33,10 @@ public class WebBusinessController extends BaseController {
      * @Date 2018/8/8 18:11
      */
     @PostMapping("getProductList")
-    public JsonResult getProductList() {
-        return null;
-    }
-
-    /**
-     * @Description 获取产品详情
-     * @Author WangBin
-     * @Param productId 产品id
-     * @Return
-     * @Date 2018/8/8 18:12
-     */
-    @PostMapping("getProductInfo")
-    public JsonResult getProductInfo(Long productId) {
-        return null;
+    public JsonResult getProductList(Integer roleId, PageSearchDTO condition) {
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<ProductDTO> product = roleBaseService.getProductList(uid, roleId, condition);
+        return success(product.getEntity());
     }
 
     /**
@@ -53,9 +53,13 @@ public class WebBusinessController extends BaseController {
      * @Date 2018/8/9 18:06
      */
     @PostMapping("addProduct")
-    public JsonResult addProduct(String brand, String model, String specification, String color, BigDecimal guidePrice,
-                                 BigDecimal supplyPrice, Integer surplusStock) {
-        return null;
+    public JsonResult addProduct(Integer roleId, ProductModifyDTO productModifyDTO) {
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = roleBaseService.addProduct(uid, roleId, productModifyDTO);
+        if (result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getSucc());
     }
 
     /**
@@ -73,10 +77,13 @@ public class WebBusinessController extends BaseController {
      * @Date 2018/8/9 18:08
      */
     @PostMapping("modifyProduct")
-    public JsonResult modifyProduct(Long productId, String brand, String model, String specification, String color,
-                                    BigDecimal guidePrice, BigDecimal supplyPrice, Integer surplusStock) {
-
-        return null;
+    public JsonResult modifyProduct(Integer roleId, ProductModifyDTO productModifyDTO) {
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = roleBaseService.modifyProduct(uid, roleId, productModifyDTO);
+        if (result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getSucc());
     }
 
     /**
@@ -87,7 +94,12 @@ public class WebBusinessController extends BaseController {
      * @Date 2018/8/8 18:13
      */
     @PostMapping("removeProduct")
-    public JsonResult removeProduct(Long productId) {
-        return null;
+    public JsonResult removeProduct(Integer roleId, Long productId) {
+        Long uid = RequestUser.getCurrentUid();
+        OperationResult<Boolean> result = roleBaseService.removeProduct(uid, roleId, productId);
+        if (result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getSucc());
     }
 }

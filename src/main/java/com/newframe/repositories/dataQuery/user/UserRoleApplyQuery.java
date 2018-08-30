@@ -19,4 +19,22 @@ public class UserRoleApplyQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "id", where = Where.equal)
     private Long id;
+
+    @QBindAttrField(fieldName = "merchantName", where = Where.like)
+    private String merchantName;
+
+    @QBindAttrField(fieldName = "legalEntity", where = Where.equal)
+    private String legalEntity;
+
+    @QBindAttrField(fieldName = "phoneNumber", where = Where.equal)
+    private String phoneNumber;
+
+    @QBindAttrField(fieldName = "applyStatus", where = Where.equal)
+    private Integer applyStatus;
+
+    @QBindAttrField(fieldName = "ctime", where = Where.greaterThanOrEqualTo)
+    private Integer startTime;
+
+    @QBindAttrField(fieldName = "ctime", where = Where.lessThanOrEqualTo)
+    private Integer endTime;
 }

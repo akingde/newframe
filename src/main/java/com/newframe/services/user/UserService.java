@@ -1,10 +1,7 @@
 package com.newframe.services.user;
 
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.user.request.AddressDTO;
-import com.newframe.dto.user.request.PageSearchDTO;
-import com.newframe.dto.user.request.RentMerchantApplyDTO;
-import com.newframe.dto.user.request.RoleApplyDTO;
+import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.Area;
 
@@ -37,6 +34,14 @@ public interface UserService {
     OperationResult<UserBaseInfoDTO> register(String mobile, String mCode, boolean isWeb);
 
     /**
+     * 刷新token
+     * @param uid
+     * @param token
+     * @return
+     */
+    OperationResult<UserBaseInfoDTO> refreshToken(Long uid, String token);
+
+    /**
      * @Description 密码登录
      * @Author WangBin
      * @Param mobile 手机号
@@ -57,6 +62,14 @@ public interface UserService {
      * @date 2018/8/15 16:50
      */
     OperationResult<UserBaseInfoDTO> verificationCodeLogin(String mobile, String mCode, boolean isWeb);
+
+    /**
+     * 注销登录
+     * @param uid
+     * @param isWeb
+     * @return
+     */
+    OperationResult<Boolean> logout(Long uid, boolean isWeb);
 
     /**
      * @Description 未登录设置密码
@@ -95,14 +108,13 @@ public interface UserService {
     /**
      * @Description 忘记密码
      * @Author WangBin
-     * @param uid
      * @Param mobile 手机号
      * @Param mCode 验证码
      * @Param password 密码
      * @Return
      * @Date 2018/8/14 15:24
      */
-    OperationResult<Boolean> forgetPassword(Long uid, String mobile, String mCode, String password);
+    OperationResult<Boolean> forgetPassword(String mobile, String mCode, String password);
 
     /**
      * @Description 修改手机号
@@ -135,13 +147,6 @@ public interface UserService {
     OperationResult<UserRegisterDTO> checkExistsMobileAndPassword(String mobile);
 
     /**
-     *  对token进行更新
-     * @param uid
-     * @return
-     */
-    String modifyToken(Long uid, boolean isWeb);
-
-    /**
      * 根据手机号修改密码
      * @param mobile
      * @param password 密码
@@ -160,10 +165,9 @@ public interface UserService {
     /**
      * 根据uid获取用户的地址列表
      * @param uid
-     * @param pageSearchDTO
      * @return
      */
-    OperationResult<UserAddressDTO> getUserAddressList(Long uid, PageSearchDTO pageSearchDTO);
+    OperationResult<List<UserAddressDTO>> getUserAddressList(Long uid);
 
     /**
      * 添加地址
@@ -187,10 +191,11 @@ public interface UserService {
      * @param addressId
      * @return
      */
-    OperationResult<Boolean> serDefaultAddress(Long uid, Long addressId);
+    OperationResult<Boolean> setDefaultAddress(Long uid, Long addressId);
 
     /**
      * 校验并获取地址
+     *
      * @param provinceId
      * @param cityId
      * @param countyId
@@ -207,108 +212,17 @@ public interface UserService {
     OperationResult<Boolean> removeAddress(Long uid, Long addressId);
 
     /**
-     * 角色申请
+     * 更换手机号
      * @param uid
-     * @param role
-     * @param roleId
+     * @param phoneNumber
      * @return
      */
-    OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO role, Integer roleId);
+    OperationResult<Boolean> modifyPhoneNumber(Long uid, String phoneNumber);
 
     /**
-     * 撤销申请
-     * @param uid
-     * @param roleApplyId
-     * @return
-     */
-    OperationResult<Boolean> revokeRoleApply(Long uid, Long roleApplyId);
-
-    /**
-     * 获取角色申请详细信息
-     * @param uid
-     * @param roleId
-     * @param roleApplyId
-     * @return
-     */
-    OperationResult<UserRoleApplyDTO> getUserApplyInfo(Long uid, Integer roleId, Long roleApplyId);
-
-    /**
-     * 获取用户角色信息
-     * @param uid
-     * @param roleId
-     * @return
-     */
-    OperationResult<UserRoleDTO> getUserRoleInfo(Long uid, Integer roleId);
-
-    /**
-     * 获取所有的供应商
-     * @param roleId
-     * @return
-     */
-    OperationResult<List<UserRoleDTO.Supplier>> getAllSupplier(Integer roleId);
-
-    /**
-     * 获取指定的供应商
+     * 获取角色申请记录
      * @param uid
      * @return
      */
-    OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid);
-
-    /**
-     * 设置指定供应商开关
-     * @param uid
-     * @param roleId
-     * @param appoint
-     * @return
-     */
-    OperationResult<Boolean> setAppoint(Long uid, Integer roleId, boolean appoint);
-
-    /**
-     * 修改指定供应商
-     * @param uid
-     * @param roleId
-     * @param supplierUid
-     * @param revokeSupplierUid
-     * @return
-     */
-    OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId,Long[] supplierUid, Long[] revokeSupplierUid);
-
-    /**
-     * 获取小B列表
-     * @param uid
-     * @param roleId
-     * @return
-     */
-    OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId);
-
-    /**
-     * 新增小B
-     * @param uid
-     * @param rentMerchantApplyDTO
-     * @return
-     */
-    OperationResult<Boolean> addSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO);
-
-    /**
-     * 修改小B
-     * @param uid
-     * @param rentMerchantApplyDTO
-     * @return
-     */
-    OperationResult<Boolean> modifySmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO);
-
-    /**
-     * 删除小B
-     * @param uid
-     * @param rentMerchantApplyDTO
-     * @return
-     */
-    OperationResult<Boolean> removeSmallRentMechant(Long uid, Integer roleId, RentMerchantApplyDTO rentMerchantApplyDTO);
-
-    /**
-     * 校验修改小B的权限
-     * @param uid
-     * @return
-     */
-    boolean checkModifySmallRentMechantAuthorization(Long uid);
+    OperationResult<UserRoleApplyDTO.RoleApplyResult> getUserApply(Long uid);
 }

@@ -2,6 +2,8 @@ package com.newframe.dto.user.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  *  租赁商信息修改
  * @author WangBin
@@ -15,7 +17,7 @@ public class RentMerchantModifyDTO{
     /**
      * 手机号(小B专属)
      */
-    private String phoneNumber;
+    private String merchantPhone;
     /**
      * 商家名称
      */
@@ -35,17 +37,33 @@ public class RentMerchantModifyDTO{
     /**
      *  营业执照
      */
-    private String[] businessListen;
+    private List<String> businessListen;
     /**
      *  最高学历证书
      */
-    private String[] highestDegreeDiploma;
+    private List<String> highestDegreeDiploma;
     /**
      *  行驶证
      */
-    private String[] drivingLicense;
+    private List<String> drivingLicense;
     /**
      *  房产证
      */
-    private String[] houseProprietaryCertificate;
+    private List<String> houseProprietaryCertificate;
+    /**
+     * 省id
+     */
+    private Integer provinceId;
+    /**
+     * 市id
+     */
+    private Integer cityId;
+    /**
+     * 县id
+     */
+    private Integer countyId;
+    /**
+     * 详细地址
+     */
+    private String consigneeAddress;
 }

@@ -79,10 +79,10 @@ public class UserAppTokenServiceImpl implements UserAppTokenService {
      * @return
      */
     @Override
-    public UserAppToken insert(Long uid) {
+    public UserAppToken insert(Long uid, String token) {
         UserAppToken userAppToken = new UserAppToken();
         userAppToken.setUid(uid);
-        userAppToken.setToken(UUID.randomUUID().toString());
+        userAppToken.setToken(token);
         return userAppTokenMaster.save(userAppToken);
     }
 }
