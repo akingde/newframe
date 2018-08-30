@@ -3,6 +3,7 @@ package com.newframe.services.order;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
+import com.newframe.dto.order.response.DeliverDTO;
 import com.newframe.dto.order.response.ExpressCompanyDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -150,10 +151,9 @@ public interface OrderService {
      * 供应商查询物流信息
      *
      * @param orderId 订单id
-     * @param uid     供应商ID
      * @return 物流信息
      */
-    JsonResult supplierGetLogistics(Long orderId, Long uid);
+    OperationResult<DeliverDTO> supplierGetLogistics(Long orderId);
 
     /**
      * 供应商查看订单详情
@@ -203,4 +203,18 @@ public interface OrderService {
      * @return 查询结果
      */
     OperationResult<List<ExpressCompanyDTO>> getExpressList();
+
+    /**
+     * 出租方查询物流信息
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    OperationResult<DeliverDTO> lessorGetLogistics(Long orderId);
+
+    /**
+     * 租赁商查询物流信息
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    OperationResult<DeliverDTO> renterGetLogistics(Long orderId);
 }

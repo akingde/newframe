@@ -99,6 +99,8 @@ public class OrderRenter {
     @Column(name = "utime")
     private Integer utime;
 
+    @Column(name = "order_type")
+    private Integer orderType;
 
 
 }
