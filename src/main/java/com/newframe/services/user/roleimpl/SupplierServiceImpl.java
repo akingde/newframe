@@ -83,7 +83,7 @@ public class SupplierServiceImpl implements RoleService {
     @Override
     public OperationResult<UserRoleApplyDTO> getUserRoleApplyInfo(Long uid, Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, uid);
-        return new OperationResult(roleApply == null ? new UserRoleDTO() : new UserRoleApplyDTO.Supplier(roleApply));
+        return roleApply == null ? new OperationResult() : new OperationResult(new UserRoleApplyDTO.Supplier(roleApply));
     }
 
     /**
@@ -108,7 +108,7 @@ public class SupplierServiceImpl implements RoleService {
     @Override
     public OperationResult<UserRoleDTO> getUserRoleInfo(Long uid) {
         UserSupplier supplier = userSupplierService.findOne(uid);
-        return new OperationResult(supplier == null ? new UserRoleDTO() : new UserRoleDTO.Supplier(supplier));
+        return supplier == null ? new OperationResult() : new OperationResult(new UserRoleDTO.Supplier(supplier));
     }
 
     /**
