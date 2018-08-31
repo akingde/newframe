@@ -7,20 +7,23 @@ import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
+import com.newframe.entity.user.ProductLessor;
 import com.newframe.entity.user.ProductSupplier;
+import com.newframe.entity.user.UserHirer;
+import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
-import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
-import com.newframe.repositories.dataQuery.order.OrderHirerQuery;
-import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
-import com.newframe.repositories.dataQuery.order.OrderSupplierQuery;
+import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.order.*;
+import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.order.OrderService;
+import com.newframe.services.userbase.UserHirerService;
+import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
 import com.newframe.utils.query.QueryToSpecification;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +95,8 @@ public class OrderServiceImpl implements OrderService {
     OrderRenterAccountSlave orderRenterAccountSlave;
     @Autowired
     ProductSupplierSlave productSupplierSlave;
+    @Autowired
+    ProductLessorSlave productLessorSlave;
 
     @Autowired
     CommonService commonService;
@@ -99,6 +104,10 @@ public class OrderServiceImpl implements OrderService {
     OkHttpService okHttpService;
     @Autowired
     private AliossService aliossService;
+    @Autowired
+    UserSupplierService userSupplierService;
+    @Autowired
+    UserHirerService userHirerService;
 
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
@@ -337,12 +346,44 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public JsonResult getSupplierList(ProductInfoDTO productInfo) {
-        return null;
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(productInfo.getProductBrand());
+        query.setProductColor(productInfo.getProductColor());
+        query.setProductStorage(productInfo.getProductStorage());
+        query.setProductName(productInfo.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        List<SupplierInfoDTO> dtos = new ArrayList<>();
+        for(ProductSupplier product:products){
+            UserSupplier userSupplier = userSupplierService.findOne(product.getSupplierId());
+            if(userSupplier!= null){
+                SupplierInfoDTO dto = new SupplierInfoDTO();
+                dto.setSupplierId(product.getSupplierId());
+                dto.setSupplierName(userSupplier.getMerchantName());
+                dtos.add(dto);
+            }
+        }
+        return new JsonResult(SystemCode.SUCCESS,dtos);
     }
 
     @Override
     public JsonResult getLessorList(ProductInfoDTO productInfo) {
-        return null;
+        OrderProductLessorQuery query = new OrderProductLessorQuery();
+        query.setProductBrand(productInfo.getProductBrand());
+        query.setProductColor(productInfo.getProductColor());
+        query.setProductStorage(productInfo.getProductStorage());
+        query.setProductName(productInfo.getProductName());
+        List<ProductLessor> products = productLessorSlave.findAll(query);
+        List<RenterInfoDTO> dtos = new ArrayList<>();
+        for(ProductLessor product:products){
+            UserHirer userHirer = userHirerService.findOne(product.getSupplierId());
+            if(userHirer!= null){
+                RenterInfoDTO dto = new RenterInfoDTO();
+                dto.setRenterId(product.getSupplierId());
+                dto.setRenterName(userHirer.getMerchantName());
+                dtos.add(dto);
+            }
+        }
+        return new JsonResult(SystemCode.SUCCESS,dtos);
     }
 
     @Override
@@ -837,10 +878,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 根据订单id查询融资金额
+     * 根据订单id查询保证金金额
      * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
-     * @param orderId
-     * @return
+     * @param orderId 订单id
+     * @return 保证金金额
      */
     private BigDecimal getFinancingAmount(Long orderId){
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
