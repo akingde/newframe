@@ -7,11 +7,13 @@ import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
+import com.newframe.entity.user.ProductSupplier;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.order.*;
+import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
@@ -80,6 +82,11 @@ public class OrderServiceImpl implements OrderService {
     HirerDeliverMaster hirerDeliverMaster;
     @Autowired
     HirerDeliverSlave hirerDeliverSlave;
+
+    @Autowired
+    OrderRenterAccountSlave orderRenterAccountSlave;
+    @Autowired
+    ProductSupplierSlave productSupplierSlave;
 
     @Autowired
     CommonService commonService;
@@ -203,6 +210,8 @@ public class OrderServiceImpl implements OrderService {
                 orderFunder.setOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode());
                 orderFunder.setDispatchTimes(times + 1);
                 orderFunder.setSupplierId(supplierId);
+                orderFunder.setDeposit(getDeposit(orderId));
+                orderFunder.setFinancingAmount(getFinancingAmount(orderId));
                 orderFunders.add(orderFunder);
                 //修改租赁商订单状态，改为待资金方审核
                 orderRenterMaser.updateOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode(), orderId);
@@ -797,6 +806,75 @@ public class OrderServiceImpl implements OrderService {
             return new OperationResult<>(OrderResultEnum.ORDER_UNDERWAY);
         }
         return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<Boolean> orderFinancingable(Long uid, Long orderId) {
+        if (orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderRenterAccount> optional = orderRenterAccountSlave.findById(uid);
+        if(optional.isPresent()){
+            OrderRenterAccount orderRenterAccount = optional.get();
+            // 获取账户余额
+            BigDecimal amount = orderRenterAccount.getUseableAmount();
+            // 计算融资金额
+            BigDecimal financingAmount = getFinancingAmount(orderId);
+            if(financingAmount != null){
+                BigDecimal benefit = new BigDecimal(0.15);
+                BigDecimal deposit = financingAmount.multiply(benefit);
+                if(amount.compareTo(deposit)>0){
+                    return new OperationResult<>(OrderResultEnum.FINANCINGABLE,true);
+                }
+            }
+        }
+        return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
+    }
+
+    /**
+     * 根据订单id查询融资金额
+     * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
+     * @param orderId
+     * @return
+     */
+    private BigDecimal getFinancingAmount(Long orderId){
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if(!orderRenterOptional.isPresent()){
+            return null;
+        }
+        OrderRenter orderRenter = orderRenterOptional.get();
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if(products == null || products.size() == 0){
+            return null;
+        }
+        ProductSupplier product = products.get(0);
+        // 拿到供应商的供应价格
+        BigDecimal supplyPrice = product.getSupplyPrice();
+        BigDecimal downPayment = orderRenter.getDownPayment();
+        BigDecimal benefit = new BigDecimal(0.15);
+        BigDecimal financingAmount = supplyPrice.subtract(downPayment)
+                .subtract(supplyPrice.subtract(downPayment).multiply(benefit));
+        return financingAmount;
+    }
+
+    /**
+     * 根据保证金金额
+     * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
+     * @param orderId 订单id
+     * @return 保证金金额
+     */
+    private BigDecimal getDeposit(Long orderId){
+        BigDecimal financingAmount = getFinancingAmount(orderId);
+        BigDecimal benefit = new BigDecimal(0.15);
+        if(financingAmount != null){
+            return financingAmount.multiply(benefit);
+        }
+        return null;
     }
 
     /**

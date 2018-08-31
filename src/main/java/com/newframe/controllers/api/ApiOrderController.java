@@ -7,6 +7,8 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.DeliverDTO;
 import com.newframe.dto.order.response.ExpressCompanyDTO;
+import com.newframe.enums.SystemCode;
+import com.newframe.enums.order.OrderResultEnum;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -335,6 +337,9 @@ public class ApiOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("renter/delete")
     public JsonResult renterDeleteOrder(Long uid,Long orderId){
+        if(uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = orderService.renterDeleteOrder(uid,orderId);
         if(result.getSucc()){
             return success(result.getEntity());
@@ -346,7 +351,7 @@ public class ApiOrderController extends BaseController {
      * 判断订单是否可融资
      * 账户余额大于保证金即可
      * 保证金=（手机的供应价-用户租机首付）*15%
-     * 手机供应价要读取供应商的山坡价格表
+     * 手机供应价要读取供应商的商品价格表
      * @param uid 租赁商uid
      * @param orderId 订单id
      * @return 返回结果
@@ -354,7 +359,14 @@ public class ApiOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("renter/financingable")
     public JsonResult orderFinancingable(Long uid,Long orderId){
-        return null;
+        if(uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = orderService.orderFinancingable(uid,orderId);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
 
     /**
