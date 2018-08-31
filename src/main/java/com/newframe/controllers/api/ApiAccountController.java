@@ -113,7 +113,7 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Long uid,Integer orderStatus,Integer currentPage, Integer pageSize) {
+    public JsonResult listRenterOrderRentAccount(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
         OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRentAccount(uid, orderStatus, currentPage, pageSize);
         if (result.getSucc()) {
@@ -375,9 +375,9 @@ public class ApiAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getSupplierAssetAccount")
+    @RequestMapping(value = "getSupplierAssetAccount", method = RequestMethod.POST)
     public JsonResult getSupplierAssetAccount() {
-        return null;
+        return accountService.getSupplierAssetAccount(getUid());
     }
 
 
@@ -390,9 +390,9 @@ public class ApiAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getSupplierOrderSellAssets")
+    @RequestMapping(value = "getSupplierOrderSellAssets", method = RequestMethod.POST)
     public JsonResult getSupplierOrderSellAssets() {
-        return null;
+        return accountService.getSupplierOrderSellAssets(getUid());
     }
 
     /**
@@ -404,9 +404,9 @@ public class ApiAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listSupplierOrderSell")
+    @RequestMapping(value = "listSupplierOrderSell", method = RequestMethod.POST)
     public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize);
     }
 
     /**

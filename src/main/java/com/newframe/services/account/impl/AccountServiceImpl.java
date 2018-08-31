@@ -1,6 +1,5 @@
 package com.newframe.services.account.impl;
 
-import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.account.response.*;
@@ -53,6 +52,11 @@ public class AccountServiceImpl implements AccountService {
     AccountLessorOverdueAssetSlave accountLessorOverdueAssetSlave;
     @Autowired
     AccountLessorSlave accountLessorSlave;
+
+    @Autowired
+    AccountSupplierSlave accountSupplierSlave;
+    @Autowired
+    AccountSupplierSellSlave accountSupplierSellSlave;
 
 
     @Autowired
@@ -365,8 +369,17 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getSupplierAssetAccount() {
-        return null;
+    public JsonResult getSupplierAssetAccount(Long uid) {
+        AccountSupplier entity = accountSupplierSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountSupplierDTO dto = new AccountSupplierDTO();
+        BeanUtils.copyProperties(entity, dto);
+        dto.setUseableAmount(entity.getUseableAmount());
+        dto.setFrozenAssets(entity.getFrozenAsset());
+        dto.setTotalAssets(entity.getTotalAsset());
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -379,8 +392,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getSupplierOrderSellAssets() {
-        return null;
+    public JsonResult getSupplierOrderSellAssets(Long uid) {
+        AccountSupplierSell entity = accountSupplierSellSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountSupplierSellDTO dto = new AccountSupplierSellDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -393,7 +412,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize) {
+    public JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize) {
         return null;
     }
 
