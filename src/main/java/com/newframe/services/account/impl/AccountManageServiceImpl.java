@@ -3,8 +3,7 @@ package com.newframe.services.account.impl;
 import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
-import com.newframe.entity.account.AccountRenter;
-import com.newframe.entity.account.AccountRenterRent;
+import com.newframe.entity.account.*;
 import com.newframe.entity.user.UserAddress;
 import com.newframe.entity.user.UserBaseInfo;
 import com.newframe.entity.user.UserPwd;
@@ -91,9 +90,12 @@ public class AccountManageServiceImpl implements AccountManageService {
             renterAuthorization.setAcademicDiplomasUrl(userRentMerchant.getHighestDegreeDiplomaFile());
             renterAuthorization.setDrivingLicenseUrl(userRentMerchant.getDrivingLicenseFile());
             renterAuthorization.setHouseContractUrl(userRentMerchant.getHouseProprietaryCertificateFile());
+            renterBaseInfo.setLegalName(userRentMerchant.getLegalEntity());
+            renterBaseInfo.setIdNumber(userRentMerchant.getLegalEntityIdNumber());
         }
+        List<AccountRenterAppointSupplier> accountRenterAppointSuppliers = accountService.listAccountRenterAppointSupplier(uid);
 
-        return new OperationResult<>(new RenterAccountInfo(renterBaseInfo,renterAddresses,renterAuthorization));
+        return new OperationResult<>(new RenterAccountInfo(renterBaseInfo,renterAddresses,renterAuthorization,accountRenterAppointSuppliers));
     }
 
     /**
@@ -121,7 +123,7 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<AccountRenterRentInfo> listRenterOrderRentAccount(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
@@ -137,5 +139,85 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterRentInfo.setList(accountRenterRents);
         accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalPages());
         return new OperationResult<>(accountRenterRentInfo);
+    }
+
+    /**
+     * 租赁商获取订单融资账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<AccountRenterFinancingMachine> getRenterOrderFinanceAccount(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+
+        AccountRenterFinancingMachine accountRenterFinancingMachine = accountService.getAccountRenterFinancingMachine(uid);
+
+        return new OperationResult<>(accountRenterFinancingMachine);
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表
+     *
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        if (null == orderStatus || null == currentPage || null == pageSize){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        RenterOrderFinanceInfo renterOrderFinanceInfo = new RenterOrderFinanceInfo();
+        Page<AccountRenterFinancing> accountRenterFinancings = accountService.getAccountRenterFinancing(uid, orderStatus, currentPage, pageSize);
+        List<AccountRenterFinancing> accountRenterFinancingList = accountRenterFinancings.getContent();
+        if (CollectionUtils.isEmpty(accountRenterFinancingList)) {
+            return new OperationResult<>(renterOrderFinanceInfo);
+        }
+        renterOrderFinanceInfo.setList(accountRenterFinancingList);
+        renterOrderFinanceInfo.setTotal(accountRenterFinancings.getTotalPages());
+        return new OperationResult<>(renterOrderFinanceInfo);
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OperationResult<List<AccountRenterRepay>> getRenterOrderFinanceDetail(Long orderId) {
+        if (null == orderId){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        List<AccountRenterRepay> accountRenterRepay = accountService.listAccountRenterRepay(orderId);
+
+        return new OperationResult<>(accountRenterRepay);
+    }
+
+    /**
+     * 9.获取租赁商租赁账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<AccountRenterRentMachine> getRenterOrderRentAccount(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+
+        AccountRenterRentMachine accountRenterRentMachine = accountService.getAccountRenterRentMachine(uid);
+
+        return new OperationResult<>(accountRenterRentMachine);
     }
 }

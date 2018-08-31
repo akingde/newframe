@@ -80,4 +80,28 @@ public class AccountLessorOverdueAsset {
      */
     private Long utime;
 
+
+    /**
+     * 逾期资产合计
+     */
+    private Double totalOverdueAmount;
+    /**
+     * 逾期笔数
+     */
+    private Integer overdueNumber;
+    /**
+     * 逾期率
+     */
+    private Double overdueRate;
+
+
+    /**
+     * 已还金额
+     */
+    private BigDecimal payedAmount;
+    /**
+     * 待还金额
+     */
+    private BigDecimal unpayAmount;
+
 }

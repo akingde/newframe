@@ -3,21 +3,19 @@ package com.newframe.services.account.impl;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.account.response.*;
-import com.newframe.entity.account.AccountFunding;
-import com.newframe.entity.account.AccountFundingFinanceAsset;
-import com.newframe.entity.account.AccountRenter;
-import com.newframe.entity.account.AccountRenterRent;
-import com.newframe.entity.account.AccountFundingOverdueAsset;
-import com.newframe.entity.account.AccountLessor;
+import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderFunder;
+import com.newframe.entity.order.OrderHirer;
+import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.SystemCode;
-import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
-import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
-import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
+import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
+import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
+import com.newframe.repositories.dataSlave.order.OrderSupplierSlave;
 import com.newframe.services.account.AccountService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,19 +46,45 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountLessorMatterAssetSlave accountLessorMatterAssetSlave;
     @Autowired
+    AccountLessorMatterAssetViewSlave accountLessorMatterAssetViewSlave;
+    @Autowired
     AccountLessorOverdueAssetSlave accountLessorOverdueAssetSlave;
     @Autowired
     AccountLessorSlave accountLessorSlave;
 
+    @Autowired
+    AccountSupplierSlave accountSupplierSlave;
+    @Autowired
+    AccountSupplierSellSlave accountSupplierSellSlave;
+
 
     @Autowired
     OrderFunderSlave orderFunderSlave;
+    @Autowired
+    OrderHirerSlave orderHirerSlave;
+    @Autowired
+    OrderSupplierSlave orderSupplierSlave;
 
     @Autowired
     private AccountRenterSlave accountRenterSlave;
 
     @Autowired
     private AccountRenterRentSlave accountRenterRentSlave;
+
+    @Autowired
+    private AccountRenterAppointSupplierSlave accountRenterAppointSupplierSlave;
+
+    @Autowired
+    private AccountRenterFinancingMachineSlave accountRenterFinancingMachineSlave;
+
+    @Autowired
+    private AccountRenterFinancingSlave accountRenterFinancingSlave;
+
+    @Autowired
+    private AccountRenterRepaySlave accountRenterRepaySlave;
+
+    @Autowired
+    private AccountRenterRentMachineSlave accountRenterRentMachineSlave;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -200,14 +225,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getFunderAssetAccount(Long uid) {
         AccountFunding entity = accountFundingSlave.findOne(uid);
-        if (null != entity) {
-            //DueAmount 转化成 DueInAmount
-            AccountFundingDTO dto = new AccountFundingDTO();
-            BeanUtils.copyProperties(entity, dto);
-            dto.setDueInAmount(entity.getDueAmount());
-            return new JsonResult(SystemCode.SUCCESS, dto);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
         }
-        return new JsonResult(SystemCode.SUCCESS, null);
+        //DueAmount 转化成 DueInAmount
+        AccountFundingDTO dto = new AccountFundingDTO();
+        BeanUtils.copyProperties(entity, dto);
+        dto.setDueInAmount(entity.getDueAmount());
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -221,12 +246,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getFunderOrderFinancialAssets(Long uid) {
         AccountFundingFinanceAsset entity = accountFundingFinanceAssetSlave.findOne(uid);
-        if (null != entity) {
-            AccountFundingFinanceAssetDTO dto = new AccountFundingFinanceAssetDTO();
-            BeanUtils.copyProperties(entity, dto);
-            return new JsonResult(SystemCode.SUCCESS, dto);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
         }
-        return new JsonResult(SystemCode.SUCCESS, null);
+        AccountFundingFinanceAssetDTO dto = new AccountFundingFinanceAssetDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -273,9 +298,11 @@ public class AccountServiceImpl implements AccountService {
         query.setOrderId(orderId);
         query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
         OrderFunder entity = orderFunderSlave.findOne(query);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
         AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
         BeanUtils.copyProperties(entity, dto);
-
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -291,12 +318,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getFunderOrderOverdueAssets(Long uid) {
         AccountFundingOverdueAsset entity = accountFundingOverdueAssetSlave.findOne(uid);
-        if (null != entity) {
-            AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
-            BeanUtils.copyProperties(entity, dto);
-            return new JsonResult(SystemCode.SUCCESS, dto);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
         }
-        return new JsonResult(SystemCode.SUCCESS, null);
+        AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -355,8 +382,17 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getSupplierAssetAccount() {
-        return null;
+    public JsonResult getSupplierAssetAccount(Long uid) {
+        AccountSupplier entity = accountSupplierSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountSupplierDTO dto = new AccountSupplierDTO();
+        BeanUtils.copyProperties(entity, dto);
+        dto.setUseableAmount(entity.getUseableAmount());
+        dto.setFrozenAssets(entity.getFrozenAsset());
+        dto.setTotalAssets(entity.getTotalAsset());
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -369,8 +405,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getSupplierOrderSellAssets() {
-        return null;
+    public JsonResult getSupplierOrderSellAssets(Long uid) {
+        AccountSupplierSell entity = accountSupplierSellSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountSupplierSellDTO dto = new AccountSupplierSellDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -383,8 +425,24 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize) {
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Page<OrderSupplier> page = orderSupplierSlave.findAll(pageable);
+
+        List<AccountSupplierSellListDTO> dtoList = new ArrayList<>();
+        for (OrderSupplier entity : page.getContent()) {
+            AccountSupplierSellListDTO dto = new AccountSupplierSellListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setProductMemory(entity.getProductRandomMemory());
+            dto.setRenterId(entity.getMerchantId());
+            dto.setRenterName(entity.getMerchantName());
+            dto.setUserId(entity.getUid());
+            dto.setUserName(entity.getReceiverName());
+            dto.setDeliverTime(entity.getExpressTime());
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
     }
 
     /**
@@ -401,6 +459,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getHirerAssetAccount(Long uid) {
         AccountLessor entity = accountLessorSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountLessorDTO dto = new AccountLessorDTO();
+        BeanUtils.copyProperties(entity, dto);
         return new JsonResult(SystemCode.SUCCESS, entity);
     }
 
@@ -417,8 +480,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderMaterialAssets() {
-        return null;
+    public JsonResult getHirerOrderMaterialAssets(Long uid) {
+        AccountLessorMatterAssetView entity = accountLessorMatterAssetViewSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountLessorMatterAssetViewDTO dto = new AccountLessorMatterAssetViewDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -431,8 +500,25 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize) {
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Page<AccountLessorMatterAsset> page = accountLessorMatterAssetSlave.findAll(pageable);
+
+        List<AccountLessorMatterAssetListDTO> dtoList = new ArrayList<>();
+        for (AccountLessorMatterAsset entity : page.getContent()) {
+            AccountLessorMatterAssetListDTO dto = new AccountLessorMatterAssetListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setUserId(entity.getRenterId());
+            dto.setUserName(entity.getRenterName());
+            dto.setDeliverTime(entity.getRentTime());
+            dto.setPurchaseAmount(entity.getMatterPrice());
+            dto.setRentMonth(entity.getRentDeadline());
+            dto.setTotalRentAmount(entity.getTotalAmount());
+            dto.setOrderStatus(1);
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
     }
 
     /**
@@ -442,8 +528,16 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderMaterialDetail(Long orderId) {
-        return null;
+    public JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId) {
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(orderId);
+        OrderHirer entity = orderHirerSlave.findOne(query);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -456,8 +550,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderOverdueAssets() {
-        return null;
+    public JsonResult getHirerOrderOverdueAssets(Long uid) {
+        AccountLessorOverdueAsset entity = accountLessorOverdueAssetSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountLessorOverdueAssetDTO dto = new AccountLessorOverdueAssetDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -470,8 +570,24 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Page<AccountLessorOverdueAsset> page = accountLessorOverdueAssetSlave.findAll(pageable);
+
+        List<AccountLessorOverdueAssetListDTO> dtoList = new ArrayList<>();
+        for (AccountLessorOverdueAsset entity : page.getContent()) {
+            AccountLessorOverdueAssetListDTO dto = new AccountLessorOverdueAssetListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setInvestType(entity.getInvestWay());
+            dto.setOverdueDays(entity.getOverdueDay());
+            dto.setPayType(entity.getRepayWay());
+            dto.setOrderStatus(entity.getOverdueStatus());
+            dto.setInvestMonth(entity.getInvestDeadline());
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
+
     }
 
     /**
@@ -481,8 +597,8 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderOverdueDetail(Long orderId) {
-        return null;
+    public JsonResult getHirerOrderOverdueDetail(Long uid, Long orderId) {
+        return getHirerOrderMaterialDetail(uid, orderId);
     }
 
     /**
@@ -493,12 +609,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenter getAccountRenter(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
 
         Optional<AccountRenter> result = accountRenterSlave.findById(uid);
-        if (!result.isPresent()){
+        if (!result.isPresent()) {
             return null;
         }
         return result.get();
@@ -515,17 +631,112 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
-        if (null == uid || null == currentPage || null == pageSize){
+        if (null == uid || null == currentPage || null == pageSize) {
             return null;
         }
 
         AccountRenterRentQuery query = new AccountRenterRentQuery();
         query.setUid(uid);
         query.setOrderStatus(orderStatus);
-        Sort sort = new Sort(Sort.Direction.DESC,"ctime");
-        PageRequest pageRequest = PageRequest.of(currentPage-1,pageSize,sort);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
         Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(pageRequest);
         return rents;
+    }
+
+    /**
+     * 查询租赁商关联的供应商
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<AccountRenterAppointSupplier> listAccountRenterAppointSupplier(Long uid) {
+        if (null == uid) {
+            return Collections.EMPTY_LIST;
+        }
+        AccountRenterAppointSupplierQuery query = new AccountRenterAppointSupplierQuery();
+        query.setUid(uid);
+        List<AccountRenterAppointSupplier> result = accountRenterAppointSupplierSlave.findAll(query);
+        return CollectionUtils.isEmpty(result) ? Collections.EMPTY_LIST : result;
+    }
+
+    /**
+     * 获取租赁商订单融资账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterFinancingMachine> result = accountRenterFinancingMachineSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表
+     *
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+        if (null == uid || null == currentPage || null == pageSize) {
+            return null;
+        }
+
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setUid(uid);
+        query.setOrderStatus(orderStatus);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
+
+        return accountRenterFinancingSlave.findAll(pageRequest);
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> listAccountRenterRepay(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setOrderId(orderId);
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+        return CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays;
+    }
+
+    /**
+     * 获取租赁商租赁账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterRentMachine getAccountRenterRentMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterRentMachine> result = accountRenterRentMachineSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
     }
 }

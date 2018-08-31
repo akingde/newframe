@@ -18,5 +18,7 @@ public class DeliverInfoDTO {
     /**发货时间*/
     private Long deliverTime;
     /**快递公司*/
-    private String deliverCompany;
+    private String expressName;
+    /**快递公司编号*/
+    private String deliverCode;
 }

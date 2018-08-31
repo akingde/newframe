@@ -10,6 +10,7 @@ public enum SystemCode implements CodeStatus {
 
     SUCC("000", "成功"),
     SUCCESS("200", "成功"),
+    SUCCESS404("404", "查询结果为空"),
     NEED_LOGIN("201", "未登录"),
     BAD_REQUEST("202", "参数非法"),
     NOT_IN_WHITELIST("203", "不在白名单内"),
@@ -23,7 +24,7 @@ public enum SystemCode implements CodeStatus {
     FILE_UPLOAD_FAIL("205","文件上传失败"),
     GENERATE_SUPPLY_ORDER_FAIL("205","生成供应商订单失败，请稍后再试"),
     GENERATE_SUPPLY_ORDER_SUCCESS("200","确认放款成功，供应商订单已生成"),
-    NO_EXPRESS_INFO("205","暂无快递信息"),
+
 
 
 

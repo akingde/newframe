@@ -7,7 +7,11 @@ import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.AccountRenterRentInfo;
 import com.newframe.dto.account.RenterAccountInfo;
+import com.newframe.dto.account.RenterOrderFinanceInfo;
 import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterFinancingMachine;
+import com.newframe.entity.account.AccountRenterRentMachine;
+import com.newframe.entity.account.AccountRenterRepay;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author:wangdong 31个接口
@@ -24,7 +29,7 @@ import java.math.BigDecimal;
  */
 @RestController
 @RequestMapping("/app/account/")
-public class ApIAccountController extends BaseController {
+public class ApiAccountController extends BaseController {
 
     @Autowired
     private AccountService accountService;
@@ -107,15 +112,15 @@ public class ApIAccountController extends BaseController {
     }
 
     /**
-     * 获取租赁商租赁明细
+     * 2.我是租赁商租赁明细列表
      * 涉及到分页
      *
      * @return
      */
-    @RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Long uid,Integer orderStatus,Integer currentPage, Integer pageSize) {
+    @RequestMapping("listRenterOrderRent")
+    public JsonResult listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
-        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRentAccount(uid, orderStatus, currentPage, pageSize);
+        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRent(uid, orderStatus, currentPage, pageSize);
         if (result.getSucc()) {
             return success(result.getEntity());
         }
@@ -133,8 +138,14 @@ public class ApIAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterOrderFinanceAccount")
-    public JsonResult getRenterOrderFinanceAccount() {
-        return null;
+    public JsonResult getRenterOrderFinanceAccount(Long uid) {
+
+        OperationResult<AccountRenterFinancingMachine> result = accountManageService.getRenterOrderFinanceAccount(uid);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -146,8 +157,14 @@ public class ApIAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderFinance")
-    public JsonResult listRenterOrderFinance(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listRenterOrderFinance(Long uid,Integer orderStatus,Integer currentPage, Integer pageSize) {
+
+        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,orderStatus,currentPage,pageSize);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -159,7 +176,13 @@ public class ApIAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderFinanceDetail")
     public JsonResult getRenterOrderFinanceDetail(Long orderId) {
-        return null;
+
+        OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -173,23 +196,34 @@ public class ApIAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterOrderRentAccount")
-    public JsonResult getRenterOrderRentAccount() {
-        return null;
+    public JsonResult getRenterOrderRentAccount(Long uid) {
+
+        OperationResult<AccountRenterRentMachine> result = accountManageService.getRenterOrderRentAccount(uid);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
      * 租赁商租赁账户下
-     * 租赁明细列表
+     * 租机明细
      * 涉及到分页
      *
      * @param currentPage
      * @param pageSize
      * @return
      */
-    /*@RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize) {
-        return null;
-    }*/
+    @RequestMapping("listRenterOrderRentAccount")
+    public JsonResult listRenterOrderRentAccount(Long uid,Integer payStatus,Integer currentPage, Integer pageSize) {
+        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,payStatus,currentPage,pageSize);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
+    }
 
     /**
      * 租赁商租赁账户下
@@ -375,9 +409,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getSupplierAssetAccount")
+    @RequestMapping(value = "getSupplierAssetAccount", method = RequestMethod.POST)
     public JsonResult getSupplierAssetAccount() {
-        return null;
+        return accountService.getSupplierAssetAccount(getUid());
     }
 
 
@@ -390,9 +424,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getSupplierOrderSellAssets")
+    @RequestMapping(value = "getSupplierOrderSellAssets", method = RequestMethod.POST)
     public JsonResult getSupplierOrderSellAssets() {
-        return null;
+        return accountService.getSupplierOrderSellAssets(getUid());
     }
 
     /**
@@ -404,9 +438,9 @@ public class ApIAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listSupplierOrderSell")
+    @RequestMapping(value = "listSupplierOrderSell", method = RequestMethod.POST)
     public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -424,7 +458,7 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerAssetAccount")
+    @RequestMapping(value = "getHirerAssetAccount", method = RequestMethod.POST)
     public JsonResult getHirerAssetAccount() {
         return accountService.getHirerAssetAccount(getUid());
     }
@@ -441,9 +475,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderMaterialAssets")
+    @RequestMapping(value = "getHirerOrderMaterialAssets", method = RequestMethod.POST)
     public JsonResult getHirerOrderMaterialAssets() {
-        return null;
+        return accountService.getHirerOrderMaterialAssets(getUid());
     }
 
     /**
@@ -455,9 +489,9 @@ public class ApIAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listHirerOrderMaterial")
+    @RequestMapping(value = "listHirerOrderMaterial", method = RequestMethod.POST)
     public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listHirerOrderMaterial(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -466,9 +500,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderMaterialDetail")
+    @RequestMapping(value = "getHirerOrderMaterialDetail", method = RequestMethod.POST)
     public JsonResult getHirerOrderMaterialDetail(Long orderId) {
-        return null;
+        return accountService.getHirerOrderMaterialDetail(getUid(), orderId);
     }
 
     /**
@@ -480,9 +514,9 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderOverdueAssets")
+    @RequestMapping(value = "getHirerOrderOverdueAssets", method = RequestMethod.POST)
     public JsonResult getHirerOrderOverdueAssets() {
-        return null;
+        return accountService.getHirerOrderOverdueAssets(getUid());
     }
 
     /**
@@ -494,9 +528,9 @@ public class ApIAccountController extends BaseController {
      * @param pageSize
      * @return
      */
-    @RequestMapping("listHirerOrderOverdue")
+    @RequestMapping(value = "listHirerOrderOverdue", method = RequestMethod.POST)
     public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
+        return accountService.listHirerOrderOverdue(getUid(), currentPage, pageSize);
     }
 
     /**
@@ -505,8 +539,8 @@ public class ApIAccountController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("getHirerOrderOverdueDetail")
+    @RequestMapping(value = "getHirerOrderOverdueDetail", method = RequestMethod.POST)
     public JsonResult getHirerOrderOverdueDetail(Long orderId) {
-        return null;
+        return accountService.getHirerOrderOverdueDetail(getUid(), orderId);
     }
 }

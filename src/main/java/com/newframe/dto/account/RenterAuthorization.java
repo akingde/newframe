@@ -17,6 +17,6 @@ public class RenterAuthorization {
 
     private String drivingLicenseUrl;
 
-    private String HouseContractUrl;
+    private String houseContractUrl;
 
 }

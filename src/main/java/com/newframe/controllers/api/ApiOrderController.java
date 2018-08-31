@@ -5,6 +5,7 @@ import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
+import com.newframe.dto.order.response.DeliverDTO;
 import com.newframe.dto.order.response.ExpressCompanyDTO;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -223,18 +224,11 @@ public class ApiOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("supplier/logistics")
     public JsonResult supplierGetLogistics(Long orderId){
-        Long uid = 4L;
-        return orderService.supplierGetLogistics(orderId,uid);
-    }
-
-    /**
-     * 供应商编辑物流
-     * @return 操作结果
-     */
-    @RequestMapping("supplier/edit/logistics")
-    public JsonResult supplierEditLogistics(DeliverInfoDTO deliverInfo){
-        Long uid = 4L;
-        return null;
+        OperationResult<DeliverDTO> result = orderService.supplierGetLogistics(orderId);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
 
     //*****************出租方订单***********************
@@ -300,14 +294,17 @@ public class ApiOrderController extends BaseController {
     /**
      * 出租方查询物流信息
      * 物流单号存在hirer_deliver表中
-     * @param uid 出租方uid
      * @param orderId 订单id
      * @return 查询结果
      */
     @Anonymous(true)
     @RequestMapping("lessor/logistics")
-    public JsonResult lessorLogistics(Long uid,Long orderId){
-        return null;
+    public JsonResult lessorLogistics(Long orderId){
+        OperationResult<DeliverDTO> result = orderService.lessorGetLogistics(orderId);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
 
     /**
@@ -315,14 +312,17 @@ public class ApiOrderController extends BaseController {
      * 租赁商订单需要判断是租赁订单还是融资购机订单
      * 租赁订单：从hirer_deliver表中查询快递单号
      * 融资购机订单：从order_supplier表中查询快递单号
-     * @param uid 租赁商uid
      * @param orderId 订单id
      * @return 查询结果
      */
     @Anonymous(true)
     @RequestMapping("renter/logistics")
-    public JsonResult renterLogistics(Long uid,Long orderId){
-        return null;
+    public JsonResult renterLogistics(Long orderId){
+        OperationResult<DeliverDTO> result = orderService.renterGetLogistics(orderId);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
 
     /**
