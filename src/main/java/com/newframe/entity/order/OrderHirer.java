@@ -106,4 +106,18 @@ public class OrderHirer {
     @Column(name = "lessor_id")
     private Long lessorId;
 
+
+    /**
+     * 第几期
+     */
+    private Integer numberOfPeriods;
+    /**
+     * 订单金额
+     */
+    private BigDecimal orderAmount;
+    /**
+     * 是否扣款。1:扣款，2:未扣款
+     */
+    private Short withhold;
+
 }

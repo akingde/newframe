@@ -12,7 +12,7 @@ import lombok.Data;
  * @website http://www.bejson.com/java2pojo/
  */
 @Data
-public class AccountLessorMatterAssetDTO {
+public class AccountLessorMatterAssetViewDTO {
     /**
      * 投资回报率
      */

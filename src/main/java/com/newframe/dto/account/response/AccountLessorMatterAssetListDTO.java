@@ -5,6 +5,8 @@ package com.newframe.dto.account.response;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Auto-generated: 2018-08-30 18:20:25
  *
@@ -19,7 +21,7 @@ public class AccountLessorMatterAssetListDTO {
     /**
      * 关联订单的Id
      */
-    private String orderId;
+    private Long orderId;
     /**
      * 产品品牌
      */
@@ -67,14 +69,14 @@ public class AccountLessorMatterAssetListDTO {
     /**
      * 购买价款
      */
-    private double purchaseAccount;
+    private BigDecimal purchaseAmount;
     /**
      * 租期
      */
-    private int rentMonth;
+    private BigDecimal rentMonth;
     /**
      * 租金总额
      */
-    private double totalRentAccount;
+    private BigDecimal totalRentAmount;
 
 }
