@@ -6,6 +6,7 @@ import com.newframe.dto.account.RenterAccountInfo;
 import com.newframe.dto.account.RenterOrderFinanceInfo;
 import com.newframe.entity.account.AccountRenter;
 import com.newframe.entity.account.AccountRenterFinancingMachine;
+import com.newframe.entity.account.AccountRenterRentMachine;
 import com.newframe.entity.account.AccountRenterRepay;
 
 import java.util.List;
@@ -63,4 +64,11 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<List<AccountRenterRepay>> getRenterOrderFinanceDetail(Long orderId);
+
+    /**
+     * 9.获取租赁商租赁账户
+     * @param uid
+     * @return
+     */
+    OperationResult<AccountRenterRentMachine> getRenterOrderRentAccount(Long uid);
 }

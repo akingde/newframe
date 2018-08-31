@@ -416,4 +416,11 @@ public interface AccountService {
      * @return
      */
     List<AccountRenterRepay> listAccountRenterRepay(Long orderId);
+
+    /**
+     * 获取租赁商租赁账户
+     * @param uid
+     * @return
+     */
+    AccountRenterRentMachine getAccountRenterRentMachine(Long uid);
 }

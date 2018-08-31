@@ -83,6 +83,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterRepaySlave accountRenterRepaySlave;
 
+    @Autowired
+    private AccountRenterRentMachineSlave accountRenterRentMachineSlave;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -717,5 +720,23 @@ public class AccountServiceImpl implements AccountService {
         query.setOrderId(orderId);
         List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
         return CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays;
+    }
+
+    /**
+     * 获取租赁商租赁账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterRentMachine getAccountRenterRentMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterRentMachine> result = accountRenterRentMachineSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
     }
 }

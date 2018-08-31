@@ -10,6 +10,7 @@ import com.newframe.dto.account.RenterAccountInfo;
 import com.newframe.dto.account.RenterOrderFinanceInfo;
 import com.newframe.entity.account.AccountRenter;
 import com.newframe.entity.account.AccountRenterFinancingMachine;
+import com.newframe.entity.account.AccountRenterRentMachine;
 import com.newframe.entity.account.AccountRenterRepay;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
@@ -195,8 +196,14 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterOrderRentAccount")
-    public JsonResult getRenterOrderRentAccount() {
-        return null;
+    public JsonResult getRenterOrderRentAccount(Long uid) {
+
+        OperationResult<AccountRenterRentMachine> result = accountManageService.getRenterOrderRentAccount(uid);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**

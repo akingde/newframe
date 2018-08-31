@@ -203,4 +203,21 @@ public class AccountManageServiceImpl implements AccountManageService {
 
         return new OperationResult<>(accountRenterRepay);
     }
+
+    /**
+     * 9.获取租赁商租赁账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<AccountRenterRentMachine> getRenterOrderRentAccount(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+
+        AccountRenterRentMachine accountRenterRentMachine = accountService.getAccountRenterRentMachine(uid);
+
+        return new OperationResult<>(accountRenterRentMachine);
+    }
 }
