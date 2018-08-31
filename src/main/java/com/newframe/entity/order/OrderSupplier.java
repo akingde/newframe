@@ -67,4 +67,6 @@ public class OrderSupplier {
     @Column(name = "utime")
     private Integer utime;
 
+    @Column(name = "express_code")
+    private String expressCode;
 }
