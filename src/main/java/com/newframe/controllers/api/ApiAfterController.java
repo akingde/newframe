@@ -3,8 +3,12 @@ package com.newframe.controllers.api;
 import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
+import com.newframe.dto.after.response.*;
+import com.newframe.services.after.AfterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +22,9 @@ import java.util.List;
 @RequestMapping("/inner/after/")
 public class ApiAfterController extends BaseController {
 
+    @Autowired
+    private AfterService afterService;
+
     /**
      * 后台登陆
      * @param userName
@@ -26,7 +33,8 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("login")
     public JsonResult login(String userName, String password){
-        return null;
+        OperationResult<UserDTO> result = afterService.login(userName, password);
+        return success(result.getEntity());
     }
 
     /**
@@ -36,7 +44,8 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("mechantList")
     public JsonResult getMechantList(RoleListSearchDTO condition){
-        return null;
+        OperationResult<RoleListDTO> result = afterService.getMechantList(condition);
+        return success(result.getEntity());
     }
 
     /**
@@ -46,7 +55,8 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("mechantInfo")
     public JsonResult getMechantInfo(Long roleApplyId){
-        return null;
+        OperationResult<RoleApplyInfoDTO> result = afterService.getMechantInfo(roleApplyId);
+        return success(result.getEntity());
     }
 
     /**
@@ -57,7 +67,11 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("passCheck")
     public JsonResult passCheck(Long uid, Long roleApplyId){
-        return null;
+        OperationResult<Boolean> result = afterService.passCheck(uid, roleApplyId);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -69,7 +83,11 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("failCheck")
     public JsonResult failCheck(Long uid, Long roleApplyId, String remarks){
-        return null;
+        OperationResult<Boolean> result = afterService.failCheck(uid, roleApplyId, remarks);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -79,7 +97,8 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("whiteList")
     public JsonResult getWhiteList(FunderSearchDTO condiiton){
-        return null;
+        OperationResult<WhiteFunderListDTO> result = afterService.getWhiteList(condiiton);
+        return success(result.getEntity());
     }
 
     /**
@@ -88,7 +107,8 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("blackFunderList")
     public JsonResult getBlackFunderList(){
-        return null;
+        OperationResult<List<FunderDTO>> result = afterService.getBlackFunderList();
+        return success(result.getEntity());
     }
 
     /**
@@ -97,7 +117,11 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("addFunder")
     public JsonResult addFunder(Long uid, List<Long> funderUids){
-        return null;
+        OperationResult<Boolean> result = afterService.addFunder(uid, funderUids);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 
     /**
@@ -106,6 +130,10 @@ public class ApiAfterController extends BaseController {
      */
     @PostMapping("removeFunder")
     public JsonResult removeFunder(Long uid, Long funderUid){
-        return null;
+        OperationResult<Boolean> result = afterService.removeFunder(uid, funderUid);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
 }

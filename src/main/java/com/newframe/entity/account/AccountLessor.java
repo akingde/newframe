@@ -49,11 +49,11 @@ public class AccountLessor implements Serializable {
     /**
      * 每月应收金额
      */
-    private BigDecimal monthPayableAccount;
+    private BigDecimal monthPayableAmount;
     /**
      * 账号状态,1:正常,2:冻结
      */
-    private Boolean accountStatus;
+    private Integer accountStatus;
     /**
      * ctime
      */

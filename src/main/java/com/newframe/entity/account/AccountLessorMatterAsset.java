@@ -75,4 +75,26 @@ public class AccountLessorMatterAsset implements Serializable {
     private Long utime;
 
 
+
+    /**
+     * 产品品牌
+     */
+    private String productModel;
+    /**
+     * 产品型号
+     */
+    private String productBrand;
+    /**
+     * 产品的颜色
+     */
+    private String productColour;
+    /**
+     * 产品的物理内存
+     */
+    private String productStorage;
+    /**
+     * 产品的运行内存
+     */
+    private String productMemory;
+
 }

@@ -9,7 +9,6 @@ import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
-import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.order.*;
@@ -535,9 +534,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo) {
         // 参数校验
-        if(StringUtils.isEmpty(deliverInfo.getDeliverCompany()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
+        if(StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
-                || deliverInfo.getOrderId() == null){
+                || deliverInfo.getOrderId() == null || deliverInfo.getDeliverCode() == null){
             return new JsonResult(SystemCode.BAD_REQUEST,false);
         }
         OrderSupplierQuery query = new OrderSupplierQuery();
@@ -547,10 +546,11 @@ public class OrderServiceImpl implements OrderService {
         if(orderSupplier == null){
             return new JsonResult(SystemCode.BAD_REQUEST,false);
         }
-        orderSupplier.setExpressCompany(deliverInfo.getDeliverCompany());
+        orderSupplier.setExpressCompany(deliverInfo.getExpressName());
         orderSupplier.setExpressNumber(deliverInfo.getDeliverId());
         orderSupplier.setExpressTime(deliverInfo.getDeliverTime());
         orderSupplier.setSerialNumber(deliverInfo.getSerialNumber());
+        orderSupplier.setExpressCode(deliverInfo.getDeliverCode());
         // 待收货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.WAITING_RECEIVE.getCode());
         orderSupplierMaster.save(orderSupplier);
@@ -572,24 +572,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult supplierGetLogistics(Long orderId, Long uid) {
+    public OperationResult<DeliverDTO> supplierGetLogistics(Long orderId) {
         if(orderId == null){
-            return new JsonResult(SystemCode.BAD_REQUEST,false);
+            return new OperationResult(OrderResultEnum.PARAM_ERROR);
         }
         Optional<OrderSupplier> orderSupplierOptional = orderSupplierSlave.findById(orderId);
         if(orderSupplierOptional.isPresent()){
             OrderSupplier orderSupplier = orderSupplierOptional.get();
             String expressNumber = orderSupplier.getExpressNumber();
             if(StringUtils.isEmpty(expressNumber)){
-                return new JsonResult(SystemCode.NO_EXPRESS_INFO,false);
+                return new OperationResult(OrderResultEnum.NO_EXPRESS_INFO);
             }
-            ExpressCompanyQuery query = new ExpressCompanyQuery();
-            query.setCompanyName(orderSupplier.getExpressCompany());
-            ExpressCompany expressCompany = expressCompanySlave.findOne(query);
-            if(expressCompany == null){
-                return new JsonResult(SystemCode.NO_EXPRESS_INFO);
-            }
-            String expressCode = expressCompany.getCompanyCode();
+            String expressCode = orderSupplier.getExpressCode();
             OperationResult<ExpressInfo> result = commonService.getExpressMessage(expressCode,expressNumber);
             ExpressInfo expressInfo = result.getEntity();
             String expressData = expressInfo.getExpStatus();
@@ -601,11 +595,11 @@ public class OrderServiceImpl implements OrderService {
                 deliverDTO.setExpressNumber(orderSupplier.getExpressNumber());
                 deliverDTO.setExpressTime(orderSupplier.getExpressTime());
                 deliverDTO.setSerialNumber(orderSupplier.getSerialNumber());
-                return new JsonResult(SystemCode.SUCCESS,deliverDTO);
+                return new OperationResult(SystemCode.SUCCESS,deliverDTO);
 
             }
         }
-        return new JsonResult(SystemCode.NO_EXPRESS_INFO,false);
+        return new OperationResult(OrderResultEnum.NO_EXPRESS_INFO);
     }
 
     @Override
@@ -681,18 +675,19 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = RuntimeException.class)
     public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) {
         // 参数校验
-        if(StringUtils.isEmpty(deliverInfo.getDeliverCompany()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
+        if(StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
                 || deliverInfo.getOrderId() == null){
             return new JsonResult(SystemCode.BAD_REQUEST,false);
         }
         HirerDeliver hirerDeliver = new HirerDeliver();
-        hirerDeliver.setExpressName(deliverInfo.getDeliverCompany());
+        hirerDeliver.setExpressName(deliverInfo.getExpressName());
         hirerDeliver.setExpressNumber(deliverInfo.getDeliverId());
         hirerDeliver.setExpressTime(deliverInfo.getDeliverTime());
         hirerDeliver.setLessorId(uid);
         hirerDeliver.setOrderId(deliverInfo.getOrderId());
         hirerDeliver.setSerialNumber(deliverInfo.getSerialNumber());
+        hirerDeliver.setExpressCode(deliverInfo.getDeliverCode());
         hirerDeliverMaster.save(hirerDeliver);
         // 修改出租方订单状态为待收货
         Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(deliverInfo.getOrderId());
@@ -736,8 +731,52 @@ public class OrderServiceImpl implements OrderService {
             dto.setExpressName(expressCompany.getCompanyName());
             dtos.add(dto);
         }
-
         return new OperationResult<>(OrderResultEnum.SUCCESS,dtos);
+    }
+
+    @Override
+    public OperationResult<DeliverDTO> lessorGetLogistics(Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        HirerDeliver hirerDeliver = hirerDeliverSlave.findOne(orderId);
+        if(hirerDeliver == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        OperationResult<ExpressInfo> result = commonService.getExpressMessage(hirerDeliver.getExpressCode(),
+                hirerDeliver.getExpressNumber());
+        ExpressInfo expressInfo = result.getEntity();
+        String expressData = expressInfo.getExpStatus();
+        if(!StringUtils.isEmpty(expressData)){
+            expressData = "["+expressData +"]";
+            DeliverDTO deliverDTO = new DeliverDTO();
+            deliverDTO.setDeliverInfo(expressData);
+            deliverDTO.setExpressCompany(hirerDeliver.getExpressName());
+            deliverDTO.setExpressNumber(hirerDeliver.getExpressNumber());
+            deliverDTO.setExpressTime(hirerDeliver.getExpressTime());
+            deliverDTO.setSerialNumber(hirerDeliver.getSerialNumber());
+            return new OperationResult<>(OrderResultEnum.SUCCESS,deliverDTO);
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<DeliverDTO> renterGetLogistics(Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if(orderRenterOptional.isPresent()){
+            OrderRenter orderRenter = orderRenterOptional.get();
+            if(OrderType.FUNDER_ORDER.getCode().equals(orderRenter.getOrderType())){
+                return supplierGetLogistics(orderId);
+            }
+            if(OrderType.LESSOR_ORDER.getCode().equals(orderRenter.getOrderType())){
+                return lessorGetLogistics(orderId);
+            }
+
+        }
+        return null;
     }
 
     /**

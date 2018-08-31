@@ -3,20 +3,17 @@ package com.newframe.services.account.impl;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.account.response.*;
-import com.newframe.entity.account.AccountFunding;
-import com.newframe.entity.account.AccountFundingFinanceAsset;
-import com.newframe.entity.account.AccountRenter;
-import com.newframe.entity.account.AccountRenterRent;
-import com.newframe.entity.account.AccountFundingOverdueAsset;
-import com.newframe.entity.account.AccountLessor;
+import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderFunder;
+import com.newframe.entity.order.OrderHirer;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
-import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
 import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
+import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
+import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +44,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountLessorMatterAssetSlave accountLessorMatterAssetSlave;
     @Autowired
+    AccountLessorMatterAssetViewSlave accountLessorMatterAssetViewSlave;
+    @Autowired
     AccountLessorOverdueAssetSlave accountLessorOverdueAssetSlave;
     @Autowired
     AccountLessorSlave accountLessorSlave;
@@ -54,6 +53,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     OrderFunderSlave orderFunderSlave;
+    @Autowired
+    OrderHirerSlave orderHirerSlave;
 
     @Autowired
     private AccountRenterSlave accountRenterSlave;
@@ -401,6 +402,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getHirerAssetAccount(Long uid) {
         AccountLessor entity = accountLessorSlave.findOne(uid);
+        AccountLessorDTO dto = new AccountLessorDTO();
+        BeanUtils.copyProperties(entity, dto);
         return new JsonResult(SystemCode.SUCCESS, entity);
     }
 
@@ -417,8 +420,11 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderMaterialAssets() {
-        return null;
+    public JsonResult getHirerOrderMaterialAssets(Long uid) {
+        AccountLessorMatterAssetView entity = accountLessorMatterAssetViewSlave.findOne(uid);
+        AccountLessorMatterAssetViewDTO dto = new AccountLessorMatterAssetViewDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -431,8 +437,25 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize) {
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Page<AccountLessorMatterAsset> page = accountLessorMatterAssetSlave.findAll(pageable);
+
+        List<AccountLessorMatterAssetListDTO> dtoList = new ArrayList<>();
+        for (AccountLessorMatterAsset entity : page.getContent()) {
+            AccountLessorMatterAssetListDTO dto = new AccountLessorMatterAssetListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setUserId(entity.getRenterId());
+            dto.setUserName(entity.getRenterName());
+            dto.setDeliverTime(entity.getRentTime());
+            dto.setPurchaseAmount(entity.getMatterPrice());
+            dto.setRentMonth(entity.getRentDeadline());
+            dto.setTotalRentAmount(entity.getTotalAmount());
+            dto.setOrderStatus(1);
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
     }
 
     /**
@@ -442,8 +465,13 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderMaterialDetail(Long orderId) {
-        return null;
+    public JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId) {
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(orderId);
+        OrderHirer entity = orderHirerSlave.findOne(query);
+        AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -456,7 +484,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderOverdueAssets() {
+    public JsonResult getHirerOrderOverdueAssets(Long uid) {
         return null;
     }
 
@@ -470,7 +498,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
+    public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
         return null;
     }
 
@@ -481,7 +509,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult getHirerOrderOverdueDetail(Long orderId) {
+    public JsonResult getHirerOrderOverdueDetail(Long uid, Long orderId) {
         return null;
     }
 
@@ -493,12 +521,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenter getAccountRenter(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
 
         Optional<AccountRenter> result = accountRenterSlave.findById(uid);
-        if (!result.isPresent()){
+        if (!result.isPresent()) {
             return null;
         }
         return result.get();
@@ -515,15 +543,15 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
-        if (null == uid || null == currentPage || null == pageSize){
+        if (null == uid || null == currentPage || null == pageSize) {
             return null;
         }
 
         AccountRenterRentQuery query = new AccountRenterRentQuery();
         query.setUid(uid);
         query.setOrderStatus(orderStatus);
-        Sort sort = new Sort(Sort.Direction.DESC,"ctime");
-        PageRequest pageRequest = PageRequest.of(currentPage-1,pageSize,sort);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
         Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(pageRequest);
         return rents;
