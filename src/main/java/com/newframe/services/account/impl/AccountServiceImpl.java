@@ -6,6 +6,7 @@ import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
+import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
 import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
@@ -15,6 +16,7 @@ import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
+import com.newframe.repositories.dataSlave.order.OrderSupplierSlave;
 import com.newframe.services.account.AccountService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -63,6 +65,8 @@ public class AccountServiceImpl implements AccountService {
     OrderFunderSlave orderFunderSlave;
     @Autowired
     OrderHirerSlave orderHirerSlave;
+    @Autowired
+    OrderSupplierSlave orderSupplierSlave;
 
     @Autowired
     private AccountRenterSlave accountRenterSlave;
@@ -413,7 +417,19 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize) {
-        return null;
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Page<OrderSupplier> page = orderSupplierSlave.findAll(pageable);
+
+        List<AccountSupplierSellListDTO> dtoList = new ArrayList<>();
+        for (OrderSupplier entity : page.getContent()) {
+            AccountSupplierSellListDTO dto = new AccountSupplierSellListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setProductBrand(entity.getProductBrand());
+            dto.setOrderStatus(1);
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
     }
 
     /**
