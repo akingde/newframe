@@ -5,6 +5,8 @@ package com.newframe.dto.account.response;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Auto-generated: 2018-08-30 18:12:42
  *
@@ -16,28 +18,28 @@ public class AccountLessorDTO {
     /**
      * 可用资产
      */
-    private long useableAmount;
+    private BigDecimal useableAmount;
     /**
      * 资产总额
      */
-    private long totalAssets;
+    private BigDecimal totalAssets;
     /**
      * 冻结资产
      */
-    private long frozenAssets;
+    private BigDecimal frozenAssets;
     private long uid;
     private long ctime;
     private long utime;
     /**
      * 保证金
      */
-    private double cashDeposit;
+    private BigDecimal cashDeposit;
     /**
      * 待收金额
      */
-    private double payAccount;
+    private BigDecimal payAmount;
     /**
      * 每月应收金额
      */
-    private double monthPayableAccount;
+    private BigDecimal monthPayableAmount;
 }

@@ -201,14 +201,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getFunderAssetAccount(Long uid) {
         AccountFunding entity = accountFundingSlave.findOne(uid);
-        if (null != entity) {
-            //DueAmount 转化成 DueInAmount
-            AccountFundingDTO dto = new AccountFundingDTO();
-            BeanUtils.copyProperties(entity, dto);
-            dto.setDueInAmount(entity.getDueAmount());
-            return new JsonResult(SystemCode.SUCCESS, dto);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
         }
-        return new JsonResult(SystemCode.SUCCESS, null);
+        //DueAmount 转化成 DueInAmount
+        AccountFundingDTO dto = new AccountFundingDTO();
+        BeanUtils.copyProperties(entity, dto);
+        dto.setDueInAmount(entity.getDueAmount());
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -222,12 +222,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getFunderOrderFinancialAssets(Long uid) {
         AccountFundingFinanceAsset entity = accountFundingFinanceAssetSlave.findOne(uid);
-        if (null != entity) {
-            AccountFundingFinanceAssetDTO dto = new AccountFundingFinanceAssetDTO();
-            BeanUtils.copyProperties(entity, dto);
-            return new JsonResult(SystemCode.SUCCESS, dto);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
         }
-        return new JsonResult(SystemCode.SUCCESS, null);
+        AccountFundingFinanceAssetDTO dto = new AccountFundingFinanceAssetDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -274,9 +274,11 @@ public class AccountServiceImpl implements AccountService {
         query.setOrderId(orderId);
         query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
         OrderFunder entity = orderFunderSlave.findOne(query);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
         AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
         BeanUtils.copyProperties(entity, dto);
-
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -292,12 +294,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getFunderOrderOverdueAssets(Long uid) {
         AccountFundingOverdueAsset entity = accountFundingOverdueAssetSlave.findOne(uid);
-        if (null != entity) {
-            AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
-            BeanUtils.copyProperties(entity, dto);
-            return new JsonResult(SystemCode.SUCCESS, dto);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
         }
-        return new JsonResult(SystemCode.SUCCESS, null);
+        AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -402,6 +404,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getHirerAssetAccount(Long uid) {
         AccountLessor entity = accountLessorSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
         AccountLessorDTO dto = new AccountLessorDTO();
         BeanUtils.copyProperties(entity, dto);
         return new JsonResult(SystemCode.SUCCESS, entity);
@@ -422,6 +427,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public JsonResult getHirerOrderMaterialAssets(Long uid) {
         AccountLessorMatterAssetView entity = accountLessorMatterAssetViewSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
         AccountLessorMatterAssetViewDTO dto = new AccountLessorMatterAssetViewDTO();
         BeanUtils.copyProperties(entity, dto);
         return new JsonResult(SystemCode.SUCCESS, dto);
@@ -469,6 +477,9 @@ public class AccountServiceImpl implements AccountService {
         OrderFunderQuery query = new OrderFunderQuery();
         query.setOrderId(orderId);
         OrderHirer entity = orderHirerSlave.findOne(query);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
         AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
         BeanUtils.copyProperties(entity, dto);
         return new JsonResult(SystemCode.SUCCESS, dto);
@@ -485,7 +496,13 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getHirerOrderOverdueAssets(Long uid) {
-        return null;
+        AccountLessorOverdueAsset entity = accountLessorOverdueAssetSlave.findOne(uid);
+        if (null == entity) {
+            return new JsonResult(SystemCode.SUCCESS404, null);
+        }
+        AccountLessorOverdueAssetDTO dto = new AccountLessorOverdueAssetDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
     /**
@@ -499,7 +516,23 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
-        return null;
+        currentPage--;
+        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Page<AccountLessorOverdueAsset> page = accountLessorOverdueAssetSlave.findAll(pageable);
+
+        List<AccountLessorOverdueAssetListDTO> dtoList = new ArrayList<>();
+        for (AccountLessorOverdueAsset entity : page.getContent()) {
+            AccountLessorOverdueAssetListDTO dto = new AccountLessorOverdueAssetListDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dto.setInvestType(entity.getInvestWay());
+            dto.setOverdueDays(entity.getOverdueDay());
+            dto.setPayType(entity.getRepayWay());
+            dto.setOrderStatus(entity.getOverdueStatus());
+            dto.setInvestMonth(entity.getInvestDeadline());
+            dtoList.add(dto);
+        }
+        return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
+
     }
 
     /**
@@ -510,7 +543,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getHirerOrderOverdueDetail(Long uid, Long orderId) {
-        return null;
+        return getHirerOrderMaterialDetail(uid, orderId);
     }
 
     /**

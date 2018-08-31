@@ -36,5 +36,5 @@ public class AccountLessorMatterAssetViewDTO {
     /**
      * 待付租金
      */
-    private double unPayAmount;
+    private double unpayAmount;
 }
