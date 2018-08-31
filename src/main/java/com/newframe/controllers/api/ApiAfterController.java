@@ -27,13 +27,16 @@ public class ApiAfterController extends BaseController {
 
     /**
      * 后台登陆
-     * @param userName
+     * @param username
      * @param password
      * @return
      */
     @PostMapping("login")
-    public JsonResult login(String userName, String password){
-        OperationResult<UserDTO> result = afterService.login(userName, password);
+    public JsonResult login(String username, String password){
+        OperationResult<UserDTO> result = afterService.login(username, password);
+        if (result.getEntity() == null){
+            return error(result.getErrorCode());
+        }
         return success(result.getEntity());
     }
 

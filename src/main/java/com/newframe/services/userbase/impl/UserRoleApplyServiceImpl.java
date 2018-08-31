@@ -71,7 +71,7 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         if(uid != null){
             query.setUid(uid);
         }
-        return userRoleApplySlave.findOne(uid);
+        return userRoleApplySlave.findOne(query);
     }
 
     /**
@@ -151,40 +151,40 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         if(userRoleApply.getApplyStatus() == null){
             updateFields.add("applyStatus");
         }
-        if(userRoleApply.getMerchantName() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getMerchantName())){
             updateFields.add("merchantName");
         }
-        if(userRoleApply.getLegalEntity() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getLegalEntity())){
             updateFields.add("legalEntity");
         }
-        if(userRoleApply.getLegalEntityIdNumber() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getLegalEntityIdNumber())){
             updateFields.add("legalEntityIdNumber");
         }
-        if(userRoleApply.getTopContacts() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getTopContacts())){
             updateFields.add("topContacts");
         }
-        if(userRoleApply.getTopContactsPhoneNumber() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getTopContactsPhoneNumber())){
             updateFields.add("topContactsPhoneNumber");
         }
         if(userRoleApply.getRelationship() == null){
             updateFields.add("relationship");
         }
-        if(userRoleApply.getBusinessLicenseNumber() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getBusinessLicenseNumber())){
             updateFields.add("businessLicenseNumber");
         }
-        if(userRoleApply.getBusinessLicenseFile() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getBusinessLicenseFile())){
             updateFields.add("businessLicenseFile");
         }
-        if(userRoleApply.getLetterOfAttorneyFile() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getLetterOfAttorneyFile())){
             updateFields.add("letterOfAttorneyFile");
         }
-        if(userRoleApply.getBusinessQualificationFile() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getBusinessQualificationFile())){
             updateFields.add("businessQualificationFile");
         }
-        if(userRoleApply.getDrivingLicenseFile() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getDrivingLicenseFile())){
             updateFields.add("drivingLicenseFile");
         }
-        if(userRoleApply.getHouseProprietaryCertificateFile() == null){
+        if(StringUtils.isNotEmpty(userRoleApply.getHouseProprietaryCertificateFile())){
             updateFields.add("houseProprietaryCertificateFile");
         }
         if (userRoleApply.getCheckUid() != null){

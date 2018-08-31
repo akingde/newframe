@@ -60,16 +60,11 @@ public class UserRoleServiceImpl implements UserRoleService {
      */
     @Override
     public List<UserRole> findUserRole(UserRole userRole) {
-        if(userRole == null || (userRole.getId()==null && userRole.getUid() == null)) {
+        if(userRole == null ||  userRole.getUid() == null) {
             return null;
         }
         UserRoleQuery query = new UserRoleQuery();
-        if(userRole.getId() != null){
-            query.setId(userRole.getId());
-        }
-        if(userRole.getUid() != null){
-            query.setUid(userRole.getUid());
-        }
+        query.setUid(userRole.getUid());
         if(userRole.getRoleId() != null){
             query.setRoleId(userRole.getRoleId());
         }

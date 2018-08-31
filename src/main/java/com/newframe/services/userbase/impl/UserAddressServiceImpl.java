@@ -9,6 +9,7 @@ import com.newframe.repositories.dataSlave.user.UserAddressSlave;
 import com.newframe.services.userbase.UserAddressService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import com.newframe.utils.query.BaseQuery;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,10 +68,10 @@ public class UserAddressServiceImpl implements UserAddressService {
             return 0;
         }
         List<String> updateFields = new ArrayList();
-        if(userAddress.getConsigneeName() != null){
+        if(StringUtils.isNotEmpty(userAddress.getConsigneeName())){
             updateFields.add("consigneeName");
         }
-        if(userAddress.getMobile() != null){
+        if(StringUtils.isNotEmpty(userAddress.getMobile())){
             updateFields.add("mobile");
         }
         if(userAddress.getProvinceId() != null){
@@ -85,7 +86,7 @@ public class UserAddressServiceImpl implements UserAddressService {
             updateFields.add("countyId");
             updateFields.add("countyName");
         }
-        if(userAddress.getConsigneeAddress() != null){
+        if(StringUtils.isNotEmpty(userAddress.getConsigneeAddress())){
             updateFields.add("consigneeAddress");
         }
         if (userAddress.getDefaultAddress() != null){

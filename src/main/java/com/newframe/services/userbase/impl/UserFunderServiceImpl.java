@@ -131,34 +131,34 @@ public class UserFunderServiceImpl implements UserFunderService {
         List<String> updateFields = new ArrayList();
         UserFunderQuery query = new UserFunderQuery();
         query.setUid(userFunder.getUid());
-        if(userFunder.getMerchantName() != null){
+        if(StringUtils.isNotEmpty(userFunder.getMerchantName())){
             updateFields.add("merchantName");
         }
-        if(userFunder.getLegalEntity() != null){
+        if(StringUtils.isNotEmpty(userFunder.getLegalEntity())){
             updateFields.add("legalEntity");
         }
-        if(userFunder.getLegalEntityIdNumber() != null){
+        if(StringUtils.isNotEmpty(userFunder.getLegalEntityIdNumber())){
             updateFields.add("legalEntityIdNumber");
         }
-        if(userFunder.getTopContacts() != null){
+        if(StringUtils.isNotEmpty(userFunder.getTopContacts())){
             updateFields.add("topContacts");
         }
-        if(userFunder.getTopContactsPhoneNumber() != null){
+        if(StringUtils.isNotEmpty(userFunder.getTopContactsPhoneNumber())){
             updateFields.add("topContactsPhoneNumber");
         }
         if(userFunder.getRelationship() != null){
             updateFields.add("relationship");
         }
-        if(userFunder.getBusinessLicenseNumber() != null){
+        if(StringUtils.isNotEmpty(userFunder.getBusinessLicenseNumber())){
             updateFields.add("businessLicenseNumber");
         }
-        if(userFunder.getBusinessLicenseFile() != null){
+        if(StringUtils.isNotEmpty(userFunder.getBusinessLicenseFile())){
             updateFields.add("businessLicenseFile");
         }
-        if(userFunder.getLetterOfAttorneyFile() != null){
+        if(StringUtils.isNotEmpty(userFunder.getLetterOfAttorneyFile())){
             updateFields.add("letterOfAttorneyFile");
         }
-        if(userFunder.getBusinessQualificationFile() != null){
+        if(StringUtils.isNotEmpty(userFunder.getBusinessQualificationFile())){
             updateFields.add("businessQualificationFile");
         }
         if(userFunder.getRoleStatus() != null){
