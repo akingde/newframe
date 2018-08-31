@@ -186,4 +186,21 @@ public class AccountManageServiceImpl implements AccountManageService {
         renterOrderFinanceInfo.setTotal(accountRenterFinancings.getTotalPages());
         return new OperationResult<>(renterOrderFinanceInfo);
     }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OperationResult<List<AccountRenterRepay>> getRenterOrderFinanceDetail(Long orderId) {
+        if (null == orderId){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        List<AccountRenterRepay> accountRenterRepay = accountService.listAccountRenterRepay(orderId);
+
+        return new OperationResult<>(accountRenterRepay);
+    }
 }

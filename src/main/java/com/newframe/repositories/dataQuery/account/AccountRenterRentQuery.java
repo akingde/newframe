@@ -17,7 +17,7 @@ import java.util.List;
 @QBindEntity(entityClass = AccountRenterRent.class)
 public class AccountRenterRentQuery extends BaseQuery {
 
-    @QBindAttrField(fieldName = "order_status", where = Where.equal)
+    @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
     private Integer orderStatus;
 
     @QBindAttrField(fieldName = "uid",where = Where.equal)

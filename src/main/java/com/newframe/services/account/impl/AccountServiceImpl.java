@@ -80,6 +80,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterFinancingSlave accountRenterFinancingSlave;
 
+    @Autowired
+    private AccountRenterRepaySlave accountRenterRepaySlave;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -696,5 +699,23 @@ public class AccountServiceImpl implements AccountService {
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
         return accountRenterFinancingSlave.findAll(pageRequest);
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> listAccountRenterRepay(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setOrderId(orderId);
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+        return CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays;
     }
 }

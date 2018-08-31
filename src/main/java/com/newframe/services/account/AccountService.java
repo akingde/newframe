@@ -409,4 +409,11 @@ public interface AccountService {
      * @return
      */
     Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     * @param orderId
+     * @return
+     */
+    List<AccountRenterRepay> listAccountRenterRepay(Long orderId);
 }
