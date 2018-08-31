@@ -1,5 +1,6 @@
 package com.newframe.services.account.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.account.response.*;
@@ -9,12 +10,14 @@ import com.newframe.entity.order.OrderHirer;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
 import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
+import com.newframe.repositories.dataQuery.account.AccountRenterAppointSupplierQuery;
 import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +65,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterRentSlave accountRenterRentSlave;
+
+    @Autowired
+    private AccountRenterAppointSupplierSlave accountRenterAppointSupplierSlave;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -588,5 +595,22 @@ public class AccountServiceImpl implements AccountService {
 
         Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(pageRequest);
         return rents;
+    }
+
+    /**
+     * 查询租赁商关联的供应商
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<AccountRenterAppointSupplier> listAccountRenterAppointSupplier(Long uid) {
+        if (null == uid) {
+            return Collections.EMPTY_LIST;
+        }
+        AccountRenterAppointSupplierQuery query = new AccountRenterAppointSupplierQuery();
+        query.setUid(uid);
+        List<AccountRenterAppointSupplier> result = accountRenterAppointSupplierSlave.findAll(query);
+        return CollectionUtils.isEmpty(result) ? Collections.EMPTY_LIST : result;
     }
 }

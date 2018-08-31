@@ -13,4 +13,8 @@ public class RenterBaseInfo {
 
     private Boolean hasPassword;
 
+    private String legalName;
+
+    private String idNumber;
+
 }
