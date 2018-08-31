@@ -41,7 +41,7 @@ public class OrderSupplier {
     @Column(name = "receiver_address")
     private String receiverAddress;
     @Column(name = "product_brand")
-    private String produceBrand;
+    private String productBrand;
     @Column(name = "product_name")
     private String productName;
     @Column(name = "product_color")

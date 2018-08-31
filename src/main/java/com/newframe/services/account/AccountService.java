@@ -2,10 +2,12 @@ package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterAppointSupplier;
 import com.newframe.entity.account.AccountRenterRent;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author:zww 31个接口
@@ -262,7 +264,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getSupplierAssetAccount();
+    JsonResult getSupplierAssetAccount(Long uid);
 
     /**
      * 23.获取供应商销售账户
@@ -273,7 +275,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getSupplierOrderSellAssets();
+    JsonResult getSupplierOrderSellAssets(Long uid);
 
     /**
      * 24.获取供应商销售账户下
@@ -284,7 +286,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize);
+    JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 出租方相关接口
@@ -315,7 +317,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderMaterialAssets();
+    JsonResult getHirerOrderMaterialAssets(Long uid);
 
     /**
      * 27.获取出租方实物资产账户下
@@ -326,7 +328,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize);
+    JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 28.获取出租方实物资产账户下
@@ -334,7 +336,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderMaterialDetail(Long orderId);
+    JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId);
 
     /**
      * 29.获取出租方逾期资产账户
@@ -345,7 +347,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderOverdueAssets();
+    JsonResult getHirerOrderOverdueAssets(Long uid);
 
     /**
      * 30.获取出租方逾期资产账户下
@@ -356,7 +358,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize);
+    JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 31.获取出租方逾期资产账户下
@@ -364,10 +366,11 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getHirerOrderOverdueDetail(Long orderId);
+    JsonResult getHirerOrderOverdueDetail(Long uid, Long orderId);
 
     /**
      * 获取租赁商账户资产
+     *
      * @param uid
      * @return
      */
@@ -375,6 +378,7 @@ public interface AccountService {
 
     /**
      * 获取租赁商账户资产下的租赁明细表
+     *
      * @param uid
      * @param orderStatus
      * @param currentPage
@@ -382,4 +386,12 @@ public interface AccountService {
      * @return
      */
     Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+
+    /**
+     * 查询租赁商关联的供应商
+     *
+     * @param uid
+     * @return
+     */
+    List<AccountRenterAppointSupplier> listAccountRenterAppointSupplier(Long uid);
 }

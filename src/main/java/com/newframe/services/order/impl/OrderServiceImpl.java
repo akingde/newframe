@@ -11,7 +11,10 @@ import com.newframe.entity.user.ProductSupplier;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
-import com.newframe.repositories.dataQuery.order.*;
+import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
+import com.newframe.repositories.dataQuery.order.OrderHirerQuery;
+import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
+import com.newframe.repositories.dataQuery.order.OrderSupplierQuery;
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.services.common.AliossService;
@@ -24,12 +27,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -1020,7 +1025,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setReceiverName(orderFunder.getUserRealname());
         orderSupplier.setReceiverAddress(orderRenter.getUserAddress());
         orderSupplier.setReceiverMobile(orderRenter.getUserMobile());
-        orderSupplier.setProduceBrand(orderRenter.getProductBrand());
+        orderSupplier.setProductBrand(orderRenter.getProductBrand());
         orderSupplier.setProductName(orderRenter.getProductName());
         orderSupplier.setProductColor(orderRenter.getProductColor());
         orderSupplier.setProductRandomMemory(orderRenter.getProductRandomMemory());
