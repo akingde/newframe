@@ -2,10 +2,12 @@ package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterAppointSupplier;
 import com.newframe.entity.account.AccountRenterRent;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author:zww 31个接口
@@ -382,4 +384,11 @@ public interface AccountService {
      * @return
      */
     Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+
+    /**
+     * 查询租赁商关联的供应商
+     * @param uid
+     * @return
+     */
+    List<AccountRenterAppointSupplier> listAccountRenterAppointSupplier(Long uid);
 }

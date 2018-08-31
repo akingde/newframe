@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  */
 @RestController
 @RequestMapping("/app/account/")
-public class ApIAccountController extends BaseController {
+public class ApiAccountController extends BaseController {
 
     @Autowired
     private AccountService accountService;

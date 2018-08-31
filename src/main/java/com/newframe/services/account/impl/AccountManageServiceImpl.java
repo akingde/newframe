@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
 import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterAppointSupplier;
 import com.newframe.entity.account.AccountRenterRent;
 import com.newframe.entity.user.UserAddress;
 import com.newframe.entity.user.UserBaseInfo;
@@ -91,9 +92,12 @@ public class AccountManageServiceImpl implements AccountManageService {
             renterAuthorization.setAcademicDiplomasUrl(userRentMerchant.getHighestDegreeDiplomaFile());
             renterAuthorization.setDrivingLicenseUrl(userRentMerchant.getDrivingLicenseFile());
             renterAuthorization.setHouseContractUrl(userRentMerchant.getHouseProprietaryCertificateFile());
+            renterBaseInfo.setLegalName(userRentMerchant.getLegalEntity());
+            renterBaseInfo.setIdNumber(userRentMerchant.getLegalEntityIdNumber());
         }
+        List<AccountRenterAppointSupplier> accountRenterAppointSuppliers = accountService.listAccountRenterAppointSupplier(uid);
 
-        return new OperationResult<>(new RenterAccountInfo(renterBaseInfo,renterAddresses,renterAuthorization));
+        return new OperationResult<>(new RenterAccountInfo(renterBaseInfo,renterAddresses,renterAuthorization,accountRenterAppointSuppliers));
     }
 
     /**
