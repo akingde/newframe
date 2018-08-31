@@ -776,7 +776,27 @@ public class OrderServiceImpl implements OrderService {
             }
 
         }
-        return null;
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<Boolean> renterDeleteOrder(Long uid, Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setOrderId(orderId);
+        query.setRenterId(uid);
+        OrderRenter orderRenter = orderRenterSlave.findOne(query);
+        if(orderRenter != null){
+            if(OrderRenterStatus.ORDER_CANCEL.getCode().equals(orderRenter.getOrderStatus())){
+                orderRenter.setDeleteStatus(OrderRenter.DELETE_STATUS);
+                orderRenterMaser.save(orderRenter);
+                return new OperationResult<>(OrderResultEnum.SUCCESS,true);
+            }
+            return new OperationResult<>(OrderResultEnum.ORDER_UNDERWAY);
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
     }
 
     /**

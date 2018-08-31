@@ -217,4 +217,12 @@ public interface OrderService {
      * @return 查询结果
      */
     OperationResult<DeliverDTO> renterGetLogistics(Long orderId);
+
+    /**
+     * 租赁商删除订单，只能删除已取消的订单
+     * @param uid 租赁商uid
+     * @param orderId 订单id
+     * @return 操作结果
+     */
+    OperationResult<Boolean> renterDeleteOrder(Long uid, Long orderId);
 }

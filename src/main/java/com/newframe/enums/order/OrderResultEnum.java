@@ -11,7 +11,8 @@ public enum OrderResultEnum implements CodeStatus {
     SUCCESS("200","成功"),
     // 查不到物流信息
     NO_EXPRESS_INFO("205","暂无快递信息"),
-    PARAM_ERROR("206","参数非法");
+    PARAM_ERROR("206","参数非法"),
+    ORDER_UNDERWAY("207","订单进行中，不可删除");
 
     String code;
 

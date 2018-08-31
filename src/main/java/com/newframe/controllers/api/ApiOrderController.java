@@ -335,7 +335,11 @@ public class ApiOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("renter/delete")
     public JsonResult renterDeleteOrder(Long uid,Long orderId){
-        return null;
+        OperationResult<Boolean> result = orderService.renterDeleteOrder(uid,orderId);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
 
     /**
