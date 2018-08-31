@@ -15,8 +15,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class AccountSupplierSellListDTO {
-    private long ctime;
-    private long utime;
+    private Long ctime;
+    private Long utime;
     /**
      * 关联订单的Id
      */
@@ -32,15 +32,15 @@ public class AccountSupplierSellListDTO {
     /**
      * 产品的颜色
      */
-    private String productColour;
+    private String productColor;
     /**
      * 产品的物理内存
      */
-    private String productStorage;
+    private Integer productStorage;
     /**
      * 产品的运行内存
      */
-    private String productMemory;
+    private Integer productMemory;
 
     private BigDecimal totalAccount;
 
@@ -51,7 +51,7 @@ public class AccountSupplierSellListDTO {
     /**
      * 租赁商的ID
      */
-    private long renterId;
+    private Long renterId;
     /**
      * 租赁商的名字
      */
@@ -59,7 +59,7 @@ public class AccountSupplierSellListDTO {
     /**
      * 用户ID
      */
-    private long userId;
+    private Long userId;
     /**
      * 用户的名字
      */
@@ -67,5 +67,5 @@ public class AccountSupplierSellListDTO {
     /**
      * 发货时间
      */
-    private long deliverTime;
+    private Long deliverTime;
 }

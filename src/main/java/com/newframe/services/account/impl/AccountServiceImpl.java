@@ -425,8 +425,12 @@ public class AccountServiceImpl implements AccountService {
         for (OrderSupplier entity : page.getContent()) {
             AccountSupplierSellListDTO dto = new AccountSupplierSellListDTO();
             BeanUtils.copyProperties(entity, dto);
-            dto.setProductBrand(entity.getProductBrand());
-            dto.setOrderStatus(1);
+            dto.setProductMemory(entity.getProductRandomMemory());
+            dto.setRenterId(entity.getMerchantId());
+            dto.setRenterName(entity.getMerchantName());
+            dto.setUserId(entity.getUid());
+            dto.setUserName(entity.getReceiverName());
+            dto.setDeliverTime(entity.getExpressTime());
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
