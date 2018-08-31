@@ -8,10 +8,7 @@ import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.enums.SystemCode;
-import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
-import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
-import com.newframe.repositories.dataQuery.account.AccountRenterAppointSupplierQuery;
-import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
+import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
@@ -68,6 +65,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterAppointSupplierSlave accountRenterAppointSupplierSlave;
+
+    @Autowired
+    private AccountRenterFinancingMachineSlave accountRenterFinancingMachineSlave;
+
+    @Autowired
+    private AccountRenterFinancingSlave accountRenterFinancingSlave;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -579,5 +582,47 @@ public class AccountServiceImpl implements AccountService {
         query.setUid(uid);
         List<AccountRenterAppointSupplier> result = accountRenterAppointSupplierSlave.findAll(query);
         return CollectionUtils.isEmpty(result) ? Collections.EMPTY_LIST : result;
+    }
+
+    /**
+     * 获取租赁商订单融资账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterFinancingMachine> result = accountRenterFinancingMachineSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表
+     *
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+        if (null == uid || null == currentPage || null == pageSize) {
+            return null;
+        }
+
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setUid(uid);
+        query.setOrderStatus(orderStatus);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
+
+        return accountRenterFinancingSlave.findAll(pageRequest);
     }
 }
