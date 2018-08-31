@@ -8,15 +8,15 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * Auto-generated: 2018-08-30 18:12:42
+ * Auto-generated: 2018-08-31 15:9:24
  *
  * @author bejson.com (i@bejson.com)
  * @website http://www.bejson.com/java2pojo/
  */
 @Data
-public class AccountLessorDTO {
+public class AccountSupplierDTO {
     /**
-     * 可用资产
+     * 可用余额
      */
     private BigDecimal useableAmount;
     /**
@@ -27,19 +27,5 @@ public class AccountLessorDTO {
      * 冻结资产
      */
     private BigDecimal frozenAssets;
-    private long uid;
-    private long ctime;
-    private long utime;
-    /**
-     * 保证金
-     */
-    private BigDecimal cashDeposit;
-    /**
-     * 待收金额
-     */
-    private BigDecimal payAmount;
-    /**
-     * 每月应收金额
-     */
-    private BigDecimal monthPayableAmount;
+    private Long uid;
 }

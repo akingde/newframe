@@ -262,7 +262,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getSupplierAssetAccount();
+    JsonResult getSupplierAssetAccount(Long uid);
 
     /**
      * 23.获取供应商销售账户
@@ -273,7 +273,7 @@ public interface AccountService {
      *
      * @return
      */
-    JsonResult getSupplierOrderSellAssets();
+    JsonResult getSupplierOrderSellAssets(Long uid);
 
     /**
      * 24.获取供应商销售账户下
@@ -284,7 +284,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize);
+    JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize);
 
     /**
      * 出租方相关接口
@@ -368,6 +368,7 @@ public interface AccountService {
 
     /**
      * 获取租赁商账户资产
+     *
      * @param uid
      * @return
      */
@@ -375,6 +376,7 @@ public interface AccountService {
 
     /**
      * 获取租赁商账户资产下的租赁明细表
+     *
      * @param uid
      * @param orderStatus
      * @param currentPage
@@ -385,6 +387,7 @@ public interface AccountService {
 
     /**
      * 查询租赁商关联的供应商
+     *
      * @param uid
      * @return
      */
