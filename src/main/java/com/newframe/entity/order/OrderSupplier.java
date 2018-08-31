@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 /**
  * @author kfm
@@ -63,10 +64,21 @@ public class OrderSupplier {
     @Column(name = "delete_status")
     private Integer deleteStatus;
     @Column(name = "ctime")
-    private Integer ctime;
+    private Long ctime;
     @Column(name = "utime")
-    private Integer utime;
+    private Long utime;
 
     @Column(name = "express_code")
     private String expressCode;
+
+
+    /**
+     * 产品型号
+     */
+    private String productModel;
+
+    /**
+     * 购买价款
+     */
+    private BigDecimal totalAccount;
 }

@@ -8,10 +8,7 @@ import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.SystemCode;
-import com.newframe.repositories.dataQuery.account.AccountFundingFinanceAssetQuery;
-import com.newframe.repositories.dataQuery.account.AccountFundingOverdueAssetQuery;
-import com.newframe.repositories.dataQuery.account.AccountRenterAppointSupplierQuery;
-import com.newframe.repositories.dataQuery.account.AccountRenterRentQuery;
+import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
@@ -76,6 +73,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterAppointSupplierSlave accountRenterAppointSupplierSlave;
+
+    @Autowired
+    private AccountRenterFinancingMachineSlave accountRenterFinancingMachineSlave;
+
+    @Autowired
+    private AccountRenterFinancingSlave accountRenterFinancingSlave;
+
+    @Autowired
+    private AccountRenterRepaySlave accountRenterRepaySlave;
+
+    @Autowired
+    private AccountRenterRentMachineSlave accountRenterRentMachineSlave;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -425,8 +434,12 @@ public class AccountServiceImpl implements AccountService {
         for (OrderSupplier entity : page.getContent()) {
             AccountSupplierSellListDTO dto = new AccountSupplierSellListDTO();
             BeanUtils.copyProperties(entity, dto);
-            dto.setProductBrand(entity.getProductBrand());
-            dto.setOrderStatus(1);
+            dto.setProductMemory(entity.getProductRandomMemory());
+            dto.setRenterId(entity.getMerchantId());
+            dto.setRenterName(entity.getMerchantName());
+            dto.setUserId(entity.getUid());
+            dto.setUserName(entity.getReceiverName());
+            dto.setDeliverTime(entity.getExpressTime());
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
@@ -647,5 +660,83 @@ public class AccountServiceImpl implements AccountService {
         query.setUid(uid);
         List<AccountRenterAppointSupplier> result = accountRenterAppointSupplierSlave.findAll(query);
         return CollectionUtils.isEmpty(result) ? Collections.EMPTY_LIST : result;
+    }
+
+    /**
+     * 获取租赁商订单融资账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterFinancingMachine> result = accountRenterFinancingMachineSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表
+     *
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+        if (null == uid || null == currentPage || null == pageSize) {
+            return null;
+        }
+
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setUid(uid);
+        query.setOrderStatus(orderStatus);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
+
+        return accountRenterFinancingSlave.findAll(pageRequest);
+    }
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> listAccountRenterRepay(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setOrderId(orderId);
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+        return CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays;
+    }
+
+    /**
+     * 获取租赁商租赁账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterRentMachine getAccountRenterRentMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterRentMachine> result = accountRenterRentMachineSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
     }
 }

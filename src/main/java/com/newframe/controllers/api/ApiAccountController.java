@@ -7,7 +7,11 @@ import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.AccountRenterRentInfo;
 import com.newframe.dto.account.RenterAccountInfo;
+import com.newframe.dto.account.RenterOrderFinanceInfo;
 import com.newframe.entity.account.AccountRenter;
+import com.newframe.entity.account.AccountRenterFinancingMachine;
+import com.newframe.entity.account.AccountRenterRentMachine;
+import com.newframe.entity.account.AccountRenterRepay;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author:wangdong 31个接口
@@ -133,8 +138,14 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterOrderFinanceAccount")
-    public JsonResult getRenterOrderFinanceAccount() {
-        return null;
+    public JsonResult getRenterOrderFinanceAccount(Long uid) {
+
+        OperationResult<AccountRenterFinancingMachine> result = accountManageService.getRenterOrderFinanceAccount(uid);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -146,8 +157,14 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderFinance")
-    public JsonResult listRenterOrderFinance(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listRenterOrderFinance(Long uid,Integer orderStatus,Integer currentPage, Integer pageSize) {
+
+        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,orderStatus,currentPage,pageSize);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -159,7 +176,13 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderFinanceDetail")
     public JsonResult getRenterOrderFinanceDetail(Long orderId) {
-        return null;
+
+        OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -173,8 +196,14 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterOrderRentAccount")
-    public JsonResult getRenterOrderRentAccount() {
-        return null;
+    public JsonResult getRenterOrderRentAccount(Long uid) {
+
+        OperationResult<AccountRenterRentMachine> result = accountManageService.getRenterOrderRentAccount(uid);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**

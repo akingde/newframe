@@ -1,9 +1,7 @@
 package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
-import com.newframe.entity.account.AccountRenter;
-import com.newframe.entity.account.AccountRenterAppointSupplier;
-import com.newframe.entity.account.AccountRenterRent;
+import com.newframe.entity.account.*;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
@@ -394,4 +392,35 @@ public interface AccountService {
      * @return
      */
     List<AccountRenterAppointSupplier> listAccountRenterAppointSupplier(Long uid);
+
+    /**
+     * 获取租赁商订单融资账户
+     * @param uid
+     * @return
+     */
+    AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid);
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表
+     * @param uid
+     * @param orderStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+
+    /**
+     * 我是租赁商订单融资账户订单融资列表查看订单详情
+     * @param orderId
+     * @return
+     */
+    List<AccountRenterRepay> listAccountRenterRepay(Long orderId);
+
+    /**
+     * 获取租赁商租赁账户
+     * @param uid
+     * @return
+     */
+    AccountRenterRentMachine getAccountRenterRentMachine(Long uid);
 }
