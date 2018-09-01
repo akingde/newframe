@@ -6,6 +6,7 @@ import com.newframe.repositories.dataQuery.user.UserBaseInfoQuery;
 import com.newframe.repositories.dataSlave.user.UserBaseInfoSlave;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.utils.cache.IdGlobalGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,19 +61,19 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
         UserBaseInfoQuery query = new UserBaseInfoQuery();
         query.setUid(userBaseInfo.getUid());
         List<String> updateFields = new ArrayList();
-        if (userBaseInfo.getAvatar() != null){
+        if (StringUtils.isNotEmpty(userBaseInfo.getAvatar())){
             updateFields.add("avatar");
         }
         if (userBaseInfo.getGender() != null){
             updateFields.add("gender");
         }
-        if (userBaseInfo.getUserName() != null){
+        if (StringUtils.isNotEmpty(userBaseInfo.getUserName())){
             updateFields.add("userName");
         }
         if (userBaseInfo.getUserStatus() != null){
             updateFields.add("userStatus");
         }
-        if(userBaseInfo.getPhoneNumber() != null){
+        if(StringUtils.isNotEmpty(userBaseInfo.getPhoneNumber())){
             updateFields.add("phoneNumber");
         }
         String[] array = new String[updateFields.size()];

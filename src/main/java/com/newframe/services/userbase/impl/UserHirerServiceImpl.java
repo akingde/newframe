@@ -5,6 +5,7 @@ import com.newframe.repositories.dataMaster.user.UserHirerMaster;
 import com.newframe.repositories.dataQuery.user.UserHirerQuery;
 import com.newframe.repositories.dataSlave.user.UserHirerSlave;
 import com.newframe.services.userbase.UserHirerService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,28 +72,28 @@ public class UserHirerServiceImpl implements UserHirerService {
         List<String> updateFields = new ArrayList();
         UserHirerQuery query = new UserHirerQuery();
         query.setUid(userHirer.getUid());
-        if(userHirer.getMerchantName() != null){
+        if(StringUtils.isNotEmpty(userHirer.getMerchantName())){
             updateFields.add("merchantName");
         }
-        if(userHirer.getLegalEntity() != null){
+        if(StringUtils.isNotEmpty(userHirer.getLegalEntity())){
             updateFields.add("legalEntity");
         }
-        if(userHirer.getLegalEntityIdNumber() != null){
+        if(StringUtils.isNotEmpty(userHirer.getLegalEntityIdNumber())){
             updateFields.add("legalEntityIdNumber");
         }
-        if(userHirer.getTopContacts() != null){
+        if(StringUtils.isNotEmpty(userHirer.getTopContacts())){
             updateFields.add("topContacts");
         }
-        if(userHirer.getTopContactsPhoneNumber() != null){
+        if(StringUtils.isNotEmpty(userHirer.getTopContactsPhoneNumber())){
             updateFields.add("topContactsPhoneNumber");
         }
         if(userHirer.getRelationship() != null){
             updateFields.add("relationship");
         }
-        if(userHirer.getBusinessLicenseNumber() != null){
+        if(StringUtils.isNotEmpty(userHirer.getBusinessLicenseNumber())){
             updateFields.add("businessLicenseNumber");
         }
-        if(userHirer.getBusinessLicenseFile() != null){
+        if(StringUtils.isNotEmpty(userHirer.getBusinessLicenseFile())){
             updateFields.add("businessLicenseFile");
         }
         if(userHirer.getRoleStatus() != null){

@@ -6,6 +6,7 @@ import com.newframe.repositories.dataQuery.user.UserPwdQuery;
 import com.newframe.repositories.dataSlave.user.UserPwdSlave;
 import com.newframe.services.userbase.UserPwdService;
 import com.newframe.utils.cache.IdGlobalGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,10 +58,10 @@ public class UserPwdServiceImpl implements UserPwdService {
         UserPwdQuery query = new UserPwdQuery();
         query.setUid(userPwd.getUid());
         List<String> updateFields = new ArrayList();
-        if (userPwd.getLoginPwd() != null){
+        if (StringUtils.isNotEmpty(userPwd.getLoginPwd())){
             updateFields.add("loginPwd");
         }
-        if(userPwd.getPayPwd() != null){
+        if(StringUtils.isNotEmpty(userPwd.getPayPwd())){
             updateFields.add("payPwd");
         }
         String[] array = new String[updateFields.size()];

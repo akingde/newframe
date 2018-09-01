@@ -5,6 +5,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
+import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.UserStatusEnum;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author WangBin
@@ -111,7 +114,9 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole();
         userRole.setUid(uid);
         List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(uid, UUID.randomUUID().toString(), baseInfo.getPhoneNumber(), userRoles));
+        String newToken =  UUID.randomUUID().toString();
+        UserBaseInfoDTO.Role role = returnUserBaseInfo(uid);
+        return new OperationResult(new UserBaseInfoDTO(uid, newToken, baseInfo.getPhoneNumber(), role));
     }
 
     /**
@@ -141,10 +146,9 @@ public class UserServiceImpl implements UserService {
             return new OperationResult<>(RequestResultEnum.LOGIN_ERROR);
         }
 //        String token = modifyToken(userBaseInfo.getUid(), isWeb);
-        UserRole userRole = new UserRole();
-        userRole.setUid(userBaseInfo.getUid());
-        List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), UUID.randomUUID().toString(), mobile, userRoles));
+        String token = UUID.randomUUID().toString();
+        UserBaseInfoDTO.Role role = returnUserBaseInfo(userBaseInfo.getUid());
+        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, mobile, role));
     }
 
     /**
@@ -165,11 +169,9 @@ public class UserServiceImpl implements UserService {
             return register(mobile, mCode);
         }
 //        String token = modifyToken(userBaseInfo.getUid(), isWeb);
-        UserRole userRole = new UserRole();
-        userRole.setUid(userBaseInfo.getUid());
-        List<UserRole> userRoles = userRoleService.findUserRole(userRole);
-        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), UUID.randomUUID().toString(),
-                                                         userBaseInfo.getPhoneNumber(), userRoles));
+        String token = UUID.randomUUID().toString();
+        UserBaseInfoDTO.Role role = returnUserBaseInfo(userBaseInfo.getUid());
+        return new OperationResult(new UserBaseInfoDTO(userBaseInfo.getUid(), token, mobile, role));
     }
 
     /**
@@ -608,5 +610,34 @@ public class UserServiceImpl implements UserService {
      */
     public String modifyToken(Long uid, boolean isWeb) {
         return isWeb ? sessionService.modifyWebUserToken(uid) : sessionService.modifyAppUserToken(uid);
+    }
+
+    private UserBaseInfoDTO.Role returnUserBaseInfo(Long uid){
+        UserRole userRole = new UserRole();
+        userRole.setUid(uid);
+        List<UserRole> roleList = userRoleService.findUserRole(userRole);
+        UserRoleApply roleApply = userRoleApplyService.findOne(uid);
+        if (roleList == null || roleList.size() == 0){
+            if(roleApply == null){
+                return null;
+            }else{
+                return new UserBaseInfoDTO.Role(roleApply.getRoleId(), false);
+            }
+        }else if(roleList.size() == 1){
+            if(roleList.get(0).getRoleId().equals(RoleEnum.SECOND_RENT_MERCHANT.getRoleId())){
+                return new UserBaseInfoDTO.Role(RoleEnum.SECOND_RENT_MERCHANT.getRoleId(), true);
+            } else{
+                return new UserBaseInfoDTO.Role(RoleEnum.HIRER.getRoleId(), true);
+            }
+        }else{
+            Stream<Integer> stream = roleList.stream().map(UserRole::getRoleId);
+            if(stream.anyMatch(x -> RoleEnum.FIRST_RENT_MERCHANT.getRoleId().equals(x))){
+                return new UserBaseInfoDTO.Role(RoleEnum.FIRST_RENT_MERCHANT.getRoleId(), true);
+            }else if(stream.anyMatch(x -> RoleEnum.FUNDER.getRoleId().equals(x))){
+                return new UserBaseInfoDTO.Role(RoleEnum.FUNDER.getRoleId(), true);
+            } else{
+                return new UserBaseInfoDTO.Role(RoleEnum.SUPPLIER.getRoleId(), true);
+            }
+        }
     }
 }

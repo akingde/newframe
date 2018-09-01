@@ -123,7 +123,7 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<AccountRenterRentInfo> listRenterOrderRentAccount(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }

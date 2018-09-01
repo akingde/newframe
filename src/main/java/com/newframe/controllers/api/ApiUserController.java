@@ -287,8 +287,8 @@ public class ApiUserController extends BaseController {
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 10:29
      */
-    @PostMapping("revokeRoleApple")
-    public JsonResult revokeRoleApple(Long uid, Long roleApplyId){
+    @PostMapping("revokeRoleApply")
+    public JsonResult revokeRoleApply(Long uid, Long roleApplyId){
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);

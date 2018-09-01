@@ -39,7 +39,7 @@ public interface AccountManageService {
      * @param pageSize
      * @return
      */
-    OperationResult<AccountRenterRentInfo> listRenterOrderRentAccount(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+    OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
 
     /**
      * 租赁商获取订单融资账户

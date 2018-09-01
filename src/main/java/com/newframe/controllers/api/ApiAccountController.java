@@ -112,15 +112,15 @@ public class ApiAccountController extends BaseController {
     }
 
     /**
-     * 获取租赁商租赁明细
+     * 2.我是租赁商租赁明细列表
      * 涉及到分页
      *
      * @return
      */
-    @RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    @RequestMapping("listRenterOrderRent")
+    public JsonResult listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
-        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRentAccount(uid, orderStatus, currentPage, pageSize);
+        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRent(uid, orderStatus, currentPage, pageSize);
         if (result.getSucc()) {
             return success(result.getEntity());
         }
@@ -208,17 +208,22 @@ public class ApiAccountController extends BaseController {
 
     /**
      * 租赁商租赁账户下
-     * 租赁明细列表
+     * 租机明细
      * 涉及到分页
      *
      * @param currentPage
      * @param pageSize
      * @return
      */
-    /*@RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize) {
-        return null;
-    }*/
+    @RequestMapping("listRenterOrderRentAccount")
+    public JsonResult listRenterOrderRentAccount(Long uid,Integer payStatus,Integer currentPage, Integer pageSize) {
+        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,payStatus,currentPage,pageSize);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
+    }
 
     /**
      * 租赁商租赁账户下

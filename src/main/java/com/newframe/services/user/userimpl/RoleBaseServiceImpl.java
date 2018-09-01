@@ -60,7 +60,7 @@ public class RoleBaseServiceImpl implements RoleBaseService {
     @Override
     public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO role, Integer roleId) throws IOException {
         List<UserRoleApply> applyList = userRoleApplyService.findApplyList(uid);
-        if(applyList != null || applyList.size() > 0){
+        if(applyList != null && applyList.size() > 0){
             return new OperationResult(RequestResultEnum.ROLE_APPLY_TOO_MUCH, false);
         }
         if(StringUtils.isAnyEmpty(role.getName(), role.getLegalEntity(), role.getBusinessListenNumber())){

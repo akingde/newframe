@@ -85,34 +85,34 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         List<String> updateFields = new ArrayList();
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setUid(userRentMerchant.getUid());
-        if (userRentMerchant.getMerchantName() != null){
+        if (StringUtils.isNotEmpty(userRentMerchant.getMerchantName())){
             updateFields.add("merchantName");
         }
         if (StringUtils.isNotEmpty(userRentMerchant.getMerchantPhoneNumber())){
             updateFields.add("merchantPhoneNumber");
         }
-        if(userRentMerchant.getLegalEntity() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getLegalEntity())){
             updateFields.add("legalEntity");
         }
-        if(userRentMerchant.getLegalEntityIdNumber() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getLegalEntityIdNumber())){
             updateFields.add("legalEntityIdNumber");
         }
-        if(userRentMerchant.getBusinessLicenseNumber() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getBusinessLicenseNumber())){
             updateFields.add("businessLicenseNumber");
         }
-        if(userRentMerchant.getRentMerchantAddress() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getRentMerchantAddress())){
             updateFields.add("rentMerchantAddress");
         }
-        if(userRentMerchant.getBusinessLicenseFile() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getBusinessLicenseFile())){
             updateFields.add("businessLicenseFile");
         }
-        if(userRentMerchant.getHighestDegreeDiplomaFile() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getHighestDegreeDiplomaFile())){
             updateFields.add("highestDegreeDiplomaFile");
         }
-        if(userRentMerchant.getDrivingLicenseFile() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getDrivingLicenseFile())){
             updateFields.add("drivingLicenseFile");
         }
-        if(userRentMerchant.getHouseProprietaryCertificateFile() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getHouseProprietaryCertificateFile())){
             updateFields.add("houseProprietaryCertificateFile");
         }
         if(userRentMerchant.getRoleStatus() != null){
@@ -120,23 +120,17 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         }
         if(userRentMerchant.getProvinceId() != null){
             updateFields.add("provinceId");
-        }
-        if(userRentMerchant.getProvinceName() != null){
             updateFields.add("provinceName");
         }
         if(userRentMerchant.getCityId() != null){
             updateFields.add("cityId");
-        }
-        if(userRentMerchant.getCityName() != null){
             updateFields.add("cityName");
         }
         if(userRentMerchant.getCountyId() != null){
             updateFields.add("countyId");
-        }
-        if(userRentMerchant.getCountyName() != null){
             updateFields.add("countyName");
         }
-        if(userRentMerchant.getConsigneeAddress() != null){
+        if(StringUtils.isNotEmpty(userRentMerchant.getConsigneeAddress())){
             updateFields.add("consigneeAddress");
         }
         if(userRentMerchant.getAppoint() != null){
