@@ -7,10 +7,7 @@ import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
-import com.newframe.entity.user.ProductLessor;
-import com.newframe.entity.user.ProductSupplier;
-import com.newframe.entity.user.UserHirer;
-import com.newframe.entity.user.UserSupplier;
+import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
@@ -23,6 +20,7 @@ import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.order.OrderService;
 import com.newframe.services.userbase.UserHirerService;
+import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
 import com.newframe.utils.query.QueryToSpecification;
@@ -92,6 +90,9 @@ public class OrderServiceImpl implements OrderService {
     HirerDeliverSlave hirerDeliverSlave;
 
     @Autowired
+    LessorProductPriceSlave lessorProductPriceSlave;
+
+    @Autowired
     OrderRenterAccountSlave orderRenterAccountSlave;
     @Autowired
     ProductSupplierSlave productSupplierSlave;
@@ -108,6 +109,8 @@ public class OrderServiceImpl implements OrderService {
     UserSupplierService userSupplierService;
     @Autowired
     UserHirerService userHirerService;
+    @Autowired
+    UserRentMerchantService userRentMerchantService;
 
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
@@ -875,6 +878,96 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
+    }
+
+    @Override
+    public OperationResult<RenterInfo> getRenterInfo(Long renterId) {
+        if(renterId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        UserRentMerchant renter = userRentMerchantService.findOne(renterId);
+        RenterInfo info = new RenterInfo();
+        info.setRenterId(renterId);
+        info.setRenterName(renter.getMerchantName());
+        info.setRenterPhone(renter.getMerchantPhoneNumber());
+        info.setAddress(renter.getRentMerchantAddress());
+        info.setBadDeptTimes(0);
+        info.setOverdueTimes(0);
+        info.setFinancingAmount(new BigDecimal(12593));
+        info.setOverdueAmount(new BigDecimal(2549));
+        return new OperationResult<>(OrderResultEnum.SUCCESS,info);
+    }
+
+    @Override
+    public OperationResult<FinancingInfo> getFinancingInfo(Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderFunder> optionalOrderFunder = orderFunderSlave.findById(orderId);
+        if(optionalOrderFunder.isPresent()){
+            Optional<OrderSupplier> optionalOrderSupplier = orderSupplierSlave.findById(orderId);
+            if(optionalOrderSupplier.isPresent()) {
+                OrderFunder orderFunder = optionalOrderFunder.get();
+                OrderSupplier orderSupplier = optionalOrderSupplier.get();
+                FinancingInfo info = new FinancingInfo();
+                info.setAccidentBenefit(orderFunder.getAccidentBenefit());
+                info.setDeposit(orderFunder.getDeposit());
+                info.setFinancingAmount(orderFunder.getFinancingAmount());
+                info.setFinancingDeadline(orderFunder.getNumberOfPayments());
+                info.setFinancingTime(orderFunder.getCtime());
+                info.setSupplierId(orderSupplier.getSupplierId());
+                UserSupplier userSupplier = userSupplierService.findOne(orderSupplier.getUid());
+                if(userSupplier != null){
+                    info.setSupplierName(userSupplier.getMerchantName());
+                }
+                return new OperationResult<>(OrderResultEnum.SUCCESS,info);
+            }
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<RentInfo> getRentInfo(Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(orderId);
+        if(optionalOrderHirer.isPresent()){
+            OrderHirer orderHirer = optionalOrderHirer.get();
+            RentInfo info = new RentInfo();
+            info.setAccidentBenefit(orderHirer.getAccidentBenefit());
+            info.setDownPayment(orderHirer.getDownPayment());
+            info.setLessorId(orderHirer.getLessorId());
+            UserHirer userHirer = userHirerService.findOne(orderHirer.getLessorId());
+            if(userHirer != null){
+                info.setLessorName(userHirer.getMerchantName());
+            }
+            info.setMonthPayment(orderHirer.getMonthlyPayment());
+            info.setRentDeadline(orderHirer.getNumberOfPayments());
+            info.setPatternPayment(orderHirer.getPatternPayment());
+            info.setPaymentAmount(orderHirer.getMonthlyPayment()
+                    .multiply(new BigDecimal(orderHirer.getNumberOfPayments()))
+                    .add(orderHirer.getAccidentBenefit()));
+            info.setRentTime(orderHirer.getCtime());
+            return new OperationResult<>(OrderResultEnum.SUCCESS,info);
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO) {
+        LessorProductPriceQuery query = new LessorProductPriceQuery();
+        BeanUtils.copyProperties(productInfoDTO,query);
+        Sort sort = new Sort(Sort.Direction.ASC,LessorProductPrice.PAYMENT_NUMBER);
+        List<LessorProductPrice> lessorProductPrices = lessorProductPriceSlave.findAll(query,sort);
+        List<LessorProductPriceDTO> dtos = new ArrayList<>();
+
+        for(LessorProductPrice lessorProductPrice:lessorProductPrices){
+            LessorProductPriceDTO dto = new LessorProductPriceDTO();
+            BeanUtils.copyProperties(lessorProductPrice,dto);
+            dtos.add(dto);
+        }
+        return new OperationResult(OrderResultEnum.SUCCESS,dtos);
     }
 
     /**

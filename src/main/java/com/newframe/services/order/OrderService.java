@@ -3,8 +3,9 @@ package com.newframe.services.order;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
-import com.newframe.dto.order.response.DeliverDTO;
-import com.newframe.dto.order.response.ExpressCompanyDTO;
+import com.newframe.dto.order.response.*;
+import com.newframe.entity.order.FinancingInfo;
+import com.newframe.entity.order.LessorProductPrice;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -233,4 +234,32 @@ public interface OrderService {
      * @return 返回结果
      */
     OperationResult<Boolean> orderFinancingable(Long uid, Long orderId);
+
+    /**
+     * 查询租赁商信息
+     * @param renterId 租赁商ID
+     * @return 返回结果
+     */
+    OperationResult<RenterInfo> getRenterInfo(Long renterId);
+
+    /**
+     * 查询融资信息
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    OperationResult<FinancingInfo> getFinancingInfo(Long orderId);
+
+    /**
+     * 查询租机信息
+     * @param orderId 订单id
+     * @return 返回结果
+     */
+    OperationResult<RentInfo> getRentInfo(Long orderId);
+
+    /**
+     * 查询不同租期的机器价格
+     * @param productInfoDTO 产品信息
+     * @return 返回结果
+     */
+    OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO);
 }
