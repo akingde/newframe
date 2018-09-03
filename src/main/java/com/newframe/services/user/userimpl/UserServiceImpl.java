@@ -632,10 +632,10 @@ public class UserServiceImpl implements UserService {
                 return new UserBaseInfoDTO.Role(RoleEnum.HIRER.getRoleId(), true);
             }
         }else{
-            Stream<Integer> stream = roleList.stream().map(UserRole::getRoleId);
-            if(stream.anyMatch(x -> RoleEnum.FIRST_RENT_MERCHANT.getRoleId().equals(x))){
+            Set<Integer> roleIds = roleList.stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+            if(roleIds.stream().anyMatch(x -> RoleEnum.FIRST_RENT_MERCHANT.getRoleId().equals(x))){
                 return new UserBaseInfoDTO.Role(RoleEnum.FIRST_RENT_MERCHANT.getRoleId(), true);
-            }else if(stream.anyMatch(x -> RoleEnum.FUNDER.getRoleId().equals(x))){
+            }else if(roleIds.stream().anyMatch(x -> RoleEnum.FUNDER.getRoleId().equals(x))){
                 return new UserBaseInfoDTO.Role(RoleEnum.FUNDER.getRoleId(), true);
             } else{
                 return new UserBaseInfoDTO.Role(RoleEnum.SUPPLIER.getRoleId(), true);
