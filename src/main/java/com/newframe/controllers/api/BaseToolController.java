@@ -16,7 +16,7 @@ import java.util.List;
  * 阿里云的处理文件的接口
  */
 @RestController
-@RequestMapping("/api/file/")
+@RequestMapping("/rent/api/file/")
 public class BaseToolController extends BaseController {
 
     @Autowired

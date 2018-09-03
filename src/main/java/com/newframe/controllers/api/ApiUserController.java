@@ -29,7 +29,7 @@ import java.util.List;
  * @description:用户相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/user/")
+@RequestMapping("/rent/api/user/")
 public class ApiUserController extends BaseController {
 
     @Autowired

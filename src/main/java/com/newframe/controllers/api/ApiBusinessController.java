@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description:商家商户产品相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/business/")
+@RequestMapping("/rent/api/business/")
 public class ApiBusinessController extends BaseController {
 
     @Autowired

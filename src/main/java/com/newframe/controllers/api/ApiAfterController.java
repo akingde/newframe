@@ -19,7 +19,7 @@ import java.util.List;
  * @author WangBin
  */
 @RestController
-@RequestMapping("/inner/after/")
+@RequestMapping("/rent/api/inner/after/")
 public class ApiAfterController extends BaseController {
 
     @Autowired

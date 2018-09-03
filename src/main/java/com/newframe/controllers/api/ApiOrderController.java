@@ -24,7 +24,7 @@ import java.util.List;
  * 订单相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/order")
+@RequestMapping("/rent/api/order")
 
 public class ApiOrderController extends BaseController {
 

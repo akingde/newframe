@@ -23,7 +23,7 @@ import java.util.List;
  * @description:账户相关模块的Controller
  */
 @RestController
-@RequestMapping("/app/account/")
+@RequestMapping("/rent/api/account/")
 public class ApiAccountController extends BaseController {
 
     @Autowired
