@@ -86,6 +86,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterRentMachineSlave accountRenterRentMachineSlave;
 
+    @Autowired
+    private AccountRenterRentDetailSlave accountRenterRentDetailSlave;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -738,5 +741,30 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
         return result.get();
+    }
+
+    /**
+     * 10.我是租赁商租赁账户租赁明细列表
+     *
+     * @param uid
+     * @param payStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<AccountRenterRentDetail> getAccountRenterRentDetail(Long uid, Integer payStatus, Integer currentPage, Integer pageSize) {
+        if (null == uid || null == currentPage || null == pageSize) {
+            return null;
+        }
+
+        AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
+        query.setUid(uid);
+        query.setPayStatus(payStatus);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
+
+
+        return accountRenterRentDetailSlave.findAll(query,pageRequest);
     }
 }

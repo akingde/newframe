@@ -423,4 +423,14 @@ public interface AccountService {
      * @return
      */
     AccountRenterRentMachine getAccountRenterRentMachine(Long uid);
+
+    /**
+     * 10.我是租赁商租赁账户租赁明细列表
+     * @param uid
+     * @param payStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<AccountRenterRentDetail> getAccountRenterRentDetail(Long uid, Integer payStatus, Integer currentPage, Integer pageSize);
 }

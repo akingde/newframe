@@ -179,11 +179,9 @@ public class AccountManageServiceImpl implements AccountManageService {
         RenterOrderFinanceInfo renterOrderFinanceInfo = new RenterOrderFinanceInfo();
         Page<AccountRenterFinancing> accountRenterFinancings = accountService.getAccountRenterFinancing(uid, orderStatus, currentPage, pageSize);
         List<AccountRenterFinancing> accountRenterFinancingList = accountRenterFinancings.getContent();
-        if (CollectionUtils.isEmpty(accountRenterFinancingList)) {
-            return new OperationResult<>(renterOrderFinanceInfo);
-        }
+
         renterOrderFinanceInfo.setList(accountRenterFinancingList);
-        renterOrderFinanceInfo.setTotal(accountRenterFinancings.getTotalPages());
+        renterOrderFinanceInfo.setTotal(accountRenterFinancings.getTotalElements());
         return new OperationResult<>(renterOrderFinanceInfo);
     }
 
@@ -219,5 +217,31 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterRentMachine accountRenterRentMachine = accountService.getAccountRenterRentMachine(uid);
 
         return new OperationResult<>(accountRenterRentMachine);
+    }
+
+    /**
+     * 10.我是租赁商租赁账户租赁明细列表
+     *
+     * @param uid
+     * @param payStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public OperationResult<RenterOrderRentDetailInfo> listRenterOrderRentAccount(Long uid, Integer payStatus, Integer currentPage, Integer pageSize) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        if (null == payStatus || null == currentPage || null == pageSize){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        RenterOrderRentDetailInfo renterOrderRentDetailInfo = new RenterOrderRentDetailInfo();
+        Page<AccountRenterRentDetail> accountRenterRentDetails = accountService.getAccountRenterRentDetail(uid, payStatus, currentPage, pageSize);
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountRenterRentDetails.getContent();
+
+        renterOrderRentDetailInfo.setList(accountRenterRentDetailList);
+        renterOrderRentDetailInfo.setTotal(accountRenterRentDetails.getTotalElements());
+        return new OperationResult<>(renterOrderRentDetailInfo);
     }
 }

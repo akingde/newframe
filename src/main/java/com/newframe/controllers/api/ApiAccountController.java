@@ -8,6 +8,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.AccountRenterRentInfo;
 import com.newframe.dto.account.RenterAccountInfo;
 import com.newframe.dto.account.RenterOrderFinanceInfo;
+import com.newframe.dto.account.RenterOrderRentDetailInfo;
 import com.newframe.entity.account.AccountRenter;
 import com.newframe.entity.account.AccountRenterFinancingMachine;
 import com.newframe.entity.account.AccountRenterRentMachine;
@@ -217,7 +218,8 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("listRenterOrderRentAccount")
     public JsonResult listRenterOrderRentAccount(Long uid,Integer payStatus,Integer currentPage, Integer pageSize) {
-        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,payStatus,currentPage,pageSize);
+
+        OperationResult<RenterOrderRentDetailInfo> result = accountManageService.listRenterOrderRentAccount(uid,payStatus,currentPage,pageSize);
 
         if (result.getSucc()) {
             return success(result.getEntity());

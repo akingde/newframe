@@ -4,6 +4,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.AccountRenterRentInfo;
 import com.newframe.dto.account.RenterAccountInfo;
 import com.newframe.dto.account.RenterOrderFinanceInfo;
+import com.newframe.dto.account.RenterOrderRentDetailInfo;
 import com.newframe.entity.account.AccountRenter;
 import com.newframe.entity.account.AccountRenterFinancingMachine;
 import com.newframe.entity.account.AccountRenterRentMachine;
@@ -71,4 +72,14 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<AccountRenterRentMachine> getRenterOrderRentAccount(Long uid);
+
+    /**
+     * 10.我是租赁商租赁账户租赁明细列表
+     * @param uid
+     * @param payStatus
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    OperationResult<RenterOrderRentDetailInfo> listRenterOrderRentAccount(Long uid, Integer payStatus, Integer currentPage, Integer pageSize);
 }
