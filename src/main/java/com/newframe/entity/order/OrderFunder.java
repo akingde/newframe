@@ -110,5 +110,6 @@ public class OrderFunder implements Serializable {
 
     private BigDecimal financingAmount;
     private BigDecimal deposit;
+    private Integer loanModel;
 }
 

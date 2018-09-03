@@ -503,6 +503,8 @@ public class OrderServiceImpl implements OrderService {
                 }
                 return new JsonResult(SystemCode.LOAN_ORDER_STATUS_ERROR, false);
             }
+            orderFunder.setLoanModel(loanDTO.getLoanModel());
+            orderFunderMaser.save(orderFunder);
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
