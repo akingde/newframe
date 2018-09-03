@@ -48,6 +48,8 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private UserHirerService userHirerService;
     @Autowired
     private UserSupplierService userSupplierService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -122,7 +124,9 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-
+        Integer[] roleIds = new Integer[]{RoleEnum.FIRST_RENT_MERCHANT.getRoleId(),
+                        RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
+        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
         userRentMerchantService.insert(new UserRentMerchant(userRoleApply));
         userSupplierService.insert(new UserSupplier(userRoleApply));
         userHirerService.insert(new UserHirer(userRoleApply));

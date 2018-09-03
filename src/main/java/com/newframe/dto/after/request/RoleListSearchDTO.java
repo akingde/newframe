@@ -20,6 +20,6 @@ public class RoleListSearchDTO extends PageSearchDTO {
     private Integer endTime;
 
     public String getMerchantName() {
-        return StringUtils.isEmpty(merchantName) ? "%" + merchantName + "%" : null;
+        return StringUtils.isEmpty(merchantName) ? null : "%" + merchantName + "%";
     }
 }

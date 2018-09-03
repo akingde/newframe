@@ -90,7 +90,7 @@ public class AccountFundingOverdueAsset implements Serializable {
     /**
      * 逾期金额合计
      */
-    private BigDecimal totalOverdueAccount;
+    private BigDecimal totalOverdueAmount;
     /**
      * 逾期笔数
      */

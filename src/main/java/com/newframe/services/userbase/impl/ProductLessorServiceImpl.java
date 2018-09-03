@@ -69,7 +69,7 @@ public class ProductLessorServiceImpl implements ProductLessorService {
         if(productLessor.getSurplusStock() != null){
             updateFields.add("surplusStock");
         }
-        if(productLessor.getBrokenScreenRisks() == null){
+        if(productLessor.getBrokenScreenRisks() != null){
             updateFields.add("brokenScreenRisks");
         }
         String[] array =new String[updateFields.size()];

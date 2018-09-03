@@ -148,7 +148,7 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         query.setId(userRoleApply.getId());
         query.setUid(userRoleApply.getUid());
         List<String> updateFields = new ArrayList();
-        if(userRoleApply.getApplyStatus() == null){
+        if(userRoleApply.getApplyStatus() != null){
             updateFields.add("applyStatus");
         }
         if(StringUtils.isNotEmpty(userRoleApply.getMerchantName())){
@@ -166,7 +166,7 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         if(StringUtils.isNotEmpty(userRoleApply.getTopContactsPhoneNumber())){
             updateFields.add("topContactsPhoneNumber");
         }
-        if(userRoleApply.getRelationship() == null){
+        if(userRoleApply.getRelationship() != null){
             updateFields.add("relationship");
         }
         if(StringUtils.isNotEmpty(userRoleApply.getBusinessLicenseNumber())){

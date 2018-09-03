@@ -60,7 +60,7 @@ public class AfterServiceImpl implements AfterService {
      * @return
      */
     @Override
-    public OperationResult<RoleListDTO> getMechantList(RoleListSearchDTO condition) {
+    public OperationResult<RoleListDTO> getMerchantList(RoleListSearchDTO condition) {
         Page<UserRoleApply> page = userRoleApplyService.findAll(condition);
         return new OperationResult(new RoleListDTO(page));
     }
@@ -72,7 +72,7 @@ public class AfterServiceImpl implements AfterService {
      * @return
      */
     @Override
-    public OperationResult<RoleApplyInfoDTO> getMechantInfo(Long roleApplyId) {
+    public OperationResult<RoleApplyInfoDTO> getMerchantInfo(Long roleApplyId) {
         UserRoleApply roleApply = userRoleApplyService.findOne(roleApplyId, null);
         return roleApply == null ? new OperationResult() : new OperationResult(new RoleApplyInfoDTO(roleApply));
     }

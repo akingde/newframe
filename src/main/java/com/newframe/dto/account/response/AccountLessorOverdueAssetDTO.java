@@ -25,4 +25,9 @@ public class AccountLessorOverdueAssetDTO {
      * 逾期率
      */
     private Double overdueRate;
+
+    /**
+     * 本月应收总额
+     */
+    private Double monthPayableAmount;
 }
