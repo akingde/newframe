@@ -12,10 +12,7 @@ import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
-import com.newframe.services.userbase.ProductLessorService;
-import com.newframe.services.userbase.UserBaseInfoService;
-import com.newframe.services.userbase.UserHirerService;
-import com.newframe.services.userbase.UserRoleApplyService;
+import com.newframe.services.userbase.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,6 +37,8 @@ public class HirerServiceImpl implements RoleService {
     private ProductLessorService productLessorService;
     @Autowired
     private UserBaseInfoService userBaseInfoService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -103,6 +102,10 @@ public class HirerServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+        UserRole userRole = new UserRole();
+        userRole.setUid(userRoleApply.getUid());
+        userRole.setRoleId(RoleEnum.HIRER.getRoleId());
+        userRoleService.insert(userRole);
         userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);
     }

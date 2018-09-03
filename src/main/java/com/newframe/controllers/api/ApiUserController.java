@@ -11,6 +11,7 @@ import com.newframe.dto.user.response.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.TypeEnum;
+import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
@@ -454,6 +455,23 @@ public class ApiUserController extends BaseController {
         Integer roleId = RoleEnum.FUNDER.getRoleId();
         OperationResult<UserRoleApplyDTO> result = roleBaseService.getUserApplyInfo(uid, roleId, roleApplyId);
         if (result.getEntity() == null) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 获取资金方线下放款资格
+     * @param uid
+     * @return
+     */
+    @PostMapping("getFunderQualification")
+    public JsonResult getFunderQualification(Long uid){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = userService.getFunderQualification(uid);
+        if (result.getEntity() == null){
             return error(result.getErrorCode());
         }
         return success(result.getEntity());

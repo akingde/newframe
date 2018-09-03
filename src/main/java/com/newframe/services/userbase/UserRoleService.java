@@ -39,6 +39,14 @@ public interface UserRoleService {
     UserRole insert(UserRole userRole);
 
     /**
+     * 批量添加角色
+     * @param uid
+     * @param roleIds
+     * @return
+     */
+    List<UserRole> batchInsert(Long uid, Integer[] roleIds);
+
+    /**
      * 更新用户角色
      * @param userRole
      * @return
