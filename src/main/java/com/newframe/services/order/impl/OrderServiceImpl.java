@@ -7,18 +7,21 @@ import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.*;
+import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
-import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
-import com.newframe.repositories.dataQuery.order.OrderHirerQuery;
-import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
-import com.newframe.repositories.dataQuery.order.OrderSupplierQuery;
+import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.order.*;
+import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
+import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.order.OrderService;
+import com.newframe.services.userbase.UserHirerService;
+import com.newframe.services.userbase.UserRentMerchantService;
+import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
 import com.newframe.utils.query.QueryToSpecification;
 import org.apache.commons.lang3.StringUtils;
@@ -87,11 +90,27 @@ public class OrderServiceImpl implements OrderService {
     HirerDeliverSlave hirerDeliverSlave;
 
     @Autowired
+    LessorProductPriceSlave lessorProductPriceSlave;
+
+    @Autowired
+    OrderRenterAccountSlave orderRenterAccountSlave;
+    @Autowired
+    ProductSupplierSlave productSupplierSlave;
+    @Autowired
+    ProductLessorSlave productLessorSlave;
+
+    @Autowired
     CommonService commonService;
     @Autowired
     OkHttpService okHttpService;
     @Autowired
     private AliossService aliossService;
+    @Autowired
+    UserSupplierService userSupplierService;
+    @Autowired
+    UserHirerService userHirerService;
+    @Autowired
+    UserRentMerchantService userRentMerchantService;
 
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
@@ -208,6 +227,8 @@ public class OrderServiceImpl implements OrderService {
                 orderFunder.setOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode());
                 orderFunder.setDispatchTimes(times + 1);
                 orderFunder.setSupplierId(supplierId);
+                orderFunder.setDeposit(getDeposit(orderId));
+                orderFunder.setFinancingAmount(getFinancingAmount(orderId));
                 orderFunders.add(orderFunder);
                 //修改租赁商订单状态，改为待资金方审核
                 orderRenterMaser.updateOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode(), orderId);
@@ -328,12 +349,44 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public JsonResult getSupplierList(ProductInfoDTO productInfo) {
-        return null;
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(productInfo.getProductBrand());
+        query.setProductColor(productInfo.getProductColor());
+        query.setProductStorage(productInfo.getProductStorage());
+        query.setProductName(productInfo.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        List<SupplierInfoDTO> dtos = new ArrayList<>();
+        for(ProductSupplier product:products){
+            UserSupplier userSupplier = userSupplierService.findOne(product.getSupplierId());
+            if(userSupplier!= null){
+                SupplierInfoDTO dto = new SupplierInfoDTO();
+                dto.setSupplierId(product.getSupplierId());
+                dto.setSupplierName(userSupplier.getMerchantName());
+                dtos.add(dto);
+            }
+        }
+        return new JsonResult(SystemCode.SUCCESS,dtos);
     }
 
     @Override
     public JsonResult getLessorList(ProductInfoDTO productInfo) {
-        return null;
+        OrderProductLessorQuery query = new OrderProductLessorQuery();
+        query.setProductBrand(productInfo.getProductBrand());
+        query.setProductColor(productInfo.getProductColor());
+        query.setProductStorage(productInfo.getProductStorage());
+        query.setProductName(productInfo.getProductName());
+        List<ProductLessor> products = productLessorSlave.findAll(query);
+        List<RenterInfoDTO> dtos = new ArrayList<>();
+        for(ProductLessor product:products){
+            UserHirer userHirer = userHirerService.findOne(product.getSupplierId());
+            if(userHirer!= null){
+                RenterInfoDTO dto = new RenterInfoDTO();
+                dto.setRenterId(product.getSupplierId());
+                dto.setRenterName(userHirer.getMerchantName());
+                dtos.add(dto);
+            }
+        }
+        return new JsonResult(SystemCode.SUCCESS,dtos);
     }
 
     @Override
@@ -780,6 +833,185 @@ public class OrderServiceImpl implements OrderService {
                 return lessorGetLogistics(orderId);
             }
 
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<Boolean> renterDeleteOrder(Long uid, Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setOrderId(orderId);
+        query.setRenterId(uid);
+        OrderRenter orderRenter = orderRenterSlave.findOne(query);
+        if(orderRenter != null){
+            if(OrderRenterStatus.ORDER_CANCEL.getCode().equals(orderRenter.getOrderStatus())){
+                orderRenter.setDeleteStatus(OrderRenter.DELETE_STATUS);
+                orderRenterMaser.save(orderRenter);
+                return new OperationResult<>(OrderResultEnum.SUCCESS,true);
+            }
+            return new OperationResult<>(OrderResultEnum.ORDER_UNDERWAY);
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<Boolean> orderFinancingable(Long uid, Long orderId) {
+        if (orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderRenterAccount> optional = orderRenterAccountSlave.findById(uid);
+        if(optional.isPresent()){
+            OrderRenterAccount orderRenterAccount = optional.get();
+            // 获取账户余额
+            BigDecimal amount = orderRenterAccount.getUseableAmount();
+            // 计算融资金额
+            BigDecimal financingAmount = getFinancingAmount(orderId);
+            if(financingAmount != null){
+                BigDecimal benefit = new BigDecimal(0.15);
+                BigDecimal deposit = financingAmount.multiply(benefit);
+                if(amount.compareTo(deposit)>0){
+                    return new OperationResult<>(OrderResultEnum.FINANCINGABLE,true);
+                }
+            }
+        }
+        return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
+    }
+
+    @Override
+    public OperationResult<RenterInfo> getRenterInfo(Long renterId) {
+        if(renterId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        UserRentMerchant renter = userRentMerchantService.findOne(renterId);
+        RenterInfo info = new RenterInfo();
+        info.setRenterId(renterId);
+        info.setRenterName(renter.getMerchantName());
+        info.setRenterPhone(renter.getMerchantPhoneNumber());
+        info.setAddress(renter.getRentMerchantAddress());
+        info.setBadDeptTimes(0);
+        info.setOverdueTimes(0);
+        info.setFinancingAmount(new BigDecimal(12593));
+        info.setOverdueAmount(new BigDecimal(2549));
+        return new OperationResult<>(OrderResultEnum.SUCCESS,info);
+    }
+
+    @Override
+    public OperationResult<FinancingInfo> getFinancingInfo(Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderFunder> optionalOrderFunder = orderFunderSlave.findById(orderId);
+        if(optionalOrderFunder.isPresent()){
+            Optional<OrderSupplier> optionalOrderSupplier = orderSupplierSlave.findById(orderId);
+            if(optionalOrderSupplier.isPresent()) {
+                OrderFunder orderFunder = optionalOrderFunder.get();
+                OrderSupplier orderSupplier = optionalOrderSupplier.get();
+                FinancingInfo info = new FinancingInfo();
+                info.setAccidentBenefit(orderFunder.getAccidentBenefit());
+                info.setDeposit(orderFunder.getDeposit());
+                info.setFinancingAmount(orderFunder.getFinancingAmount());
+                info.setFinancingDeadline(orderFunder.getNumberOfPayments());
+                info.setFinancingTime(orderFunder.getCtime());
+                info.setSupplierId(orderSupplier.getSupplierId());
+                UserSupplier userSupplier = userSupplierService.findOne(orderSupplier.getUid());
+                if(userSupplier != null){
+                    info.setSupplierName(userSupplier.getMerchantName());
+                }
+                return new OperationResult<>(OrderResultEnum.SUCCESS,info);
+            }
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<RentInfo> getRentInfo(Long orderId) {
+        if(orderId == null){
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(orderId);
+        if(optionalOrderHirer.isPresent()){
+            OrderHirer orderHirer = optionalOrderHirer.get();
+            RentInfo info = new RentInfo();
+            info.setAccidentBenefit(orderHirer.getAccidentBenefit());
+            info.setDownPayment(orderHirer.getDownPayment());
+            info.setLessorId(orderHirer.getLessorId());
+            UserHirer userHirer = userHirerService.findOne(orderHirer.getLessorId());
+            if(userHirer != null){
+                info.setLessorName(userHirer.getMerchantName());
+            }
+            info.setMonthPayment(orderHirer.getMonthlyPayment());
+            info.setRentDeadline(orderHirer.getNumberOfPayments());
+            info.setPatternPayment(orderHirer.getPatternPayment());
+            info.setPaymentAmount(orderHirer.getMonthlyPayment()
+                    .multiply(new BigDecimal(orderHirer.getNumberOfPayments()))
+                    .add(orderHirer.getAccidentBenefit()));
+            info.setRentTime(orderHirer.getCtime());
+            return new OperationResult<>(OrderResultEnum.SUCCESS,info);
+        }
+        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+    }
+
+    @Override
+    public OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO) {
+        LessorProductPriceQuery query = new LessorProductPriceQuery();
+        BeanUtils.copyProperties(productInfoDTO,query);
+        Sort sort = new Sort(Sort.Direction.ASC,LessorProductPrice.PAYMENT_NUMBER);
+        List<LessorProductPrice> lessorProductPrices = lessorProductPriceSlave.findAll(query,sort);
+        List<LessorProductPriceDTO> dtos = new ArrayList<>();
+
+        for(LessorProductPrice lessorProductPrice:lessorProductPrices){
+            LessorProductPriceDTO dto = new LessorProductPriceDTO();
+            BeanUtils.copyProperties(lessorProductPrice,dto);
+            dtos.add(dto);
+        }
+        return new OperationResult(OrderResultEnum.SUCCESS,dtos);
+    }
+
+    /**
+     * 根据订单id查询保证金金额
+     * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
+     * @param orderId 订单id
+     * @return 保证金金额
+     */
+    private BigDecimal getFinancingAmount(Long orderId){
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if(!orderRenterOptional.isPresent()){
+            return null;
+        }
+        OrderRenter orderRenter = orderRenterOptional.get();
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if(products == null || products.size() == 0){
+            return null;
+        }
+        ProductSupplier product = products.get(0);
+        // 拿到供应商的供应价格
+        BigDecimal supplyPrice = product.getSupplyPrice();
+        BigDecimal downPayment = orderRenter.getDownPayment();
+        BigDecimal benefit = new BigDecimal(0.15);
+        BigDecimal financingAmount = supplyPrice.subtract(downPayment)
+                .subtract(supplyPrice.subtract(downPayment).multiply(benefit));
+        return financingAmount;
+    }
+
+    /**
+     * 根据保证金金额
+     * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
+     * @param orderId 订单id
+     * @return 保证金金额
+     */
+    private BigDecimal getDeposit(Long orderId){
+        BigDecimal financingAmount = getFinancingAmount(orderId);
+        BigDecimal benefit = new BigDecimal(0.15);
+        if(financingAmount != null){
+            return financingAmount.multiply(benefit);
         }
         return null;
     }

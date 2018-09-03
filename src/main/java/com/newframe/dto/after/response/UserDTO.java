@@ -8,6 +8,16 @@ import lombok.Data;
 @Data
 public class UserDTO {
 
-    private final Long uid = -1L;
-    private final String userName = "admin";
+    private Long uid;
+    private String userName;
+
+    public UserDTO() {
+        this.uid = -1L;
+        this.userName = "admin";
+    }
+
+    public static void main(String[] args) {
+        UserDTO userDTO = new UserDTO();
+        System.out.println(userDTO.toString());
+    }
 }

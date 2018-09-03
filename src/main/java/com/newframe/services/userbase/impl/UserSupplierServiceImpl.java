@@ -5,6 +5,7 @@ import com.newframe.repositories.dataMaster.user.UserSupplierMaster;
 import com.newframe.repositories.dataQuery.user.UserSupplierQuery;
 import com.newframe.repositories.dataSlave.user.UserSupplierSlave;
 import com.newframe.services.userbase.UserSupplierService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,19 +92,19 @@ public class UserSupplierServiceImpl implements UserSupplierService {
         List<String> updateFields = new ArrayList();
         UserSupplierQuery query = new UserSupplierQuery();
         query.setUid(userSupplier.getUid());
-        if(userSupplier.getMerchantName() != null){
+        if(StringUtils.isNotEmpty(userSupplier.getMerchantName())){
             updateFields.add("merchantName");
         }
-        if(userSupplier.getLegalEntity() != null){
+        if(StringUtils.isNotEmpty(userSupplier.getLegalEntity())){
             updateFields.add("legalEntity");
         }
-        if(userSupplier.getLegalEntityIdNumber() != null){
+        if(StringUtils.isNotEmpty(userSupplier.getLegalEntityIdNumber())){
             updateFields.add("legalEntityIdNumber");
         }
-        if(userSupplier.getBusinessLicenseNumber() != null){
+        if(StringUtils.isNotEmpty(userSupplier.getBusinessLicenseNumber())){
             updateFields.add("businessLicenseNumber");
         }
-        if(userSupplier.getBusinessLicenseFile() != null){
+        if(StringUtils.isNotEmpty(userSupplier.getBusinessLicenseFile())){
             updateFields.add("businessLicenseFile");
         }
         if(userSupplier.getRoleStatus() != null){

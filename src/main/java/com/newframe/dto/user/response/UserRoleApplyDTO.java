@@ -13,14 +13,14 @@ import java.util.List;
 @Data
 public class UserRoleApplyDTO {
 
-    private Long roleAppleId;//角色申请id
+    private Long roleApplyId;//角色申请id
     private Integer roleId; //角色id
 
     public UserRoleApplyDTO() {
     }
 
     public UserRoleApplyDTO(UserRoleApply userRoleApply) {
-        this.roleAppleId = userRoleApply.getId();
+        this.roleApplyId = userRoleApply.getId();
         this.roleId = userRoleApply.getRoleId();
     }
 
