@@ -47,7 +47,7 @@ public class AccountLessorMatterAssetView implements Serializable {
     /**
      * 待付租金
      */
-    private double unPayAmount;
+    private double unpayAmount;
     /**
      * ctime
      */
