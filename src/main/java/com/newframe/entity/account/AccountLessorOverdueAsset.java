@@ -104,4 +104,9 @@ public class AccountLessorOverdueAsset {
      */
     private BigDecimal unpayAmount;
 
+    /**
+     * 本月应收总额
+     */
+    private Double monthPayableAmount;
+
 }
