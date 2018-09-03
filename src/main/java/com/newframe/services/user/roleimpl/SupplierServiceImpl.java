@@ -39,6 +39,8 @@ public class SupplierServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserHirerService userHirerService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -94,6 +96,8 @@ public class SupplierServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+        Integer[] roleIds = new Integer[]{RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
+        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
         userSupplierService.insert(new UserSupplier(userRoleApply));
         userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);

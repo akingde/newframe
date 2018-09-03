@@ -274,6 +274,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize) {
+        if (null == currentPage || currentPage <= 1) {
+            currentPage = 1;
+        }
+        if (null == pageSize || pageSize <= 1) {
+            pageSize = 1;
+        }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         AccountFundingFinanceAssetQuery query = new AccountFundingFinanceAssetQuery();
@@ -306,12 +312,12 @@ public class AccountServiceImpl implements AccountService {
         query.setFunderId(uid);
         query.setOrderId(orderId);
         query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
-        OrderFunder entity = orderFunderSlave.findOne(query);
-        if (null == entity) {
+        List<OrderFunder> entitys = orderFunderSlave.findAll(query);
+        if (null == entitys || entitys.isEmpty()) {
             return new JsonResult(SystemCode.SUCCESS404, null);
         }
         AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
-        BeanUtils.copyProperties(entity, dto);
+        BeanUtils.copyProperties(entitys.get(0), dto);
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -346,6 +352,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+        if (null == currentPage || currentPage <= 1) {
+            currentPage = 1;
+        }
+        if (null == pageSize || pageSize <= 1) {
+            pageSize = 1;
+        }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         AccountFundingOverdueAssetQuery query = new AccountFundingOverdueAssetQuery();
@@ -435,6 +447,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize) {
+        if (null == currentPage || currentPage <= 1) {
+            currentPage = 1;
+        }
+        if (null == pageSize || pageSize <= 1) {
+            pageSize = 1;
+        }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         Page<OrderSupplier> page = orderSupplierSlave.findAll(pageable);
@@ -510,6 +528,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize) {
+        if (null == currentPage || currentPage <= 1) {
+            currentPage = 1;
+        }
+        if (null == pageSize || pageSize <= 1) {
+            pageSize = 1;
+        }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         Page<AccountLessorMatterAsset> page = accountLessorMatterAssetSlave.findAll(pageable);
@@ -540,12 +564,12 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId) {
         OrderFunderQuery query = new OrderFunderQuery();
         query.setOrderId(orderId);
-        OrderHirer entity = orderHirerSlave.findOne(query);
-        if (null == entity) {
+        List<OrderHirer> entitys = orderHirerSlave.findAll(query);
+        if (null == entitys || entitys.isEmpty()) {
             return new JsonResult(SystemCode.SUCCESS404, null);
         }
         AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
-        BeanUtils.copyProperties(entity, dto);
+        BeanUtils.copyProperties(entitys.get(0), dto);
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -580,6 +604,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+        if (null == currentPage || currentPage <= 1) {
+            currentPage = 1;
+        }
+        if (null == pageSize || pageSize <= 1) {
+            pageSize = 1;
+        }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         Page<AccountLessorOverdueAsset> page = accountLessorOverdueAssetSlave.findAll(pageable);
@@ -679,11 +709,11 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
         Optional<AccountRenterFinancingMachine> result = accountRenterFinancingMachineSlave.findById(uid);
-        if (!result.isPresent()){
+        if (!result.isPresent()) {
             return null;
         }
         return result.get();
@@ -721,7 +751,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public List<AccountRenterRepay> listAccountRenterRepay(Long orderId) {
-        if (null == orderId){
+        if (null == orderId) {
             return null;
         }
 
@@ -739,11 +769,11 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRentMachine getAccountRenterRentMachine(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
         Optional<AccountRenterRentMachine> result = accountRenterRentMachineSlave.findById(uid);
-        if (!result.isPresent()){
+        if (!result.isPresent()) {
             return null;
         }
         return result.get();

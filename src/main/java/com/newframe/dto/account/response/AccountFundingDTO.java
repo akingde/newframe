@@ -41,7 +41,7 @@ public class AccountFundingDTO {
     /**
      * 本月应收
      */
-    private BigDecimal monthPayableAccount;
+    private BigDecimal monthPayableAmount;
     /**
      * ctime
      */

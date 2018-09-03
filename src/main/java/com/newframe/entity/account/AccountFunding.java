@@ -45,7 +45,7 @@ public class AccountFunding {
     /**
      * 本月应收
      */
-    private BigDecimal monthPayableAccount;
+    private BigDecimal monthPayableAmount;
     /**
      * 账号状态,1:正常,2:冻结
      */

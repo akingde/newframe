@@ -14,10 +14,7 @@ import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
-import com.newframe.services.userbase.UserBaseInfoService;
-import com.newframe.services.userbase.UserFunderService;
-import com.newframe.services.userbase.UserHirerService;
-import com.newframe.services.userbase.UserRoleApplyService;
+import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +39,8 @@ public class FunderServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserHirerService userHirerService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -118,6 +117,8 @@ public class FunderServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
+        Integer[] roleIds = new Integer[]{RoleEnum.FUNDER.getRoleId(), RoleEnum.HIRER.getRoleId()};
+        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
         userFunderService.insert(new UserFunder(userRoleApply));
         userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);

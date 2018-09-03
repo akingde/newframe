@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private SessionService sessionService;
     @Autowired
     private UserRoleApplyService userRoleApplyService;
+    @Autowired
+    private UserFunderService userFunderService;
 
     /**
      * @param mobile
@@ -639,5 +641,20 @@ public class UserServiceImpl implements UserService {
                 return new UserBaseInfoDTO.Role(RoleEnum.SUPPLIER.getRoleId(), true);
             }
         }
+    }
+
+    /**
+     * 获取资金方线下放款资格
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> getFunderQualification(Long uid) {
+        UserFunder funder = userFunderService.findOne(uid);
+        if (funder == null){
+            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS);
+        }
+        return new OperationResult(funder.getIsWhite());
     }
 }
