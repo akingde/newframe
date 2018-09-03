@@ -107,5 +107,8 @@ public class OrderFunder implements Serializable {
     private Integer numberOfPeriods;
     private BigDecimal orderAmount;
     private Short withhold;
+
+    private BigDecimal financingAmount;
+    private BigDecimal deposit;
 }
 
