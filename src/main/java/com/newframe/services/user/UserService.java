@@ -221,4 +221,11 @@ public interface UserService {
      * @return
      */
     OperationResult<UserRoleApplyDTO.RoleApplyResult> getUserApply(Long uid);
+
+    /**
+     * 获取资金方线下放款资格
+     * @param uid
+     * @return
+     */
+    OperationResult<Boolean> getFunderQualification(Long uid);
 }
