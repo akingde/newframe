@@ -1,7 +1,7 @@
 package com.newframe.dto.account;
 
-import com.google.common.collect.Lists;
 import com.newframe.entity.account.AccountRenterFinancing;
+import com.newframe.entity.account.AccountRenterRentDetail;
 import lombok.Data;
 
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
  * @description:
  */
 @Data
-public class RenterOrderFinanceInfo {
+public class RenterOrderRentDetailInfo {
 
-    private List<AccountRenterFinancing> list;
+    private List<AccountRenterRentDetail> list;
 
     private Long total;
 }
