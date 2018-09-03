@@ -37,4 +37,6 @@ public class OrderRenterDTO {
     private String consumerAddress;
     /** 用户坏账次数*/
     private Integer consumerBedDebtTimes;
+    private Integer machineNumber;
+    private Integer orderType;
 }

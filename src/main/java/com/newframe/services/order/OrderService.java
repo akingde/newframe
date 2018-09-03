@@ -5,7 +5,6 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.entity.order.FinancingInfo;
-import com.newframe.entity.order.LessorProductPrice;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -35,7 +34,7 @@ public interface OrderService {
      * @param supplierId 供应商id
      * @return 处理结果
      */
-    JsonResult renterFinancingBuy(Long uid, List<Long> orderId, Long supplierId);
+    JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId, BigDecimal financingAmount, Integer financingDeadline);
 
     /**
      * 租赁商租机

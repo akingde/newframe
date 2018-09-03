@@ -55,11 +55,11 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
-    public JsonResult renterFinancingBuy(@RequestParam List<Long> orderId,Long supplierId,Long uid){
+    public JsonResult renterFinancingBuy(Long orderId,Long supplierId,Long uid,BigDecimal financingAmount,Integer financingDeadline){
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        return orderService.renterFinancingBuy(uid,orderId,supplierId);
+        return orderService.renterFinancingBuy(uid,orderId,supplierId,financingAmount,financingDeadline);
     }
 
     /**
