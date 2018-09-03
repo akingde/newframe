@@ -25,14 +25,14 @@ public interface AfterService {
      * @param condition
      * @return
      */
-    OperationResult<RoleListDTO> getMechantList(RoleListSearchDTO condition);
+    OperationResult<RoleListDTO> getMerchantList(RoleListSearchDTO condition);
 
     /**
      * 获取角色申请详细信息
      * @param roleApplyId
      * @return
      */
-    OperationResult<RoleApplyInfoDTO> getMechantInfo(Long roleApplyId);
+    OperationResult<RoleApplyInfoDTO> getMerchantInfo(Long roleApplyId);
 
     /**
      * 审核通过

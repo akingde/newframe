@@ -45,9 +45,9 @@ public class ApiAfterController extends BaseController {
      * @param condition
      * @return
      */
-    @PostMapping("mechantList")
-    public JsonResult getMechantList(RoleListSearchDTO condition){
-        OperationResult<RoleListDTO> result = afterService.getMechantList(condition);
+    @PostMapping("merchantList")
+    public JsonResult getMerchantList(RoleListSearchDTO condition){
+        OperationResult<RoleListDTO> result = afterService.getMerchantList(condition);
         return success(result.getEntity());
     }
 
@@ -56,9 +56,9 @@ public class ApiAfterController extends BaseController {
      * @param roleApplyId
      * @return
      */
-    @PostMapping("mechantInfo")
-    public JsonResult getMechantInfo(Long roleApplyId){
-        OperationResult<RoleApplyInfoDTO> result = afterService.getMechantInfo(roleApplyId);
+    @PostMapping("merchantInfo")
+    public JsonResult getMerchantInfo(Long roleApplyId){
+        OperationResult<RoleApplyInfoDTO> result = afterService.getMerchantInfo(roleApplyId);
         return success(result.getEntity());
     }
 
