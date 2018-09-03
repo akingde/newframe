@@ -5,14 +5,8 @@ import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.account.AccountRenterRentInfo;
-import com.newframe.dto.account.RenterAccountInfo;
-import com.newframe.dto.account.RenterOrderFinanceInfo;
-import com.newframe.dto.account.RenterOrderRentDetailInfo;
-import com.newframe.entity.account.AccountRenter;
-import com.newframe.entity.account.AccountRenterFinancingMachine;
-import com.newframe.entity.account.AccountRenterRentMachine;
-import com.newframe.entity.account.AccountRenterRepay;
+import com.newframe.dto.account.*;
+import com.newframe.entity.account.*;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -237,7 +231,13 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderRentDetail")
     public JsonResult getRenterOrderRentDetail(Long orderId) {
-        return null;
+
+        OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
 
@@ -251,8 +251,14 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("getRenterOrderOverdueAccount")
-    public JsonResult getRenterOrderOverdueAccount() {
-        return null;
+    public JsonResult getRenterOrderOverdueAccount(Long uid) {
+
+        OperationResult<AccountRenterOverdueAsset> result = accountManageService.getAccountRenterOverdueAsset(uid);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -265,8 +271,14 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderOverdue")
-    public JsonResult listRenterOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
+    public JsonResult listRenterOrderOverdue(Long uid,Integer currentPage, Integer pageSize) {
+
+        OperationResult<RenterOrderOverdueDetailInfo> result = accountManageService.listRenterOrderOverdue(uid,currentPage,pageSize);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -279,7 +291,12 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderOverdueDetail")
     public JsonResult getRenterOrderOverdueDetail(Long orderId) {
-        return null;
+        OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 
     /**

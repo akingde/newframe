@@ -433,4 +433,20 @@ public interface AccountService {
      * @return
      */
     Page<AccountRenterRentDetail> getAccountRenterRentDetail(Long uid, Integer payStatus, Integer currentPage, Integer pageSize);
+
+    /**
+     * 12.获取租赁商订单逾期账户
+     * @param uid
+     * @return
+     */
+    AccountRenterOverdueAsset getAccountRenterOverdueAsset(Long uid);
+
+    /**
+     * 13.我是租赁商订单逾期账户下租赁明细列表
+     * @param uid
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<AccountRenterOverdueDetail> getAccountRenterOverdueDetail(Long uid, Integer currentPage, Integer pageSize);
 }

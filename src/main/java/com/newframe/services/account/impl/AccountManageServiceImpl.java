@@ -244,4 +244,47 @@ public class AccountManageServiceImpl implements AccountManageService {
         renterOrderRentDetailInfo.setTotal(accountRenterRentDetails.getTotalElements());
         return new OperationResult<>(renterOrderRentDetailInfo);
     }
+
+    /**
+     * 12.获取租赁商订单逾期账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<AccountRenterOverdueAsset> getAccountRenterOverdueAsset(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+
+        AccountRenterOverdueAsset accountRenterOverdueAsset = accountService.getAccountRenterOverdueAsset(uid);
+
+        return new OperationResult<>(accountRenterOverdueAsset);
+    }
+
+    /**
+     * 13.我是租赁商订单逾期账户下租赁明细列表
+     *
+     * @param uid
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public OperationResult<RenterOrderOverdueDetailInfo> listRenterOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        if (null == currentPage || null == pageSize){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        RenterOrderOverdueDetailInfo renterOrderRentDetailInfo = new RenterOrderOverdueDetailInfo();
+        Page<AccountRenterOverdueDetail> accountRenterOverdueDetails = accountService.getAccountRenterOverdueDetail(uid,currentPage, pageSize);
+        List<AccountRenterOverdueDetail> accountRenterOverdueDetailList = accountRenterOverdueDetails.getContent();
+
+        renterOrderRentDetailInfo.setList(accountRenterOverdueDetailList);
+        renterOrderRentDetailInfo.setTotal(accountRenterOverdueDetails.getTotalElements());
+        return new OperationResult<>(renterOrderRentDetailInfo);
+    }
 }

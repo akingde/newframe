@@ -89,6 +89,12 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterRentDetailSlave accountRenterRentDetailSlave;
 
+    @Autowired
+    private AccountRenterOverdueAssetSlave accountRenterOverdueAssetSlave;
+
+    @Autowired
+    private AccountRenterOverdueDetailSlave accountRenterOverdueDetailSlave;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -766,5 +772,46 @@ public class AccountServiceImpl implements AccountService {
 
 
         return accountRenterRentDetailSlave.findAll(query,pageRequest);
+    }
+
+    /**
+     * 12.获取租赁商订单逾期账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterOverdueAsset getAccountRenterOverdueAsset(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        Optional<AccountRenterOverdueAsset> result = accountRenterOverdueAssetSlave.findById(uid);
+        if (!result.isPresent()){
+            return null;
+        }
+        return result.get();
+    }
+
+    /**
+     * 13.我是租赁商订单逾期账户下租赁明细列表
+     *
+     * @param uid
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<AccountRenterOverdueDetail> getAccountRenterOverdueDetail(Long uid, Integer currentPage, Integer pageSize) {
+        if (null == uid || null == currentPage || null == pageSize) {
+            return null;
+        }
+
+        AccountRenterOverdueQuery query = new AccountRenterOverdueQuery();
+        query.setUid(uid);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
+
+
+        return accountRenterOverdueDetailSlave.findAll(query,pageRequest);
     }
 }
