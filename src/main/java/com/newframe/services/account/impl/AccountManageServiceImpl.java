@@ -127,17 +127,14 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
-        if (null == orderStatus || null == currentPage || null == pageSize){
+        if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         AccountRenterRentInfo accountRenterRentInfo = new AccountRenterRentInfo();
         Page<AccountRenterRent> accountRenterRentPage = accountService.getAccountRenterRent(uid, orderStatus, currentPage, pageSize);
         List<AccountRenterRent> accountRenterRents = accountRenterRentPage.getContent();
-        if (CollectionUtils.isEmpty(accountRenterRents)) {
-            return new OperationResult<>(accountRenterRentInfo);
-        }
         accountRenterRentInfo.setList(accountRenterRents);
-        accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalPages());
+        accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalElements());
         return new OperationResult<>(accountRenterRentInfo);
     }
 
@@ -168,16 +165,16 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid,Integer repaymentStatus, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
-        if (null == orderStatus || null == currentPage || null == pageSize){
+        if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         RenterOrderFinanceInfo renterOrderFinanceInfo = new RenterOrderFinanceInfo();
-        Page<AccountRenterFinancing> accountRenterFinancings = accountService.getAccountRenterFinancing(uid, orderStatus, currentPage, pageSize);
+        Page<AccountRenterFinancing> accountRenterFinancings = accountService.getAccountRenterFinancing(uid, repaymentStatus,orderStatus, currentPage, pageSize);
         List<AccountRenterFinancing> accountRenterFinancingList = accountRenterFinancings.getContent();
 
         renterOrderFinanceInfo.setList(accountRenterFinancingList);
@@ -233,7 +230,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
-        if (null == payStatus || null == currentPage || null == pageSize){
+        if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         RenterOrderRentDetailInfo renterOrderRentDetailInfo = new RenterOrderRentDetailInfo();

@@ -97,7 +97,7 @@ public class ProductLessor {
      * ctime
      */
     @Column(name = "ctime")
-    private Long ctime;
+    private Integer ctime;
 
     /**
      * 碎屏险
@@ -111,7 +111,7 @@ public class ProductLessor {
      * utime
      */
     @Column(name = "utime")
-    private Long utime;
+    private Integer utime;
 
     /**
      * 删除标记（1：删除，0：未删除，默认0）
@@ -130,9 +130,11 @@ public class ProductLessor {
         this.model = condition.getModel();
         this.specification = condition.getSpecification();
         this.color = condition.getColor();
-        this.guidePrice = BigDecimalUtils.compareTo(condition.getGuidePrice()) ? condition.getGuidePrice() : null;
-        this.supplyPrice = BigDecimalUtils.compareTo(condition.getSupplyPrice()) ? condition.getSupplyPrice() : null;
-        this.surplusStock = condition.getSurplusStock() != null && condition.getSurplusStock() < 0 ? condition.getSurplusStock(): null;
-        this.brokenScreenRisks = BigDecimalUtils.compareTo(condition.getBrokenScreenRisks()) ? condition.getBrokenScreenRisks() : null;
+        this.guidePrice = BigDecimalUtils.compareTo(condition.getGuidePrice()) ? condition.getGuidePrice() : BigDecimal.ZERO;
+        this.supplyPrice = BigDecimalUtils.compareTo(condition.getSupplyPrice()) ? condition.getSupplyPrice() : BigDecimal.ZERO;
+        this.surplusStock = condition.getSurplusStock() != null && condition.getSurplusStock() < 0 ? condition.getSurplusStock(): 0;
+        this.frozenStock = 0;
+        this.brokenScreenRisks = BigDecimalUtils.compareTo(condition.getBrokenScreenRisks()) ? condition.getBrokenScreenRisks() : BigDecimal.ZERO;
+        this.isDelated = 0;
     }
 }

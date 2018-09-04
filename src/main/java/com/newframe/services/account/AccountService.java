@@ -408,7 +408,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+    Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus,Integer orderStatus, Integer currentPage, Integer pageSize);
 
     /**
      * 我是租赁商订单融资账户订单融资列表查看订单详情

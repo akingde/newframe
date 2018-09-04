@@ -18,6 +18,9 @@ public class AccountRenterFinancingQuery extends BaseQuery {
     @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
     private Integer orderStatus;
 
+    @QBindAttrField(fieldName = "repaymentStatus", where = Where.equal)
+    private Integer repaymentStatus;
+
     @QBindAttrField(fieldName = "uid",where = Where.equal)
     private Long uid;
 }

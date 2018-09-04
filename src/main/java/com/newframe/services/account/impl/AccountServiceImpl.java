@@ -676,11 +676,13 @@ public class AccountServiceImpl implements AccountService {
 
         AccountRenterRentQuery query = new AccountRenterRentQuery();
         query.setUid(uid);
-        query.setOrderStatus(orderStatus);
+        if (null != orderStatus) {
+            query.setOrderStatus(orderStatus);
+        }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
-        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(pageRequest);
+        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(query,pageRequest);
         return rents;
     }
 
@@ -729,18 +731,23 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus,Integer orderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid || null == currentPage || null == pageSize) {
             return null;
         }
 
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
         query.setUid(uid);
-        query.setOrderStatus(orderStatus);
+        if (null != orderStatus) {
+            query.setOrderStatus(orderStatus);
+        }
+        if (null != repaymentStatus){
+            query.setRepaymentStatus(repaymentStatus);
+        }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
-        return accountRenterFinancingSlave.findAll(pageRequest);
+        return accountRenterFinancingSlave.findAll(query,pageRequest);
     }
 
     /**
@@ -796,7 +803,9 @@ public class AccountServiceImpl implements AccountService {
 
         AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
         query.setUid(uid);
-        query.setPayStatus(payStatus);
+        if (null != payStatus) {
+            query.setPayStatus(payStatus);
+        }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 

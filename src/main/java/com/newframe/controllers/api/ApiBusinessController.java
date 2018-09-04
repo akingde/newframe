@@ -7,6 +7,7 @@ import com.newframe.dto.RequestUser;
 import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.dto.user.request.ProductModifyDTO;
 import com.newframe.dto.user.response.ProductDTO;
+import com.newframe.enums.SystemCode;
 import com.newframe.services.user.RoleBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +32,11 @@ public class ApiBusinessController extends BaseController {
      * @Date 2018/8/8 18:11
      */
     @PostMapping("getProductList")
-    public JsonResult getProductList(Integer roleId, PageSearchDTO condition) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult getProductList(Long uid, Integer roleId, PageSearchDTO condition) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<ProductDTO> product = roleBaseService.getProductList(uid, roleId, condition);
         return success(product.getEntity());
     }
@@ -51,10 +55,13 @@ public class ApiBusinessController extends BaseController {
      * @Date 2018/8/9 18:06
      */
     @PostMapping("addProduct")
-    public JsonResult addProduct(Integer roleId, ProductModifyDTO productModifyDTO) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult addProduct(Long uid, Integer roleId, ProductModifyDTO productModifyDTO) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = roleBaseService.addProduct(uid, roleId, productModifyDTO);
-        if (result.getEntity()){
+        if (!result.getEntity()){
             return error(result.getErrorCode());
         }
         return success(result.getSucc());
@@ -75,10 +82,13 @@ public class ApiBusinessController extends BaseController {
      * @Date 2018/8/9 18:08
      */
     @PostMapping("modifyProduct")
-    public JsonResult modifyProduct(Integer roleId, ProductModifyDTO productModifyDTO) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult modifyProduct(Long uid, Integer roleId, ProductModifyDTO productModifyDTO) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = roleBaseService.modifyProduct(uid, roleId, productModifyDTO);
-        if (result.getEntity()){
+        if (!result.getEntity()){
             return error(result.getErrorCode());
         }
         return success(result.getSucc());
@@ -92,10 +102,13 @@ public class ApiBusinessController extends BaseController {
      * @Date 2018/8/8 18:13
      */
     @PostMapping("removeProduct")
-    public JsonResult removeProduct(Integer roleId, Long productId) {
-        Long uid = RequestUser.getCurrentUid();
+    public JsonResult removeProduct(Long uid, Integer roleId, Long productId) {
+//        Long uid = RequestUser.getCurrentUid();
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = roleBaseService.removeProduct(uid, roleId, productId);
-        if (result.getEntity()){
+        if (!result.getEntity()){
             return error(result.getErrorCode());
         }
         return success(result.getSucc());
