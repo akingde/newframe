@@ -187,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
         // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
-        Long funderId = 3436672695388700980L;
+        Long funderId = 1535433927622896L;
         List<OrderFunder> orderFunders = new ArrayList<>();
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
@@ -206,6 +206,11 @@ public class OrderServiceImpl implements OrderService {
         Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
         if (optional.isPresent()) {
             OrderRenter orderRenter = optional.get();
+            // 判断订单是否在审核中
+            if(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode().equals(orderRenter.getOrderStatus())
+                    || OrderRenterStatus.WAITING_LESSOR_AUDIT.getCode().equals(orderRenter.getOrderStatus())){
+                return new JsonResult(OrderResultEnum.ORDER_AUDITTING,false);
+            }
             // 检查订单状态是否是不可融资状态
             if (OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode().equals(orderRenter.getOrderStatus())) {
                 return new JsonResult(SystemCode.ORDER_FINANCING_FAIL, false);
@@ -396,13 +401,13 @@ public class OrderServiceImpl implements OrderService {
         query.setProductStorage(productInfo.getProductStorage());
         query.setProductName(productInfo.getProductName());
         List<ProductLessor> products = productLessorSlave.findAll(query);
-        List<RenterInfoDTO> dtos = new ArrayList<>();
+        List<LessorInfoDTO> dtos = new ArrayList<>();
         for (ProductLessor product : products) {
             UserHirer userHirer = userHirerService.findOne(product.getSupplierId());
             if (userHirer != null) {
-                RenterInfoDTO dto = new RenterInfoDTO();
-                dto.setRenterId(product.getSupplierId());
-                dto.setRenterName(userHirer.getMerchantName());
+                LessorInfoDTO dto = new LessorInfoDTO();
+                dto.setLessorId(product.getSupplierId());
+                dto.setLessorName(userHirer.getMerchantName());
                 dtos.add(dto);
             }
         }
