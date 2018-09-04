@@ -65,10 +65,10 @@ public class FunderServiceImpl implements RoleService {
         if (!PatternEnum.checkPattern(roleApply.getTopContactsPhoneNumber(), PatternEnum.mobile)){
             return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
         }
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getBusinessQualification())){
+        if(FileUtils.checkImageAndEmpty(2, roleApply.getBusinessQualification())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getLetterOfAttorney())){
+        if(FileUtils.checkImageAndEmpty(2, roleApply.getLetterOfAttorney())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
         List<String> businessUrls =

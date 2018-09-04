@@ -68,13 +68,13 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     @Override
     public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) throws IOException {
         RentMerchantApplyDTO roleApply = (RentMerchantApplyDTO)roleApplyDTO;
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getHighestDegreeDiploma())){
+        if(!FileUtils.checkImage(2, roleApply.getHighestDegreeDiploma())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getDrivingLicense())){
+        if(!FileUtils.checkImage(2, roleApply.getDrivingLicense())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getHouseProprietaryCertificate())){
+        if(!FileUtils.checkImage(2, roleApply.getHouseProprietaryCertificate())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
         List<String> businessUrls =
