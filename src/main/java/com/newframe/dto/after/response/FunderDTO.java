@@ -11,6 +11,7 @@ public class FunderDTO {
 
     private Long funderUid;
     private String merchantName;
+    private String phoneNumber;
     private String legalEntity;
     private String legalEntityIdNumber;
     private String topContacts;
@@ -28,6 +29,7 @@ public class FunderDTO {
     public FunderDTO(UserFunder userFunder) {
         this.funderUid = userFunder.getUid();
         this.merchantName = userFunder.getMerchantName();
+        this.phoneNumber = userFunder.getPhoneNumber();
         this.legalEntity = userFunder.getLegalEntity();
         this.legalEntityIdNumber = userFunder.getLegalEntityIdNumber();
         this.topContacts = userFunder.getTopContacts();
