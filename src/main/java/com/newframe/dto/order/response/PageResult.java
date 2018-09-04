@@ -12,10 +12,10 @@ import org.springframework.data.domain.Page;
 public class PageResult {
     private Long total;
 
-    private Object data;
+    private Object list;
 
     public void setPage(Page page){
-        this.data = page.getContent();
+        this.list = page.getContent();
         this.total = page.getTotalElements();
     }
 }

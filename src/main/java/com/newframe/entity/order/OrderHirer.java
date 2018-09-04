@@ -120,4 +120,6 @@ public class OrderHirer {
      */
     private Short withhold;
 
+    private Integer dispatchTimes;
+
 }

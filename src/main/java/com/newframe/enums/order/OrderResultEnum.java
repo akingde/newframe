@@ -14,7 +14,10 @@ public enum OrderResultEnum implements CodeStatus {
     PARAM_ERROR("206","参数非法"),
     ORDER_UNDERWAY("207","订单进行中，不可删除"),
     FINANCINGABLE("200","账户余额充足，可以进行融资"),
-    NO_FINANCINGABLE("208","账户余额不足融资金额的15%，不可融资"),;
+    NO_FINANCINGABLE("208","账户余额不足融资金额的15%，不可融资"),
+    ORDER_RENTING_FAIL("206","订单租赁审核不通过超过最大次数限制，不允许再次租赁"),
+    ORDER_AUDITTING("208","订单审核中"),
+    ;
 
     String code;
 
