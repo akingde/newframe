@@ -75,4 +75,11 @@ public interface AfterService {
      * @return
      */
     OperationResult<Boolean> removeFunder(Long uid, Long funderUid);
+
+    /**
+     * 获取资金方信息
+     * @param funderUid
+     * @return
+     */
+    OperationResult<FunderDTO> getFunderInfo(Long funderUid);
 }
