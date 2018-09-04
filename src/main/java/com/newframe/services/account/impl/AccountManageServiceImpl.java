@@ -127,7 +127,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
-        if (null == orderStatus || null == currentPage || null == pageSize){
+        if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         AccountRenterRentInfo accountRenterRentInfo = new AccountRenterRentInfo();
@@ -173,7 +173,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
-        if (null == orderStatus || null == currentPage || null == pageSize){
+        if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         RenterOrderFinanceInfo renterOrderFinanceInfo = new RenterOrderFinanceInfo();
@@ -233,7 +233,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
-        if (null == payStatus || null == currentPage || null == pageSize){
+        if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         RenterOrderRentDetailInfo renterOrderRentDetailInfo = new RenterOrderRentDetailInfo();
