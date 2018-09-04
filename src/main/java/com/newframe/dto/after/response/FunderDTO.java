@@ -2,6 +2,7 @@ package com.newframe.dto.after.response;
 
 import com.newframe.entity.user.UserFunder;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author WangBin
@@ -37,8 +38,16 @@ public class FunderDTO {
         this.relationship = userFunder.getRelationship();
         this.ctime = userFunder.getUid();
         this.businessLicenseNumber = userFunder.getBusinessLicenseNumber();
-        this.businessLicense = userFunder.getBusinessLicenseFile().split(",");
-        this.letterOfAttorney = userFunder.getLetterOfAttorneyFile().split(",");
-        this.businessQualification = userFunder.getBusinessQualificationFile().split(",");
+        this.businessLicense = StringUtils.split(userFunder.getBusinessLicenseFile(),",");
+        this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(),",");
+        this.businessQualification = StringUtils.split(userFunder.getBusinessQualificationFile(),",");
+    }
+
+    public static void main(String[] args) {
+        String util1 = "1,1";
+        String util2 = null;
+        System.out.println(StringUtils.join(util1, ","));
+        System.out.println(StringUtils.join(util2));
+        System.out.println(StringUtils.join(util2));
     }
 }

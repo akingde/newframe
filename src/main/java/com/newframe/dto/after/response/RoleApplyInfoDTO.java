@@ -34,17 +34,9 @@ public class RoleApplyInfoDTO extends RoleApplyListDTO{
         this.letterOfAttorney = StringUtils.isNotEmpty(userRoleApply.getBusinessLicenseFile())?
                 userRoleApply.getLetterOfAttorneyFile().split(","):
                 null;
-        this.businessQualification = StringUtils.isNotEmpty(userRoleApply.getBusinessQualificationFile())?
-                userRoleApply.getBusinessQualificationFile().split(","):
-                null;
-        this.highestDegreeDiploma = StringUtils.isNotEmpty(userRoleApply.getHighestDegreeDiplomaFile())?
-                userRoleApply.getHighestDegreeDiplomaFile().split(","):
-                null;
-        this.drivingLicense = StringUtils.isNotEmpty(userRoleApply.getDrivingLicenseFile())?
-                userRoleApply.getDrivingLicenseFile().split(","):
-                null;
-        this.houseProprietaryCertificate = StringUtils.isNotEmpty(userRoleApply.getHouseProprietaryCertificateFile())?
-                userRoleApply.getHouseProprietaryCertificateFile().split(","):
-                null;
+        this.businessQualification = StringUtils.split(userRoleApply.getBusinessQualificationFile(),",");
+        this.highestDegreeDiploma = StringUtils.split(userRoleApply.getHighestDegreeDiplomaFile(),",");
+        this.drivingLicense = StringUtils.split(userRoleApply.getDrivingLicenseFile(), ",");
+        this.houseProprietaryCertificate = StringUtils.split(userRoleApply.getHouseProprietaryCertificateFile(), ",");
     }
 }

@@ -67,7 +67,7 @@ public class UserRoleApplyDTO {
             this.legalEntity = userRoleApply.getLegalEntity();
             this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
             this.businessListenNumber = userRoleApply.getBusinessLicenseNumber();
-            this.businessListen = userRoleApply.getBusinessLicenseFile().split(",");
+            this.businessListen = StringUtils.split(userRoleApply.getBusinessLicenseFile(), ",");
         }
     }
 
@@ -85,15 +85,9 @@ public class UserRoleApplyDTO {
 
         public RentMechant(UserRoleApply userRoleApply) {
             super(userRoleApply);
-            this.highestDegreeDiploma = StringUtils.isNotEmpty(userRoleApply.getHighestDegreeDiplomaFile())?
-                    userRoleApply.getHighestDegreeDiplomaFile().split(","):
-                    null;
-            this.drivingLicense = StringUtils.isNotEmpty(userRoleApply.getDrivingLicenseFile())?
-                    userRoleApply.getDrivingLicenseFile().split(","):
-                    null;
-            this.houseProprietaryCertificate = StringUtils.isNotEmpty(userRoleApply.getHouseProprietaryCertificateFile())?
-                    userRoleApply.getHouseProprietaryCertificateFile().split(","):
-                    null;
+            this.highestDegreeDiploma = StringUtils.split(userRoleApply.getHighestDegreeDiplomaFile(), ",");
+            this.drivingLicense = StringUtils.split(userRoleApply.getDrivingLicenseFile(), ",");
+            this.houseProprietaryCertificate = StringUtils.split(userRoleApply.getHouseProprietaryCertificateFile(), ",");
         }
     }
 
@@ -116,12 +110,8 @@ public class UserRoleApplyDTO {
             this.topContacts = userRoleApply.getTopContacts();
             this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
             this.relationship = userRoleApply.getRelationship();
-            this.letterOfAttorney = StringUtils.isNotEmpty(userRoleApply.getLetterOfAttorneyFile())?
-                    userRoleApply.getLetterOfAttorneyFile().split(","):
-                    null;
-            this.businessQualification = StringUtils.isNotEmpty(userRoleApply.getBusinessQualificationFile())?
-                    userRoleApply.getBusinessQualificationFile().split(","):
-                    null;
+            this.letterOfAttorney = StringUtils.split(userRoleApply.getLetterOfAttorneyFile(), ",");
+            this.businessQualification = StringUtils.split(userRoleApply.getBusinessQualificationFile(), ",");
         }
     }
 

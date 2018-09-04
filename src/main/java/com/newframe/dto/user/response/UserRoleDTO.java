@@ -40,17 +40,11 @@ public class UserRoleDTO{
             this.setLegalEntity(userRentMerchant.getLegalEntity());
             this.setLegalEntityIdNuber(userRentMerchant.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userRentMerchant.getBusinessLicenseNumber());
-            this.setBusinessListen(userRentMerchant.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userRentMerchant.getBusinessLicenseFile(), ","));
             this.setStatus(userRentMerchant.getRoleStatus());
-            this.highestDegreeDiploma = StringUtils.isNotEmpty(userRentMerchant.getHighestDegreeDiplomaFile())?
-                    userRentMerchant.getHighestDegreeDiplomaFile().split(","):
-                    null;
-            this.drivingLicense = StringUtils.isNotEmpty(userRentMerchant.getDrivingLicenseFile())?
-                    userRentMerchant.getDrivingLicenseFile().split(","):
-                    null;
-            this.houseProprietaryCertificate = StringUtils.isNotEmpty(userRentMerchant.getHouseProprietaryCertificateFile())?
-                    userRentMerchant.getHouseProprietaryCertificateFile().split(","):
-                    null;
+            this.highestDegreeDiploma = StringUtils.split(userRentMerchant.getHighestDegreeDiplomaFile(), ",");
+            this.drivingLicense = StringUtils.split(userRentMerchant.getDrivingLicenseFile() , ",'");
+            this.houseProprietaryCertificate = StringUtils.split(userRentMerchant.getHouseProprietaryCertificateFile(), ",'");
             this.appoint = userRentMerchant.getAppoint();
         }
     }
@@ -97,17 +91,13 @@ public class UserRoleDTO{
             this.setLegalEntity(userFunder.getLegalEntity());
             this.setLegalEntityIdNuber(userFunder.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userFunder.getBusinessLicenseNumber());
-            this.setBusinessListen(userFunder.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userFunder.getBusinessLicenseFile(), ","));
             this.setStatus(userFunder.getRoleStatus());
             this.topContacts = userFunder.getTopContacts();
             this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
             this.relationship = userFunder.getRelationship();
-            this.letterOfAttorney = StringUtils.isNotEmpty(userFunder.getLetterOfAttorneyFile())?
-                    userFunder.getLetterOfAttorneyFile().split(","):
-                    null;
-            this.businessQualification = StringUtils.isNotEmpty(userFunder.getBusinessQualificationFile())?
-                    userFunder.getBusinessQualificationFile().split(","):
-                    null;
+            this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(), ",");
+            this.businessQualification = StringUtils.split(userFunder.getBusinessQualificationFile(), ",");
         }
     }
 
@@ -127,7 +117,7 @@ public class UserRoleDTO{
             this.setLegalEntity(userHirer.getLegalEntity());
             this.setLegalEntityIdNuber(userHirer.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userHirer.getBusinessLicenseNumber());
-            this.setBusinessListen(userHirer.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userHirer.getBusinessLicenseFile(), ","));
             this.setStatus(userHirer.getRoleStatus());
             this.topContacts = userHirer.getTopContacts();
             this.topContactsPhoneNumber = userHirer.getTopContactsPhoneNumber();
@@ -147,7 +137,7 @@ public class UserRoleDTO{
             this.setLegalEntity(userSupplier.getLegalEntity());
             this.setLegalEntityIdNuber(userSupplier.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userSupplier.getBusinessLicenseNumber());
-            this.setBusinessListen(userSupplier.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userSupplier.getBusinessLicenseFile(), ","));
             this.setStatus(userSupplier.getRoleStatus());
         }
     }
