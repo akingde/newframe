@@ -348,9 +348,8 @@ public class UserServiceImpl implements UserService {
         if(info.getPhoneNumber().equals(newMobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
-        UserBaseInfo baseInfo = userBaseInfoService.findOne(newMobile);
-        if (baseInfo != null){
-            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
+        if(userBaseInfoService.checkMmobileExists(newMobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, true);
         }
         info.setPhoneNumber(newMobile);
         userBaseInfoService.updateByUid(info);
@@ -554,7 +553,24 @@ public class UserServiceImpl implements UserService {
             areaCode.add(provinceId);
         }
         List<Area> areas = areaService.findAreaByAreaCode(areaCode);
-        return areas.size() == areaCode.size()?areas:null;
+        if(areas == null || areas.size() != areaCode.size()){
+            return null;
+        }
+        List<Area> list = areas.stream().sorted(Comparator.comparing(Area::getAreaCode)).collect(Collectors.toList());
+        if(list.size() == 3){
+            if(!list.get(1).getParentId().equals(list.get(0).getAreaId())){
+                return null;
+            }
+            if(!list.get(2).getParentId().equals(list.get(1).getAreaId())){
+                return null;
+            }
+        }
+        if(list.size() == 2){
+            if(!list.get(1).getParentId().equals(list.get(0).getAreaId())){
+                return null;
+            }
+        }
+        return areas;
     }
 
     /**

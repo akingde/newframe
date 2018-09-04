@@ -6,6 +6,7 @@ import com.newframe.repositories.dataQuery.user.UserBaseInfoQuery;
 import com.newframe.repositories.dataSlave.user.UserBaseInfoSlave;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.utils.cache.IdGlobalGenerator;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,5 +118,20 @@ public class UserBaseInfoServiceImpl implements UserBaseInfoService {
     @Override
     public void removeByUid(Long uid) {
         userBaseInfoMaster.deleteById(uid);
+    }
+
+    /**
+     * 检查手机号是否存在
+     *
+     * @param mobile
+     * @return
+     */
+    @Override
+    public boolean checkMmobileExists(String mobile) {
+
+        UserBaseInfoQuery query = new UserBaseInfoQuery();
+        query.setMobile(mobile);
+        List<UserBaseInfo> infos = userBaseInfoSlave.findAll(query);
+        return CollectionUtils.isNotEmpty(infos);
     }
 }

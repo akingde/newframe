@@ -47,4 +47,11 @@ public interface UserBaseInfoService {
      * @return
      */
     void removeByUid(Long uid);
+
+    /**
+     * 检查手机号是否存在
+     * @param mobile
+     * @return
+     */
+    boolean checkMmobileExists(String mobile);
 }
