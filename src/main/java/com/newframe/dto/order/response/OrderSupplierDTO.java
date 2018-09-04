@@ -21,7 +21,7 @@ public class OrderSupplierDTO {
     private Integer orderStatus;
     private String productBrand;
     private String productColor;
-    private Long loanTime;
+    private Integer loanTime;
     private Long renterId;
     private String renterName;
     private String consumerAddress;
