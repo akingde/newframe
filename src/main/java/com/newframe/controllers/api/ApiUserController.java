@@ -382,8 +382,6 @@ public class ApiUserController extends BaseController {
     /**
      * @description 指定供应商
      * @author WangBin
-     * @param supplierUid
-     * @param revokeSupplierUid
      * @return com.newframe.controllers.JsonResult
      * @date 2018/8/16 20:15
      */
