@@ -414,7 +414,10 @@ public class ApiUserController extends BaseController {
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<List<UserRoleDTO.Supplier>> result = roleBaseService.getAppointSupplier(uid);
+        OperationResult<AppointSupplierDTO> result = roleBaseService.getAppointSupplier(uid);
+        if (result.getEntity() == null){
+            return error(result.getErrorCode());
+        }
         return success(result.getEntity());
     }
 
