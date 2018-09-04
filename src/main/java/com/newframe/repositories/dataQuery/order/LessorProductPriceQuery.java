@@ -28,6 +28,7 @@ public class LessorProductPriceQuery extends BaseQuery {
     @QBindAttrField(fieldName = "productColor",where = Where.equal)
     private String productColor;
 
-    @QBindAttrField(fieldName = "paymentNumber",where = Where.equal)
+    @QBindAttrField(fieldName = "paymentNumber",where = Where.greaterThanOrEqualTo)
     private Integer paymentNumber;
+
 }
