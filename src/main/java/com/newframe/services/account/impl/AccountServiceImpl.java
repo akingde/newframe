@@ -682,7 +682,7 @@ public class AccountServiceImpl implements AccountService {
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
-        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(pageRequest);
+        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(query,pageRequest);
         return rents;
     }
 
@@ -747,7 +747,7 @@ public class AccountServiceImpl implements AccountService {
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
-        return accountRenterFinancingSlave.findAll(pageRequest);
+        return accountRenterFinancingSlave.findAll(query,pageRequest);
     }
 
     /**

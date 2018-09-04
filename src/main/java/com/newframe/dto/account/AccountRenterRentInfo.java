@@ -14,5 +14,5 @@ public class AccountRenterRentInfo {
 
     private List<AccountRenterRent> list;
 
-    private Integer total;
+    private Long total;
 }

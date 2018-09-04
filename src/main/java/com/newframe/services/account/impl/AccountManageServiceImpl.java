@@ -133,11 +133,8 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterRentInfo accountRenterRentInfo = new AccountRenterRentInfo();
         Page<AccountRenterRent> accountRenterRentPage = accountService.getAccountRenterRent(uid, orderStatus, currentPage, pageSize);
         List<AccountRenterRent> accountRenterRents = accountRenterRentPage.getContent();
-        if (CollectionUtils.isEmpty(accountRenterRents)) {
-            return new OperationResult<>(accountRenterRentInfo);
-        }
         accountRenterRentInfo.setList(accountRenterRents);
-        accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalPages());
+        accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalElements());
         return new OperationResult<>(accountRenterRentInfo);
     }
 
