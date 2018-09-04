@@ -222,9 +222,10 @@ public class OrderServiceImpl implements OrderService {
             orderFunder.setMerchantName(renterName);
             // 资金方的uid是从数据库中查出来的，暂时使用随机数代替
             orderFunder.setFunderId(funderId);
-            orderFunder.setOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode());
+            orderFunder.setOrderStatus(OrderFunderStatus.WAITING_AUDIT.getCode());
             orderFunder.setDispatchTimes(times + 1);
             orderFunder.setSupplierId(supplierId);
+
             orderFunder.setDeposit(getDeposit(orderId));
             //orderFunder.setFinancingAmount(getFinancingAmount(orderId));
             orderFunder.setFinancingAmount(financingAmount);
