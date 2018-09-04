@@ -1,5 +1,6 @@
 package com.newframe.services.user.userimpl;
 
+import com.google.common.collect.Sets;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.response.UserDTO;
 import com.newframe.dto.user.request.*;
@@ -17,6 +18,7 @@ import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
 import com.newframe.utils.IdNumberUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -174,10 +176,16 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      */
     @Override
     public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid, List<Long> revokeSupplierUid) {
-        Set<Long> inSet = supplierUid.stream().distinct().collect(toSet());
-        Set<Long> reSet = revokeSupplierUid.stream().distinct().collect(toSet());
+        Set<Long> inSet = Sets.newHashSet();
+        Set<Long> reSet = Sets.newHashSet();
+        if(CollectionUtils.isNotEmpty(supplierUid)){
+            inSet.addAll(supplierUid);
+        }
+        if(CollectionUtils.isNotEmpty(revokeSupplierUid)){
+            reSet.addAll(revokeSupplierUid);
+        }
         long count = inSet.stream().filter(item -> reSet.contains(item)).count();
-        if(supplierUid.size() + revokeSupplierUid.size() != inSet.size() + reSet.size() || count > 0){
+        if(count > 0){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
         UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());

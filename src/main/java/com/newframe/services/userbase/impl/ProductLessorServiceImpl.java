@@ -81,6 +81,7 @@ public class ProductLessorServiceImpl implements ProductLessorService {
     public Page<ProductLessor> findAll(Long uid, PageSearchDTO pageSearchDTO) {
         ProductLessorQuery query = new ProductLessorQuery();
         query.setUid(uid);
+        query.setIsDelated(0);
         Pageable pageable = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize());
         return productLessorSlave.findAll(query, pageable);
     }

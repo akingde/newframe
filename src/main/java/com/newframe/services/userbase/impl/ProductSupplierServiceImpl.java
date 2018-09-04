@@ -78,6 +78,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     public Page<ProductSupplier> findAll(Long uid, PageSearchDTO pageSearchDTO) {
         ProductSupplierQuery query = new ProductSupplierQuery();
         query.setUid(uid);
+        query.setIsDelated(0);
         Pageable pageable = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize());
         return productSupplierSlave.findAll(query, pageable);
     }
