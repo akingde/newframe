@@ -42,12 +42,4 @@ public class FunderDTO {
         this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(),",");
         this.businessQualification = StringUtils.split(userFunder.getBusinessQualificationFile(),",");
     }
-
-    public static void main(String[] args) {
-        String util1 = "1,1";
-        String util2 = null;
-        System.out.println(StringUtils.join(util1, ","));
-        System.out.println(StringUtils.join(util2));
-        System.out.println(StringUtils.join(util2));
-    }
 }
