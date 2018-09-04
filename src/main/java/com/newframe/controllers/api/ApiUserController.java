@@ -744,6 +744,7 @@ public class ApiUserController extends BaseController {
     @PostMapping("addRentMerchant")
     public JsonResult addRentMerchant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException{
 //        Long uid = RequestUser.getCurrentUid();
+        System.out.println("添加小B进来了");
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
