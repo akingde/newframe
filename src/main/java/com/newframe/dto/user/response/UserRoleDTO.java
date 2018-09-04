@@ -6,6 +6,7 @@ import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.RoleEnum;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author WangBin
@@ -41,9 +42,15 @@ public class UserRoleDTO{
             this.setBusinessListenNumber(userRentMerchant.getBusinessLicenseNumber());
             this.setBusinessListen(userRentMerchant.getBusinessLicenseFile().split(","));
             this.setStatus(userRentMerchant.getRoleStatus());
-            this.highestDegreeDiploma = userRentMerchant.getHighestDegreeDiplomaFile().split(",");
-            this.drivingLicense = userRentMerchant.getDrivingLicenseFile().split(",");
-            this.houseProprietaryCertificate = userRentMerchant.getHouseProprietaryCertificateFile().split(",");
+            this.highestDegreeDiploma = StringUtils.isNotEmpty(userRentMerchant.getHighestDegreeDiplomaFile())?
+                    userRentMerchant.getHighestDegreeDiplomaFile().split(","):
+                    null;
+            this.drivingLicense = StringUtils.isNotEmpty(userRentMerchant.getDrivingLicenseFile())?
+                    userRentMerchant.getDrivingLicenseFile().split(","):
+                    null;
+            this.houseProprietaryCertificate = StringUtils.isNotEmpty(userRentMerchant.getHouseProprietaryCertificateFile())?
+                    userRentMerchant.getHouseProprietaryCertificateFile().split(","):
+                    null;
             this.appoint = userRentMerchant.getAppoint();
         }
     }
@@ -95,8 +102,12 @@ public class UserRoleDTO{
             this.topContacts = userFunder.getTopContacts();
             this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
             this.relationship = userFunder.getRelationship();
-            this.letterOfAttorney = userFunder.getLetterOfAttorneyFile().split(",");
-            this.businessQualification = userFunder.getBusinessQualificationFile().split(",");
+            this.letterOfAttorney = StringUtils.isNotEmpty(userFunder.getLetterOfAttorneyFile())?
+                    userFunder.getLetterOfAttorneyFile().split(","):
+                    null;
+            this.businessQualification = StringUtils.isNotEmpty(userFunder.getBusinessQualificationFile())?
+                    userFunder.getBusinessQualificationFile().split(","):
+                    null;
         }
     }
 

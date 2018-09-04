@@ -2,6 +2,7 @@ package com.newframe.dto.user.response;
 
 import com.newframe.entity.user.UserRoleApply;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -84,9 +85,15 @@ public class UserRoleApplyDTO {
 
         public RentMechant(UserRoleApply userRoleApply) {
             super(userRoleApply);
-            this.highestDegreeDiploma = userRoleApply.getHighestDegreeDiplomaFile().split(",");
-            this.drivingLicense = userRoleApply.getDrivingLicenseFile().split(",");
-            this.houseProprietaryCertificate = userRoleApply.getHouseProprietaryCertificateFile().split(",");
+            this.highestDegreeDiploma = StringUtils.isNotEmpty(userRoleApply.getHighestDegreeDiplomaFile())?
+                    userRoleApply.getHighestDegreeDiplomaFile().split(","):
+                    null;
+            this.drivingLicense = StringUtils.isNotEmpty(userRoleApply.getDrivingLicenseFile())?
+                    userRoleApply.getDrivingLicenseFile().split(","):
+                    null;
+            this.houseProprietaryCertificate = StringUtils.isNotEmpty(userRoleApply.getHouseProprietaryCertificateFile())?
+                    userRoleApply.getHouseProprietaryCertificateFile().split(","):
+                    null;
         }
     }
 
@@ -109,8 +116,12 @@ public class UserRoleApplyDTO {
             this.topContacts = userRoleApply.getTopContacts();
             this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
             this.relationship = userRoleApply.getRelationship();
-            this.letterOfAttorney = userRoleApply.getLetterOfAttorneyFile().split(",");
-            this.businessQualification = userRoleApply.getBusinessQualificationFile().split(",");
+            this.letterOfAttorney = StringUtils.isNotEmpty(userRoleApply.getLetterOfAttorneyFile())?
+                    userRoleApply.getLetterOfAttorneyFile().split(","):
+                    null;
+            this.businessQualification = StringUtils.isNotEmpty(userRoleApply.getBusinessQualificationFile())?
+                    userRoleApply.getBusinessQualificationFile().split(","):
+                    null;
         }
     }
 
