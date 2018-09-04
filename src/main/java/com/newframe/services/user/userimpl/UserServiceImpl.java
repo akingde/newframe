@@ -456,7 +456,7 @@ public class UserServiceImpl implements UserService {
     public OperationResult<Boolean> addUserAddress(Long uid, AddressDTO addressDTO) {
         List<Area> areas = checkAddress(addressDTO.getProvinceId(), addressDTO.getCityId(), addressDTO.getCountyId());
         if (areas == null){
-            return new OperationResult<Boolean>(false);
+            return new OperationResult<Boolean>(RequestResultEnum.ADDRESS_NOT_EXISTS, false);
         }
         UserAddress userAddress = new UserAddress(uid, addressDTO, areas);
         userAddressService.insert(userAddress);
