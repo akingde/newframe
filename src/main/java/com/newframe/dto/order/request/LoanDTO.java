@@ -15,5 +15,5 @@ public class LoanDTO {
     private Integer loanModel;
     private BigDecimal loanAmount;
     /**放款渠道，1：线上放款，2：线下放款*/
-    private Integer loanChannel;
+    //private Integer loanChannel;
 }

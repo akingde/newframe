@@ -117,7 +117,7 @@ public interface OrderService {
      * @param uid     资金方uid
      * @return 操作结果
      */
-    JsonResult funderLoan(LoanDTO loanDTO, Long uid);
+    JsonResult offlineLoan(LoanDTO loanDTO, Long uid);
 
     /**
      * 资金方确认线下放款，上传放款凭证
@@ -258,7 +258,8 @@ public interface OrderService {
     /**
      * 查询不同租期的机器价格
      * @param productInfoDTO 产品信息
+     * @param paymentNumber
      * @return 返回结果
      */
-    OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO);
+    OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber);
 }

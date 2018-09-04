@@ -5,4 +5,5 @@ package com.newframe.services.order;
  * @date 2018.09.03 20:33
  */
 public interface OrderBaseService {
+    String getSupplierName(Long supplierId);
 }

@@ -18,6 +18,7 @@ import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
+import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.order.OrderService;
 import com.newframe.services.userbase.UserHirerService;
 import com.newframe.services.userbase.UserRentMerchantService;
@@ -112,6 +113,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     UserRentMerchantService userRentMerchantService;
 
+    @Autowired
+    OrderBaseService orderBaseService;
+
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
     @Value("${api.basetool.bucket}")
@@ -195,7 +199,7 @@ public class OrderServiceImpl implements OrderService {
             Map<String, Object> failOrder = new HashMap<>(2);
             // 将租赁商状态改为不允许融资状态
             orderRenterMaser.updateOrderStatus(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode(), orderId);
-            return new JsonResult(SystemCode.ORDER_FINANCING_FAIL,false);
+            return new JsonResult(SystemCode.ORDER_FINANCING_FAIL, false);
         }
         // 查询租赁商订单信息，生成资金方订单数据
         Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
@@ -203,7 +207,7 @@ public class OrderServiceImpl implements OrderService {
             OrderRenter orderRenter = optional.get();
             // 检查订单状态是否是不可融资状态
             if (OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode().equals(orderRenter.getOrderStatus())) {
-                return new JsonResult(SystemCode.ORDER_FINANCING_FAIL,false);
+                return new JsonResult(SystemCode.ORDER_FINANCING_FAIL, false);
             }
             OrderFunder orderFunder = new OrderFunder();
             BeanUtils.copyProperties(orderRenter, orderFunder);
@@ -233,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 生成资金方订单
         orderFunderMaser.saveAll(orderFunders);
-        updateOrderRenterType(OrderType.FUNDER_ORDER,orderId);
+        updateOrderRenterType(OrderType.FUNDER_ORDER, orderId);
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
         // todo 要不要操作账户表？
 
@@ -279,7 +283,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenterMaser.updateOrderStatus(orderRenter.getOrderStatus(), orderRenter.getOrderId());
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
-            updateOrderRenterType(OrderType.LESSOR_ORDER,orderId);
+            updateOrderRenterType(OrderType.LESSOR_ORDER, orderId);
         }
 
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方：" + lessorId);
@@ -467,8 +471,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult funderLoan(LoanDTO loanDTO, Long uid) {
-        if (loanDTO.getLoanAmount() == null || loanDTO.getLoanChannel() == null
+    public JsonResult offlineLoan(LoanDTO loanDTO, Long uid) {
+        if (loanDTO.getLoanAmount() == null
                 || loanDTO.getLoanModel() == null || loanDTO.getOrderId() == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
@@ -487,15 +491,8 @@ public class OrderServiceImpl implements OrderService {
                 OrderRenter orderRenter = optional.get();
                 // 只允许租赁商订单状态为待资金方审核的订单放款
                 if (OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode().equals(orderRenter.getOrderStatus())) {
-                    boolean success = false;
-                    // 线下放款
-                    if (LoanChannelEnum.OFFLINE.getValue().equals(loanDTO.getLoanChannel())) {
-                        success = offlineLoan(loanDTO, orderFunder, orderRenter);
-                    }
-                    // 线上放款
-                    if (LoanChannelEnum.ONLINE.getValue().equals(loanDTO.getLoanChannel())) {
-                        success = onlineLoan(loanDTO, orderFunder, orderRenter);
-                    }
+                    boolean success;
+                    success = offlineLoan(loanDTO, orderFunder, orderRenter);
                     if (success) {
                         return new JsonResult(SystemCode.SUCCESS);
                     }
@@ -512,49 +509,56 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) {
-        if (orderId == null || file == null) {
+        if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
-        String imgUrl;
-        try {
-            // 上传文件
-            imgUrl = aliossService.uploadFileStreamToBasetool(file, bucket);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new JsonResult(SystemCode.FILE_UPLOAD_FAIL);
+        String imgUrl = null;
+        if (file != null) {
+            try {
+                // 上传文件
+                imgUrl = aliossService.uploadFileStreamToBasetool(file, bucket);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new JsonResult(SystemCode.FILE_UPLOAD_FAIL);
+            }
         }
-        // 上传文件的状态码是否为200
-        if (imgUrl != null) {
-            // 查询资金方订单，为了保障安全，只能查出本人的订单
-            OrderFunderQuery query = new OrderFunderQuery();
-            query.setOrderId(orderId);
-            query.setFunderId(uid);
-            query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
-            List<OrderFunder> orderFunders = orderFunderSlave.findAll(query);
-            if (orderFunders != null && orderFunders.size() == 1) {
-                OrderFunder orderFunder = orderFunders.get(0);
-                // 查询租赁商订单，将状态改为资金方已拒绝
-                Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
-                if (orderRenterOptional.isPresent()) {
-                    OrderRenter orderRenter = orderRenterOptional.get();
-                    // 保存线下放款凭证
+
+
+        // 查询资金方订单，为了保障安全，只能查出本人的订单
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(orderId);
+        query.setFunderId(uid);
+        query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
+        List<OrderFunder> orderFunders = orderFunderSlave.findAll(query);
+        if (orderFunders != null && orderFunders.size() == 1) {
+            OrderFunder orderFunder = orderFunders.get(0);
+            // 查询租赁商订单
+            Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+            if (orderRenterOptional.isPresent()) {
+                OrderRenter orderRenter = orderRenterOptional.get();
+                // 保存线下放款凭证
+                if(imgUrl != null){
                     OrderFunderEvidence evidence = new OrderFunderEvidence();
                     evidence.setOrderId(orderId);
                     evidence.setEvidenceUrl(imgUrl);
                     evidence.setRenterId(orderRenter.getRenterId());
                     evidence.setFunderId(orderFunder.getFunderId());
                     orderFunderEvidenceMaster.save(evidence);
-                    // 修改租赁商订单状态为资金方线下放款成功
-                    orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
-                    orderRenterMaser.save(orderRenter);
                     // 修改资金方订单状态为,线下放款，有凭证，待发货
                     orderFunder.setOrderStatus(OrderFunderStatus.WAITING_DELIVER_EVIDENCE.getCode());
-                    orderFunderMaser.save(orderFunder);
-                    generateSupplyOrder(orderRenter, orderFunder);
-                    return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
+                }else{
+                    // 修改资金方订单状态为,线下放款，无凭证，待发货
+                    orderFunder.setOrderStatus(OrderFunderStatus.WAITING_DELIVER_NO_EVIDENCE.getCode());
                 }
+                // 修改租赁商订单状态为资金方线下放款成功
+                orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
+                orderRenterMaser.save(orderRenter);
+                orderFunderMaser.save(orderFunder);
+                generateSupplyOrder(orderRenter, orderFunder);
+                return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
         }
+
         return new JsonResult(SystemCode.BAD_REQUEST, false);
     }
 
@@ -953,9 +957,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO) {
+    public OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber) {
         LessorProductPriceQuery query = new LessorProductPriceQuery();
         BeanUtils.copyProperties(productInfoDTO, query);
+        query.setPaymentNumber(paymentNumber);
         Sort sort = new Sort(Sort.Direction.ASC, LessorProductPrice.PAYMENT_NUMBER);
         List<LessorProductPrice> lessorProductPrices = lessorProductPriceSlave.findAll(query, sort);
         List<LessorProductPriceDTO> dtos = new ArrayList<>();
@@ -1070,6 +1075,8 @@ public class OrderServiceImpl implements OrderService {
         // todo 租赁商联系方式
         orderFunderDTO.setRenterPhone("15957180382");
         orderFunderDTO.setDeposit(orderFunder.getDeposit());
+        orderFunderDTO.setSupplierId(orderFunder.getSupplierId());
+        orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
         return orderFunderDTO;
     }
 
@@ -1134,12 +1141,13 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 修改租赁商订单的类型，融资为融资订单，租赁为租赁订单
-     * @param type 订单类型
+     *
+     * @param type    订单类型
      * @param orderId 订单id
      */
-    private void updateOrderRenterType(OrderType type,Long orderId){
+    private void updateOrderRenterType(OrderType type, Long orderId) {
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
-        if(orderRenterOptional.isPresent()){
+        if (orderRenterOptional.isPresent()) {
             OrderRenter orderRenter = orderRenterOptional.get();
             orderRenter.setOrderType(type.getCode());
             orderRenterSlave.save(orderRenter);
@@ -1148,6 +1156,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 资金方线下放款
+     * 线下付款，将资金方订单状态变为付款中
      *
      * @param loanDTO     放款信息
      * @param orderFunder 资金方订单
@@ -1155,8 +1164,11 @@ public class OrderServiceImpl implements OrderService {
      * @return 是否成功
      */
     private boolean offlineLoan(LoanDTO loanDTO, OrderFunder orderFunder, OrderRenter orderRenter) {
-        // todo 这里应该是要操作账户表的，等先研究一下账户再写
-        return false;
+        orderFunder.setOrderStatus(OrderFunderStatus.PAYMENTING.getCode());
+        orderFunder.setFinancingAmount(loanDTO.getLoanAmount());
+        orderFunder.setLoanModel(loanDTO.getLoanModel());
+        orderFunderMaser.save(orderFunder);
+        return true;
     }
 
     /**
@@ -1186,6 +1198,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
         // 供应商还未确认收款，待发货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.PAYMENTING.getCode());
+
         orderSupplierMaster.save(orderSupplier);
     }
 }
