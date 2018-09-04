@@ -12,7 +12,7 @@ public enum OrderFunderStatus {
     AUDIT_REFUSE(2),
     // 线上放款成功，待发货
     WAITING_DELIVER(3),
-    // 放款中
+    // 线下放款中
     PAYMENTING(4),
     // 线下放款，有凭证，待发货
     WAITING_DELIVER_EVIDENCE(5),

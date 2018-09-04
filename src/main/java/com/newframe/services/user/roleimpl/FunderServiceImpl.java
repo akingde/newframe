@@ -65,10 +65,10 @@ public class FunderServiceImpl implements RoleService {
         if (!PatternEnum.checkPattern(roleApply.getTopContactsPhoneNumber(), PatternEnum.mobile)){
             return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
         }
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getBusinessQualification())){
+        if(FileUtils.checkImageAndEmpty(2, roleApply.getBusinessQualification())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
-        if(!FileUtils.checkImageAndEmpty(2, roleApply.getLetterOfAttorney())){
+        if(FileUtils.checkImageAndEmpty(2, roleApply.getLetterOfAttorney())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
         List<String> businessUrls =
@@ -88,9 +88,9 @@ public class FunderServiceImpl implements RoleService {
         userRoleApply.setRelationship(roleApply.getRelationship());
         userRoleApply.setTopContactsPhoneNumber(roleApply.getTopContactsPhoneNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
-        userRoleApply.setBusinessLicenseFile(String.join(",", businessUrls));
-        userRoleApply.setBusinessQualificationFile(String.join(",", qualificationUrls));
-        userRoleApply.setLetterOfAttorneyFile(String.join(",", letterUrls));
+        userRoleApply.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
+        userRoleApply.setBusinessQualificationFile(StringUtils.join(",", qualificationUrls));
+        userRoleApply.setLetterOfAttorneyFile(StringUtils.join(",", letterUrls));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
         userRoleApplyService.insert(userRoleApply);
         return new OperationResult(true);
@@ -188,7 +188,7 @@ public class FunderServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid) {
         return null;
     }
 
@@ -200,7 +200,7 @@ public class FunderServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+    public List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid) {
         return Lists.newArrayList();
     }
 

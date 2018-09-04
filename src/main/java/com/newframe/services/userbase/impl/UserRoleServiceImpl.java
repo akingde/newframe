@@ -2,6 +2,8 @@ package com.newframe.services.userbase.impl;
 
 import com.google.common.collect.Lists;
 import com.newframe.entity.user.UserRole;
+import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.enums.user.UserStatusEnum;
 import com.newframe.repositories.dataMaster.user.UserRoleMaster;
 import com.newframe.repositories.dataQuery.user.UserRoleQuery;
 import com.newframe.repositories.dataSlave.user.UserRoleSlave;
@@ -109,6 +111,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             userRole.setId(idGlobalGenerator.getSeqId(UserRole.class));
             userRole.setUid(uid);
             userRole.setRoleId(roleId);
+            userRole.setRoleStatus(RoleStatusEnum.NORMAL.getRoleStatue());
             roles.add(userRole);
         }
         return userRoleMaster.saveAll(roles);

@@ -6,6 +6,7 @@ import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.RoleEnum;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author WangBin
@@ -39,11 +40,11 @@ public class UserRoleDTO{
             this.setLegalEntity(userRentMerchant.getLegalEntity());
             this.setLegalEntityIdNuber(userRentMerchant.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userRentMerchant.getBusinessLicenseNumber());
-            this.setBusinessListen(userRentMerchant.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userRentMerchant.getBusinessLicenseFile(), ","));
             this.setStatus(userRentMerchant.getRoleStatus());
-            this.highestDegreeDiploma = userRentMerchant.getHighestDegreeDiplomaFile().split(",");
-            this.drivingLicense = userRentMerchant.getDrivingLicenseFile().split(",");
-            this.houseProprietaryCertificate = userRentMerchant.getHouseProprietaryCertificateFile().split(",");
+            this.highestDegreeDiploma = StringUtils.split(userRentMerchant.getHighestDegreeDiplomaFile(), ",");
+            this.drivingLicense = StringUtils.split(userRentMerchant.getDrivingLicenseFile() , ",'");
+            this.houseProprietaryCertificate = StringUtils.split(userRentMerchant.getHouseProprietaryCertificateFile(), ",'");
             this.appoint = userRentMerchant.getAppoint();
         }
     }
@@ -90,13 +91,13 @@ public class UserRoleDTO{
             this.setLegalEntity(userFunder.getLegalEntity());
             this.setLegalEntityIdNuber(userFunder.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userFunder.getBusinessLicenseNumber());
-            this.setBusinessListen(userFunder.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userFunder.getBusinessLicenseFile(), ","));
             this.setStatus(userFunder.getRoleStatus());
             this.topContacts = userFunder.getTopContacts();
             this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
             this.relationship = userFunder.getRelationship();
-            this.letterOfAttorney = userFunder.getLetterOfAttorneyFile().split(",");
-            this.businessQualification = userFunder.getBusinessQualificationFile().split(",");
+            this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(), ",");
+            this.businessQualification = StringUtils.split(userFunder.getBusinessQualificationFile(), ",");
         }
     }
 
@@ -116,7 +117,7 @@ public class UserRoleDTO{
             this.setLegalEntity(userHirer.getLegalEntity());
             this.setLegalEntityIdNuber(userHirer.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userHirer.getBusinessLicenseNumber());
-            this.setBusinessListen(userHirer.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userHirer.getBusinessLicenseFile(), ","));
             this.setStatus(userHirer.getRoleStatus());
             this.topContacts = userHirer.getTopContacts();
             this.topContactsPhoneNumber = userHirer.getTopContactsPhoneNumber();
@@ -136,7 +137,7 @@ public class UserRoleDTO{
             this.setLegalEntity(userSupplier.getLegalEntity());
             this.setLegalEntityIdNuber(userSupplier.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userSupplier.getBusinessLicenseNumber());
-            this.setBusinessListen(userSupplier.getBusinessLicenseFile().split(","));
+            this.setBusinessListen(StringUtils.split(userSupplier.getBusinessLicenseFile(), ","));
             this.setStatus(userSupplier.getRoleStatus());
         }
     }

@@ -456,7 +456,16 @@ public class UserServiceImpl implements UserService {
     public OperationResult<Boolean> addUserAddress(Long uid, AddressDTO addressDTO) {
         List<Area> areas = checkAddress(addressDTO.getProvinceId(), addressDTO.getCityId(), addressDTO.getCountyId());
         if (areas == null){
-            return new OperationResult<Boolean>(false);
+            return new OperationResult(RequestResultEnum.ADDRESS_NOT_EXISTS, false);
+        }
+        if(StringUtils.isEmpty(addressDTO.getConsigneeName())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(StringUtils.isEmpty(addressDTO.getConsigneeAddress())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(PatternEnum.checkPattern(addressDTO.getMobile(), PatternEnum.mobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
         }
         UserAddress userAddress = new UserAddress(uid, addressDTO, areas);
         userAddressService.insert(userAddress);
@@ -527,13 +536,13 @@ public class UserServiceImpl implements UserService {
     public List<Area> checkAddress(Integer provinceId, Integer cityId, Integer countyId) {
         List<Integer> areaCode = Lists.newArrayList();
         if (provinceId != null && cityId != null && countyId != null){
-            if (countyId > cityId || cityId > provinceId ) {
+            if (countyId <= cityId || cityId <= provinceId ) {
                 return null;
             }
             Integer[] areaCodes = new Integer[]{provinceId, cityId, countyId};
             areaCode.addAll(Arrays.asList(areaCodes));
         }else if(provinceId != null && cityId != null){
-            if (cityId > provinceId){
+            if (cityId <= provinceId){
                 return null;
             }
             Integer[] areaCodes = new Integer[]{provinceId, cityId};
@@ -632,10 +641,10 @@ public class UserServiceImpl implements UserService {
                 return new UserBaseInfoDTO.Role(RoleEnum.HIRER.getRoleId(), true);
             }
         }else{
-            Stream<Integer> stream = roleList.stream().map(UserRole::getRoleId);
-            if(stream.anyMatch(x -> RoleEnum.FIRST_RENT_MERCHANT.getRoleId().equals(x))){
+            Set<Integer> roleIds = roleList.stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+            if(roleIds.stream().anyMatch(x -> RoleEnum.FIRST_RENT_MERCHANT.getRoleId().equals(x))){
                 return new UserBaseInfoDTO.Role(RoleEnum.FIRST_RENT_MERCHANT.getRoleId(), true);
-            }else if(stream.anyMatch(x -> RoleEnum.FUNDER.getRoleId().equals(x))){
+            }else if(roleIds.stream().anyMatch(x -> RoleEnum.FUNDER.getRoleId().equals(x))){
                 return new UserBaseInfoDTO.Role(RoleEnum.FUNDER.getRoleId(), true);
             } else{
                 return new UserBaseInfoDTO.Role(RoleEnum.SUPPLIER.getRoleId(), true);

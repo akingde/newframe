@@ -39,4 +39,7 @@ public class OrderFunderDTO {
     private Integer machineNumber;
     private String renterPhone;
     private BigDecimal deposit;
+    private Integer loanModel;
+    private Long supplierId;
+    private String supplierName;
 }

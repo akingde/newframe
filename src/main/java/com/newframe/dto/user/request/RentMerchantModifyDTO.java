@@ -66,4 +66,14 @@ public class RentMerchantModifyDTO{
      * 详细地址
      */
     private String consigneeAddress;
+
+    /**
+     * 指定的供应商uid
+     */
+    private List<Long> supplierUid;
+
+    /**
+     * 删除的供应商uid
+     */
+    private List<Long> revokeSupplierUid;
 }

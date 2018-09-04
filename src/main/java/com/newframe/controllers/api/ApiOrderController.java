@@ -178,9 +178,8 @@ public class ApiOrderController extends BaseController {
     }
 
     /**
-     * 11、资金方-审核通过放款
-     * 资金方放款(审核通过)
-     * 线上放款，放款成功即生成供应商订单
+     * 11、资金方-线下付款确认下单
+     * 资金方线下放款(审核通过)
      * 线下放款，要确认线下放款成功后才生成供应商订单（放款凭证可以不上传）
      * @param loanDTO 放款信息
      * @return 操作结果
@@ -191,7 +190,7 @@ public class ApiOrderController extends BaseController {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        return orderService.funderLoan(loanDTO,uid);
+        return orderService.offlineLoan(loanDTO,uid);
     }
 
     /**
@@ -432,8 +431,8 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/getProductPrice")
-    public JsonResult getProductPrice(ProductInfoDTO productInfoDTO){
-        OperationResult<LessorProductPriceDTO> result = orderService.getProductPrice(productInfoDTO);
+    public JsonResult getProductPrice(ProductInfoDTO productInfoDTO,Integer paymentNumber){
+        OperationResult<LessorProductPriceDTO> result = orderService.getProductPrice(productInfoDTO, paymentNumber);
         if(result.getSucc()){
             return success(result.getEntity());
         }
