@@ -9,6 +9,7 @@ import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.enums.user.UserStatusEnum;
@@ -197,8 +198,10 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      */
     public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO,
                                                         List<Area> areaList) throws  IOException{
-
-        if (userBaseInfoService.findOne(rentMerchantApplyDTO.getMerchantPhone()) != null){
+        if(!PatternEnum.checkPattern(rentMerchantApplyDTO.getMerchantPhone(), PatternEnum.mobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
+        }
+        if (userBaseInfoService.checkMmobileExists(rentMerchantApplyDTO.getMerchantPhone())){
             return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
         }
         UserBaseInfo userBaseInfo = new UserBaseInfo();
@@ -262,8 +265,8 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         if(StringUtils.isNotEmpty(rentMerchantModifyDTO.getMerchantPhone())){
             String phoneNumber = userBaseInfoService.findOne(rentMerchantModifyDTO.getModifyUid()).getPhoneNumber();
             if (!phoneNumber.equals(rentMerchantModifyDTO.getMerchantPhone())) {
-                if (userBaseInfoService.findOne(rentMerchantModifyDTO.getMerchantPhone()) != null) {
-                    return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
+                if(userBaseInfoService.checkMmobileExists(rentMerchantModifyDTO.getMerchantPhone())){
+                    return new OperationResult(RequestResultEnum.MOBILE_EXISTS, true);
                 }
             }
         }
