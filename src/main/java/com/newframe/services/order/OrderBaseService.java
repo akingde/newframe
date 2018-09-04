@@ -6,4 +6,6 @@ package com.newframe.services.order;
  */
 public interface OrderBaseService {
     String getSupplierName(Long supplierId);
+
+    String getRenterPhone(Long renterId);
 }
