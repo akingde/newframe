@@ -676,7 +676,9 @@ public class AccountServiceImpl implements AccountService {
 
         AccountRenterRentQuery query = new AccountRenterRentQuery();
         query.setUid(uid);
-        query.setOrderStatus(orderStatus);
+        if (null != orderStatus) {
+            query.setOrderStatus(orderStatus);
+        }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
@@ -736,7 +738,9 @@ public class AccountServiceImpl implements AccountService {
 
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
         query.setUid(uid);
-        query.setOrderStatus(orderStatus);
+        if (null != orderStatus) {
+            query.setOrderStatus(orderStatus);
+        }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
@@ -796,7 +800,9 @@ public class AccountServiceImpl implements AccountService {
 
         AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
         query.setUid(uid);
-        query.setPayStatus(payStatus);
+        if (null != payStatus) {
+            query.setPayStatus(payStatus);
+        }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
