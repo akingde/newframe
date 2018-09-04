@@ -39,7 +39,6 @@ public interface UserAddressService {
     /**
      * 根据用户id查询用户的地址列表
      * @param uid
-     * @param pageSearchDTO
      * @return
      */
     List<UserAddress> findUserAddressList(Long uid);

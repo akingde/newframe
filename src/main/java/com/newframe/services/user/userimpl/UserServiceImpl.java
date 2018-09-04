@@ -456,7 +456,16 @@ public class UserServiceImpl implements UserService {
     public OperationResult<Boolean> addUserAddress(Long uid, AddressDTO addressDTO) {
         List<Area> areas = checkAddress(addressDTO.getProvinceId(), addressDTO.getCityId(), addressDTO.getCountyId());
         if (areas == null){
-            return new OperationResult<Boolean>(RequestResultEnum.ADDRESS_NOT_EXISTS, false);
+            return new OperationResult(RequestResultEnum.ADDRESS_NOT_EXISTS, false);
+        }
+        if(StringUtils.isEmpty(addressDTO.getConsigneeName())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(StringUtils.isEmpty(addressDTO.getConsigneeAddress())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(PatternEnum.checkPattern(addressDTO.getMobile(), PatternEnum.mobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
         }
         UserAddress userAddress = new UserAddress(uid, addressDTO, areas);
         userAddressService.insert(userAddress);
@@ -527,13 +536,13 @@ public class UserServiceImpl implements UserService {
     public List<Area> checkAddress(Integer provinceId, Integer cityId, Integer countyId) {
         List<Integer> areaCode = Lists.newArrayList();
         if (provinceId != null && cityId != null && countyId != null){
-            if (countyId > cityId || cityId > provinceId ) {
+            if (countyId <= cityId || cityId <= provinceId ) {
                 return null;
             }
             Integer[] areaCodes = new Integer[]{provinceId, cityId, countyId};
             areaCode.addAll(Arrays.asList(areaCodes));
         }else if(provinceId != null && cityId != null){
-            if (cityId > provinceId){
+            if (cityId <= provinceId){
                 return null;
             }
             Integer[] areaCodes = new Integer[]{provinceId, cityId};
