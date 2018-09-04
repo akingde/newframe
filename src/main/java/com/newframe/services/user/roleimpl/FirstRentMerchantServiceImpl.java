@@ -94,10 +94,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
-        userRoleApply.setBusinessLicenseFile(String.join(",", businessUrls));
-        userRoleApply.setHighestDegreeDiplomaFile(String.join(",", highestUrls));
-        userRoleApply.setDrivingLicenseFile(String.join(",", drivindUrls));
-        userRoleApply.setHouseProprietaryCertificateFile(String.join(",", houseUrls));
+        userRoleApply.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
+        userRoleApply.setHighestDegreeDiplomaFile(StringUtils.join(",", highestUrls));
+        userRoleApply.setDrivingLicenseFile(StringUtils.join(",", drivindUrls));
+        userRoleApply.setHouseProprietaryCertificateFile(StringUtils.join(",", houseUrls));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
         userRoleApplyService.insert(userRoleApply);
         return new OperationResult(true);
@@ -209,7 +209,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid) {
         List<MerchantAppoint> merchantAppoints = Lists.newArrayList();
         for (Long supplier : supplierUid) {
             MerchantAppoint merchantAppoint = new MerchantAppoint();
@@ -229,7 +229,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+    public List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid) {
         return merchantAppointService.findAll(uid, supplierUid);
     }
 

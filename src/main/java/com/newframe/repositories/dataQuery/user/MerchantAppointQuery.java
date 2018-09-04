@@ -7,6 +7,8 @@ import com.newframe.utils.query.annotation.QBindAttrField;
 import com.newframe.utils.query.annotation.QBindEntity;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author WangBin
  */
@@ -21,5 +23,5 @@ public class MerchantAppointQuery extends BaseQuery {
     private Long rentMerchantUid;
 
     @QBindAttrField(fieldName = "supplierUid", where = Where.in)
-    private Long[] supplierUids;
+    private List<Long> supplierUids;
 }

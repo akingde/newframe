@@ -2,6 +2,7 @@ package com.newframe.dto.user.response;
 
 import com.newframe.entity.user.UserRoleApply;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +67,7 @@ public class UserRoleApplyDTO {
             this.legalEntity = userRoleApply.getLegalEntity();
             this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
             this.businessListenNumber = userRoleApply.getBusinessLicenseNumber();
-            this.businessListen = userRoleApply.getBusinessLicenseFile().split(",");
+            this.businessListen = StringUtils.split(userRoleApply.getBusinessLicenseFile(), ",");
         }
     }
 
@@ -84,9 +85,9 @@ public class UserRoleApplyDTO {
 
         public RentMechant(UserRoleApply userRoleApply) {
             super(userRoleApply);
-            this.highestDegreeDiploma = userRoleApply.getHighestDegreeDiplomaFile().split(",");
-            this.drivingLicense = userRoleApply.getDrivingLicenseFile().split(",");
-            this.houseProprietaryCertificate = userRoleApply.getHouseProprietaryCertificateFile().split(",");
+            this.highestDegreeDiploma = StringUtils.split(userRoleApply.getHighestDegreeDiplomaFile(), ",");
+            this.drivingLicense = StringUtils.split(userRoleApply.getDrivingLicenseFile(), ",");
+            this.houseProprietaryCertificate = StringUtils.split(userRoleApply.getHouseProprietaryCertificateFile(), ",");
         }
     }
 
@@ -109,8 +110,8 @@ public class UserRoleApplyDTO {
             this.topContacts = userRoleApply.getTopContacts();
             this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
             this.relationship = userRoleApply.getRelationship();
-            this.letterOfAttorney = userRoleApply.getLetterOfAttorneyFile().split(",");
-            this.businessQualification = userRoleApply.getBusinessQualificationFile().split(",");
+            this.letterOfAttorney = StringUtils.split(userRoleApply.getLetterOfAttorneyFile(), ",");
+            this.businessQualification = StringUtils.split(userRoleApply.getBusinessQualificationFile(), ",");
         }
     }
 

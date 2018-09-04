@@ -153,7 +153,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid) {
         return null;
     }
 
@@ -165,7 +165,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+    public List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid) {
         return Lists.newArrayList();
     }
 
@@ -232,10 +232,10 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         rentMerchant.setLegalEntityIdNumber(rentMerchantApplyDTO.getLegalEntityIdNumber());
         rentMerchant.setRentMerchantAddress(address);
         rentMerchant.setBusinessLicenseNumber(rentMerchantApplyDTO.getBusinessListenNumber());
-        rentMerchant.setBusinessLicenseFile(String.join(",", businessUrls));
-        rentMerchant.setHighestDegreeDiplomaFile(String.join(",", highestUrls));
-        rentMerchant.setDrivingLicenseFile(String.join(",", drivindUrls));
-        rentMerchant.setHouseProprietaryCertificateFile(String.join(",", houseUrls));
+        rentMerchant.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
+        rentMerchant.setHighestDegreeDiplomaFile(StringUtils.join(",", highestUrls));
+        rentMerchant.setDrivingLicenseFile(StringUtils.join(",", drivindUrls));
+        rentMerchant.setHouseProprietaryCertificateFile(StringUtils.join(",", houseUrls));
         rentMerchant.setRoleStatus(RoleStatusEnum.NORMAL.getRoleStatue());
         rentMerchant.setParentId(uid);
         rentMerchant.setProvinceId(rentMerchantApplyDTO.getProvinceId());
@@ -284,10 +284,10 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         small.setLegalEntityIdNumber(rentMerchantModifyDTO.getLegalEntityIdNumber());
         small.setRentMerchantAddress(address);
         small.setBusinessLicenseNumber(rentMerchantModifyDTO.getBusinessListenNumber());
-        small.setBusinessLicenseFile(String.join(",", rentMerchantModifyDTO.getBusinessListen()));
-        small.setHighestDegreeDiplomaFile(String.join(",", rentMerchantModifyDTO.getHighestDegreeDiploma()));
-        small.setDrivingLicenseFile(String.join(",", rentMerchantModifyDTO.getDrivingLicense()));
-        small.setHouseProprietaryCertificateFile(String.join(",", rentMerchantModifyDTO.getHouseProprietaryCertificate()));
+        small.setBusinessLicenseFile(StringUtils.join(",", rentMerchantModifyDTO.getBusinessListen()));
+        small.setHighestDegreeDiplomaFile(StringUtils.join(",", rentMerchantModifyDTO.getHighestDegreeDiploma()));
+        small.setDrivingLicenseFile(StringUtils.join(",", rentMerchantModifyDTO.getDrivingLicense()));
+        small.setHouseProprietaryCertificateFile(StringUtils.join(",", rentMerchantModifyDTO.getHouseProprietaryCertificate()));
         small.setProvinceId(rentMerchantModifyDTO.getProvinceId());
         small.setProvinceName(provinceName);
         small.setCityId(rentMerchantModifyDTO.getCityId());

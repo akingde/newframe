@@ -5,6 +5,7 @@ import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.request.FunderSearchDTO;
+import com.newframe.dto.after.request.ModifyFunderDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.after.response.*;
 import com.newframe.services.after.AfterService;
@@ -119,8 +120,8 @@ public class ApiAfterController extends BaseController {
      * @return
      */
     @PostMapping("addFunder")
-    public JsonResult addFunder(Long uid, List<Long> funderUids){
-        OperationResult<Boolean> result = afterService.addFunder(uid, funderUids);
+    public JsonResult addFunder(ModifyFunderDTO modifyFunderDTO){
+        OperationResult<Boolean> result = afterService.addFunder(modifyFunderDTO.getUid(), modifyFunderDTO.getFunderUids());
         if(!result.getEntity()){
             return error(result.getErrorCode());
         }

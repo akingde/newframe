@@ -75,7 +75,7 @@ public class HirerServiceImpl implements RoleService {
         userRoleApply.setRelationship(roleApply.getRelationship());
         userRoleApply.setTopContactsPhoneNumber(roleApply.getTopContactsPhoneNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
-        userRoleApply.setBusinessLicenseFile(String.join(",", businessUrls));
+        userRoleApply.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
         userRoleApplyService.insert(userRoleApply);
         return new OperationResult(true);
@@ -174,7 +174,7 @@ public class HirerServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid) {
         return null;
     }
 
@@ -186,7 +186,7 @@ public class HirerServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+    public List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid) {
         return Lists.newArrayList();
     }
 

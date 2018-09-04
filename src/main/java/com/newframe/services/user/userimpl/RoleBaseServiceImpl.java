@@ -173,11 +173,11 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, Long[] supplierUid, Long[] revokeSupplierUid) {
-        Set<Long> inSet = Arrays.asList(supplierUid).stream().distinct().collect(toSet());
-        Set<Long> reSet = Arrays.asList(revokeSupplierUid).stream().distinct().collect(toSet());
+    public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid, List<Long> revokeSupplierUid) {
+        Set<Long> inSet = supplierUid.stream().distinct().collect(toSet());
+        Set<Long> reSet = revokeSupplierUid.stream().distinct().collect(toSet());
         long count = inSet.stream().filter(item -> reSet.contains(item)).count();
-        if(supplierUid.length + revokeSupplierUid.length != inSet.size() + reSet.size() || count > 0){
+        if(supplierUid.size() + revokeSupplierUid.size() != inSet.size() + reSet.size() || count > 0){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
         UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());

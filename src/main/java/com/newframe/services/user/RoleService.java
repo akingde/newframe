@@ -84,7 +84,7 @@ public interface RoleService {
      * @param supplierUid
      * @return
      */
-    OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid);
+    OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid);
 
     /**
      * 根据供应商id找出供应商信息
@@ -92,7 +92,7 @@ public interface RoleService {
      * @param supplierUid
      * @return
      */
-    List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid);
+    List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid);
 
     /**
      * 删除操作

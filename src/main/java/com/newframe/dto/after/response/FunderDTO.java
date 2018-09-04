@@ -2,6 +2,7 @@ package com.newframe.dto.after.response;
 
 import com.newframe.entity.user.UserFunder;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author WangBin
@@ -11,6 +12,7 @@ public class FunderDTO {
 
     private Long funderUid;
     private String merchantName;
+    private String phoneNumber;
     private String legalEntity;
     private String legalEntityIdNumber;
     private String topContacts;
@@ -28,6 +30,7 @@ public class FunderDTO {
     public FunderDTO(UserFunder userFunder) {
         this.funderUid = userFunder.getUid();
         this.merchantName = userFunder.getMerchantName();
+        this.phoneNumber = userFunder.getPhoneNumber();
         this.legalEntity = userFunder.getLegalEntity();
         this.legalEntityIdNumber = userFunder.getLegalEntityIdNumber();
         this.topContacts = userFunder.getTopContacts();
@@ -35,8 +38,8 @@ public class FunderDTO {
         this.relationship = userFunder.getRelationship();
         this.ctime = userFunder.getUid();
         this.businessLicenseNumber = userFunder.getBusinessLicenseNumber();
-        this.businessLicense = userFunder.getBusinessLicenseFile().split(",");
-        this.letterOfAttorney = userFunder.getLetterOfAttorneyFile().split(",");
-        this.businessQualification = userFunder.getBusinessQualificationFile().split(",");
+        this.businessLicense = StringUtils.split(userFunder.getBusinessLicenseFile(),",");
+        this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(),",");
+        this.businessQualification = StringUtils.split(userFunder.getBusinessQualificationFile(),",");
     }
 }

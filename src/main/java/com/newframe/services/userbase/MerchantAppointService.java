@@ -22,7 +22,7 @@ public interface MerchantAppointService {
      * @param supplierUids
      * @return
      */
-    List<MerchantAppoint> findAll(Long rentMerchantUid, Long[] supplierUids);
+    List<MerchantAppoint> findAll(Long rentMerchantUid, List<Long> supplierUids);
 
     /**
      * 批量添加制定关系
