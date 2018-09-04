@@ -51,7 +51,7 @@ public interface AccountManageService {
      * @param pageSize
      * @return
      */
-    OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+    OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid, Integer repaymentStatus,Integer orderStatus, Integer currentPage, Integer pageSize);
 
     /**
      * 我是租赁商订单融资账户订单融资列表查看订单详情

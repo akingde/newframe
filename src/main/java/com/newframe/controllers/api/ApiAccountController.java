@@ -160,11 +160,11 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderFinance")
-    public JsonResult listRenterOrderFinance(Long uid,Integer orderStatus,Integer currentPage, Integer pageSize) {
+    public JsonResult listRenterOrderFinance(Long uid,Integer repaymentStatus,Integer orderStatus,Integer currentPage, Integer pageSize) {
 
         uid = 10001L;
 
-        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,orderStatus,currentPage,pageSize);
+        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,repaymentStatus,orderStatus,currentPage,pageSize);
 
         if (result.getSucc()) {
             return success(result.getEntity());

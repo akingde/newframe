@@ -168,7 +168,7 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public OperationResult<RenterOrderFinanceInfo> listRenterOrderFinance(Long uid,Integer repaymentStatus, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
@@ -177,7 +177,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         RenterOrderFinanceInfo renterOrderFinanceInfo = new RenterOrderFinanceInfo();
-        Page<AccountRenterFinancing> accountRenterFinancings = accountService.getAccountRenterFinancing(uid, orderStatus, currentPage, pageSize);
+        Page<AccountRenterFinancing> accountRenterFinancings = accountService.getAccountRenterFinancing(uid, repaymentStatus,orderStatus, currentPage, pageSize);
         List<AccountRenterFinancing> accountRenterFinancingList = accountRenterFinancings.getContent();
 
         renterOrderFinanceInfo.setList(accountRenterFinancingList);

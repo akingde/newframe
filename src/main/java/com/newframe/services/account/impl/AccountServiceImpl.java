@@ -731,7 +731,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus,Integer orderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid || null == currentPage || null == pageSize) {
             return null;
         }
@@ -740,6 +740,9 @@ public class AccountServiceImpl implements AccountService {
         query.setUid(uid);
         if (null != orderStatus) {
             query.setOrderStatus(orderStatus);
+        }
+        if (null != repaymentStatus){
+            query.setRepaymentStatus(repaymentStatus);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
