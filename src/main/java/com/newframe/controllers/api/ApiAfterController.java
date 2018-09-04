@@ -116,6 +116,17 @@ public class ApiAfterController extends BaseController {
     }
 
     /**
+     * 获取资金方信息
+     * @param funderUid
+     * @return
+     */
+    @PostMapping("getFunderInfo")
+    public JsonResult getFunderInfo(Long funderUid){
+        OperationResult<FunderDTO> result = afterService.getFunderInfo(funderUid);
+        return success(result.getEntity());
+    }
+
+    /**
      * 添加资金方
      * @return
      */
