@@ -42,7 +42,7 @@ public class MerchantAppointServiceImpl implements MerchantAppointService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> findAll(Long rentMerchantUid, Long[] supplierUids) {
+    public List<MerchantAppoint> findAll(Long rentMerchantUid, List<Long> supplierUids) {
         MerchantAppointQuery query = new MerchantAppointQuery();
         query.setRentMerchantUid(rentMerchantUid);
         query.setSupplierUids(supplierUids);

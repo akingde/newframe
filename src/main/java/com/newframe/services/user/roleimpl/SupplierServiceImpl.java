@@ -177,7 +177,7 @@ public class SupplierServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid) {
         return null;
     }
 
@@ -189,7 +189,7 @@ public class SupplierServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+    public List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid) {
         return Lists.newArrayList();
     }
 

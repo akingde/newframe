@@ -209,7 +209,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, Long[] supplierUid) {
+    public OperationResult<List<MerchantAppoint>> batchInsert(Long uid, List<Long> supplierUid) {
         List<MerchantAppoint> merchantAppoints = Lists.newArrayList();
         for (Long supplier : supplierUid) {
             MerchantAppoint merchantAppoint = new MerchantAppoint();
@@ -229,7 +229,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<MerchantAppoint> getAppointSupplier(Long uid, Long[] supplierUid) {
+    public List<MerchantAppoint> getAppointSupplier(Long uid, List<Long> supplierUid) {
         return merchantAppointService.findAll(uid, supplierUid);
     }
 

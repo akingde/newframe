@@ -388,13 +388,15 @@ public class ApiUserController extends BaseController {
      * @date 2018/8/16 20:15
      */
     @PostMapping("appointSupplier")
-    public JsonResult appointSupplier(Long uid, Long[] supplierUid, Long[] revokeSupplierUid){
+    public JsonResult appointSupplier(Long uid, RentMerchantModifyDTO rentMerchantModifyDTO){
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
-        OperationResult<Boolean> result = roleBaseService.modifyAppointSupplier(uid, roleId, supplierUid, revokeSupplierUid);
+        OperationResult<Boolean> result = roleBaseService.modifyAppointSupplier(uid, roleId,
+                rentMerchantModifyDTO.getSupplierUid(),
+                rentMerchantModifyDTO.getRevokeSupplierUid());
         if (!result.getEntity()) {
             return error(result.getErrorCode());
         }
