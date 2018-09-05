@@ -26,10 +26,10 @@ public class CommonController extends BaseController {
     private CommonService commonService;
 
     @RequestMapping("listUserMessage")
-    private JsonResult listUserMessage(Long uid,Integer currentPage, Integer pageSize){
+    private JsonResult listUserMessage(Long uid,Integer roleId,Integer currentPage, Integer pageSize){
 
         uid = 10001L;
-        OperationResult<UserMessageInfo> result = commonService.listUserMessage(uid,currentPage,pageSize);
+        OperationResult<UserMessageInfo> result = commonService.listUserMessage(uid, roleId, pageSize, currentPage);
 
         if (result.getSucc()) {
             return success(result.getEntity());

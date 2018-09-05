@@ -59,12 +59,13 @@ public class CommonServiceImpl implements CommonService {
      * 首页查询用户的消息列表
      *
      * @param uid
-     * @param currentPage
+     * @param roleId
      * @param pageSize
+     * @param currentPage
      * @return
      */
     @Override
-    public OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer currentPage, Integer pageSize) {
+    public OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer roleId, Integer pageSize, Integer currentPage) {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
@@ -76,6 +77,8 @@ public class CommonServiceImpl implements CommonService {
         PageRequest pageRequest = PageRequest.of(currentPage-1,pageSize,sort);
         UserMessageQuery query = new UserMessageQuery();
         query.setUid(uid);
+        query.setRoleId(roleId);
+
         Page<UserMessage> userMessagePage = userMessageSlave.findAll(query,pageRequest);
         userMessageInfo.setList(userMessagePage.getContent());
         userMessageInfo.setTotal(userMessagePage.getTotalElements());

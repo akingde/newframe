@@ -3,7 +3,6 @@ package com.newframe.services.common;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.message.UserMessageInfo;
-import org.springframework.stereotype.Service;
 
 /**
  * @author:wangdong
@@ -23,9 +22,10 @@ public interface CommonService {
     /**
      * 首页查询用户的消息列表
      * @param uid
-     * @param currentPage
+     * @param roleId
      * @param pageSize
+     * @param currentPage
      * @return
      */
-    OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer currentPage, Integer pageSize);
+    OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer roleId, Integer pageSize, Integer currentPage);
 }

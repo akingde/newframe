@@ -17,4 +17,7 @@ public class UserMessageQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "uid",where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "roleId",where = Where.equal)
+    private Integer roleId;
 }
