@@ -19,4 +19,7 @@ public class ProductSupplierQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "supplierId", where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "isDelated", where = Where.equal)
+    private Integer isDelated;
 }

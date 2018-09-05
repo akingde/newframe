@@ -138,10 +138,7 @@ public class UserAddressServiceImpl implements UserAddressService {
         UserAddressQuery query = new UserAddressQuery();
         query.setUid(uid);
         query.setDefaultAddress(true);
-        //return userAddressSlave.findOne(query);
-        //findOne，现在更新了，适用于根据唯一主键之间查，底层执行的是findByID
-        //其余均有可能有多个值，请使用findAll()，以免数据库存在多个值查询抛错
-        return null;
+        return userAddressSlave.findOne(query);
     }
 
     /**
@@ -155,8 +152,6 @@ public class UserAddressServiceImpl implements UserAddressService {
         UserAddressQuery query = new UserAddressQuery();
         query.setId(addressId);
         query.setUid(uid);
-        //findOne，现在更新了，适用于根据唯一主键之间查，底层执行的是findByID
-        //其余均有可能有多个值，请使用findAll()，以免数据库存在多个值查询抛错
-        return null;
+        return userAddressSlave.findOne(query);
     }
 }

@@ -132,7 +132,7 @@ public class ProductLessor {
         this.color = condition.getColor();
         this.guidePrice = BigDecimalUtils.compareTo(condition.getGuidePrice()) ? condition.getGuidePrice() : BigDecimal.ZERO;
         this.supplyPrice = BigDecimalUtils.compareTo(condition.getSupplyPrice()) ? condition.getSupplyPrice() : BigDecimal.ZERO;
-        this.surplusStock = condition.getSurplusStock() != null && condition.getSurplusStock() < 0 ? condition.getSurplusStock(): 0;
+        this.surplusStock = condition.getSurplusStock() != null && condition.getSurplusStock() > 0 ? condition.getSurplusStock(): 0;
         this.frozenStock = 0;
         this.brokenScreenRisks = BigDecimalUtils.compareTo(condition.getBrokenScreenRisks()) ? condition.getBrokenScreenRisks() : BigDecimal.ZERO;
         this.isDelated = 0;

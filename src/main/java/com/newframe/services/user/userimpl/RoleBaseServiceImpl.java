@@ -1,12 +1,10 @@
 package com.newframe.services.user.userimpl;
 
+import com.google.common.collect.Sets;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.response.UserDTO;
 import com.newframe.dto.user.request.*;
-import com.newframe.dto.user.response.ProductDTO;
-import com.newframe.dto.user.response.ProductSupplierDTO;
-import com.newframe.dto.user.response.UserRoleApplyDTO;
-import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.RequestResultEnum;
@@ -17,6 +15,7 @@ import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
 import com.newframe.utils.IdNumberUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -142,12 +141,22 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid) {
-        return roleServiceMap.get(RoleEnum.SUPPLIER.getRoleId())
-                .getAppointSupplier(
-                        roleServiceMap.get(RoleEnum.FIRST_RENT_MERCHANT.getRoleId())
-                                .getAppointSupplierUid(uid)
-                );
+    public OperationResult<AppointSupplierDTO> getAppointSupplier(Long uid) {
+
+        UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid, RoleEnum.FIRST_RENT_MERCHANT.getRoleId());
+        if(rentMerchant == null){
+            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS);
+        }
+        if(!rentMerchant.getAppoint()){
+            return new OperationResult(new AppointSupplierDTO(rentMerchant.getAppoint()));
+        }
+        OperationResult<List<UserRoleDTO.Supplier>> result =
+                roleServiceMap.get(RoleEnum.SUPPLIER.getRoleId())
+                                .getAppointSupplier(
+                                        roleServiceMap.get(RoleEnum.FIRST_RENT_MERCHANT.getRoleId())
+                                                        .getAppointSupplierUid(uid)
+                                );
+        return new OperationResult(new AppointSupplierDTO(rentMerchant.getAppoint(), result.getEntity()));
     }
 
     /**
@@ -174,10 +183,16 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      */
     @Override
     public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid, List<Long> revokeSupplierUid) {
-        Set<Long> inSet = supplierUid.stream().distinct().collect(toSet());
-        Set<Long> reSet = revokeSupplierUid.stream().distinct().collect(toSet());
+        Set<Long> inSet = Sets.newHashSet();
+        Set<Long> reSet = Sets.newHashSet();
+        if(CollectionUtils.isNotEmpty(supplierUid)){
+            inSet.addAll(supplierUid);
+        }
+        if(CollectionUtils.isNotEmpty(revokeSupplierUid)){
+            reSet.addAll(revokeSupplierUid);
+        }
         long count = inSet.stream().filter(item -> reSet.contains(item)).count();
-        if(supplierUid.size() + revokeSupplierUid.size() != inSet.size() + reSet.size() || count > 0){
+        if(count > 0){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
         UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());

@@ -2,10 +2,7 @@ package com.newframe.services.user;
 
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
-import com.newframe.dto.user.response.ProductDTO;
-import com.newframe.dto.user.response.ProductSupplierDTO;
-import com.newframe.dto.user.response.UserRoleApplyDTO;
-import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.UserRoleApply;
 
 import java.io.IOException;
@@ -62,7 +59,7 @@ public interface RoleBaseService {
      * @param uid
      * @return
      */
-    OperationResult<List<UserRoleDTO.Supplier>> getAppointSupplier(Long uid);
+    OperationResult<AppointSupplierDTO> getAppointSupplier(Long uid);
 
     /**
      * 设置指定供应商开关

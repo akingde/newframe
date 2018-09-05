@@ -181,4 +181,16 @@ public class AfterServiceImpl implements AfterService {
         userFunderService.update(false, funderUid);
         return new OperationResult(true);
     }
+
+    /**
+     * 获取资金方信息
+     *
+     * @param funderUid
+     * @return
+     */
+    @Override
+    public OperationResult<FunderDTO> getFunderInfo(Long funderUid) {
+        UserFunder funder = userFunderService.findOne(funderUid);
+        return funder == null ? new OperationResult(): new OperationResult(new FunderDTO(funder));
+    }
 }

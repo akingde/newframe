@@ -47,7 +47,7 @@ public class UserAddressDTO {
     /**
      * 区名
      */
-    private String counttyName;
+    private String countyName;
     /**
      * 详细地址
      */
@@ -76,7 +76,7 @@ public class UserAddressDTO {
         this.cityId = userAddress.getCityId();
         this.cityName = userAddress.getCityName();
         this.countyId = userAddress.getCountyId();
-        this.counttyName = userAddress.getCountyName();
+        this.countyName = userAddress.getCountyName();
         this.consigneeAddress = userAddress.getConsigneeAddress();
         this.consigneeName = userAddress.getConsigneeName();
         this.mobile = userAddress.getMobile();

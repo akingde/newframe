@@ -463,7 +463,7 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isEmpty(addressDTO.getConsigneeAddress())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
-        if(PatternEnum.checkPattern(addressDTO.getMobile(), PatternEnum.mobile)){
+        if(!PatternEnum.checkPattern(addressDTO.getMobile(), PatternEnum.mobile)){
             return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
         }
         UserAddress userAddress = new UserAddress(uid, addressDTO, areas);
