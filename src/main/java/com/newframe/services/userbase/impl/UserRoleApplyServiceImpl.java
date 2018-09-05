@@ -3,6 +3,8 @@ package com.newframe.services.userbase.impl;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.UserRoleApply;
+import com.newframe.enums.RoleEnum;
+import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.repositories.dataMaster.user.UserRoleApplyMaster;
 import com.newframe.repositories.dataQuery.user.UserRoleApplyQuery;
 import com.newframe.repositories.dataSlave.user.UserRoleApplySlave;
@@ -207,7 +209,10 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
     @Override
     public List<UserRoleApply> findApplyList(Long uid) {
         UserRoleApplyQuery query = new UserRoleApplyQuery();
+        Integer[] status = new Integer[]{RoleStatusEnum.NORMAL.getRoleStatue(),
+                RoleStatusEnum.UNDER_REVIEW.getRoleStatue(), RoleStatusEnum.FREEZE.getRoleStatue()};
         query.setUid(uid);
+        query.setStatus(status);
         return userRoleApplySlave.findAll(query);
     }
 

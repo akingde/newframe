@@ -70,7 +70,7 @@ public class SupplierServiceImpl implements RoleService {
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
-        userRoleApply.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
+        userRoleApply.setBusinessLicenseFile(StringUtils.join(businessUrls, ","));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
         userRoleApplyService.insert(userRoleApply);
         return new OperationResult(true);

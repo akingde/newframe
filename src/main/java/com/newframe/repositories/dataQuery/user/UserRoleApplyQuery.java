@@ -37,4 +37,7 @@ public class UserRoleApplyQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "ctime", where = Where.lessThanOrEqualTo)
     private Integer endTime;
+
+    @QBindAttrField(fieldName = "applyStatus", where = Where.in)
+    private Integer[] status;
 }

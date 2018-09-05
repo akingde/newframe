@@ -132,4 +132,9 @@ public class FileUtils {
         }
         return true;
     }
+
+    public static void main(String[] args) {
+        List<String> s = Lists.newArrayList();
+        System.out.println(StringUtils.join(s, ","));
+    }
 }

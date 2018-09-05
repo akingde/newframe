@@ -88,9 +88,9 @@ public class FunderServiceImpl implements RoleService {
         userRoleApply.setRelationship(roleApply.getRelationship());
         userRoleApply.setTopContactsPhoneNumber(roleApply.getTopContactsPhoneNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
-        userRoleApply.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
-        userRoleApply.setBusinessQualificationFile(StringUtils.join(",", qualificationUrls));
-        userRoleApply.setLetterOfAttorneyFile(StringUtils.join(",", letterUrls));
+        userRoleApply.setBusinessLicenseFile(StringUtils.join(businessUrls, ","));
+        userRoleApply.setBusinessQualificationFile(StringUtils.join(qualificationUrls, ","));
+        userRoleApply.setLetterOfAttorneyFile(StringUtils.join(letterUrls, ","));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
         userRoleApplyService.insert(userRoleApply);
         return new OperationResult(true);
