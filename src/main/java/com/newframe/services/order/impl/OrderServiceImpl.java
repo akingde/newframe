@@ -486,7 +486,7 @@ public class OrderServiceImpl implements OrderService {
             Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
             if (orderRenterOptional.isPresent()) {
                 OrderRenter orderRenter = orderRenterOptional.get();
-                orderFunder.setOrderStatus(OrderRenterStatus.FUNDER_AUDIT_REFUSE.getCode());
+                orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_AUDIT_REFUSE.getCode());
                 orderRenterMaser.save(orderRenter);
                 orderFunder.setOrderStatus(OrderFunderStatus.AUDIT_REFUSE.getCode());
                 orderFunderMaser.save(orderFunder);
@@ -1098,10 +1098,7 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setConsumerCreditLine(orderFunder.getUserCreditLine());
         orderFunderDTO.setRenterId(orderFunder.getMerchantId());
         orderFunderDTO.setRenterName(orderFunder.getMerchantName());
-        BigDecimal financingAmount = orderFunder.getMonthlyPayment().multiply(
-                new BigDecimal(orderFunder.getNumberOfPayments()));
-        financingAmount = financingAmount.add(orderFunder.getAccidentBenefit());
-        orderFunderDTO.setFinancingAmount(financingAmount);
+        orderFunderDTO.setFinancingAmount(orderFunder.getFinancingAmount());
         orderFunderDTO.setFinancingDeadline(orderFunder.getNumberOfPeriods());
         orderFunderDTO.setMachineNumber(1);
         orderFunderDTO.setRenterPhone(orderBaseService.getRenterPhone(orderFunder.getMerchantId()));
