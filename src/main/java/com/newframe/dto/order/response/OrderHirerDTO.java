@@ -35,4 +35,5 @@ public class OrderHirerDTO {
     private String renterPhone;
     private Integer productRandomMemory;
     private Integer machineNumber;
+    private String consumerAddress;
 }

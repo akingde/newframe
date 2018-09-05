@@ -940,22 +940,22 @@ public class OrderServiceImpl implements OrderService {
         Optional<OrderFunder> optionalOrderFunder = orderFunderSlave.findById(orderId);
         if (optionalOrderFunder.isPresent()) {
             Optional<OrderSupplier> optionalOrderSupplier = orderSupplierSlave.findById(orderId);
+            OrderFunder orderFunder = optionalOrderFunder.get();
+            FinancingInfo info = new FinancingInfo();
+            info.setAccidentBenefit(orderFunder.getAccidentBenefit());
+            info.setDeposit(orderFunder.getDeposit());
+            info.setFinancingAmount(orderFunder.getFinancingAmount());
+            info.setFinancingDeadline(orderFunder.getNumberOfPayments());
+            info.setFinancingTime(orderFunder.getCtime());
             if (optionalOrderSupplier.isPresent()) {
-                OrderFunder orderFunder = optionalOrderFunder.get();
                 OrderSupplier orderSupplier = optionalOrderSupplier.get();
-                FinancingInfo info = new FinancingInfo();
-                info.setAccidentBenefit(orderFunder.getAccidentBenefit());
-                info.setDeposit(orderFunder.getDeposit());
-                info.setFinancingAmount(orderFunder.getFinancingAmount());
-                info.setFinancingDeadline(orderFunder.getNumberOfPayments());
-                info.setFinancingTime(orderFunder.getCtime());
                 info.setSupplierId(orderSupplier.getSupplierId());
                 UserSupplier userSupplier = userSupplierService.findOne(orderSupplier.getUid());
                 if (userSupplier != null) {
                     info.setSupplierName(userSupplier.getMerchantName());
                 }
-                return new OperationResult<>(OrderResultEnum.SUCCESS, info);
             }
+            return new OperationResult<>(OrderResultEnum.SUCCESS, info);
         }
         return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
     }
@@ -1076,6 +1076,7 @@ public class OrderServiceImpl implements OrderService {
         dto.setRenterPhone(orderHirer.getMerchantMobile());
         dto.setMachineNumber(1);
         dto.setUid(orderHirer.getLessorId());
+        dto.setConsumerAddress(orderHirer.getUserAddress());
         return dto;
     }
 
