@@ -314,7 +314,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         if(!IdNumberUtils.isValidatedAllIdcard(rentMerchantModifyDTO.getLegalEntityIdNumber())){
             return new OperationResult(RequestResultEnum.ID_NUMBER_ERROR, false);
         }
-        if(!FileUtils.isAllCorrect(2, rentMerchantModifyDTO.getBusinessListen())) {
+        if(FileUtils.isAllCorrect(2, rentMerchantModifyDTO.getBusinessListen())) {
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
         if (FileUtils.isAllCorrect(2, rentMerchantModifyDTO.getHighestDegreeDiploma())){
