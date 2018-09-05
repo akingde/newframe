@@ -18,7 +18,7 @@ public class FunderDTO {
     private String topContacts;
     private String topContactsPhoneNumber;
     private Integer relationship;
-    private Long ctime;
+    private Integer ctime;
     private String businessLicenseNumber;
     private String[] businessLicense;
     private String[] letterOfAttorney;
@@ -36,7 +36,7 @@ public class FunderDTO {
         this.topContacts = userFunder.getTopContacts();
         this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
         this.relationship = userFunder.getRelationship();
-        this.ctime = userFunder.getUid();
+        this.ctime = userFunder.getCtime();
         this.businessLicenseNumber = userFunder.getBusinessLicenseNumber();
         this.businessLicense = StringUtils.split(userFunder.getBusinessLicenseFile(),",");
         this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(),",");
