@@ -236,7 +236,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         rentMerchant.setRentMerchantAddress(address);
         rentMerchant.setBusinessLicenseNumber(rentMerchantApplyDTO.getBusinessListenNumber());
         rentMerchant.setBusinessLicenseFile(StringUtils.join(businessUrls, ","));
-        rentMerchant.setHighestDegreeDiplomaFile(tringUtils.join(highestUrls, ","));
+        rentMerchant.setHighestDegreeDiplomaFile(StringUtils.join(highestUrls, ","));
         rentMerchant.setDrivingLicenseFile(StringUtils.join(drivindUrls, ","));
         rentMerchant.setHouseProprietaryCertificateFile(StringUtils.join(houseUrls, ","));
         rentMerchant.setRoleStatus(RoleStatusEnum.NORMAL.getRoleStatue());
@@ -287,10 +287,10 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         small.setLegalEntityIdNumber(rentMerchantModifyDTO.getLegalEntityIdNumber());
         small.setRentMerchantAddress(address);
         small.setBusinessLicenseNumber(rentMerchantModifyDTO.getBusinessListenNumber());
-        small.setBusinessLicenseFile(tringUtils.join(rentMerchantModifyDTO.getBusinessListen(), ","));
-        small.setHighestDegreeDiplomaFile(tringUtils.join(rentMerchantModifyDTO.getHighestDegreeDiploma(), ","));
-        small.setDrivingLicenseFile(tringUtils.join(rentMerchantModifyDTO.getDrivingLicense(), ","));
-        small.setHouseProprietaryCertificateFile(tringUtils.join(rentMerchantModifyDTO.getHouseProprietaryCertificate(), ","));
+        small.setBusinessLicenseFile(StringUtils.join(rentMerchantModifyDTO.getBusinessListen(), ","));
+        small.setHighestDegreeDiplomaFile(StringUtils.join(rentMerchantModifyDTO.getHighestDegreeDiploma(), ","));
+        small.setDrivingLicenseFile(StringUtils.join(rentMerchantModifyDTO.getDrivingLicense(), ","));
+        small.setHouseProprietaryCertificateFile(StringUtils.join(rentMerchantModifyDTO.getHouseProprietaryCertificate(), ","));
         small.setProvinceId(rentMerchantModifyDTO.getProvinceId());
         small.setProvinceName(provinceName);
         small.setCityId(rentMerchantModifyDTO.getCityId());
