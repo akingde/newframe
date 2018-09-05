@@ -7,6 +7,7 @@ import com.newframe.repositories.dataMaster.user.ProductLessorMaster;
 import com.newframe.repositories.dataQuery.user.ProductLessorQuery;
 import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.services.userbase.ProductLessorService;
+import com.newframe.utils.BigDecimalUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,6 @@ public class ProductLessorServiceImpl implements ProductLessorService {
         if (productLessor == null || productLessor.getId() == null){
             return 0;
         }
-        ProductLessorQuery query = new ProductLessorQuery();
-        query.setId(productLessor.getId());
-        query.setUid(productLessor.getSupplierId());
         List<String> updateFields = Lists.newArrayList();
         if (StringUtils.isNotEmpty(productLessor.getBrand())){
             updateFields.add("brand");
@@ -60,21 +58,21 @@ public class ProductLessorServiceImpl implements ProductLessorService {
         if(StringUtils.isNotEmpty(productLessor.getSpecification())){
             updateFields.add("specification");
         }
-        if(productLessor.getGuidePrice() != null){
+        if(BigDecimalUtils.compareTo(productLessor.getGuidePrice())){
             updateFields.add("guidePrice");
         }
-        if(productLessor.getSupplyPrice() != null){
+        if(BigDecimalUtils.compareTo(productLessor.getSupplyPrice())){
             updateFields.add("supplyPrice");
         }
-        if(productLessor.getSurplusStock() != null){
+        if(productLessor.getSurplusStock() != null && productLessor.getSurplusStock() > 0){
             updateFields.add("surplusStock");
         }
-        if(productLessor.getBrokenScreenRisks() != null){
+        if(BigDecimalUtils.compareTo(productLessor.getBrokenScreenRisks())){
             updateFields.add("brokenScreenRisks");
         }
         String[] array =new String[updateFields.size()];
         updateFields.toArray(array);
-        return productLessorMaster.update(productLessor, query, array);
+        return productLessorMaster.updateById(productLessor, productLessor.getId(), array);
     }
 
     @Override

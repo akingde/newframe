@@ -94,10 +94,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
-        userRoleApply.setBusinessLicenseFile(StringUtils.join(",", businessUrls));
-        userRoleApply.setHighestDegreeDiplomaFile(StringUtils.join(",", highestUrls));
-        userRoleApply.setDrivingLicenseFile(StringUtils.join(",", drivindUrls));
-        userRoleApply.setHouseProprietaryCertificateFile(StringUtils.join(",", houseUrls));
+        userRoleApply.setBusinessLicenseFile(StringUtils.join(businessUrls, ","));
+        userRoleApply.setHighestDegreeDiplomaFile(StringUtils.join(highestUrls, ","));
+        userRoleApply.setDrivingLicenseFile(StringUtils.join(drivindUrls, ","));
+        userRoleApply.setHouseProprietaryCertificateFile(StringUtils.join(houseUrls, ","));
         userRoleApply.setApplyStatus(RoleStatusEnum.UNDER_REVIEW.getRoleStatue());
         userRoleApplyService.insert(userRoleApply);
         return new OperationResult(true);

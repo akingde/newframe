@@ -27,6 +27,11 @@ public class UserMessage {
      * 用户的Uid
      */
     private Long uid;
+
+    /**
+     * 角色的Id
+     */
+    private Integer roleId;
     /**
      * 平台自己的订单ID
      */
