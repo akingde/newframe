@@ -225,19 +225,19 @@ public class ApiUserController extends BaseController {
 
     /**
      * @param newMobile  新手机号
-     * @param mobileCode 手机验证码
+     * @param mCode 手机验证码
      * @return
      * @description 修改手机号
      * @author WangBin
      * @date 2018/8/9 16:16
      */
     @PostMapping("modifyMobile")
-    public JsonResult modifyMobile(Long uid, String newMobile, String mobileCode) {
+    public JsonResult modifyMobile(Long uid, String newMobile, String mCode) {
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<Boolean> result = userService.modifyMobile(uid, newMobile, mobileCode);
+        OperationResult<Boolean> result = userService.modifyMobile(uid, newMobile, mCode);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
         }
@@ -245,19 +245,19 @@ public class ApiUserController extends BaseController {
     }
 
     /**
-     * @param mobileCode 注销手机号
+     * @param mCode 注销手机号
      * @return
      * @description 注销手机号
      * @author WangBin
      * @date 2018/8/9 16:19
      */
     @PostMapping("removeMobile")
-    public JsonResult removeMobile(Long uid, String mobileCode) {
+    public JsonResult removeMobile(Long uid, String mCode) {
 //      Long uid = RequestUser.getCurrentUid();
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<Boolean> result = userService.removeMobile(uid, mobileCode);
+        OperationResult<Boolean> result = userService.removeMobile(uid, mCode);
         if (!result.getEntity()) {
             return error(result.getErrorCode());
         }
