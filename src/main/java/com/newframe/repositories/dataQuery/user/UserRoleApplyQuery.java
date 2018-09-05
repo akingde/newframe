@@ -7,6 +7,8 @@ import com.newframe.utils.query.annotation.QBindAttrField;
 import com.newframe.utils.query.annotation.QBindEntity;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @QBindEntity(entityClass = UserRoleApply.class)
 public class UserRoleApplyQuery extends BaseQuery {
@@ -39,5 +41,5 @@ public class UserRoleApplyQuery extends BaseQuery {
     private Integer endTime;
 
     @QBindAttrField(fieldName = "applyStatus", where = Where.in)
-    private Integer[] status;
+    private List<Integer> status;
 }

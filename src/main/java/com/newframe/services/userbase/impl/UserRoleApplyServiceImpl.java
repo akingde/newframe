@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -212,7 +213,7 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         Integer[] status = new Integer[]{RoleStatusEnum.NORMAL.getRoleStatue(),
                 RoleStatusEnum.UNDER_REVIEW.getRoleStatue(), RoleStatusEnum.FREEZE.getRoleStatue()};
         query.setUid(uid);
-        query.setStatus(status);
+        query.setStatus(Arrays.asList(status));
         return userRoleApplySlave.findAll(query);
     }
 
