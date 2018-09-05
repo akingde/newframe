@@ -28,12 +28,8 @@ public class RoleApplyInfoDTO extends RoleApplyListDTO{
         this.topContacts = userRoleApply.getTopContacts();
         this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
         this.relationship = userRoleApply.getRelationship();
-        this.businessLicense = StringUtils.isNotEmpty(userRoleApply.getBusinessLicenseFile())?
-                userRoleApply.getBusinessLicenseFile().split(",") :
-                null;
-        this.letterOfAttorney = StringUtils.isNotEmpty(userRoleApply.getBusinessLicenseFile())?
-                userRoleApply.getLetterOfAttorneyFile().split(","):
-                null;
+        this.businessLicense = StringUtils.split(userRoleApply.getBusinessLicenseFile(),",");
+        this.letterOfAttorney = StringUtils.split(userRoleApply.getBusinessLicenseFile(), ",");
         this.businessQualification = StringUtils.split(userRoleApply.getBusinessQualificationFile(),",");
         this.highestDegreeDiploma = StringUtils.split(userRoleApply.getHighestDegreeDiplomaFile(),",");
         this.drivingLicense = StringUtils.split(userRoleApply.getDrivingLicenseFile(), ",");

@@ -12,5 +12,6 @@ import java.math.BigDecimal;
 public class SupplierInfoDTO {
     private Long supplierId;
     private String supplierName;
+    // todo 计算融资金额
     private BigDecimal financingAmount = new BigDecimal(4999);
 }

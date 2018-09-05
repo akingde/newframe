@@ -7,6 +7,7 @@ import com.newframe.repositories.dataMaster.user.ProductSupplierMaster;
 import com.newframe.repositories.dataQuery.user.ProductSupplierQuery;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.services.userbase.ProductSupplierService;
+import com.newframe.utils.BigDecimalUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,13 +61,13 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         if(StringUtils.isNotEmpty(productSupplier.getSpecification())){
             updateFields.add("specification");
         }
-        if(productSupplier.getGuidePrice() != null){
+        if(BigDecimalUtils.compareTo(productSupplier.getGuidePrice())){
             updateFields.add("guidePrice");
         }
-        if(productSupplier.getSupplyPrice() != null){
+        if(BigDecimalUtils.compareTo(productSupplier.getSupplyPrice())){
             updateFields.add("supplyPrice");
         }
-        if(productSupplier.getSurplusStock() != null){
+        if(productSupplier.getSurplusStock() != null && productSupplier.getSurplusStock() > 0){
             updateFields.add("surplusStock");
         }
         String[] array =new String[updateFields.size()];
