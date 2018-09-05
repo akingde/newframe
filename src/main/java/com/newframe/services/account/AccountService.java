@@ -205,7 +205,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize);
+    JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
      * 18.获取资金方金融资产下
@@ -237,7 +237,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
+    JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
      * 21.获取资金方逾期资产
@@ -395,6 +395,7 @@ public interface AccountService {
 
     /**
      * 获取租赁商订单融资账户
+     *
      * @param uid
      * @return
      */
@@ -402,16 +403,18 @@ public interface AccountService {
 
     /**
      * 我是租赁商订单融资账户订单融资列表
+     *
      * @param uid
      * @param orderStatus
      * @param currentPage
      * @param pageSize
      * @return
      */
-    Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus,Integer orderStatus, Integer currentPage, Integer pageSize);
+    Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus, Integer orderStatus, Integer currentPage, Integer pageSize);
 
     /**
      * 我是租赁商订单融资账户订单融资列表查看订单详情
+     *
      * @param orderId
      * @return
      */
@@ -419,6 +422,7 @@ public interface AccountService {
 
     /**
      * 获取租赁商租赁账户
+     *
      * @param uid
      * @return
      */
@@ -426,6 +430,7 @@ public interface AccountService {
 
     /**
      * 10.我是租赁商租赁账户租赁明细列表
+     *
      * @param uid
      * @param payStatus
      * @param currentPage
@@ -436,6 +441,7 @@ public interface AccountService {
 
     /**
      * 12.获取租赁商订单逾期账户
+     *
      * @param uid
      * @return
      */
@@ -443,6 +449,7 @@ public interface AccountService {
 
     /**
      * 13.我是租赁商订单逾期账户下租赁明细列表
+     *
      * @param uid
      * @param currentPage
      * @param pageSize

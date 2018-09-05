@@ -99,4 +99,6 @@ public class AccountFundingOverdueAsset implements Serializable {
      * 逾期率
      */
     private Double overdueRate;
+
+    private Integer orderStatus;
 }

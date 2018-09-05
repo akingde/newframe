@@ -109,4 +109,6 @@ public class AccountLessorOverdueAsset {
      */
     private Double monthPayableAmount;
 
+    private Integer orderStatus;
+
 }

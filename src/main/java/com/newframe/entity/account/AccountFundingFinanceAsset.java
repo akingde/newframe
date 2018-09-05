@@ -77,4 +77,6 @@ public class AccountFundingFinanceAsset {
      */
     private BigDecimal averageInvestReturnRate;
 
+    private Integer orderStatus;
+
 }

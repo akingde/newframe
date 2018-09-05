@@ -273,7 +273,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize) {
+    public JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
         if (null == currentPage || currentPage <= 1) {
             currentPage = 1;
         }
@@ -284,6 +284,7 @@ public class AccountServiceImpl implements AccountService {
         Pageable pageable = new PageRequest(currentPage, pageSize);
         AccountFundingFinanceAssetQuery query = new AccountFundingFinanceAssetQuery();
         query.setUid(uid);
+        query.setOrderStatus(orderStatus);
         Page<AccountFundingFinanceAsset> page = accountFundingFinanceAssetSlave.findAll(query, pageable);
 
         List<AccountFundingFinanceAssetListDTO> dtoList = new ArrayList<>();
@@ -292,7 +293,6 @@ public class AccountServiceImpl implements AccountService {
             BeanUtils.copyProperties(entity, dto);
             dto.setInvestMonth(entity.getInvestDeadline());
             dto.setEarningsRate(entity.getYieldRate());
-            dto.setOrderStatus(1);
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
@@ -355,7 +355,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+    public JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
         if (null == currentPage || currentPage <= 1) {
             currentPage = 1;
         }
@@ -366,6 +366,7 @@ public class AccountServiceImpl implements AccountService {
         Pageable pageable = new PageRequest(currentPage, pageSize);
         AccountFundingOverdueAssetQuery query = new AccountFundingOverdueAssetQuery();
         query.setUid(uid);
+        query.setOrderStatus(orderStatus);
         Page<AccountFundingOverdueAsset> page = accountFundingOverdueAssetSlave.findAll(query, pageable);
 
         List<AccountFundingOverdueAssetListDTO> dtoList = new ArrayList<>();
@@ -378,7 +379,6 @@ public class AccountServiceImpl implements AccountService {
             dto.setUnpayAmount(entity.getDueAmount());
             dto.setOverdueDays(entity.getOverdueDay());
             dto.setPayType(entity.getRepayWay());
-            dto.setOrderStatus(1);
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
@@ -552,7 +552,6 @@ public class AccountServiceImpl implements AccountService {
             dto.setPurchaseAmount(entity.getMatterPrice());
             dto.setRentMonth(entity.getRentDeadline());
             dto.setTotalRentAmount(entity.getTotalAmount());
-            dto.setOrderStatus(1);
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());

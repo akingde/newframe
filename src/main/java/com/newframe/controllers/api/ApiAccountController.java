@@ -160,11 +160,11 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderFinance")
-    public JsonResult listRenterOrderFinance(Long uid,Integer repaymentStatus,Integer orderStatus,Integer currentPage, Integer pageSize) {
+    public JsonResult listRenterOrderFinance(Long uid, Integer repaymentStatus, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
         uid = 10001L;
 
-        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid,repaymentStatus,orderStatus,currentPage,pageSize);
+        OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid, repaymentStatus, orderStatus, currentPage, pageSize);
 
         if (result.getSucc()) {
             return success(result.getEntity());
@@ -225,11 +225,11 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderRentAccount")
-    public JsonResult listRenterOrderRentAccount(Long uid,Integer payStatus,Integer currentPage, Integer pageSize) {
+    public JsonResult listRenterOrderRentAccount(Long uid, Integer payStatus, Integer currentPage, Integer pageSize) {
 
         uid = 10001L;
 
-        OperationResult<RenterOrderRentDetailInfo> result = accountManageService.listRenterOrderRentAccount(uid,payStatus,currentPage,pageSize);
+        OperationResult<RenterOrderRentDetailInfo> result = accountManageService.listRenterOrderRentAccount(uid, payStatus, currentPage, pageSize);
 
         if (result.getSucc()) {
             return success(result.getEntity());
@@ -291,11 +291,11 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderOverdue")
-    public JsonResult listRenterOrderOverdue(Long uid,Integer currentPage, Integer pageSize) {
+    public JsonResult listRenterOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
 
         uid = 10001L;
 
-        OperationResult<RenterOrderOverdueDetailInfo> result = accountManageService.listRenterOrderOverdue(uid,currentPage,pageSize);
+        OperationResult<RenterOrderOverdueDetailInfo> result = accountManageService.listRenterOrderOverdue(uid, currentPage, pageSize);
 
         if (result.getSucc()) {
             return success(result.getEntity());
@@ -375,8 +375,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "listFunderOrderInvestment", method = RequestMethod.POST)
-    public JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize) {
-        return accountService.listFunderOrderInvestment(getUid(), currentPage, pageSize);
+    public JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listFunderOrderInvestment(getUid(), currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -422,8 +422,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "listFunderOrderOverdue", method = RequestMethod.POST)
-    public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize) {
-        return accountService.listFunderOrderOverdue(getUid(), currentPage, pageSize);
+    public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listFunderOrderOverdue(getUid(), currentPage, pageSize, orderStatus);
     }
 
     /**

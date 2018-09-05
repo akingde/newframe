@@ -15,4 +15,7 @@ import lombok.Data;
 public class AccountFundingOverdueAssetQuery extends BaseQuery {
     @QBindAttrField(fieldName = "uid", where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
+    private Integer orderStatus;
 }
