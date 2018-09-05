@@ -201,7 +201,7 @@ public class ApiOrderController extends BaseController {
      */
     @RequestMapping("funder/upload/evidence")
     @Anonymous(true)
-    public JsonResult funderUploadEvidence(Long uid,Long orderId,@RequestPart(name = "file") MultipartFile file){
+    public JsonResult funderUploadEvidence(Long uid,Long orderId,MultipartFile file){
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }

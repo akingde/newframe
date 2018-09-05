@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 public class FinancingInfo {
     private BigDecimal financingAmount;
     private BigDecimal accidentBenefit;
-    private int financingDeadline;
+    private Integer financingDeadline;
     private BigDecimal deposit;
-    private long supplierId;
+    private Long supplierId;
     private String supplierName;
     private Integer financingTime;
 }
