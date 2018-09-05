@@ -3,10 +3,7 @@ package com.newframe.services.user.roleimpl;
 import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
-import com.newframe.dto.user.response.ProductDTO;
-import com.newframe.dto.user.response.ProductSupplierDTO;
-import com.newframe.dto.user.response.UserRoleApplyDTO;
-import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
@@ -20,6 +17,7 @@ import com.newframe.utils.IdNumberUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -250,16 +248,12 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid) {
-        List<UserRentMerchant> merchants = userRentMerchantService.findAll(uid);
+    public OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, PageSearchDTO pageSearchDTO){
+        Page<UserRentMerchant> merchants = userRentMerchantService.findAll(uid, pageSearchDTO);
         if (merchants == null){
             return new OperationResult(Lists.newArrayList());
         }
-        List<UserRoleDTO.SmallRentMechant> result = Lists.newArrayList();
-        for (UserRentMerchant merchant : merchants) {
-            result.add(new UserRoleDTO.SmallRentMechant(merchant));
-        }
-        return new OperationResult(result);
+        return new OperationResult(new SecondRentMerchantDTO(merchants));
     }
 
     /**
@@ -347,7 +341,8 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid) {
-        return null;
+        userRentMerchantService.delete(removeUid);
+        return new OperationResult(true);
     }
 
     /**

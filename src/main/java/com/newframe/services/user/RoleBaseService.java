@@ -86,7 +86,7 @@ public interface RoleBaseService {
      * @param roleId
      * @return
      */
-    OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId);
+    OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, Integer roleId, PageSearchDTO pageSearchDTO);
 
     /**
      * 新增小B

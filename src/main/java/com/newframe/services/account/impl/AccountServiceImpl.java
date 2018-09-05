@@ -313,12 +313,16 @@ public class AccountServiceImpl implements AccountService {
         query.setOrderId(orderId);
         query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
         List<OrderFunder> entitys = orderFunderSlave.findAll(query);
-        if (null == entitys || entitys.isEmpty()) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+        if (null == entitys) {
+            entitys = Collections.EMPTY_LIST;
         }
-        AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
-        BeanUtils.copyProperties(entitys.get(0), dto);
-        return new JsonResult(SystemCode.SUCCESS, dto);
+        List<AccountOrderFundingDTO> dtos = new ArrayList<>();
+        for (OrderFunder entity : entitys) {
+            AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dtos.add(dto);
+        }
+        return new JsonResult(SystemCode.SUCCESS, dtos);
     }
 
     /**
@@ -565,12 +569,16 @@ public class AccountServiceImpl implements AccountService {
         OrderFunderQuery query = new OrderFunderQuery();
         query.setOrderId(orderId);
         List<OrderHirer> entitys = orderHirerSlave.findAll(query);
-        if (null == entitys || entitys.isEmpty()) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+        if (null == entitys) {
+            entitys = Collections.EMPTY_LIST;
         }
-        AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
-        BeanUtils.copyProperties(entitys.get(0), dto);
-        return new JsonResult(SystemCode.SUCCESS, dto);
+        List<AccountOrderFundingDTO> dtos = new ArrayList<>();
+        for (OrderHirer entity : entitys) {
+            AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
+            BeanUtils.copyProperties(entity, dto);
+            dtos.add(dto);
+        }
+        return new JsonResult(SystemCode.SUCCESS, dtos);
     }
 
     /**
@@ -682,7 +690,7 @@ public class AccountServiceImpl implements AccountService {
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
-        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(query,pageRequest);
+        Page<AccountRenterRent> rents = accountRenterRentSlave.findAll(query, pageRequest);
         return rents;
     }
 
@@ -731,7 +739,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus,Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public Page<AccountRenterFinancing> getAccountRenterFinancing(Long uid, Integer repaymentStatus, Integer orderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid || null == currentPage || null == pageSize) {
             return null;
         }
@@ -741,13 +749,13 @@ public class AccountServiceImpl implements AccountService {
         if (null != orderStatus) {
             query.setOrderStatus(orderStatus);
         }
-        if (null != repaymentStatus){
+        if (null != repaymentStatus) {
             query.setRepaymentStatus(repaymentStatus);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
-        return accountRenterFinancingSlave.findAll(query,pageRequest);
+        return accountRenterFinancingSlave.findAll(query, pageRequest);
     }
 
     /**
@@ -810,7 +818,7 @@ public class AccountServiceImpl implements AccountService {
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
 
-        return accountRenterRentDetailSlave.findAll(query,pageRequest);
+        return accountRenterRentDetailSlave.findAll(query, pageRequest);
     }
 
     /**
@@ -821,11 +829,11 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterOverdueAsset getAccountRenterOverdueAsset(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
         Optional<AccountRenterOverdueAsset> result = accountRenterOverdueAssetSlave.findById(uid);
-        if (!result.isPresent()){
+        if (!result.isPresent()) {
             return null;
         }
         return result.get();
@@ -851,6 +859,6 @@ public class AccountServiceImpl implements AccountService {
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
 
-        return accountRenterOverdueDetailSlave.findAll(query,pageRequest);
+        return accountRenterOverdueDetailSlave.findAll(query, pageRequest);
     }
 }

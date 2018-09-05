@@ -199,12 +199,13 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         if (userRole == null){
             return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
         }
-        if(!userRentMerchantService.findOne(uid, roleId).getAppoint()){
+        UserRentMerchant merchant = userRentMerchantService.findOne(uid, roleId);
+        if(merchant == null || !merchant.getAppoint()){
             return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
         }
         List<MerchantAppoint> insertList = roleServiceMap.get(roleId).getAppointSupplier(uid, supplierUid);
         List<MerchantAppoint> removeList = roleServiceMap.get(roleId).getAppointSupplier(uid, revokeSupplierUid);
-        if (inSet.size() != insertList.size() || reSet.size() != removeList.size()){
+        if (insertList.size() != 0 || reSet.size() != removeList.size()){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
         roleServiceMap.get(roleId).removeAppointSupplier(removeList);
@@ -220,8 +221,8 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId) {
-        return roleServiceMap.get(roleId).getSmallRentMechantList(uid);
+    public OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, Integer roleId, PageSearchDTO pageSearchDTO) {
+        return roleServiceMap.get(roleId).getSmallRentMechantList(uid, pageSearchDTO);
     }
 
     /**

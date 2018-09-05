@@ -14,7 +14,7 @@ import java.util.List;
 public class WhiteFunderListDTO {
 
     private Long total;
-    private List<FunderDTO> result;
+    private List<WhiteFunderDTO> result;
 
     public WhiteFunderListDTO(Page<UserFunder> page) {
         if (page == null){
@@ -22,9 +22,9 @@ public class WhiteFunderListDTO {
         }else {
             this.total = page.getTotalElements();
             List<UserFunder> content = page.getContent();
-            List<FunderDTO> list = Lists.newArrayList();
+            List<WhiteFunderDTO> list = Lists.newArrayList();
             for (UserFunder userFunder : content) {
-                list.add(new FunderDTO(userFunder));
+                list.add(new WhiteFunderDTO(userFunder));
             }
             this.result = list;
         }
