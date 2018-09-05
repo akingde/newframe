@@ -208,11 +208,11 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         if (insertList.size() != 0 || reSet.size() != removeList.size()){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
-        if (CollectionUtils.isNotEmpty(removeList)){
-            roleServiceMap.get(roleId).removeAppointSupplier(removeList);
-        }
-        if (CollectionUtils.isNotEmpty(supplierUid)) {
+        if (CollectionUtils.isNotEmpty(inSet)) {
             roleServiceMap.get(roleId).batchInsert(uid, supplierUid);
+        }
+        if (CollectionUtils.isNotEmpty(reSet)){
+            roleServiceMap.get(roleId).removeAppointSupplier(removeList);
         }
         return new OperationResult(true);
     }
