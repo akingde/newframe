@@ -221,8 +221,8 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid, Integer roleId) {
-        return roleServiceMap.get(roleId).getSmallRentMechantList(uid);
+    public OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, Integer roleId, PageSearchDTO pageSearchDTO) {
+        return roleServiceMap.get(roleId).getSmallRentMechantList(uid, pageSearchDTO);
     }
 
     /**

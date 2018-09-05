@@ -17,8 +17,9 @@ public class UserRoleDTO{
     private Long uid;
     private Integer roleId;
     private String name;//商家名称
+    private String merchantPhone;//手机号
     private String legalEntity;//法人
-    private String legalEntityIdNuber;//法人身份证号
+    private String legalEntityIdNumber;//法人身份证号
     private String businessListenNumber;//营业执照
     private String[] businessListen;//营业执照文件url
     private Integer status;
@@ -37,8 +38,9 @@ public class UserRoleDTO{
             this.setUid(userRentMerchant.getUid());
             this.setRoleId(userRentMerchant.getRoleId());
             this.setName(userRentMerchant.getMerchantName());
+            this.setMerchantPhone(userRentMerchant.getMerchantPhoneNumber());
             this.setLegalEntity(userRentMerchant.getLegalEntity());
-            this.setLegalEntityIdNuber(userRentMerchant.getLegalEntityIdNumber());
+            this.setLegalEntityIdNumber(userRentMerchant.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userRentMerchant.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userRentMerchant.getBusinessLicenseFile(), ","));
             this.setStatus(userRentMerchant.getRoleStatus());
@@ -88,8 +90,9 @@ public class UserRoleDTO{
             this.setUid(userFunder.getUid());
             this.setRoleId(RoleEnum.FUNDER.getRoleId());
             this.setName(userFunder.getMerchantName());
+            this.setMerchantPhone(userFunder.getPhoneNumber());
             this.setLegalEntity(userFunder.getLegalEntity());
-            this.setLegalEntityIdNuber(userFunder.getLegalEntityIdNumber());
+            this.setLegalEntityIdNumber(userFunder.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userFunder.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userFunder.getBusinessLicenseFile(), ","));
             this.setStatus(userFunder.getRoleStatus());
@@ -114,8 +117,9 @@ public class UserRoleDTO{
             this.setUid(userHirer.getUid());
             this.setRoleId(RoleEnum.HIRER.getRoleId());
             this.setName(userHirer.getMerchantName());
+            this.setMerchantPhone(userHirer.getPhoneNumber());
             this.setLegalEntity(userHirer.getLegalEntity());
-            this.setLegalEntityIdNuber(userHirer.getLegalEntityIdNumber());
+            this.setLegalEntityIdNumber(userHirer.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userHirer.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userHirer.getBusinessLicenseFile(), ","));
             this.setStatus(userHirer.getRoleStatus());
@@ -134,8 +138,9 @@ public class UserRoleDTO{
             this.setUid(userSupplier.getUid());
             this.setRoleId(RoleEnum.SUPPLIER.getRoleId());
             this.setName(userSupplier.getMerchantName());
+            this.setMerchantPhone(userSupplier.getPhoneNumber());
             this.setLegalEntity(userSupplier.getLegalEntity());
-            this.setLegalEntityIdNuber(userSupplier.getLegalEntityIdNumber());
+            this.setLegalEntityIdNumber(userSupplier.getLegalEntityIdNumber());
             this.setBusinessListenNumber(userSupplier.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userSupplier.getBusinessLicenseFile(), ","));
             this.setStatus(userSupplier.getRoleStatus());

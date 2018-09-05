@@ -1,6 +1,8 @@
 package com.newframe.services.userbase;
 
+import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.UserRentMerchant;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -55,5 +57,5 @@ public interface UserRentMerchantService {
      * @param parentUid
      * @return
      */
-    List<UserRentMerchant> findAll(Long parentUid);
+    Page<UserRentMerchant> findAll(Long parentUid, PageSearchDTO pageSearchDTO);
 }

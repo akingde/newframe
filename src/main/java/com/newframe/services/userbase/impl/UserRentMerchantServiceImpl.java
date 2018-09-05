@@ -1,5 +1,6 @@
 package com.newframe.services.userbase.impl;
 
+import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.repositories.dataMaster.user.UserRentMerchantMaster;
 import com.newframe.repositories.dataQuery.user.UserRentMerchantQuery;
@@ -7,6 +8,10 @@ import com.newframe.repositories.dataSlave.user.UserRentMerchantSlave;
 import com.newframe.services.userbase.UserRentMerchantService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -158,9 +163,11 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
      * @return
      */
     @Override
-    public List<UserRentMerchant> findAll(Long parentUid) {
+    public Page<UserRentMerchant> findAll(Long parentUid, PageSearchDTO pageSearchDTO) {
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setParentId(parentUid);
-        return userRentMerchantSlave.findAll(query);
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        Pageable page = PageRequest.of(pageSearchDTO.getCurrentPage() - 1, pageSearchDTO.getPageSize(), sort);
+        return userRentMerchantSlave.findAll(query, page);
     }
 }

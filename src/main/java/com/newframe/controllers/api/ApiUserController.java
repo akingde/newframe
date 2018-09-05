@@ -728,13 +728,13 @@ public class ApiUserController extends BaseController {
      * @date 2018/8/8 18:04
      */
     @PostMapping("getRentMerchantList")
-    public JsonResult getRentMerchantList(Long uid) {
+    public JsonResult getRentMerchantList(Long uid, PageSearchDTO pageSearchDTO) {
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
         Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
-        OperationResult<List<UserRoleDTO.SmallRentMechant>> result = roleBaseService.getSmallRentMechantList(uid, roleId);
+        OperationResult<SecondRentMerchantDTO> result = roleBaseService.getSmallRentMechantList(uid, roleId, pageSearchDTO);
         return success(result.getEntity());
     }
 

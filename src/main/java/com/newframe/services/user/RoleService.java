@@ -2,10 +2,7 @@ package com.newframe.services.user;
 
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
-import com.newframe.dto.user.response.ProductDTO;
-import com.newframe.dto.user.response.ProductSupplierDTO;
-import com.newframe.dto.user.response.UserRoleApplyDTO;
-import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.Area;
 import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.entity.user.UserRoleApply;
@@ -105,7 +102,7 @@ public interface RoleService {
      * @param uid
      * @return
      */
-    OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid);
+    OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, PageSearchDTO pageSearchDTO);
 
     /**
      * 新增小B

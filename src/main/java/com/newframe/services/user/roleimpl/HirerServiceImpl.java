@@ -205,7 +205,7 @@ public class HirerServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid) {
+    public OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, PageSearchDTO pageSearchDTO) {
         return new OperationResult(Lists.newArrayList());
     }
 

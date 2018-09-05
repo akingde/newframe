@@ -3,10 +3,7 @@ package com.newframe.services.user.roleimpl;
 import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
-import com.newframe.dto.user.response.ProductDTO;
-import com.newframe.dto.user.response.ProductSupplierDTO;
-import com.newframe.dto.user.response.UserRoleApplyDTO;
-import com.newframe.dto.user.response.UserRoleDTO;
+import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
@@ -185,7 +182,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<List<UserRoleDTO.SmallRentMechant>> getSmallRentMechantList(Long uid) {
+    public OperationResult<SecondRentMerchantDTO> getSmallRentMechantList(Long uid, PageSearchDTO pageSearchDTO) {
         return new OperationResult(Lists.newArrayList());
     }
 
