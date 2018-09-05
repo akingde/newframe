@@ -341,7 +341,8 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid) {
-        return null;
+        userRentMerchantService.delete(removeUid);
+        return new OperationResult(true);
     }
 
     /**
