@@ -15,7 +15,7 @@ import lombok.Data;
 public class ProductSupplierQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "id", where = Where.equal)
-    private Long Id;
+    private Long id;
 
     @QBindAttrField(fieldName = "supplierId", where = Where.equal)
     private Long uid;
