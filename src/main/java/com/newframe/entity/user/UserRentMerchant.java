@@ -206,5 +206,6 @@ public class UserRentMerchant {
         this.drivingLicenseFile = userRoleApply.getDrivingLicenseFile();
         this.houseProprietaryCertificateFile = userRoleApply.getHouseProprietaryCertificateFile();
         this.roleStatus = RoleStatusEnum.NORMAL.getRoleStatue();
+        this.appoint = false;
     }
 }
