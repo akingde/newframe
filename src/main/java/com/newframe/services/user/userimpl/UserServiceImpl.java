@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
-        if(password == null){
+        if(StringUtils.isEmpty(password)){
             return new OperationResult<>(RequestResultEnum.PASSWORD_INVALID);
         }
         UserBaseInfo userBaseInfo = userBaseInfoService.findOne(mobile);
