@@ -236,7 +236,6 @@ public class OrderServiceImpl implements OrderService {
                     .add(orderRenter.getMonthlyPayment()
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
-
             orderFunders.add(orderFunder);
             //修改租赁商订单状态，改为待资金方审核
             orderRenterMaser.updateOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode(), orderId);
@@ -518,6 +517,7 @@ public class OrderServiceImpl implements OrderService {
                 // 只允许租赁商订单状态为待资金方审核的订单放款
                 if (OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode().equals(orderRenter.getOrderStatus())) {
                     boolean success;
+                    // 线下付款
                     success = offlineLoan(loanDTO, orderFunder, orderRenter);
                     if (success) {
                         return new JsonResult(SystemCode.SUCCESS);
@@ -766,7 +766,7 @@ public class OrderServiceImpl implements OrderService {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
-                || deliverInfo.getOrderId() == null) {
+                || deliverInfo.getOrderId() == null || deliverInfo.getDeliverCode() == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
         HirerDeliver hirerDeliver = new HirerDeliver();
@@ -1179,7 +1179,7 @@ public class OrderServiceImpl implements OrderService {
         if (orderRenterOptional.isPresent()) {
             OrderRenter orderRenter = orderRenterOptional.get();
             orderRenter.setOrderType(type.getCode());
-            orderRenterSlave.save(orderRenter);
+            orderRenterMaser.save(orderRenter);
         }
     }
 
