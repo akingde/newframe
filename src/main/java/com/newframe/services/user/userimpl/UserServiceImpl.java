@@ -341,15 +341,12 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(newMobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
-        if(StringUtils.isEmpty(mobileCode)){
-            return new OperationResult(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
-        }
         UserBaseInfo info = userBaseInfoService.findOne(uid);
         if(info.getPhoneNumber().equals(newMobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
         if(userBaseInfoService.checkMmobileExists(newMobile)){
-            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, true);
+            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
         }
         info.setPhoneNumber(newMobile);
         userBaseInfoService.updateByUid(info);
