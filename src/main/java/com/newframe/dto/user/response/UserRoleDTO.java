@@ -32,7 +32,6 @@ public class UserRoleDTO{
         private String[] highestDegreeDiploma;//最高学历
         private String[] drivingLicense;//行驶证
         private String[] houseProprietaryCertificate;//房产证
-        private Boolean appoint;    //是否指定供应商
 
         public RentMechant(UserRentMerchant userRentMerchant) {
             this.setUid(userRentMerchant.getUid());
@@ -47,12 +46,20 @@ public class UserRoleDTO{
             this.highestDegreeDiploma = StringUtils.split(userRentMerchant.getHighestDegreeDiplomaFile(), ",");
             this.drivingLicense = StringUtils.split(userRentMerchant.getDrivingLicenseFile() , ",'");
             this.houseProprietaryCertificate = StringUtils.split(userRentMerchant.getHouseProprietaryCertificateFile(), ",'");
-            this.appoint = userRentMerchant.getAppoint();
         }
     }
 
     @Data
+    public static class BigRentMechant extends RentMechant {
+        private Boolean appoint;    //是否指定供应商
+        public BigRentMechant(UserRentMerchant userRentMerchant) {
+            super(userRentMerchant);
+            this.appoint = userRentMerchant.getAppoint();
+        }
+    }
+    @Data
     public static class SmallRentMechant extends RentMechant{
+        private Long sonUid;
         private String rentMerchantAddress;
         private Integer provinceId;
         private String provinceName;
@@ -64,6 +71,7 @@ public class UserRoleDTO{
 
         public SmallRentMechant(UserRentMerchant userRentMerchant) {
             super(userRentMerchant);
+            this.sonUid = userRentMerchant.getUid();
             this.rentMerchantAddress = userRentMerchant.getRentMerchantAddress();
             this.provinceId = userRentMerchant.getProvinceId();
             this.provinceName = userRentMerchant.getProvinceName();
