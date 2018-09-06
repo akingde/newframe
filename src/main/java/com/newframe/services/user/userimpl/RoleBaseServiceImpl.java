@@ -1,5 +1,6 @@
 package com.newframe.services.user.userimpl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.response.UserDTO;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -183,15 +185,15 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      */
     @Override
     public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid, List<Long> revokeSupplierUid) {
-        Set<Long> inSet = Sets.newHashSet();
-        Set<Long> reSet = Sets.newHashSet();
+        List<Long> inLists = Lists.newArrayList();
+        List<Long> reLists = Lists.newArrayList();
         if(CollectionUtils.isNotEmpty(supplierUid)){
-            inSet.addAll(supplierUid);
+            inLists.addAll(supplierUid.stream().distinct().collect(Collectors.toList()));
         }
         if(CollectionUtils.isNotEmpty(revokeSupplierUid)){
-            reSet.addAll(revokeSupplierUid);
+            reLists.addAll(revokeSupplierUid.stream().distinct().collect(Collectors.toList()));
         }
-        long count = inSet.stream().filter(item -> reSet.contains(item)).count();
+        long count = inLists.stream().filter(item -> reLists.contains(item)).count();
         if(count > 0){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
@@ -205,13 +207,13 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         }
         List<MerchantAppoint> insertList = roleServiceMap.get(roleId).getAppointSupplier(uid, supplierUid);
         List<MerchantAppoint> removeList = roleServiceMap.get(roleId).getAppointSupplier(uid, revokeSupplierUid);
-        if (insertList.size() != 0 || reSet.size() != removeList.size()){
+        if (insertList.size() != 0 || reLists.size() != removeList.size()){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
-        if (CollectionUtils.isNotEmpty(inSet)) {
-            roleServiceMap.get(roleId).batchInsert(uid, supplierUid);
+        if (CollectionUtils.isNotEmpty(inLists)) {
+            roleServiceMap.get(roleId).batchInsert(uid, inLists);
         }
-        if (CollectionUtils.isNotEmpty(reSet)){
+        if (CollectionUtils.isNotEmpty(reLists)){
             roleServiceMap.get(roleId).removeAppointSupplier(removeList);
         }
         return new OperationResult(true);
