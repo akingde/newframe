@@ -144,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
         // 只查询此会话租赁商的订单
         orderRenterQuery.setRenterId(uid);
         orderRenterQuery.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
-        if (null != param.getOrderStatus()) {
+        if (null != param.getOrderStatus() && param.getOrderStatus().size() != 0) {
             orderRenterQuery.setOrderStatuses(param.getOrderStatus());
         }
         // 设置分页参数
@@ -425,7 +425,7 @@ public class OrderServiceImpl implements OrderService {
             orderFunderQuery.setMerchantName(param.getRenterName());
         }
         orderFunderQuery.setFunderId(uid);
-        if (param.getOrderStatus() != null) {
+        if (param.getOrderStatus() != null && param.getOrderStatus().size() != 0) {
             orderFunderQuery.setOrderStatuses(param.getOrderStatus());
         }
         // 封装排序
@@ -606,7 +606,9 @@ public class OrderServiceImpl implements OrderService {
         OrderSupplierQuery query = new OrderSupplierQuery();
         query.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
         query.setSupplierId(uid);
-        query.setOrderStatuses(param.getOrderStatus());
+        if(null != param.getOrderStatus() && param.getOrderStatus().size() != 0){
+            query.setOrderStatuses(param.getOrderStatus());
+        }
         Page<OrderSupplier> page = orderSupplierSlave.findAll(query, pageable);
         List<OrderSupplier> suppliers = page.getContent();
         List<OrderSupplierDTO> orderSupplierDTOS = new ArrayList<>();
@@ -724,7 +726,7 @@ public class OrderServiceImpl implements OrderService {
         OrderHirerQuery query = new OrderHirerQuery();
         query.setLessorId(uid);
         query.setDeleteStatus(OrderHirer.NO_DELETE_STATUS);
-        if (param.getOrderStatus() != null && param.getOrderStatus().size() > 0) {
+        if (param.getOrderStatus() != null && param.getOrderStatus().size() != 0) {
             query.setOrderStatuses(param.getOrderStatus());
         }
 
