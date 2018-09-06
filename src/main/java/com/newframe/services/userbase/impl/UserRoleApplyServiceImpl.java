@@ -196,6 +196,9 @@ public class UserRoleApplyServiceImpl implements UserRoleApplyService {
         if(StringUtils.isNotEmpty(userRoleApply.getCheckPerson())){
             updateFields.add("checkPerson");
         }
+        if(StringUtils.isNotEmpty(userRoleApply.getRemarks())){
+            updateFields.add("remarks");
+        }
         String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
         return userRoleApplyMaster.update(userRoleApply, query, array);
