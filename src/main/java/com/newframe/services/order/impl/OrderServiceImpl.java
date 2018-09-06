@@ -294,12 +294,14 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setMerchantName(renterName);
             orderHirer.setMerchantMobile(renterMobile);
             orderHirer.setDispatchTimes(orderRentTimes);
+
             // 出租方订单为 待出租方审核
             orderHirer.setOrderStatus(OrderLessorStatus.WATIING_LESSOR_AUDIT.getCode());
             // 出租方订单的租机价格，意外保险等由平台指定
             orderHirer.setDownPayment(downPayment);
             orderHirer.setAccidentBenefit(accidentBenefit);
-            orderHirer.setNumberOfPayments(tenancyTerm);
+            //修改为出租方租赁期限
+            orderHirer.setNumberOfPeriods(tenancyTerm);
             orderHirer.setPatternPayment(patternPayment);
             orderHirer.setLessorId(lessorId);
 
@@ -939,7 +941,6 @@ public class OrderServiceImpl implements OrderService {
         }
         Optional<OrderFunder> optionalOrderFunder = orderFunderSlave.findById(orderId);
         if (optionalOrderFunder.isPresent()) {
-            Optional<OrderSupplier> optionalOrderSupplier = orderSupplierSlave.findById(orderId);
             OrderFunder orderFunder = optionalOrderFunder.get();
             FinancingInfo info = new FinancingInfo();
             info.setAccidentBenefit(orderFunder.getAccidentBenefit());
@@ -947,14 +948,12 @@ public class OrderServiceImpl implements OrderService {
             info.setFinancingAmount(orderFunder.getFinancingAmount());
             info.setFinancingDeadline(orderFunder.getNumberOfPayments());
             info.setFinancingTime(orderFunder.getCtime());
-            if (optionalOrderSupplier.isPresent()) {
-                OrderSupplier orderSupplier = optionalOrderSupplier.get();
-                info.setSupplierId(orderSupplier.getSupplierId());
-                UserSupplier userSupplier = userSupplierService.findOne(orderSupplier.getUid());
-                if (userSupplier != null) {
-                    info.setSupplierName(userSupplier.getMerchantName());
-                }
+            info.setSupplierId(orderFunder.getSupplierId());
+            UserSupplier userSupplier = userSupplierService.findOne(orderFunder.getSupplierId());
+            if (userSupplier != null) {
+                info.setSupplierName(userSupplier.getMerchantName());
             }
+
             return new OperationResult<>(OrderResultEnum.SUCCESS, info);
         }
         return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
@@ -977,7 +976,7 @@ public class OrderServiceImpl implements OrderService {
                 info.setLessorName(userHirer.getMerchantName());
             }
             info.setMonthPayment(orderHirer.getMonthlyPayment());
-            info.setRentDeadline(orderHirer.getNumberOfPayments());
+            info.setRentDeadline(orderHirer.getNumberOfPeriods());
             info.setPatternPayment(orderHirer.getPatternPayment());
             info.setPaymentAmount(orderHirer.getMonthlyPayment()
                     .multiply(new BigDecimal(orderHirer.getNumberOfPayments()))
