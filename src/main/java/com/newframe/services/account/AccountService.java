@@ -284,7 +284,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize);
+    JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
      * 出租方相关接口
@@ -326,7 +326,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize);
+    JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
      * 28.获取出租方实物资产账户下
@@ -356,7 +356,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
+    JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
      * 31.获取出租方逾期资产账户下

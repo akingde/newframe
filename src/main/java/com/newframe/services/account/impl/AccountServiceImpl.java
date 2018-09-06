@@ -450,7 +450,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize) {
+    public JsonResult listSupplierOrderSell(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
         if (null == currentPage || currentPage <= 1) {
             currentPage = 1;
         }
@@ -459,7 +459,9 @@ public class AccountServiceImpl implements AccountService {
         }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
-        Page<OrderSupplier> page = orderSupplierSlave.findAll(pageable);
+        OrderSupplierQuery query = new OrderSupplierQuery();
+        query.setOrderStatus(orderStatus);
+        Page<OrderSupplier> page = orderSupplierSlave.findAll(query, pageable);
 
         List<AccountSupplierSellListDTO> dtoList = new ArrayList<>();
         for (OrderSupplier entity : page.getContent()) {
@@ -531,7 +533,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize) {
+    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
         if (null == currentPage || currentPage <= 1) {
             currentPage = 1;
         }
@@ -540,7 +542,9 @@ public class AccountServiceImpl implements AccountService {
         }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
-        Page<AccountLessorMatterAsset> page = accountLessorMatterAssetSlave.findAll(pageable);
+        AccountLessorMatterAssetQuery query = new AccountLessorMatterAssetQuery();
+        query.setOrderStatus(orderStatus);
+        Page<AccountLessorMatterAsset> page = accountLessorMatterAssetSlave.findAll(query, pageable);
 
         List<AccountLessorMatterAssetListDTO> dtoList = new ArrayList<>();
         for (AccountLessorMatterAsset entity : page.getContent()) {
@@ -610,7 +614,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
+    public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
         if (null == currentPage || currentPage <= 1) {
             currentPage = 1;
         }
@@ -619,7 +623,9 @@ public class AccountServiceImpl implements AccountService {
         }
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
-        Page<AccountLessorOverdueAsset> page = accountLessorOverdueAssetSlave.findAll(pageable);
+        AccountLessorOverdueAssetQuery query = new AccountLessorOverdueAssetQuery();
+        query.setOrderStatus(orderStatus);
+        Page<AccountLessorOverdueAsset> page = accountLessorOverdueAssetSlave.findAll(query, pageable);
 
         List<AccountLessorOverdueAssetListDTO> dtoList = new ArrayList<>();
         for (AccountLessorOverdueAsset entity : page.getContent()) {
