@@ -237,13 +237,12 @@ public class OrderServiceImpl implements OrderService {
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
             orderFunders.add(orderFunder);
-            //修改租赁商订单状态，改为待资金方审核
-            orderRenterMaser.updateOrderStatus(OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode(), orderId);
         }
-
+        // 修改租赁商订单状态和订单类型
+        updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
         // 生成资金方订单
         orderFunderMaser.saveAll(orderFunders);
-        updateOrderRenterType(OrderType.FUNDER_ORDER, orderId);
+
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
         // todo 要不要操作账户表？
 
@@ -303,12 +302,11 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setNumberOfPayments(tenancyTerm);
             orderHirer.setPatternPayment(patternPayment);
             orderHirer.setLessorId(lessorId);
-            // 修改租赁商订单状态
-            orderRenter.setOrderStatus(OrderRenterStatus.WAITING_LESSOR_AUDIT.getCode());
-            orderRenterMaser.updateOrderStatus(orderRenter.getOrderStatus(), orderRenter.getOrderId());
+
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
-            updateOrderRenterType(OrderType.LESSOR_ORDER, orderId);
+            // 修改租赁商订单状态
+            updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
 
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方：" + lessorId);
@@ -1176,12 +1174,13 @@ public class OrderServiceImpl implements OrderService {
      * @param type    订单类型
      * @param orderId 订单id
      */
-    private void updateOrderRenterType(OrderType type, Long orderId) {
+    private void updateOrderRenterStatusType(OrderRenterStatus status,OrderType type, Long orderId) {
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
         if (orderRenterOptional.isPresent()) {
             OrderRenter orderRenter = orderRenterOptional.get();
             orderRenter.setOrderType(type.getCode());
-            orderRenterMaser.save(orderRenter);
+            orderRenter.setOrderStatus(status.getCode());
+            orderRenterMaser.updateById(orderRenter,orderId,OrderRenter.ORDER_STATUS,OrderRenter.ORDER_TYPE);
         }
     }
 
