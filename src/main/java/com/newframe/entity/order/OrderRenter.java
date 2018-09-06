@@ -24,6 +24,8 @@ public class OrderRenter {
     public static final Integer DELETE_STATUS = 1;
     /**租赁商订单状态*/
     public static final String ORDER_STATUS = "orderStatus";
+    /**租赁商订单状态*/
+    public static final String ORDER_TYPE = "orderType";
 
     @Id
     @Column(name = "order_id")
