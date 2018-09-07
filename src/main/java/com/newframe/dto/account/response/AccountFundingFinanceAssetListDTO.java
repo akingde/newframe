@@ -17,11 +17,11 @@ public class AccountFundingFinanceAssetListDTO {
     /**
      * ctime
      */
-    private Long ctime;
+    private Integer ctime;
     /**
      * utime
      */
-    private Long utime;
+    private Integer utime;
 
     /**
      * 关联订单id

@@ -44,11 +44,11 @@ public class AccountSupplierSell implements Serializable {
     /**
      * ctime
      */
-    private Long ctime;
+    private Integer ctime;
     /**
      * utime
      */
-    private Long utime;
+    private Integer utime;
 
 
     /**

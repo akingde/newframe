@@ -61,11 +61,11 @@ public class AccountFundingFinanceAsset {
     /**
      * ctime
      */
-    private Long ctime;
+    private Integer ctime;
     /**
      * utime
      */
-    private Long utime;
+    private Integer utime;
 
 
     /**

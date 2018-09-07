@@ -53,9 +53,9 @@ public class AccountFunding {
     /**
      * ctime
      */
-    private Long ctime;
+    private Integer ctime;
     /**
      * utime
      */
-    private Long utime;
+    private Integer utime;
 }

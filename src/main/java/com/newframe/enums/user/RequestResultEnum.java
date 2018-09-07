@@ -31,6 +31,7 @@ public enum RequestResultEnum implements CodeStatus {
     ROLE_REVOKE_RPPLY_ERROR("40003", "角色申请撤销失败"),
     ROLE_APPLY_TOO_MUCH("40002", "有角色正在申请"),
     ROLE_ERROR("40004", "角色权限不足"),
+    ROLE_EXISTS("40005", "已有角色，无法再次申请"),
 
     RENT_MERCHANT_ADD_ERROR("50000", "供应商添加失败"),
     RENT_MERCHANT_EXISTS("50001", "此供应商已隶属于其他人"),

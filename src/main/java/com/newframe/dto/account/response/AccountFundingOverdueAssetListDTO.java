@@ -14,8 +14,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class AccountFundingOverdueAssetListDTO {
-    private Long ctime;
-    private Long utime;
+    private Integer ctime;
+    private Integer utime;
     /**
      * 订单的ID
      */

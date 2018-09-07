@@ -56,6 +56,22 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     /**
+     * 根据uid找出所有的用户角色
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<UserRole> findAll(Long uid) {
+        if (uid == null){
+            return null;
+        }
+        UserRoleQuery query = new UserRoleQuery();
+        query.setUid(uid);
+        return userRoleSlave.findAll(query);
+    }
+
+    /**
      * 根据uid获取用户的角色列表  状态，角色id非必选
      *
      * @param userRole

@@ -15,8 +15,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class AccountSupplierSellListDTO {
-    private Long ctime;
-    private Long utime;
+    private Integer ctime;
+    private Integer utime;
     /**
      * 关联订单的Id
      */

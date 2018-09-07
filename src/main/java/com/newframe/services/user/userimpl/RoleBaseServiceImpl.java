@@ -64,6 +64,10 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         if(applyList != null && applyList.size() > 0){
             return new OperationResult(RequestResultEnum.ROLE_APPLY_TOO_MUCH, false);
         }
+        List<UserRole> roleList = userRoleService.findAll(uid);
+        if(CollectionUtils.isNotEmpty(roleList)){
+            return new OperationResult(RequestResultEnum.ROLE_EXISTS, false);
+        }
         if(StringUtils.isAnyEmpty(role.getName(), role.getLegalEntity(), role.getBusinessListenNumber())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
