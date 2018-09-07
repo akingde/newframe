@@ -483,8 +483,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listSupplierOrderSell", method = RequestMethod.POST)
-    public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize) {
-        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize);
+    public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize,orderStatus);
     }
 
     /**
@@ -534,8 +534,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listHirerOrderMaterial", method = RequestMethod.POST)
-    public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize) {
-        return accountService.listHirerOrderMaterial(getUid(), currentPage, pageSize);
+    public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listHirerOrderMaterial(getUid(), currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -573,8 +573,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listHirerOrderOverdue", method = RequestMethod.POST)
-    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize) {
-        return accountService.listHirerOrderOverdue(getUid(), currentPage, pageSize);
+    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listHirerOrderOverdue(getUid(), currentPage, pageSize, orderStatus);
     }
 
     /**

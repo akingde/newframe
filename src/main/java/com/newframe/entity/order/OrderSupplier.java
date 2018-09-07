@@ -64,9 +64,9 @@ public class OrderSupplier {
     @Column(name = "delete_status")
     private Integer deleteStatus;
     @Column(name = "ctime")
-    private Integer ctime;
+    private Long ctime;
     @Column(name = "utime")
-    private Integer utime;
+    private Long utime;
 
     @Column(name = "express_code")
     private String expressCode;
@@ -81,4 +81,9 @@ public class OrderSupplier {
      * 购买价款
      */
     private BigDecimal totalAccount;
+
+    /**
+     * 发货时间
+     */
+    private Long deliverTime;
 }
