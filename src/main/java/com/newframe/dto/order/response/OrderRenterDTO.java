@@ -39,4 +39,7 @@ public class OrderRenterDTO {
     private Integer consumerBedDebtTimes;
     private Integer machineNumber;
     private Integer orderType;
+
+    private Integer orderFinancingTimes;
+    private Integer orderRentTimes;
 }

@@ -1,7 +1,12 @@
 package com.newframe.services.order.impl;
 
+import com.newframe.entity.order.OrderFunder;
+import com.newframe.entity.order.OrderHirer;
+import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
+import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
+import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
@@ -20,6 +25,12 @@ public class OrderBaseServiceImpl implements OrderBaseService {
 
     @Autowired
     private UserRentMerchantService rentMerchantService;
+
+    @Autowired
+    private OrderFunderSlave orderFunderSlave;
+
+    @Autowired
+    private OrderHirerSlave orderHirerSlave;
 
     @Override
     public String getSupplierName(Long supplierId){
@@ -43,6 +54,30 @@ public class OrderBaseServiceImpl implements OrderBaseService {
             return rentMerchant.getMerchantPhoneNumber();
         }
         return null;
+    }
+
+    @Override
+    public Integer getOrderFinancingTimes(Long orderId) {
+        if(orderId == null){
+            return 0;
+        }
+        OrderFunder orderFunder = orderFunderSlave.findOne(orderId);
+        if(orderFunder != null){
+            return orderFunder.getDispatchTimes();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer getOrderRentTimes(Long orderId) {
+        if(orderId == null){
+            return 0;
+        }
+        OrderHirer orderHirer = orderHirerSlave.findOne(orderId);
+        if(orderHirer != null){
+            return orderHirer.getDispatchTimes();
+        }
+        return 0;
     }
 
 }

@@ -8,4 +8,8 @@ public interface OrderBaseService {
     String getSupplierName(Long supplierId);
 
     String getRenterPhone(Long renterId);
+
+    Integer getOrderFinancingTimes(Long orderId);
+
+    Integer getOrderRentTimes(Long orderId);
 }

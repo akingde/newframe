@@ -36,4 +36,5 @@ public class OrderHirerDTO {
     private Integer productRandomMemory;
     private Integer machineNumber;
     private String consumerAddress;
+    private Integer consumerOrderTime;
 }

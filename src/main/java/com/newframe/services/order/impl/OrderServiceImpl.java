@@ -144,8 +144,8 @@ public class OrderServiceImpl implements OrderService {
         // 只查询此会话租赁商的订单
         orderRenterQuery.setRenterId(uid);
         orderRenterQuery.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
-        if (null != param.getOrderStatus() && param.getOrderStatus().size() != 0) {
-            orderRenterQuery.setOrderStatuses(param.getOrderStatus());
+        if (null != param.getOrderStatus()) {
+            orderRenterQuery.setOrderStatuses(OrderRenterStatus.getStatuses(param.getOrderStatus()));
         }
         // 设置分页参数
         Pageable pageable = PageRequest.of(param.getCurrentPage() - 1, param.getPageSize(), sort);
@@ -169,6 +169,8 @@ public class OrderServiceImpl implements OrderService {
             orderRenterDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
             orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
             orderRenterDTO.setMachineNumber(1);
+            orderRenterDTO.setOrderFinancingTimes(orderBaseService.getOrderFinancingTimes(orderRenter.getOrderId()));
+            orderRenterDTO.setOrderRentTimes(orderBaseService.getOrderRentTimes(orderRenter.getOrderId()));
             orderRenterDTOS.add(orderRenterDTO);
         }
         return new PageJsonResult(SystemCode.SUCCESS, orderRenterDTOS, orderRenterPage.getTotalElements());
@@ -372,6 +374,8 @@ public class OrderServiceImpl implements OrderService {
             orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
             // todo 查出用户坏账次数
             orderRenterDTO.setConsumerBedDebtTimes(new Random().nextInt(10));
+            orderRenterDTO.setOrderFinancingTimes(orderBaseService.getOrderFinancingTimes(orderRenter.getOrderId()));
+            orderRenterDTO.setOrderRentTimes(orderBaseService.getOrderRentTimes(orderRenter.getOrderId()));
             return new JsonResult(SystemCode.SUCCESS, orderRenterDTO);
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
@@ -430,8 +434,8 @@ public class OrderServiceImpl implements OrderService {
             orderFunderQuery.setMerchantName(param.getRenterName());
         }
         orderFunderQuery.setFunderId(uid);
-        if (param.getOrderStatus() != null && param.getOrderStatus().size() != 0) {
-            orderFunderQuery.setOrderStatuses(param.getOrderStatus());
+        if (param.getOrderStatus() != null) {
+            orderFunderQuery.setOrderStatuses(OrderFunderStatus.getStatuses(param.getOrderStatus()));
         }
         // 封装排序
         Sort sort;
@@ -591,7 +595,7 @@ public class OrderServiceImpl implements OrderService {
                 orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
-                generateSupplyOrder(orderRenter, orderFunder);
+                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.PAYMENTING.getCode());
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
         }
@@ -617,8 +621,8 @@ public class OrderServiceImpl implements OrderService {
         OrderSupplierQuery query = new OrderSupplierQuery();
         query.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
         query.setSupplierId(uid);
-        if(null != param.getOrderStatus() && param.getOrderStatus().size() != 0){
-            query.setOrderStatuses(param.getOrderStatus());
+        if(null != param.getOrderStatus()){
+            query.setOrderStatuses(OrderSupplierStatus.getStatuses(param.getOrderStatus()));
         }
         Page<OrderSupplier> page = orderSupplierSlave.findAll(query, pageable);
         List<OrderSupplier> suppliers = page.getContent();
@@ -737,8 +741,8 @@ public class OrderServiceImpl implements OrderService {
         OrderHirerQuery query = new OrderHirerQuery();
         query.setLessorId(uid);
         query.setDeleteStatus(OrderHirer.NO_DELETE_STATUS);
-        if (param.getOrderStatus() != null && param.getOrderStatus().size() != 0) {
-            query.setOrderStatuses(param.getOrderStatus());
+        if (param.getOrderStatus() != null) {
+            query.setOrderStatuses(OrderLessorStatus.getStatuses(param.getOrderStatus()));
         }
 
         // 设置分页参数
@@ -1025,6 +1029,31 @@ public class OrderServiceImpl implements OrderService {
         return new OperationResult(OrderResultEnum.SUCCESS, dtos);
     }
 
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public JsonResult onlineLoan(LoanDTO loanDTO, Long uid) {
+        if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
+            return new JsonResult(OrderResultEnum.PARAM_ERROR,false);
+        }
+        OrderFunder orderFunder = orderFunderSlave.findOne(loanDTO.getOrderId());
+        if(orderFunder != null){
+            orderFunder.setLoanModel(loanDTO.getLoanModel());
+            orderFunder.setFinancingAmount(loanDTO.getLoanAmount());
+            // 资金方线上付款成功
+            orderFunder.setOrderStatus(OrderFunderStatus.WAITING_DELIVER.getCode());
+            orderFunderMaser.save(orderFunder);
+
+            // 修改租赁商订单状态
+            OrderRenter orderRenter = orderRenterSlave.findOne(loanDTO.getOrderId());
+            if(orderRenter != null ){
+                orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
+                orderRenterMaser.save(orderRenter);
+                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+            }
+        }
+        return new JsonResult(OrderResultEnum.SUCCESS,true);
+    }
+
     /**
      * 根据订单id查询保证金金额
      * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
@@ -1097,6 +1126,10 @@ public class OrderServiceImpl implements OrderService {
         dto.setMachineNumber(1);
         dto.setUid(orderHirer.getLessorId());
         dto.setConsumerAddress(orderHirer.getUserAddress());
+        OrderRenter orderRenter = orderRenterSlave.findOne(orderHirer.getOrderId());
+        if(orderRenter != null){
+            dto.setConsumerOrderTime(orderRenter.getCtime());
+        }
         return dto;
     }
 
@@ -1130,6 +1163,7 @@ public class OrderServiceImpl implements OrderService {
         if(orderRenterOptional.isPresent()){
             OrderRenter orderRenter = orderRenterOptional.get();
             orderFunderDTO.setConsumerAddress(orderRenter.getUserAddress());
+            orderFunderDTO.setConsumerOrderTime(orderRenter.getCtime());
         }
         return orderFunderDTO;
     }
@@ -1147,22 +1181,24 @@ public class OrderServiceImpl implements OrderService {
         orderSupplierDTO.setConsumerPhone(orderSupplier.getReceiverMobile());
         orderSupplierDTO.setConsumerAddress(orderSupplier.getReceiverAddress());
         orderSupplierDTO.setConsumerName(orderSupplier.getReceiverName());
-        orderSupplierDTO.setLoanTime(orderSupplier.getCtime());
+
         // 默认机器数量为1
         orderSupplierDTO.setMachineNumber(1);
+        orderSupplierDTO.setOrderTime(orderSupplier.getCtime());
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderSupplier.getOrderId());
         if (orderRenterOptional.isPresent()) {
             OrderRenter orderRenter = orderRenterOptional.get();
             orderSupplierDTO.setRenterId(orderRenter.getRenterId());
             orderSupplierDTO.setRenterName(orderRenter.getRenterName());
             // todo 获取租赁商联系方式
-            orderSupplierDTO.setRenterPhone("15957180382");
+            orderSupplierDTO.setRenterPhone(orderBaseService.getRenterPhone(orderRenter.getRenterId()));
             orderSupplierDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
             orderSupplierDTO.setMonthlyPayment(orderRenter.getMonthlyPayment());
             orderSupplierDTO.setDownPayment(orderRenter.getDownPayment());
             orderSupplierDTO.setAccidentBenefit(orderRenter.getAccidentBenefit());
             orderSupplierDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
             orderSupplierDTO.setConsumerUid(orderRenter.getUid());
+            orderSupplierDTO.setConsumerOrderTime(orderRenter.getCtime());
         }
         // todo 查询用户坏账次数
         orderSupplierDTO.setConsumerBedDebtTimes(1);
@@ -1170,7 +1206,7 @@ public class OrderServiceImpl implements OrderService {
         if (orderFunderOptional.isPresent()) {
             OrderFunder orderFunder = orderFunderOptional.get();
             orderSupplierDTO.setFunderId(orderFunder.getFunderId());
-
+            orderSupplierDTO.setLoanTime(orderSupplier.getCtime());
         }
         orderSupplierDTO.setDeliverCompany(orderSupplier.getExpressCompany());
         orderSupplierDTO.setDeliverTime(orderSupplier.getExpressTime());
@@ -1188,8 +1224,6 @@ public class OrderServiceImpl implements OrderService {
      * @return 是否成功
      */
     private boolean onlineLoan(LoanDTO loanDTO, OrderFunder orderFunder, OrderRenter orderRenter) {
-        // todo 这里应该是要操作账户表的，等先研究一下账户再写
-
         return false;
     }
 
@@ -1232,7 +1266,7 @@ public class OrderServiceImpl implements OrderService {
      * @param orderRenter 租赁商订单
      * @param orderFunder 资金方订单
      */
-    private void generateSupplyOrder(OrderRenter orderRenter, OrderFunder orderFunder) {
+    private void generateSupplyOrder(OrderRenter orderRenter, OrderFunder orderFunder,Integer supplierOrderStatus) {
 
         OrderSupplier orderSupplier = new OrderSupplier();
         orderSupplier.setOrderId(orderRenter.getOrderId());
@@ -1252,7 +1286,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setProductStorage(orderRenter.getProductStorage());
         orderSupplier.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
         // 供应商还未确认收款，待发货状态
-        orderSupplier.setOrderStatus(OrderSupplierStatus.PAYMENTING.getCode());
+        orderSupplier.setOrderStatus(supplierOrderStatus);
         orderSupplier.setCtime(null);
         orderSupplier.setUtime(null);
         orderSupplierMaster.save(orderSupplier);
