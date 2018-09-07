@@ -464,8 +464,11 @@ public class UserServiceImpl implements UserService {
             return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
         }
         UserAddress userAddress = new UserAddress(uid, addressDTO, areas);
+        if (addressDTO.isDefaultAddress()){
+            revokeDefaultAddress(uid);
+        }
         userAddressService.insert(userAddress);
-        return new OperationResult<Boolean>(true);
+        return new OperationResult(true);
     }
 
     /**
@@ -504,19 +507,27 @@ public class UserServiceImpl implements UserService {
         if (userAddressService.findAddress(addressId, uid) == null){
             return new OperationResult(RequestResultEnum.ADDRESS_NOT_EXISTS, false);
         }
-        UserAddress defaultAddress = userAddressService.findDefaultAddress(uid);
-        if (defaultAddress != null && defaultAddress.getDefaultAddress()){
-            return new OperationResult(true);
-        }
+        revokeDefaultAddress(uid);
         UserAddress userAddress = new UserAddress();
-        if (userAddress != null) {
-            userAddress.setId(defaultAddress.getId());
-            userAddress.setDefaultAddress(false);
-            userAddressService.updateByAddressId(userAddress);
-        }
         userAddress.setId(addressId);
         userAddress.setDefaultAddress(true);
         userAddressService.updateByAddressId(userAddress);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 取消默认地址
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> revokeDefaultAddress(Long uid) {
+        UserAddress defaultAddress = userAddressService.findDefaultAddress(uid);
+        if (defaultAddress != null){
+            defaultAddress.setDefaultAddress(false);
+            userAddressService.updateByAddressId(defaultAddress);
+        }
         return new OperationResult(true);
     }
 
