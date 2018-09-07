@@ -17,6 +17,7 @@ import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.services.userbase.UserPwdService;
 import com.newframe.services.userbase.UserRentMerchantService;
+import com.newframe.services.userbase.UserRoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,11 +40,11 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     @Autowired
     private UserBaseInfoService userBaseInfoService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private SessionService sessionService;
     @Autowired
     private UserPwdService userPwdService;
+    @Autowired
+    private UserRoleService userRoleService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -210,6 +211,11 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         userPwdService.insert(userPwd);
         sessionService.setAppUserToken(baseInfo.getUid());
         sessionService.setWebUserToken(baseInfo.getUid());
+        UserRole userRole = new UserRole();
+        userRole.setUid(baseInfo.getUid());
+        userRole.setRoleId(getRoleId());
+        userRole.setRoleStatus(RoleStatusEnum.NORMAL.getRoleStatue());
+        userRoleService.insert(userRole);
         List<String> businessUrls =
                 aliossService.uploadFilesToBasetool(rentMerchantApplyDTO.getBusinessListen(), bucket);
         List<String> highestUrls =
