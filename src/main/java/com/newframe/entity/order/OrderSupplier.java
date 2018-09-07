@@ -64,9 +64,9 @@ public class OrderSupplier {
     @Column(name = "delete_status")
     private Integer deleteStatus;
     @Column(name = "ctime")
-    private Long ctime;
+    private Integer ctime;
     @Column(name = "utime")
-    private Long utime;
+    private Integer utime;
 
     @Column(name = "express_code")
     private String expressCode;

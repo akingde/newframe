@@ -473,7 +473,7 @@ public class OrderServiceImpl implements OrderService {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
-        // 查询资金方订单，为了保障安全，只能查出本人的订单
+        // 查询资金方订单
         OrderFunderQuery query = new OrderFunderQuery();
         query.setOrderId(orderId);
         query.setFunderId(uid);
@@ -809,6 +809,11 @@ public class OrderServiceImpl implements OrderService {
             OrderHirer orderHirer = optionalOrderHirer.get();
             orderHirer.setOrderStatus(OrderLessorStatus.LESSOR_AUDIT_REFUSE.getCode());
             orderHirerMaser.save(orderHirer);
+        }
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if(orderRenterOptional.isPresent()){
+            OrderRenter orderRenter = orderRenterOptional.get();
+
         }
         // 修改租赁商订单为出租方拒绝
         orderRenterMaser.updateOrderStatus(OrderRenterStatus.LESSOR_AUDIT_REFUSE.getCode(),orderId);
