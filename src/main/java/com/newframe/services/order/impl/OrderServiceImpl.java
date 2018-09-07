@@ -219,6 +219,8 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(orderRenter, orderFunder);
             // 此处操作用户是租赁商，所以资金方的商家id应该是租赁商的id
             orderFunder.setMerchantId(uid);
+            orderFunder.setCtime(null);
+            orderFunder.setUtime(null);
             orderFunder.setMerchantName(renterName);
             // 资金方的uid是从数据库中查出来的，暂时使用随机数代替
             orderFunder.setFunderId(funderId);
@@ -281,12 +283,14 @@ public class OrderServiceImpl implements OrderService {
             }
             // 判断订单租赁次数是否大于最大租赁次数
             OrderHirer orderHirerHistory = orderHirerSlave.findOne(orderId);
-            Integer orderRentTimes = 0;
+            Integer orderRentTimes ;
             if(orderHirerHistory != null){
                 if(maxOrderRentingTimes <= orderHirerHistory.getDispatchTimes()){
                     return new JsonResult(OrderResultEnum.ORDER_RENTING_FAIL,false);
                 }
                 orderRentTimes = orderHirerHistory.getDispatchTimes()+1;
+            }else{
+                orderRentTimes = 1;
             }
             OrderHirer orderHirer = new OrderHirer();
             BeanUtils.copyProperties(orderRenter, orderHirer);
@@ -294,7 +298,8 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setMerchantName(renterName);
             orderHirer.setMerchantMobile(renterMobile);
             orderHirer.setDispatchTimes(orderRentTimes);
-
+            orderHirer.setCtime(null);
+            orderHirer.setUtime(null);
             // 出租方订单为 待出租方审核
             orderHirer.setOrderStatus(OrderLessorStatus.WATIING_LESSOR_AUDIT.getCode());
             // 出租方订单的租机价格，意外保险等由平台指定
@@ -485,8 +490,14 @@ public class OrderServiceImpl implements OrderService {
             Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
             if (orderRenterOptional.isPresent()) {
                 OrderRenter orderRenter = orderRenterOptional.get();
-                orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_AUDIT_REFUSE.getCode());
-                orderRenterMaser.save(orderRenter);
+                // 如果 订单融资次数 >= 3 ,租赁商订单状态设为不可融资状态
+                if(maxOrderFinancingTimes.compareTo(orderFunder.getDispatchTimes()) <= 0){
+                    orderRenter.setOrderStatus(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode());
+                    orderRenterMaser.updateById(orderRenter,orderId,OrderRenter.ORDER_STATUS);
+                }else{
+                    orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_AUDIT_REFUSE.getCode());
+                    orderRenterMaser.updateById(orderRenter,orderId,OrderRenter.ORDER_STATUS);
+                }
                 orderFunder.setOrderStatus(OrderFunderStatus.AUDIT_REFUSE.getCode());
                 orderFunderMaser.save(orderFunder);
                 return new JsonResult(SystemCode.SUCCESS, true);
@@ -809,14 +820,19 @@ public class OrderServiceImpl implements OrderService {
             OrderHirer orderHirer = optionalOrderHirer.get();
             orderHirer.setOrderStatus(OrderLessorStatus.LESSOR_AUDIT_REFUSE.getCode());
             orderHirerMaser.save(orderHirer);
+            // 如果 最大次数租赁次数 <= 订单租赁次数，将租赁商订单改为 不可再租赁状态
+            if(maxOrderRentingTimes.compareTo(orderHirer.getDispatchTimes()) <= 0){
+                Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+                if(orderRenterOptional.isPresent()){
+                    OrderRenter orderRenter = orderRenterOptional.get();
+                    orderRenter.setOrderStatus(OrderRenterStatus.ORDER_RENT_OVER_THREE.getCode());
+                    orderRenterMaser.updateById(orderRenter,orderId,OrderRenter.ORDER_STATUS);
+                }
+            }else{
+                // 修改租赁商订单为出租方拒绝
+                orderRenterMaser.updateOrderStatus(OrderRenterStatus.LESSOR_AUDIT_REFUSE.getCode(),orderId);
+            }
         }
-        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
-        if(orderRenterOptional.isPresent()){
-            OrderRenter orderRenter = orderRenterOptional.get();
-
-        }
-        // 修改租赁商订单为出租方拒绝
-        orderRenterMaser.updateOrderStatus(OrderRenterStatus.LESSOR_AUDIT_REFUSE.getCode(),orderId);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -1110,6 +1126,11 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setDeposit(orderFunder.getDeposit());
         orderFunderDTO.setSupplierId(orderFunder.getSupplierId());
         orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderFunder.getOrderId());
+        if(orderRenterOptional.isPresent()){
+            OrderRenter orderRenter = orderRenterOptional.get();
+            orderFunderDTO.setConsumerAddress(orderRenter.getUserAddress());
+        }
         return orderFunderDTO;
     }
 
@@ -1232,7 +1253,8 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
         // 供应商还未确认收款，待发货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.PAYMENTING.getCode());
-
+        orderSupplier.setCtime(null);
+        orderSupplier.setUtime(null);
         orderSupplierMaster.save(orderSupplier);
     }
 }
