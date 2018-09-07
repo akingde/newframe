@@ -190,6 +190,13 @@ public interface UserService {
     OperationResult<Boolean> setDefaultAddress(Long uid, Long addressId);
 
     /**
+     * 取消默认地址
+     * @param uid
+     * @return
+     */
+    OperationResult<Boolean> revokeDefaultAddress(Long uid);
+
+    /**
      * 校验并获取地址
      *
      * @param provinceId
