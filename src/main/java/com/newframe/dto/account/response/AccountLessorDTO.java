@@ -28,8 +28,8 @@ public class AccountLessorDTO {
      */
     private BigDecimal frozenAssets;
     private long uid;
-    private long ctime;
-    private long utime;
+    private Integer ctime;
+    private Integer utime;
     /**
      * 保证金
      */

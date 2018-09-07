@@ -74,11 +74,11 @@ public class AccountLessorOverdueAsset {
     /**
      * ctime
      */
-    private Long ctime;
+    private Integer ctime;
     /**
      * utime
      */
-    private Long utime;
+    private Integer utime;
 
 
     /**

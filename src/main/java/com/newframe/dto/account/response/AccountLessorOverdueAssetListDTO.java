@@ -15,8 +15,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class AccountLessorOverdueAssetListDTO {
-    private Long ctime;
-    private Long utime;
+    private Integer ctime;
+    private Integer utime;
     private Long orderId;
     /**
      * 投资的方式。1:融资购机，2:租机

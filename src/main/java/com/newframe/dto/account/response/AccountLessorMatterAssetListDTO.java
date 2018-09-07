@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @Data
 public class AccountLessorMatterAssetListDTO {
 
-    private long ctime;
-    private long utime;
+    private Integer ctime;
+    private Integer utime;
     /**
      * 关联订单的Id
      */
