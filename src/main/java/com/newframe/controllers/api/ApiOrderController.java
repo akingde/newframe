@@ -194,6 +194,21 @@ public class ApiOrderController extends BaseController {
     }
 
     /**
+     * 资金方线上付款
+     * @param loanDTO 放款dto
+     * @param uid 资金方uid
+     * @return 放款结果
+     */
+    @Anonymous(true)
+    @RequestMapping("funder/online/loan")
+    public JsonResult funderOnlineLoan(LoanDTO loanDTO,Long uid){
+        if(uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        return orderService.onlineLoan(loanDTO,uid);
+    }
+
+    /**
      * 12、资金方-上传放款凭证
      * 确认放款，上传放款凭证
      * @param orderId 订单id

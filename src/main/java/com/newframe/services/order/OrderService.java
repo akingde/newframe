@@ -262,4 +262,12 @@ public interface OrderService {
      * @return 返回结果
      */
     OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber);
+
+    /**
+     * 资金方线上放款
+     * @param loanDTO
+     * @param uid
+     * @return
+     */
+    JsonResult onlineLoan(LoanDTO loanDTO, Long uid);
 }
