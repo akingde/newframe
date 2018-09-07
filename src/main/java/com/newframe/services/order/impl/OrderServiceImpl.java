@@ -144,8 +144,8 @@ public class OrderServiceImpl implements OrderService {
         // 只查询此会话租赁商的订单
         orderRenterQuery.setRenterId(uid);
         orderRenterQuery.setDeleteStatus(OrderRenter.NO_DELETE_STATUS);
-        if (null != param.getOrderStatus() && param.getOrderStatus().size() != 0) {
-            orderRenterQuery.setOrderStatuses(param.getOrderStatus());
+        if (null != param.getOrderStatus()) {
+            orderRenterQuery.setOrderStatuses(OrderRenterStatus.getStatuses(param.getOrderStatus()));
         }
         // 设置分页参数
         Pageable pageable = PageRequest.of(param.getCurrentPage() - 1, param.getPageSize(), sort);
@@ -434,8 +434,8 @@ public class OrderServiceImpl implements OrderService {
             orderFunderQuery.setMerchantName(param.getRenterName());
         }
         orderFunderQuery.setFunderId(uid);
-        if (param.getOrderStatus() != null && param.getOrderStatus().size() != 0) {
-            orderFunderQuery.setOrderStatuses(param.getOrderStatus());
+        if (param.getOrderStatus() != null) {
+            orderFunderQuery.setOrderStatuses(OrderFunderStatus.getStatuses(param.getOrderStatus()));
         }
         // 封装排序
         Sort sort;
@@ -621,8 +621,8 @@ public class OrderServiceImpl implements OrderService {
         OrderSupplierQuery query = new OrderSupplierQuery();
         query.setDeleteStatus(OrderSupplier.NO_DELETE_STATUS);
         query.setSupplierId(uid);
-        if(null != param.getOrderStatus() && param.getOrderStatus().size() != 0){
-            query.setOrderStatuses(param.getOrderStatus());
+        if(null != param.getOrderStatus()){
+            query.setOrderStatuses(OrderSupplierStatus.getStatuses(param.getOrderStatus()));
         }
         Page<OrderSupplier> page = orderSupplierSlave.findAll(query, pageable);
         List<OrderSupplier> suppliers = page.getContent();
@@ -741,8 +741,8 @@ public class OrderServiceImpl implements OrderService {
         OrderHirerQuery query = new OrderHirerQuery();
         query.setLessorId(uid);
         query.setDeleteStatus(OrderHirer.NO_DELETE_STATUS);
-        if (param.getOrderStatus() != null && param.getOrderStatus().size() != 0) {
-            query.setOrderStatuses(param.getOrderStatus());
+        if (param.getOrderStatus() != null) {
+            query.setOrderStatuses(OrderLessorStatus.getStatuses(param.getOrderStatus()));
         }
 
         // 设置分页参数
