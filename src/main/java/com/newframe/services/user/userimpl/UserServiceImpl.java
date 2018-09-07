@@ -595,7 +595,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> modifyPhoneNumber(Long uid, String phoneNumber) {
-        UserBaseInfo userBaseInfo = userBaseInfoService.findOne(phoneNumber);
+        if(userBaseInfoService.findOne(phoneNumber) != null){
+            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
+        }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
         if (baseInfo == null){
             return new OperationResult(RequestResultEnum.USER_NOT_EXISTS, false);
@@ -603,11 +605,8 @@ public class UserServiceImpl implements UserService {
         if (phoneNumber.equals(baseInfo.getPhoneNumber())){
             return new OperationResult(true);
         }
-        if (userBaseInfo != null){
-            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
-        }
-        userBaseInfo.setPhoneNumber(phoneNumber);
-        userBaseInfoService.updateByUid(userBaseInfo);
+        baseInfo.setPhoneNumber(phoneNumber);
+        userBaseInfoService.updateByUid(baseInfo);
         return new OperationResult(true);
     }
 
