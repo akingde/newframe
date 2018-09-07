@@ -281,7 +281,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         if (StringUtils.isEmpty(rentMerchantApplyDTO.getConsigneeAddress())){
             return new OperationResult(RequestResultEnum.ADDRESS_ERROR, false);
         }
-        if(IdNumberUtils.isValidatedAllIdcard(rentMerchantApplyDTO.getLegalEntityIdNumber())){
+        if(!IdNumberUtils.isValidatedAllIdcard(rentMerchantApplyDTO.getLegalEntityIdNumber())){
             return new OperationResult(RequestResultEnum.ID_NUMBER_ERROR, false);
         }
         return new OperationResult(true);
