@@ -1126,6 +1126,11 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setDeposit(orderFunder.getDeposit());
         orderFunderDTO.setSupplierId(orderFunder.getSupplierId());
         orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderFunder.getOrderId());
+        if(orderRenterOptional.isPresent()){
+            OrderRenter orderRenter = orderRenterOptional.get();
+            orderFunderDTO.setConsumerAddress(orderRenter.getUserAddress());
+        }
         return orderFunderDTO;
     }
 

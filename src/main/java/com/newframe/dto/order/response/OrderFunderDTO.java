@@ -42,4 +42,5 @@ public class OrderFunderDTO {
     private Integer loanModel;
     private Long supplierId;
     private String supplierName;
+    private String consumerAddress;
 }
