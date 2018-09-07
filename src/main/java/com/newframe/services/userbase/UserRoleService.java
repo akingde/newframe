@@ -25,6 +25,13 @@ public interface UserRoleService {
     UserRole findOne(Long uid, Integer roleId, Integer status);
 
     /**
+     * 根据uid找出所有的用户角色
+     * @param uid
+     * @return
+     */
+    List<UserRole> findAll(Long uid);
+
+    /**
      * 根据uid获取用户的角色列表  状态，角色id非必选
      * @param userRole
      * @return
