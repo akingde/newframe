@@ -606,7 +606,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> modifyPhoneNumber(Long uid, String phoneNumber) {
-        if(userBaseInfoService.findOne(phoneNumber) != null){
+        UserBaseInfo info = userBaseInfoService.findOne(phoneNumber);
+        if(info != null && !info.getUid().equals(uid)){
             return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
         }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
