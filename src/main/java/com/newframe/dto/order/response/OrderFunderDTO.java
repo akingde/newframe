@@ -44,4 +44,5 @@ public class OrderFunderDTO {
     private String supplierName;
     private String consumerAddress;
     private Integer consumerOrderTime;
+    private Integer consumerBedDebtTimes;
 }
