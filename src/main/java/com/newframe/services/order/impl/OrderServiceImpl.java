@@ -1197,6 +1197,7 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setSupplierId(orderFunder.getSupplierId());
         orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
         orderFunderDTO.setConsumerBedDebtTimes(0);
+        orderFunderDTO.setUid(orderFunder.getFunderId());
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderFunder.getOrderId());
         if(orderRenterOptional.isPresent()){
             OrderRenter orderRenter = orderRenterOptional.get();
