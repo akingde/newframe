@@ -401,7 +401,8 @@ public class OrderServiceImpl implements OrderService {
             orderRenterDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
             orderRenterDTO.setConsumerAddress(orderRenter.getUserAddress());
             // todo 查出用户坏账次数
-            orderRenterDTO.setConsumerBedDebtTimes(new Random().nextInt(10));
+            orderRenterDTO.setConsumerBedDebtTimes(0);
+            orderRenterDTO.setMachineNumber(1);
             orderRenterDTO.setOrderFinancingTimes(orderBaseService.getOrderFinancingTimes(orderRenter.getOrderId()));
             orderRenterDTO.setOrderRentTimes(orderBaseService.getOrderRentTimes(orderRenter.getOrderId()));
             return new JsonResult(SystemCode.SUCCESS, orderRenterDTO);
