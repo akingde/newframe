@@ -1,5 +1,6 @@
 package com.newframe.services.order.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
@@ -25,6 +26,7 @@ import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
 import com.newframe.utils.query.QueryToSpecification;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 租赁商订单
@@ -174,6 +177,31 @@ public class OrderServiceImpl implements OrderService {
             orderRenterDTOS.add(orderRenterDTO);
         }
         return new PageJsonResult(SystemCode.SUCCESS, orderRenterDTOS, orderRenterPage.getTotalElements());
+    }
+
+    /**
+     * 获取未完成的租赁商订单数量
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public int getNotFininishRenterOrder(Long uid) {
+        List<Integer> finishstatuses = OrderRenterStatus.getStatuses(5);
+        finishstatuses.add(OrderRenterStatus.FUNDER_AUDIT_REFUSE.getCode());
+        finishstatuses.add(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode());
+        finishstatuses.add(OrderRenterStatus.LESSOR_AUDIT_REFUSE.getCode());
+        finishstatuses.add(OrderRenterStatus.ORDER_RENT_OVER_THREE.getCode());
+        List<Integer> statuses = Lists.newArrayList();
+        for (OrderRenterStatus renterStatus : OrderRenterStatus.values()) {
+            statuses.add(renterStatus.getCode());
+        }
+        List<Integer> notFinishStatuses = statuses.stream().filter(item -> !finishstatuses.contains(item)).collect(Collectors.toList());
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setRenterId(uid);
+        query.setOrderStatuses(notFinishStatuses);
+        List<OrderRenter> all = orderRenterSlave.findAll(query);
+        return CollectionUtils.isNotEmpty(all)?all.size():0;
     }
 
     @Override

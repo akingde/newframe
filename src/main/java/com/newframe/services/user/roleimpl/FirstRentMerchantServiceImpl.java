@@ -10,6 +10,7 @@ import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.order.OrderService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
@@ -48,6 +49,8 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private UserSupplierService userSupplierService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private OrderService orderService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -344,6 +347,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid) {
+        int count = orderService.getNotFininishRenterOrder(removeUid);
+        if(count != 0) {
+            return new OperationResult(RequestResultEnum.NOT_FINISH_ORDER_EXISTS, false);
+        }
         userRentMerchantService.delete(removeUid);
         return new OperationResult(true);
     }

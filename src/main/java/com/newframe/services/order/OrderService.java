@@ -27,6 +27,13 @@ public interface OrderService {
     JsonResult getRenterOrder(QueryOrderDTO param, Long uid);
 
     /**
+     * 获取未完成的租赁商订单数量
+     * @param uid
+     * @return
+     */
+    int getNotFininishRenterOrder(Long uid);
+
+    /**
      * 租赁商融资购机
      *
      * @param uid        租赁商uid
