@@ -241,8 +241,8 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         }
         List<MerchantAppoint> merchantAppoints = merchantAppointService.findAll(uid);
         List<Long> appoints = merchantAppoints.stream().map(MerchantAppoint::getSupplierUid).collect(toList());
-        List<Long> inLists = supplierUid.stream().filter(item -> appoints.contains(item)).collect(toList());
-        List<Long> reLists = appoints.stream().filter(item -> supplierUid.contains(item)).collect(toList());
+        List<Long> inLists = supplierUid.stream().filter(item -> !appoints.contains(item)).distinct().collect(toList());
+        List<Long> reLists = appoints.stream().filter(item -> !supplierUid.contains(item)).distinct().collect(toList());
         if (CollectionUtils.isNotEmpty(inLists)) {
             roleServiceMap.get(roleId).batchInsert(uid, inLists);
         }
