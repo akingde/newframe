@@ -1010,7 +1010,7 @@ public class OrderServiceImpl implements OrderService {
 
             return new OperationResult<>(OrderResultEnum.SUCCESS, info);
         }
-        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        return new OperationResult<>(OrderResultEnum.SUCCESS,null);
     }
 
     @Override
@@ -1155,6 +1155,7 @@ public class OrderServiceImpl implements OrderService {
         dto.setMachineNumber(1);
         dto.setUid(orderHirer.getLessorId());
         dto.setConsumerAddress(orderHirer.getUserAddress());
+        dto.setConsumerBedDebtTimes(0);
         OrderRenter orderRenter = orderRenterSlave.findOne(orderHirer.getOrderId());
         if(orderRenter != null){
             dto.setConsumerOrderTime(orderRenter.getCtime());
