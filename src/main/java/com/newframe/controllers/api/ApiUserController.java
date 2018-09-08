@@ -402,6 +402,26 @@ public class ApiUserController extends BaseController {
     }
 
     /**
+     * 指定供应商
+     * @param uid
+     * @param rentMerchantModifyDTO
+     * @return
+     */
+    @PostMapping("modifyAppointSupplier")
+    public JsonResult modifyAppointSupplier(Long uid, RentMerchantModifyDTO rentMerchantModifyDTO){
+        if(uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        Integer roleId = RoleEnum.FIRST_RENT_MERCHANT.getRoleId();
+        OperationResult<Boolean> result = roleBaseService.modifyAppointSupplier(uid, roleId,
+                rentMerchantModifyDTO.getSupplierId());
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
      * @description 供应商指定查询
      * @author WangBin
      * @param

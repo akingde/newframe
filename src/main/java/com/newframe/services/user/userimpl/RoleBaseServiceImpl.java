@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -41,6 +42,8 @@ public class RoleBaseServiceImpl implements RoleBaseService {
     private UserRentMerchantService userRentMerchantService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MerchantAppointService merchantAppointService;
 
     private Map<Integer, RoleService> roleServiceMap = new HashMap<>();
 
@@ -192,10 +195,10 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         List<Long> inLists = Lists.newArrayList();
         List<Long> reLists = Lists.newArrayList();
         if(CollectionUtils.isNotEmpty(supplierUid)){
-            inLists.addAll(supplierUid.stream().distinct().collect(Collectors.toList()));
+            inLists.addAll(supplierUid.stream().distinct().collect(toList()));
         }
         if(CollectionUtils.isNotEmpty(revokeSupplierUid)){
-            reLists.addAll(revokeSupplierUid.stream().distinct().collect(Collectors.toList()));
+            reLists.addAll(revokeSupplierUid.stream().distinct().collect(toList()));
         }
         long count = inLists.stream().filter(item -> reLists.contains(item)).count();
         if(count > 0){
@@ -204,10 +207,6 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());
         if (userRole == null){
             return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
-        }
-        UserRentMerchant merchant = userRentMerchantService.findOne(uid, roleId);
-        if(merchant == null || !merchant.getAppoint()){
-            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
         }
         List<MerchantAppoint> insertList = roleServiceMap.get(roleId).getAppointSupplier(uid, supplierUid);
         List<MerchantAppoint> removeList = roleServiceMap.get(roleId).getAppointSupplier(uid, revokeSupplierUid);
@@ -218,6 +217,37 @@ public class RoleBaseServiceImpl implements RoleBaseService {
             roleServiceMap.get(roleId).batchInsert(uid, inLists);
         }
         if (CollectionUtils.isNotEmpty(reLists)){
+            roleServiceMap.get(roleId).removeAppointSupplier(removeList);
+        }
+        return new OperationResult(true);
+    }
+
+    /**
+     * 修改指定供应商
+     *
+     * @param uid
+     * @param roleId
+     * @param supplierUid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid) {
+        if(CollectionUtils.isEmpty(supplierUid)){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());
+        if (userRole == null){
+            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
+        }
+        List<MerchantAppoint> merchantAppoints = merchantAppointService.findAll(uid);
+        List<Long> appoints = merchantAppoints.stream().map(MerchantAppoint::getSupplierUid).collect(toList());
+        List<Long> inLists = supplierUid.stream().filter(item -> !appoints.contains(item)).distinct().collect(toList());
+        List<Long> reLists = appoints.stream().filter(item -> !supplierUid.contains(item)).distinct().collect(toList());
+        if (CollectionUtils.isNotEmpty(inLists)) {
+            roleServiceMap.get(roleId).batchInsert(uid, inLists);
+        }
+        if (CollectionUtils.isNotEmpty(reLists)){
+            List<MerchantAppoint> removeList = roleServiceMap.get(roleId).getAppointSupplier(uid, reLists);
             roleServiceMap.get(roleId).removeAppointSupplier(removeList);
         }
         return new OperationResult(true);
