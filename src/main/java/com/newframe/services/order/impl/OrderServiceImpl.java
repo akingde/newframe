@@ -1068,7 +1068,11 @@ public class OrderServiceImpl implements OrderService {
         query.setOrderId(loanDTO.getOrderId());
         query.setFunderId(uid);
         OrderFunder orderFunder = orderFunderSlave.findOne(query);
-        if(orderFunder != null){
+        OrderRenter orderRenter = orderRenterSlave.findOne(loanDTO.getOrderId());
+        if(orderFunder != null && orderRenter != null){
+            if (!OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode().equals(orderRenter.getOrderStatus())) {
+                return new JsonResult(OrderResultEnum.LOAN_ORDER_STATUS_ERROR,false);
+            }
             orderFunder.setLoanModel(loanDTO.getLoanModel());
             orderFunder.setFinancingAmount(loanDTO.getLoanAmount());
             // 资金方线上付款成功
@@ -1076,12 +1080,10 @@ public class OrderServiceImpl implements OrderService {
             orderFunderMaser.save(orderFunder);
 
             // 修改租赁商订单状态
-            OrderRenter orderRenter = orderRenterSlave.findOne(loanDTO.getOrderId());
-            if(orderRenter != null ){
-                orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
-                orderRenterMaser.save(orderRenter);
-                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
-            }
+            orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
+            orderRenterMaser.save(orderRenter);
+            generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
