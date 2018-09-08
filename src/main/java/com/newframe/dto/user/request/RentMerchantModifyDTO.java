@@ -76,4 +76,9 @@ public class RentMerchantModifyDTO{
      * 删除的供应商uid
      */
     private List<Long> revokeSupplierUid;
+
+    /**
+     * app 指定的供应商uid
+     */
+    private List<Long> supplierId;
 }

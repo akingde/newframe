@@ -81,6 +81,15 @@ public interface RoleBaseService {
     OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid, List<Long> revokeSupplierUid);
 
     /**
+     * 修改指定供应商
+     * @param uid
+     * @param roleId
+     * @param supplierUid
+     * @return
+     */
+    OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid);
+
+    /**
      * 获取小B列表
      * @param uid
      * @param roleId

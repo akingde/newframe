@@ -1,10 +1,12 @@
 package com.newframe.services.userbase.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.repositories.dataMaster.user.MerchantAppointMaster;
 import com.newframe.repositories.dataQuery.user.MerchantAppointQuery;
 import com.newframe.repositories.dataSlave.user.MerchantAppointSlave;
 import com.newframe.services.userbase.MerchantAppointService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,8 @@ public class MerchantAppointServiceImpl implements MerchantAppointService {
     public List<MerchantAppoint> findAll(Long rentMerchantUid) {
         MerchantAppointQuery query = new MerchantAppointQuery();
         query.setRentMerchantUid(rentMerchantUid);
-        return merchantAppointSlave.findAll(query);
+        List<MerchantAppoint> all = merchantAppointSlave.findAll(query);
+        return CollectionUtils.isEmpty(all)?Lists.newArrayList():all;
     }
 
     /**
