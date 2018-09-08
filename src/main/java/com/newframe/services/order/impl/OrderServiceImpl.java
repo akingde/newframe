@@ -1064,7 +1064,10 @@ public class OrderServiceImpl implements OrderService {
         if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
             return new JsonResult(OrderResultEnum.PARAM_ERROR,false);
         }
-        OrderFunder orderFunder = orderFunderSlave.findOne(loanDTO.getOrderId());
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(loanDTO.getOrderId());
+        query.setFunderId(uid);
+        OrderFunder orderFunder = orderFunderSlave.findOne(query);
         if(orderFunder != null){
             orderFunder.setLoanModel(loanDTO.getLoanModel());
             orderFunder.setFinancingAmount(loanDTO.getLoanAmount());
@@ -1079,8 +1082,10 @@ public class OrderServiceImpl implements OrderService {
                 orderRenterMaser.save(orderRenter);
                 generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
             }
+            return new JsonResult(OrderResultEnum.SUCCESS,true);
+        }else{
+            return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
         }
-        return new JsonResult(OrderResultEnum.SUCCESS,true);
     }
 
     /**
