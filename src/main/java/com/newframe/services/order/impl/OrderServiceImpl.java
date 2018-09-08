@@ -163,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(orderRenter, orderRenterDTO);
             orderRenterDTO.setConsumerUid(orderRenter.getUid());
             orderRenterDTO.setOrderTime(orderRenter.getCtime());
+            orderRenterDTO.setConsumerOrderTime(orderRenter.getCtime());
             orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
             orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
             orderRenterDTO.setConsumerIdentityNumber(orderRenter.getUserIdNumber());
@@ -392,6 +393,7 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(orderRenter, orderRenterDTO);
             orderRenterDTO.setConsumerUid(orderRenter.getUid());
             orderRenterDTO.setOrderTime(orderRenter.getCtime());
+            orderRenterDTO.setConsumerOrderTime(orderRenter.getCtime());
             orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
             orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
             orderRenterDTO.setConsumerIdentityNumber(orderRenter.getUserIdNumber());
@@ -593,7 +595,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-
         // 查询资金方订单，为了保障安全，只能查出本人的订单
         OrderFunderQuery query = new OrderFunderQuery();
         query.setOrderId(orderId);
@@ -624,7 +625,7 @@ public class OrderServiceImpl implements OrderService {
                 orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
-                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.PAYMENTING.getCode());
+                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
         }
