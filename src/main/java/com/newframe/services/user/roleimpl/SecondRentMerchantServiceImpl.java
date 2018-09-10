@@ -283,29 +283,33 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         userBaseInfo.setPhoneNumber(rentMerchantModifyDTO.getMerchantPhone());
         userBaseInfoService.updateByUid(userBaseInfo);
         List<Area> areas = areaList.stream().sorted(Comparator.comparing(Area::getAreaLevel)).collect(Collectors.toList());
-        String provinceName = areas.get(0).getAreaName();
-        String cityName = areas.get(1).getAreaName();
-        String countyName = areas.get(2).getAreaName();
-        String address = provinceName + cityName + countyName + rentMerchantModifyDTO.getConsigneeAddress();
+        StringBuffer address = new StringBuffer();
         UserRentMerchant small = new UserRentMerchant();
         small.setUid(rentMerchantModifyDTO.getModifyUid());
         small.setMerchantPhoneNumber(rentMerchantModifyDTO.getMerchantPhone());
         small.setMerchantName(rentMerchantModifyDTO.getName());
         small.setLegalEntity(rentMerchantModifyDTO.getLegalEntity());
         small.setLegalEntityIdNumber(rentMerchantModifyDTO.getLegalEntityIdNumber());
-        small.setRentMerchantAddress(address);
         small.setBusinessLicenseNumber(rentMerchantModifyDTO.getBusinessListenNumber());
         small.setBusinessLicenseFile(StringUtils.join(rentMerchantModifyDTO.getBusinessListen(), ","));
         small.setHighestDegreeDiplomaFile(StringUtils.join(rentMerchantModifyDTO.getHighestDegreeDiploma(), ","));
         small.setDrivingLicenseFile(StringUtils.join(rentMerchantModifyDTO.getDrivingLicense(), ","));
         small.setHouseProprietaryCertificateFile(StringUtils.join(rentMerchantModifyDTO.getHouseProprietaryCertificate(), ","));
         small.setProvinceId(rentMerchantModifyDTO.getProvinceId());
-        small.setProvinceName(provinceName);
+        small.setProvinceName(areas.get(0).getAreaName());
         small.setCityId(rentMerchantModifyDTO.getCityId());
-        small.setCityName(cityName);
+        if(areas.size() > 1) {
+            small.setCityName(areas.get(1).getAreaName());
+            address.append(areas.get(1).getAreaName());
+        }
         small.setCountyId(rentMerchantModifyDTO.getCountyId());
-        small.setCountyName(countyName);
+        if(areas.size() > 3) {
+            small.setCountyName(areas.get(2).getAreaName());
+            address.append(areas.get(2).getAreaName());
+        }
         small.setConsigneeAddress(rentMerchantModifyDTO.getConsigneeAddress());
+        address.append(rentMerchantModifyDTO.getConsigneeAddress());
+        small.setRentMerchantAddress(address.toString());
         userRentMerchantService.update(small);
         return new OperationResult(true);
     }
