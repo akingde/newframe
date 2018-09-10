@@ -183,8 +183,8 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 获取未完成的租赁商订单数量
      *
-     * @param uid
-     * @return
+     * @param uid 租赁商uid
+     * @return 数量
      */
     @Override
     public int getNotFininishRenterOrder(Long uid) {
@@ -260,7 +260,6 @@ public class OrderServiceImpl implements OrderService {
             orderFunder.setSupplierId(supplierId);
 
             orderFunder.setDeposit(getDeposit(orderId));
-            //orderFunder.setFinancingAmount(getFinancingAmount(orderId));
             orderFunder.setFinancingAmount(financingAmount);
             orderFunder.setNumberOfPeriods(financingDeadline);
             short withhold = 2;
@@ -564,7 +563,7 @@ public class OrderServiceImpl implements OrderService {
                 if (OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode().equals(orderRenter.getOrderStatus())) {
                     boolean success;
                     // 线下付款
-                    success = offlineLoan(loanDTO, orderFunder, orderRenter);
+                    success = offlineLoan(loanDTO, orderFunder);
                     if (success) {
                         return new JsonResult(SystemCode.SUCCESS);
                     }
@@ -1118,9 +1117,8 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal supplyPrice = product.getSupplyPrice();
         BigDecimal downPayment = orderRenter.getDownPayment();
         BigDecimal benefit = new BigDecimal(0.15);
-        BigDecimal financingAmount = supplyPrice.subtract(downPayment)
+        return supplyPrice.subtract(downPayment)
                 .subtract(supplyPrice.subtract(downPayment).multiply(benefit));
-        return financingAmount;
     }
 
     /**
@@ -1255,17 +1253,6 @@ public class OrderServiceImpl implements OrderService {
         return orderSupplierDTO;
     }
 
-    /**
-     * 资金方线上放款
-     *
-     * @param loanDTO     放款信息
-     * @param orderFunder 资金方订单
-     * @param orderRenter 租赁商订单
-     * @return 是否成功
-     */
-    private boolean onlineLoan(LoanDTO loanDTO, OrderFunder orderFunder, OrderRenter orderRenter) {
-        return false;
-    }
 
     /**
      * 修改租赁商订单的类型，融资为融资订单，租赁为租赁订单
@@ -1289,10 +1276,9 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param loanDTO     放款信息
      * @param orderFunder 资金方订单
-     * @param orderRenter 租赁商订单
      * @return 是否成功
      */
-    private boolean offlineLoan(LoanDTO loanDTO, OrderFunder orderFunder, OrderRenter orderRenter) {
+    private boolean offlineLoan(LoanDTO loanDTO, OrderFunder orderFunder) {
         orderFunder.setOrderStatus(OrderFunderStatus.PAYMENTING.getCode());
         orderFunder.setFinancingAmount(loanDTO.getLoanAmount());
         orderFunder.setLoanModel(loanDTO.getLoanModel());
@@ -1329,6 +1315,18 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setOrderStatus(supplierOrderStatus);
         orderSupplier.setCtime(null);
         orderSupplier.setUtime(null);
+        // 查询供应商商品的供应价格
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if (CollectionUtils.isNotEmpty(products)) {
+            ProductSupplier product = products.get(0);
+            // 拿到供应商的供应价格
+            orderSupplier.setTotalAccount(product.getSupplyPrice());
+        }
         orderSupplierMaster.save(orderSupplier);
     }
 }
