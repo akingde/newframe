@@ -1,5 +1,6 @@
 package com.newframe.services.order.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
@@ -1329,6 +1330,18 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setOrderStatus(supplierOrderStatus);
         orderSupplier.setCtime(null);
         orderSupplier.setUtime(null);
+        // 查询供应商商品的供应价格
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if (CollectionUtils.isNotEmpty(products)) {
+            ProductSupplier product = products.get(0);
+            // 拿到供应商的供应价格
+            orderSupplier.setTotalAccount(product.getSupplyPrice());
+        }
         orderSupplierMaster.save(orderSupplier);
     }
 }
