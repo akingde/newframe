@@ -43,8 +43,6 @@ public class OrderSupplierDTO {
     /** 用户坏账次数*/
     private Integer consumerBedDebtTimes;
     private String serialNumber;
-
-
     private Integer orderTime;
     private Integer consumerOrderTime;
 

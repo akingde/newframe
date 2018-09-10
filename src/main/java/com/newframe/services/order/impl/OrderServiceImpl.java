@@ -163,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(orderRenter, orderRenterDTO);
             orderRenterDTO.setConsumerUid(orderRenter.getUid());
             orderRenterDTO.setOrderTime(orderRenter.getCtime());
+            orderRenterDTO.setConsumerOrderTime(orderRenter.getCtime());
             orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
             orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
             orderRenterDTO.setConsumerIdentityNumber(orderRenter.getUserIdNumber());
@@ -392,6 +393,7 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(orderRenter, orderRenterDTO);
             orderRenterDTO.setConsumerUid(orderRenter.getUid());
             orderRenterDTO.setOrderTime(orderRenter.getCtime());
+            orderRenterDTO.setConsumerOrderTime(orderRenter.getCtime());
             orderRenterDTO.setConsumerName(orderRenter.getUserRealname());
             orderRenterDTO.setConsumerPhone(orderRenter.getUserMobile());
             orderRenterDTO.setConsumerIdentityNumber(orderRenter.getUserIdNumber());
@@ -593,7 +595,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-
         // 查询资金方订单，为了保障安全，只能查出本人的订单
         OrderFunderQuery query = new OrderFunderQuery();
         query.setOrderId(orderId);
@@ -624,7 +625,7 @@ public class OrderServiceImpl implements OrderService {
                 orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
-                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.PAYMENTING.getCode());
+                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
         }
@@ -1010,7 +1011,7 @@ public class OrderServiceImpl implements OrderService {
 
             return new OperationResult<>(OrderResultEnum.SUCCESS, info);
         }
-        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        return new OperationResult<>(OrderResultEnum.SUCCESS,null);
     }
 
     @Override
@@ -1064,8 +1065,15 @@ public class OrderServiceImpl implements OrderService {
         if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
             return new JsonResult(OrderResultEnum.PARAM_ERROR,false);
         }
-        OrderFunder orderFunder = orderFunderSlave.findOne(loanDTO.getOrderId());
-        if(orderFunder != null){
+        OrderFunderQuery query = new OrderFunderQuery();
+        query.setOrderId(loanDTO.getOrderId());
+        query.setFunderId(uid);
+        OrderFunder orderFunder = orderFunderSlave.findOne(query);
+        OrderRenter orderRenter = orderRenterSlave.findOne(loanDTO.getOrderId());
+        if(orderFunder != null && orderRenter != null){
+            if (!OrderRenterStatus.WATIING_FUNDER_AUDIT.getCode().equals(orderRenter.getOrderStatus())) {
+                return new JsonResult(OrderResultEnum.LOAN_ORDER_STATUS_ERROR,false);
+            }
             orderFunder.setLoanModel(loanDTO.getLoanModel());
             orderFunder.setFinancingAmount(loanDTO.getLoanAmount());
             // 资金方线上付款成功
@@ -1073,14 +1081,14 @@ public class OrderServiceImpl implements OrderService {
             orderFunderMaser.save(orderFunder);
 
             // 修改租赁商订单状态
-            OrderRenter orderRenter = orderRenterSlave.findOne(loanDTO.getOrderId());
-            if(orderRenter != null ){
-                orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
-                orderRenterMaser.save(orderRenter);
-                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
-            }
+            orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
+            orderRenterMaser.save(orderRenter);
+            generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+
+            return new JsonResult(OrderResultEnum.SUCCESS,true);
+        }else{
+            return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
         }
-        return new JsonResult(OrderResultEnum.SUCCESS,true);
     }
 
     /**
@@ -1155,6 +1163,7 @@ public class OrderServiceImpl implements OrderService {
         dto.setMachineNumber(1);
         dto.setUid(orderHirer.getLessorId());
         dto.setConsumerAddress(orderHirer.getUserAddress());
+        dto.setConsumerBedDebtTimes(0);
         OrderRenter orderRenter = orderRenterSlave.findOne(orderHirer.getOrderId());
         if(orderRenter != null){
             dto.setConsumerOrderTime(orderRenter.getCtime());
@@ -1189,6 +1198,7 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setSupplierId(orderFunder.getSupplierId());
         orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
         orderFunderDTO.setConsumerBedDebtTimes(0);
+        orderFunderDTO.setUid(orderFunder.getFunderId());
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderFunder.getOrderId());
         if(orderRenterOptional.isPresent()){
             OrderRenter orderRenter = orderRenterOptional.get();

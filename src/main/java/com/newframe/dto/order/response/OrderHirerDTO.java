@@ -37,4 +37,5 @@ public class OrderHirerDTO {
     private Integer machineNumber;
     private String consumerAddress;
     private Integer consumerOrderTime;
+    private Integer consumerBedDebtTimes;
 }
