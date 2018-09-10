@@ -225,10 +225,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         List<String> houseUrls =
                 aliossService.uploadFilesToBasetool(rentMerchantApplyDTO.getHouseProprietaryCertificate(), bucket);
         List<Area> areas = areaList.stream().sorted(Comparator.comparing(Area::getAreaLevel)).collect(Collectors.toList());
-        String provinceName = areas.get(0).getAreaName();
-        String cityName = areas.get(1) != null ? areas.get(1).getAreaName() : null;
-        String countyName = areas.get(2) != null ? areas.get(2).getAreaName() : null;
-        String address = provinceName + cityName + countyName + rentMerchantApplyDTO.getConsigneeAddress();
+        StringBuffer address = new StringBuffer();
         UserRentMerchant rentMerchant = new UserRentMerchant();
         rentMerchant.setUid(baseInfo.getUid());
         rentMerchant.setRoleId(RoleEnum.SECOND_RENT_MERCHANT.getRoleId());
@@ -236,7 +233,6 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         rentMerchant.setMerchantName(rentMerchantApplyDTO.getName());
         rentMerchant.setLegalEntity(rentMerchantApplyDTO.getLegalEntity());
         rentMerchant.setLegalEntityIdNumber(rentMerchantApplyDTO.getLegalEntityIdNumber());
-        rentMerchant.setRentMerchantAddress(address);
         rentMerchant.setBusinessLicenseNumber(rentMerchantApplyDTO.getBusinessListenNumber());
         rentMerchant.setBusinessLicenseFile(StringUtils.join(businessUrls, ","));
         rentMerchant.setHighestDegreeDiplomaFile(StringUtils.join(highestUrls, ","));
@@ -245,12 +241,21 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         rentMerchant.setRoleStatus(RoleStatusEnum.NORMAL.getRoleStatue());
         rentMerchant.setParentId(uid);
         rentMerchant.setProvinceId(rentMerchantApplyDTO.getProvinceId());
-        rentMerchant.setProvinceName(provinceName);
+        rentMerchant.setProvinceName(areas.get(0).getAreaName());
+        address.append(areas.get(0).getAreaName());
         rentMerchant.setCityId(rentMerchantApplyDTO.getCityId());
-        rentMerchant.setCityName(cityName);
+        if(areas.size() > 1) {
+            rentMerchant.setCityName(areas.get(1).getAreaName());
+            address.append(areas.get(1).getAreaName());
+        }
         rentMerchant.setCountyId(rentMerchantApplyDTO.getCountyId());
-        rentMerchant.setCountyName(countyName);
+        if(areas.size() > 2) {
+            rentMerchant.setCountyName(areas.get(2).getAreaName());
+            address.append(areas.get(2).getAreaName());
+        }
         rentMerchant.setConsigneeAddress(rentMerchantApplyDTO.getConsigneeAddress());
+        address.append(rentMerchantApplyDTO.getConsigneeAddress());
+        rentMerchant.setRentMerchantAddress(address.toString());
         userRentMerchantService.insert(rentMerchant);
         return new OperationResult(true);
     }
