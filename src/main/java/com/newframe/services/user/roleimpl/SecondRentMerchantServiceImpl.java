@@ -226,8 +226,8 @@ public class SecondRentMerchantServiceImpl implements RoleService {
                 aliossService.uploadFilesToBasetool(rentMerchantApplyDTO.getHouseProprietaryCertificate(), bucket);
         List<Area> areas = areaList.stream().sorted(Comparator.comparing(Area::getAreaLevel)).collect(Collectors.toList());
         String provinceName = areas.get(0).getAreaName();
-        String cityName = areas.get(1).getAreaName();
-        String countyName = areas.get(2).getAreaName();
+        String cityName = StringUtils.isNotEmpty(areas.get(1).getAreaName()) ? areas.get(1).getAreaName() : null;
+        String countyName = StringUtils.isNotEmpty(areas.get(2).getAreaName()) ? areas.get(2).getAreaName() : null;
         String address = provinceName + cityName + countyName + rentMerchantApplyDTO.getConsigneeAddress();
         UserRentMerchant rentMerchant = new UserRentMerchant();
         rentMerchant.setUid(baseInfo.getUid());
