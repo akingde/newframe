@@ -115,15 +115,15 @@ public class ApiUserController extends BaseController {
 
     /**
      * @param mobile
-     * @param code
+     * @param mCode
      * @return
      * @description 验证码登录
      * @author WangBin
      * @date 2018/8/9 16:05
      */
     @PostMapping("verificationCodeLogin")
-    public JsonResult verificationCodeLogin(String mobile, String code) {
-        OperationResult<UserBaseInfoDTO> result = userService.verificationCodeLogin(mobile, code);
+    public JsonResult verificationCodeLogin(String mobile, String mCode) {
+        OperationResult<UserBaseInfoDTO> result = userService.verificationCodeLogin(mobile, mCode);
         if (result.getEntity() == null) {
             return error(result.getErrorCode());
         }
