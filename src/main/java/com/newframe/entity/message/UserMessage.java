@@ -60,4 +60,14 @@ public class UserMessage {
      * utime
      */
     private Integer utime;
+
+    public UserMessage(Long uid, Integer roleId, Long orderId, Long associatedOrderId, String messTitle, Integer messType, String messContent) {
+        this.uid = uid;
+        this.roleId = roleId;
+        this.orderId = orderId;
+        this.associatedOrderId = associatedOrderId;
+        this.messTitle = messTitle;
+        this.messType = messType;
+        this.messContent = messContent;
+    }
 }

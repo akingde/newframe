@@ -97,13 +97,15 @@ public interface TestManageService {
      * 单个账号的推送
      * 根据用户的uid给用户推送消息
      * @param uid
+     * @param roleId
+     * @param associatedOrderId
      * @param orderId
      * @param messTitle
      * @param messType 消息的类型：1:融资类消息，2:租机类消息，3:发货申请类的消息
      * @param messContent
      * @return
      */
-    OperationResult<Boolean> sendMessToAllByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent);
+    OperationResult<Boolean> sendMessToAllByUid(Long uid, Integer roleId, Long associatedOrderId, Long orderId, String messTitle, Integer messType, String messContent);
 
 
     /**
@@ -116,4 +118,15 @@ public interface TestManageService {
      * @return
      */
     OperationResult<Boolean> andSendMessageByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent);
+
+    /**
+     * 给Ios设备推送消息
+     * @param uid
+     * @param orderId
+     * @param messTitle
+     * @param messType
+     * @param messContent
+     * @return
+     */
+    OperationResult<Boolean> iosSendMessageByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent);
 }

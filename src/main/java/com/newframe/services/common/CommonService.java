@@ -3,6 +3,7 @@ package com.newframe.services.common;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.message.UserMessageInfo;
+import com.newframe.entity.message.UserMessage;
 
 /**
  * @author:wangdong
@@ -28,4 +29,11 @@ public interface CommonService {
      * @return
      */
     OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer roleId, Integer pageSize, Integer currentPage);
+
+    /**
+     * 保存消息到数据库
+     * @param userMessage
+     * @return
+     */
+    OperationResult<Boolean> saveUserMessage(UserMessage userMessage);
 }

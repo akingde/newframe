@@ -28,11 +28,13 @@ public class TestCommonController extends BaseController {
      * @param messTitle 消息的标题
      * @param messType 消息的类型：1:融资类消息，2:租机类消息，3:发货申请类的消息
      * @param messContent 消息的内容
+     * @param roleId 角色的Id
+     * @param associatedOrderId 关联订单的ID
      */
     @RequestMapping("sendMessToAllByUid")
-    public JsonResult sendMessToAllByUid(Long uid, Long orderId,String messTitle, Integer messType, String messContent){
+    public JsonResult sendMessToAllByUid(Long uid, Integer roleId,Long associatedOrderId,Long orderId,String messTitle, Integer messType, String messContent){
 
-        OperationResult<Boolean> result = testManageService.sendMessToAllByUid(uid,orderId,messTitle,messType,messContent);
+        OperationResult<Boolean> result = testManageService.sendMessToAllByUid(uid,roleId, associatedOrderId, orderId, messTitle, messType, messContent);
         if (result.getSucc()) {
             return success(result.getEntity());
         }
