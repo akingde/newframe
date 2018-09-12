@@ -60,18 +60,14 @@ public class FunderServiceImpl implements RoleService {
     @Override
     public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) throws IOException {
         FunderApplyDTO roleApply = (FunderApplyDTO)roleApplyDTO;
-        if(StringUtils.isAnyEmpty(roleApply.getTopContacts()) || RelationshipEnum.isEmpty(roleApply.getRelationship())){
-            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
-        }
-        if (!PatternEnum.checkPattern(roleApply.getTopContactsPhoneNumber(), PatternEnum.mobile)){
-            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
-        }
         if(FileUtils.checkImageAndEmpty(2, roleApply.getBusinessQualification())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
         if(FileUtils.checkImageAndEmpty(2, roleApply.getLetterOfAttorney())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
+        String frontIdCardUrl = aliossService.uploadFileStreamToBasetool(roleApplyDTO.getLegalEntityIdCardFront(), bucket);
+        String backIdCardUrl = aliossService.uploadFileStreamToBasetool(roleApplyDTO.getLegalEntityIdCardBack(), bucket);
         List<String> businessUrls =
                 aliossService.uploadFilesToBasetool(roleApply.getBusinessListen(), bucket);
         List<String> qualificationUrls =
@@ -85,6 +81,10 @@ public class FunderServiceImpl implements RoleService {
         userRoleApply.setMerchantName(roleApply.getName());
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
+        userRoleApply.setIdCardFrontFile(frontIdCardUrl);
+        userRoleApply.setIdCardBackFile(backIdCardUrl);
+        userRoleApply.setContactsPhoneNumber(roleApply.getContactsPhoneNumber());
+        userRoleApply.setJob(roleApply.getJob());
         userRoleApply.setTopContacts(roleApply.getTopContacts());
         userRoleApply.setRelationship(roleApply.getRelationship());
         userRoleApply.setTopContactsPhoneNumber(roleApply.getTopContactsPhoneNumber());

@@ -78,6 +78,8 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         if(!FileUtils.checkImage(2, roleApply.getHouseProprietaryCertificate())){
             return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
         }
+        String frontIdCardUrl = aliossService.uploadFileStreamToBasetool(roleApplyDTO.getLegalEntityIdCardFront(), bucket);
+        String backIdCardUrl = aliossService.uploadFileStreamToBasetool(roleApplyDTO.getLegalEntityIdCardBack(), bucket);
         List<String> businessUrls =
                 aliossService.uploadFilesToBasetool(roleApply.getBusinessListen(), bucket);
         List<String> highestUrls =
@@ -95,6 +97,13 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
         userRoleApply.setBusinessLicenseNumber(roleApply.getBusinessListenNumber());
+        userRoleApply.setIdCardFrontFile(frontIdCardUrl);
+        userRoleApply.setIdCardBackFile(backIdCardUrl);
+        userRoleApply.setContactsPhoneNumber(roleApply.getContactsPhoneNumber());
+        userRoleApply.setJob(roleApply.getJob());
+        userRoleApply.setTopContacts(roleApply.getTopContacts());
+        userRoleApply.setTopContactsPhoneNumber(roleApply.getTopContactsPhoneNumber());
+        userRoleApply.setRelationship(roleApply.getRelationship());
         userRoleApply.setBusinessLicenseFile(StringUtils.join(businessUrls, ","));
         userRoleApply.setHighestDegreeDiplomaFile(StringUtils.join(highestUrls, ","));
         userRoleApply.setDrivingLicenseFile(StringUtils.join(drivindUrls, ","));

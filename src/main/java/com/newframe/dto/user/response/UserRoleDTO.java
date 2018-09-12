@@ -44,16 +44,30 @@ public class UserRoleDTO{
             this.setBusinessListen(StringUtils.split(userRentMerchant.getBusinessLicenseFile(), ","));
             this.setStatus(userRentMerchant.getRoleStatus());
             this.highestDegreeDiploma = StringUtils.split(userRentMerchant.getHighestDegreeDiplomaFile(), ",");
-            this.drivingLicense = StringUtils.split(userRentMerchant.getDrivingLicenseFile() , ",'");
-            this.houseProprietaryCertificate = StringUtils.split(userRentMerchant.getHouseProprietaryCertificateFile(), ",'");
+            this.drivingLicense = StringUtils.split(userRentMerchant.getDrivingLicenseFile() , ",");
+            this.houseProprietaryCertificate = StringUtils.split(userRentMerchant.getHouseProprietaryCertificateFile(), ",");
         }
     }
 
     @Data
     public static class BigRentMechant extends RentMechant {
+        private String legalEntityIdCardFront; //身份证正面
+        private String legalEntityIdCardBack; // 身份证背面
+        private String contactsPhoneNumber;//联系人手机号
+        private String job;//职位
+        private String topContacts;//紧急联系人
+        private String topContactsPhoneNumber;//紧急联系人手机号
+        private Integer relationship;//关系
         private Boolean appoint;    //是否指定供应商
         public BigRentMechant(UserRentMerchant userRentMerchant) {
             super(userRentMerchant);
+            this.legalEntityIdCardFront = userRentMerchant.getIdCardFrontFile();
+            this.legalEntityIdCardBack = userRentMerchant.getIdCardBackFile();
+            this.contactsPhoneNumber = userRentMerchant.getContactsPhoneNumber();
+            this.job = userRentMerchant.getJob();
+            this.topContacts = userRentMerchant.getTopContacts();
+            this.topContactsPhoneNumber = userRentMerchant.getTopContactsPhoneNumber();
+            this.relationship = userRentMerchant.getRelationship();
             this.appoint = userRentMerchant.getAppoint();
         }
     }
@@ -88,6 +102,10 @@ public class UserRoleDTO{
      */
     @Data
     public static class Funder extends UserRoleDTO {
+        private String legalEntityIdCardFront; //身份证正面
+        private String legalEntityIdCardBack; // 身份证背面
+        private String contactsPhoneNumber;//联系人手机号
+        private String job;//职位
         private String topContacts;//紧急联系人
         private String topContactsPhoneNumber;//基金联系人手机号
         private Integer relationship;//关系
@@ -104,6 +122,10 @@ public class UserRoleDTO{
             this.setBusinessListenNumber(userFunder.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userFunder.getBusinessLicenseFile(), ","));
             this.setStatus(userFunder.getRoleStatus());
+            this.legalEntityIdCardFront = userFunder.getIdCardFrontFile();
+            this.legalEntityIdCardBack = userFunder.getIdCardBackFile();
+            this.contactsPhoneNumber = userFunder.getContactsPhoneNumber();
+            this.job = userFunder.getJob();
             this.topContacts = userFunder.getTopContacts();
             this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
             this.relationship = userFunder.getRelationship();
@@ -117,6 +139,10 @@ public class UserRoleDTO{
      */
     @Data
     public static class Hirer extends UserRoleDTO {
+        private String legalEntityIdCardFront; //身份证正面
+        private String legalEntityIdCardBack; // 身份证背面
+        private String contactsPhoneNumber;//联系人手机号
+        private String job;//职位
         private String topContacts;//紧急联系人
         private String topContactsPhoneNumber;//基金联系人手机号
         private Integer relationship;//关系
@@ -131,6 +157,10 @@ public class UserRoleDTO{
             this.setBusinessListenNumber(userHirer.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userHirer.getBusinessLicenseFile(), ","));
             this.setStatus(userHirer.getRoleStatus());
+            this.legalEntityIdCardFront = userHirer.getIdCardFrontFile();
+            this.legalEntityIdCardBack = userHirer.getIdCardBackFile();
+            this.contactsPhoneNumber = userHirer.getContactsPhoneNumber();
+            this.job = userHirer.getJob();
             this.topContacts = userHirer.getTopContacts();
             this.topContactsPhoneNumber = userHirer.getTopContactsPhoneNumber();
             this.relationship = userHirer.getRelationship();
@@ -142,6 +172,13 @@ public class UserRoleDTO{
      */
     @Data
     public static class Supplier extends UserRoleDTO {
+        private String legalEntityIdCardFront; //身份证正面
+        private String legalEntityIdCardBack; // 身份证背面
+        private String contactsPhoneNumber;//联系人手机号
+        private String job;//职位
+        private String topContacts;//紧急联系人
+        private String topContactsPhoneNumber;//基金联系人手机号
+        private Integer relationship;//关系
         public Supplier(UserSupplier userSupplier) {
             this.setUid(userSupplier.getUid());
             this.setRoleId(RoleEnum.SUPPLIER.getRoleId());
@@ -152,6 +189,13 @@ public class UserRoleDTO{
             this.setBusinessListenNumber(userSupplier.getBusinessLicenseNumber());
             this.setBusinessListen(StringUtils.split(userSupplier.getBusinessLicenseFile(), ","));
             this.setStatus(userSupplier.getRoleStatus());
+            this.legalEntityIdCardFront = userSupplier.getIdCardFrontFile();
+            this.legalEntityIdCardBack = userSupplier.getIdCardBackFile();
+            this.contactsPhoneNumber = userSupplier.getContactsPhoneNumber();
+            this.job = userSupplier.getJob();
+            this.topContacts = userSupplier.getTopContacts();
+            this.topContactsPhoneNumber = userSupplier.getTopContactsPhoneNumber();
+            this.relationship = userSupplier.getRelationship();
         }
     }
 }

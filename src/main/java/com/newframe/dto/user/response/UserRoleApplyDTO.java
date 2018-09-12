@@ -56,6 +56,13 @@ public class UserRoleApplyDTO {
         private String legalEntityIdNumber;//法人身份证号
         private String businessListenNumber;//营业执照
         private String[] businessListen;//营业执照文件url
+        private String legalEntityIdCardFront; //身份证正面
+        private String legalEntityIdCardBack; // 身份证背面
+        private String contactsPhoneNumber;//联系人手机号
+        private String job;//职位
+        private String topContacts;//紧急联系人
+        private String topContactsPhoneNumber;//紧急联系人手机号
+        private Integer relationship;//关系
 
         public RoleApplyInfo() {
         }
@@ -68,6 +75,13 @@ public class UserRoleApplyDTO {
             this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
             this.businessListenNumber = userRoleApply.getBusinessLicenseNumber();
             this.businessListen = StringUtils.split(userRoleApply.getBusinessLicenseFile(), ",");
+            this.legalEntityIdCardFront = userRoleApply.getIdCardFrontFile();
+            this.legalEntityIdCardBack = userRoleApply.getIdCardBackFile();
+            this.contactsPhoneNumber = userRoleApply.getContactsPhoneNumber();
+            this.job = userRoleApply.getJob();
+            this.topContacts = userRoleApply.getTopContacts();
+            this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
+            this.relationship = userRoleApply.getRelationship();
         }
     }
 
@@ -96,9 +110,6 @@ public class UserRoleApplyDTO {
      */
     @Data
     public static class Funder extends RoleApplyInfo {
-        private String topContacts;//紧急联系人
-        private String topContactsPhoneNumber;//紧急联系人手机号
-        private Integer relationship;//关系
         private String[] letterOfAttorney;//委托授权书
         private String[] businessQualification;//经营资质
 
@@ -107,9 +118,6 @@ public class UserRoleApplyDTO {
 
         public Funder(UserRoleApply userRoleApply) {
             super(userRoleApply);
-            this.topContacts = userRoleApply.getTopContacts();
-            this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
-            this.relationship = userRoleApply.getRelationship();
             this.letterOfAttorney = StringUtils.split(userRoleApply.getLetterOfAttorneyFile(), ",");
             this.businessQualification = StringUtils.split(userRoleApply.getBusinessQualificationFile(), ",");
         }
@@ -120,18 +128,10 @@ public class UserRoleApplyDTO {
      */
     @Data
     public static class Hirer extends RoleApplyInfo {
-        private String topContacts;//紧急联系人
-        private String topContactsPhoneNumber;//基金联系人手机号
-        private Integer relationship;//关系
-
         public Hirer() {
         }
-
         public Hirer(UserRoleApply userRoleApply) {
             super(userRoleApply);
-            this.topContacts = userRoleApply.getTopContacts();
-            this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
-            this.relationship = userRoleApply.getRelationship();
         }
     }
 
@@ -140,6 +140,7 @@ public class UserRoleApplyDTO {
      */
     @Data
     public static class Supplier extends RoleApplyInfo {
+
         public Supplier() {
         }
 

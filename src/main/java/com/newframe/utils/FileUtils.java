@@ -84,6 +84,13 @@ public class FileUtils {
         return true;
     }
 
+    public static boolean checkImg(MultipartFile file){
+        if (file == null || !checkImage(file)) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * 判断文件是否是图片
      * @param file

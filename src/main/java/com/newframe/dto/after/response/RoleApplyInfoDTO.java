@@ -10,6 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 public class RoleApplyInfoDTO extends RoleApplyListDTO{
 
+    private String legalEntityIdCardFront; //身份证正面
+    private String legalEntityIdCardBack; // 身份证背面
+    private String contactsPhoneNumber;//联系人手机号
+    private String job;//职位
     private String topContacts;
     private String topContactsPhoneNumber;
     private Integer relationship;
@@ -25,6 +29,10 @@ public class RoleApplyInfoDTO extends RoleApplyListDTO{
 
     public RoleApplyInfoDTO(UserRoleApply userRoleApply) {
         super(userRoleApply);
+        this.legalEntityIdCardFront = userRoleApply.getIdCardFrontFile();
+        this.legalEntityIdCardBack = userRoleApply.getIdCardBackFile();
+        this.contactsPhoneNumber = userRoleApply.getContactsPhoneNumber();
+        this.job = userRoleApply.getJob();
         this.topContacts = userRoleApply.getTopContacts();
         this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
         this.relationship = userRoleApply.getRelationship();

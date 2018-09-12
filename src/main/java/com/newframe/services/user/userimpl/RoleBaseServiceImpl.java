@@ -8,6 +8,8 @@ import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.user.PatternEnum;
+import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.user.RoleService;
@@ -54,6 +56,39 @@ public class RoleBaseServiceImpl implements RoleBaseService {
     }
 
     /**
+     * 角色申请校验
+     * @param role
+     * @return
+     */
+    private OperationResult<Boolean> roleApplyCheck(RoleApplyDTO role){
+        if(StringUtils.isAnyEmpty(role.getName(), role.getLegalEntity(), role.getBusinessListenNumber(), role.getTopContacts(), role.getJob())){
+            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(!PatternEnum.checkPattern(role.getTopContactsPhoneNumber(), PatternEnum.mobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
+        }
+        if(!PatternEnum.checkPattern(role.getContactsPhoneNumber(), PatternEnum.mobile)){
+            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
+        }
+        if (RelationshipEnum.isEmpty(role.getRelationship())){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(!IdNumberUtils.isValidatedAllIdcard(role.getLegalEntityIdNumber())){
+            return new OperationResult(RequestResultEnum.ID_NUMBER_ERROR, false);
+        }
+        if(!FileUtils.checkImg(role.getLegalEntityIdCardFront())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if(!FileUtils.checkImg(role.getLegalEntityIdCardBack())){
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        if (FileUtils.checkImageAndEmpty(2, role.getBusinessListen())) {
+            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        }
+        return new OperationResult(true);
+    }
+
+    /**
      * 角色申请
      *
      * @param uid
@@ -71,14 +106,9 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         if(CollectionUtils.isNotEmpty(roleList)){
             return new OperationResult(RequestResultEnum.ROLE_EXISTS, false);
         }
-        if(StringUtils.isAnyEmpty(role.getName(), role.getLegalEntity(), role.getBusinessListenNumber())){
-            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
-        }
-        if(!IdNumberUtils.isValidatedAllIdcard(role.getLegalEntityIdNumber())){
-            return new OperationResult(RequestResultEnum.ID_NUMBER_ERROR, false);
-        }
-        if (FileUtils.checkImageAndEmpty(2, role.getBusinessListen())) {
-            return new OperationResult(RequestResultEnum.ILLEGAL_FILE, false);
+        OperationResult<Boolean> result = roleApplyCheck(role);
+        if (!result.getEntity()){
+            return result;
         }
         return roleServiceMap.get(roleId).roleApply(uid, role);
     }
