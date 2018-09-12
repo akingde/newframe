@@ -15,9 +15,13 @@ public class FunderDTO {
     private String phoneNumber;
     private String legalEntity;
     private String legalEntityIdNumber;
-    private String topContacts;
-    private String topContactsPhoneNumber;
-    private Integer relationship;
+    private String legalEntityIdCardFront; //身份证正面
+    private String legalEntityIdCardBack; // 身份证背面
+    private String contactsPhoneNumber;//联系人手机号
+    private String job;//职位
+    private String topContacts;//紧急联系人
+    private String topContactsPhoneNumber;//紧急联系人手机号
+    private Integer relationship;//关系
     private Integer ctime;
     private String businessLicenseNumber;
     private String[] businessLicense;
@@ -33,6 +37,10 @@ public class FunderDTO {
         this.phoneNumber = userFunder.getPhoneNumber();
         this.legalEntity = userFunder.getLegalEntity();
         this.legalEntityIdNumber = userFunder.getLegalEntityIdNumber();
+        this.legalEntityIdCardFront = userFunder.getIdCardFrontFile();
+        this.legalEntityIdCardBack = userFunder.getIdCardBackFile();
+        this.contactsPhoneNumber = userFunder.getContactsPhoneNumber();
+        this.job = userFunder.getJob();
         this.topContacts = userFunder.getTopContacts();
         this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
         this.relationship = userFunder.getRelationship();

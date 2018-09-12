@@ -71,6 +71,34 @@ public class UserRoleApply {
     private String legalEntityIdNumber;
 
     /**
+     * 法人正面身份证
+     * id_card_front_file
+     */
+    @Column(name = "id_card_front_file")
+    private String idCardFrontFile;
+
+    /**
+     * 法人背面身份证
+     * id_card_back_file
+     */
+    @Column(name = "id_card_back_file")
+    private String idCardBackFile;
+
+    /**
+     * 联系人手机号
+     * contacts_phone_number
+     */
+    @Column(name = "contacts_phone_number")
+    private String contactsPhoneNumber;
+
+    /**
+     * 职位
+     * job
+     */
+    @Column(name = "job")
+    private String job;
+
+    /**
      * 紧急联系人
      * top_contacts
      */

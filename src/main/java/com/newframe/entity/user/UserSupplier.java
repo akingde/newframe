@@ -58,6 +58,55 @@ public class UserSupplier {
     private String legalEntityIdNumber;
 
     /**
+     * 法人正面身份证
+     * id_card_front_file
+     */
+    @Column(name = "id_card_front_file")
+    private String idCardFrontFile;
+
+    /**
+     * 法人背面身份证
+     * id_card_back_file
+     */
+    @Column(name = "id_card_back_file")
+    private String idCardBackFile;
+
+    /**
+     * 联系人手机号
+     * contacts_phone_number
+     */
+    @Column(name = "contacts_phone_number")
+    private String contactsPhoneNumber;
+
+    /**
+     * 职位
+     * job
+     */
+    @Column(name = "job")
+    private String job;
+
+    /**
+     * 紧急联系人
+     * top_contacts
+     */
+    @Column(name = "top_contacts")
+    private String topContacts;
+
+    /**
+     * 紧急联系人手机号
+     * top_contacts_phone_number
+     */
+    @Column(name = "top_contacts_phone_number")
+    private String topContactsPhoneNumber;
+
+    /**
+     * 与紧急联系人关系
+     * relationship
+     */
+    @Column(name = "relationship")
+    private Integer relationship;
+
+    /**
      * 营业职业编号
      * business_license_number
      */
@@ -101,6 +150,13 @@ public class UserSupplier {
         this.merchantName = userRoleApply.getMerchantName();
         this.legalEntity = userRoleApply.getLegalEntity();
         this.legalEntityIdNumber = userRoleApply.getLegalEntityIdNumber();
+        this.idCardFrontFile = userRoleApply.getIdCardFrontFile();
+        this.idCardBackFile = userRoleApply.getIdCardBackFile();
+        this.contactsPhoneNumber = userRoleApply.getContactsPhoneNumber();
+        this.job = userRoleApply.getJob();
+        this.topContacts = userRoleApply.getTopContacts();
+        this.topContactsPhoneNumber = userRoleApply.getTopContactsPhoneNumber();
+        this.relationship = userRoleApply.getRelationship();
         this.businessLicenseNumber = userRoleApply.getBusinessLicenseNumber();
         this.businessLicenseFile = userRoleApply.getBusinessLicenseFile();
         this.roleStatus = RoleStatusEnum.NORMAL.getRoleStatue();

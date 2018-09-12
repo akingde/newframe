@@ -57,12 +57,8 @@ public class HirerServiceImpl implements RoleService {
     @Override
     public OperationResult<Boolean> roleApply(Long uid, RoleApplyDTO roleApplyDTO) throws IOException {
         HirerApplyDTO roleApply = (HirerApplyDTO)roleApplyDTO;
-        if(StringUtils.isAnyEmpty(roleApply.getTopContacts()) || RelationshipEnum.isEmpty(roleApply.getRelationship())){
-            return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
-        }
-        if (!PatternEnum.checkPattern(roleApply.getTopContactsPhoneNumber(), PatternEnum.mobile)){
-            return new OperationResult(RequestResultEnum.MOBILE_INVALID, false);
-        }
+        String frontIdCardUrl = aliossService.uploadFileStreamToBasetool(roleApplyDTO.getLegalEntityIdCardFront(), bucket);
+        String backIdCardUrl = aliossService.uploadFileStreamToBasetool(roleApplyDTO.getLegalEntityIdCardBack(), bucket);
         List<String> businessUrls = aliossService.uploadFilesToBasetool(roleApply.getBusinessListen(), bucket);
         UserRoleApply userRoleApply = new UserRoleApply();
         userRoleApply.setUid(uid);
@@ -71,6 +67,10 @@ public class HirerServiceImpl implements RoleService {
         userRoleApply.setMerchantName(roleApply.getName());
         userRoleApply.setLegalEntity(roleApply.getLegalEntity());
         userRoleApply.setLegalEntityIdNumber(roleApply.getLegalEntityIdNumber());
+        userRoleApply.setIdCardFrontFile(frontIdCardUrl);
+        userRoleApply.setIdCardBackFile(backIdCardUrl);
+        userRoleApply.setContactsPhoneNumber(roleApply.getContactsPhoneNumber());
+        userRoleApply.setJob(roleApply.getJob());
         userRoleApply.setTopContacts(roleApply.getTopContacts());
         userRoleApply.setRelationship(roleApply.getRelationship());
         userRoleApply.setTopContactsPhoneNumber(roleApply.getTopContactsPhoneNumber());
