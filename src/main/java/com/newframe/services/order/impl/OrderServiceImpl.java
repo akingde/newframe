@@ -269,11 +269,14 @@ public class OrderServiceImpl implements OrderService {
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
             orderFunders.add(orderFunder);
+            orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
         }
         // 修改租赁商订单状态和订单类型
         updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
         // 生成资金方订单
         orderFunderMaser.saveAll(orderFunders);
+
+
 
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
         // todo 要不要操作账户表？
@@ -342,6 +345,7 @@ public class OrderServiceImpl implements OrderService {
 
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
+            orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
@@ -1328,5 +1332,6 @@ public class OrderServiceImpl implements OrderService {
             orderSupplier.setTotalAccount(product.getSupplyPrice());
         }
         orderSupplierMaster.save(orderSupplier);
+        orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
     }
 }
