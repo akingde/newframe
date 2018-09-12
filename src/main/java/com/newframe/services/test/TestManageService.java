@@ -105,7 +105,7 @@ public interface TestManageService {
      * @param messContent
      * @return
      */
-    OperationResult<Boolean> sendMessToAllByUid(Long uid, Integer roleId, Long associatedOrderId, Long orderId, String messTitle, Integer messType, String messContent);
+    OperationResult<Boolean> sendMessToAllByUid(Long uid, Integer roleId, String associatedOrderId, Long orderId, String messTitle, Integer messType, String messContent);
 
 
     /**

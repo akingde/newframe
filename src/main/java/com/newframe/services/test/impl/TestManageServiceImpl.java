@@ -264,7 +264,7 @@ public class TestManageServiceImpl implements TestManageService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> sendMessToAllByUid(Long uid, Integer roleId, Long associatedOrderId, Long orderId, String messTitle, Integer messType, String messContent) {
+    public OperationResult<Boolean> sendMessToAllByUid(Long uid, Integer roleId, String associatedOrderId, Long orderId, String messTitle, Integer messType, String messContent) {
         if (null ==uid || null == orderId || StringUtils.isEmpty(messTitle) || null == messType ||
                 StringUtils.isEmpty(messContent) ){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);

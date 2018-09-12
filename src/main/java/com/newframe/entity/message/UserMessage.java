@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.math.BigDecimal;
 
 /**
  * <p>
@@ -39,7 +38,7 @@ public class UserMessage {
     /**
      * 关联订单的ID
      */
-    private Long associatedOrderId;
+    private String associatedOrderId;
     /**
      * 消息的标题
      */
@@ -61,7 +60,7 @@ public class UserMessage {
      */
     private Integer utime;
 
-    public UserMessage(Long uid, Integer roleId, Long orderId, Long associatedOrderId, String messTitle, Integer messType, String messContent) {
+    public UserMessage(Long uid, Integer roleId, Long orderId, String associatedOrderId, String messTitle, Integer messType, String messContent) {
         this.uid = uid;
         this.roleId = roleId;
         this.orderId = orderId;
