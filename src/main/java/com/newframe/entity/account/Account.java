@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @Entity
-public class AccountRenter {
+public class Account {
     /**
      * uid
      */

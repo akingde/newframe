@@ -1,7 +1,6 @@
 package com.newframe.repositories.dataSlave.account;
 
 
-import com.newframe.entity.account.AccountRenter;
 import com.newframe.entity.account.AccountRenterRent;
 import com.newframe.utils.query.BaseRepository;
 

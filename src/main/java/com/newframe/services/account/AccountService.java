@@ -372,7 +372,7 @@ public interface AccountService {
      * @param uid
      * @return
      */
-    AccountRenter getAccountRenter(Long uid);
+    Account getAccountRenter(Long uid);
 
     /**
      * 获取租赁商账户资产下的租赁明细表

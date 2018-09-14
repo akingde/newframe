@@ -103,7 +103,7 @@ public class ApiAccountController extends BaseController {
 
         uid = 10001L;
 
-        OperationResult<AccountRenter> result = accountManageService.getRenterAssetAccount(uid);
+        OperationResult<Account> result = accountManageService.getRenterAssetAccount(uid);
         if (result.getSucc()) {
             return success(result.getEntity());
         }

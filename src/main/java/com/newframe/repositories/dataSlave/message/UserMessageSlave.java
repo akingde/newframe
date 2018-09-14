@@ -1,7 +1,6 @@
 package com.newframe.repositories.dataSlave.message;
 
 
-import com.newframe.entity.account.AccountRenter;
 import com.newframe.entity.message.UserMessage;
 import com.newframe.utils.query.BaseRepository;
 
