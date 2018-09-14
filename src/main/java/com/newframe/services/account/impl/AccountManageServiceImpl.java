@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -283,5 +284,26 @@ public class AccountManageServiceImpl implements AccountManageService {
         renterOrderRentDetailInfo.setList(accountRenterOverdueDetailList);
         renterOrderRentDetailInfo.setTotal(accountRenterOverdueDetails.getTotalElements());
         return new OperationResult<>(renterOrderRentDetailInfo);
+    }
+
+    /**
+     * 这个是用户模块在创建用户的时候，需要默认一个创建账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccount(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        Account account = new Account();
+        account.setAccount(uid);
+        Account result = accountService.saveAccount(account);
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
     }
 }

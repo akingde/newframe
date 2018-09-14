@@ -66,4 +66,16 @@ public class Account {
      * utime
      */
     private Integer utime;
+
+    public void setAccount(Long uid){
+        this.uid = uid;
+        this.useableAmount = BigDecimal.valueOf(0);
+        this.totalAssets = BigDecimal.valueOf(0);
+        this.frozenAssets = BigDecimal.valueOf(0);
+        this.marginBalance = BigDecimal.valueOf(0);
+        this.marginAdvances = BigDecimal.valueOf(0);
+        this.dueAmount = BigDecimal.valueOf(0);
+        this.accountStatus = 1;
+        this.currentMonthPayment=BigDecimal.valueOf(0);
+    }
 }
