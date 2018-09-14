@@ -105,12 +105,12 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<AccountRenter> getRenterAssetAccount(Long uid) {
+    public OperationResult<Account> getRenterAssetAccount(Long uid) {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
 
-        AccountRenter accountRenter = accountService.getAccountRenter(uid);
+        Account accountRenter = accountService.getAccountRenter(uid);
 
         return new OperationResult<>(accountRenter);
     }

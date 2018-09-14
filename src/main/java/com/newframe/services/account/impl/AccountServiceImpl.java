@@ -660,12 +660,12 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public AccountRenter getAccountRenter(Long uid) {
+    public Account getAccountRenter(Long uid) {
         if (null == uid) {
             return null;
         }
 
-        Optional<AccountRenter> result = accountRenterSlave.findById(uid);
+        Optional<Account> result = accountRenterSlave.findById(uid);
         if (!result.isPresent()) {
             return null;
         }

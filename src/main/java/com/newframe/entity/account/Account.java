@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 /**
  * <p>
- * 租赁商账户表
+ * 商账户表
  * </p>
  *
  * @author wangdong
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @Entity
-public class AccountRenter {
+public class Account {
     /**
      * uid
      */

@@ -24,7 +24,7 @@ public interface AccountManageService {
      * @param uid
      * @return
      */
-    OperationResult<AccountRenter> getRenterAssetAccount(Long uid);
+    OperationResult<Account> getRenterAssetAccount(Long uid);
 
     /**
      *
