@@ -62,4 +62,13 @@ public class UserRole {
      */
     @Column(name = "utime")
     private Integer utime;
+
+    public UserRole() {
+    }
+
+    public UserRole(Long uid, Integer roleId, Integer roleStatus) {
+        this.uid = uid;
+        this.roleId = roleId;
+        this.roleStatus = roleStatus;
+    }
 }

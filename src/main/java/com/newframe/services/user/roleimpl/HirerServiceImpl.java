@@ -40,8 +40,6 @@ public class HirerServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -105,11 +103,9 @@ public class HirerServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        UserRole userRole = new UserRole();
-        userRole.setUid(userRoleApply.getUid());
-        userRole.setRoleId(RoleEnum.HIRER.getRoleId());
-        userRoleService.insert(userRole);
-        roleBaseService.addAccount(userRoleApply.getUid(), getRoleId(), userRoleApply);
+        insertRole(userRoleApply.getUid());
+        userHirerService.insert(new UserHirer(userRoleApply));
+        addAccount(userRoleApply.getUid(), userRoleApply);
         return new OperationResult(true);
     }
 
@@ -280,12 +276,13 @@ public class HirerServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

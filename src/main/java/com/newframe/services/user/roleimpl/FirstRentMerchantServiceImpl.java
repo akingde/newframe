@@ -48,8 +48,6 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private UserRoleService userRoleService;
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -133,12 +131,9 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        Integer[] roleIds = new Integer[]{RoleEnum.FIRST_RENT_MERCHANT.getRoleId(),
-                        RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
-        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        insertRole(userRoleApply.getUid());
+        userRentMerchantService.insert(new UserRentMerchant(userRoleApply));
         addAccount(userRoleApply.getUid(), userRoleApply);
-        roleBaseService.addAccount(userRoleApply.getUid(), RoleEnum.SUPPLIER.getRoleId(), userRoleApply);
-        roleBaseService.addAccount(userRoleApply.getUid(), RoleEnum.HIRER.getRoleId(), userRoleApply);
         return new OperationResult(true);
     }
 
@@ -392,12 +387,12 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

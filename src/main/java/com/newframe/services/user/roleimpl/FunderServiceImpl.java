@@ -9,8 +9,6 @@ import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
-import com.newframe.enums.user.PatternEnum;
-import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
@@ -41,8 +39,6 @@ public class FunderServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -119,10 +115,9 @@ public class FunderServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        Integer[] roleIds = new Integer[]{RoleEnum.FUNDER.getRoleId(), RoleEnum.HIRER.getRoleId()};
-        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        insertRole(userRoleApply.getUid());
+        userFunderService.insert(new UserFunder(userRoleApply));
         addAccount(userRoleApply.getUid(), userRoleApply);
-        roleBaseService.addAccount(userRoleApply.getUid(), RoleEnum.HIRER.getRoleId(), userRoleApply);
         return new OperationResult(true);
     }
 
@@ -293,12 +288,13 @@ public class FunderServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

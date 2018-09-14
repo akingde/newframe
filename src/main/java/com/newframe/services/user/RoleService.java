@@ -147,10 +147,10 @@ public interface RoleService {
 
     /**
      * 生成角色记录
-     * @param roleId
+     * @param uid
      * @return
      */
-    OperationResult<Boolean> insertRole(Integer roleId);
+    OperationResult<Boolean> insertRole(Long uid);
 
     /**
      * 获取商品列表
