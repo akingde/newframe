@@ -11,6 +11,7 @@ import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,8 @@ public class HirerServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -106,6 +109,34 @@ public class HirerServiceImpl implements RoleService {
         userRole.setUid(userRoleApply.getUid());
         userRole.setRoleId(RoleEnum.HIRER.getRoleId());
         userRoleService.insert(userRole);
+        roleBaseService.addAccount(userRoleApply.getUid(), getRoleId(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserHirer userHirer = new UserHirer();
+        userHirer.setUid(uid);
+        userHirer.setPhoneNumber(mobile);
+        userHirerService.update(userHirer);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
         userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);
     }

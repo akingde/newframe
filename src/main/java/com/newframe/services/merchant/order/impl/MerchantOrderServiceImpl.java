@@ -9,6 +9,7 @@ import com.newframe.enums.merchant.MerchantResult;
 import com.newframe.enums.order.OrderRenterStatus;
 import com.newframe.services.merchant.order.MerchantOrderBaseService;
 import com.newframe.services.merchant.order.MerchantOrderService;
+import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,14 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
     MerchantOrderBaseService merchantOrderBaseService;
 
     @Autowired
+    UserRentMerchantService userRentMerchantService;
+
+    @Autowired
     IdGlobalGenerator idGlobalGenerator;
     @Override
     public OperationResult<Boolean> pushOrder(MerchantOrderDTO merchantOrder) {
         UserRentMerchant userRentMerchant =
-                merchantOrderBaseService.getRenterInfoByIdNumber(merchantOrder.getRenterIdNumber(),merchantOrder.getPartnerId());
+                userRentMerchantService.findOne(merchantOrder.getRenterMobile());
         if(userRentMerchant == null){
             return new OperationResult<>(MerchantResult.RENTER_IS_NOT_EXIST);
         }

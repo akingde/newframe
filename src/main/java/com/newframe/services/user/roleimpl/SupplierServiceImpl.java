@@ -9,6 +9,7 @@ import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import org.apache.commons.lang3.StringUtils;
@@ -36,9 +37,9 @@ public class SupplierServiceImpl implements RoleService {
     @Autowired
     private UserBaseInfoService userBaseInfoService;
     @Autowired
-    private UserHirerService userHirerService;
-    @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -105,8 +106,36 @@ public class SupplierServiceImpl implements RoleService {
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
         Integer[] roleIds = new Integer[]{RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
         userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        roleBaseService.addAccount(userRoleApply.getUid(), getRoleId(), userRoleApply);
+        roleBaseService.addAccount(userRoleApply.getUid(), RoleEnum.HIRER.getRoleId(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserSupplier userSupplier = new UserSupplier();
+        userSupplier.setUid(uid);
+        userSupplier.setPhoneNumber(mobile);
+        userSupplierService.update(userSupplier);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
         userSupplierService.insert(new UserSupplier(userRoleApply));
-        userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);
     }
 

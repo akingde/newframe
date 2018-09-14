@@ -37,7 +37,7 @@ public class MerchantOrderControllerTest extends NewFrameApplicationTests {
         merchantOrderDTO.setProductColor("黑色");
         merchantOrderDTO.setProductStorage(128);
         merchantOrderDTO.setProductRandomMemory(4);
-        merchantOrderDTO.setRenterIdNumber("330781199605282025");
+        merchantOrderDTO.setUserMobile("13543244344");
         merchantOrderDTO.setUserAddress("浙江省杭州市西湖区马腾路");
         merchantOrderDTO.setUserCreditLine(1);
         merchantOrderDTO.setUserCreditScore(789);

@@ -92,6 +92,9 @@ public class UserSupplierServiceImpl implements UserSupplierService {
         List<String> updateFields = new ArrayList();
         UserSupplierQuery query = new UserSupplierQuery();
         query.setUid(userSupplier.getUid());
+        if(StringUtils.isNotEmpty(userSupplier.getPhoneNumber())){
+            updateFields.add("phoneNumber");
+        }
         if(StringUtils.isNotEmpty(userSupplier.getMerchantName())){
             updateFields.add("merchantName");
         }

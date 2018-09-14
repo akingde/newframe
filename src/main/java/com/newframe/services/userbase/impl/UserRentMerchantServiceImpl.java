@@ -90,6 +90,9 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         List<String> updateFields = new ArrayList();
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setUid(userRentMerchant.getUid());
+        if(StringUtils.isNotEmpty(userRentMerchant.getMerchantPhoneNumber())){
+            updateFields.add("merchantPhoneNumber");
+        }
         if (StringUtils.isNotEmpty(userRentMerchant.getMerchantName())){
             updateFields.add("merchantName");
         }
@@ -154,6 +157,19 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
     @Override
     public void delete(Long uid) {
         userRentMerchantMaster.deleteById(uid);
+    }
+
+    /**
+     * 根据手机号查找
+     *
+     * @param phoneNumber
+     * @return
+     */
+    @Override
+    public UserRentMerchant findOne(String phoneNumber) {
+        UserRentMerchantQuery query = new UserRentMerchantQuery();
+        query.setPhoneNumber(phoneNumber);
+        return userRentMerchantSlave.findOne(query);
     }
 
     /**

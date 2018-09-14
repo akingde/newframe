@@ -8,6 +8,7 @@ import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.SystemCode;
+import com.newframe.repositories.dataMaster.account.AccountMaster;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
@@ -95,6 +96,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterOverdueDetailSlave accountRenterOverdueDetailSlave;
 
+    @Autowired
+    private AccountMaster accountMaster;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -102,119 +106,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public JsonResult withdrawDeposit() {
-        return null;
-    }
-
-    @Override
-    public JsonResult getRenterAccountInfo() {
-        return null;
-    }
-
-    @Override
-    public JsonResult getRenterAssetAccount() {
-        return null;
-    }
-
-    @Override
-    public JsonResult getRenterRentDetail(Integer currentPage, Integer pageSize) {
-        return null;
-    }
-
-    @Override
-    public JsonResult getRenterOrderFinanceAccount() {
-        return null;
-    }
-
-    @Override
-    public JsonResult listRenterOrderFinance(Integer currentPage, Integer pageSize) {
-        return null;
-    }
-
-    @Override
-    public JsonResult getRenterOrderFinanceDetail(Long orderId) {
-        return null;
-    }
-
-    /**
-     * 获取租赁商租赁账户
-     * 涉及到
-     * 1、租赁总额
-     * 2、累计应付租金
-     * 3、已付租金
-     * 4、待付租金
-     *
-     * @return
-     */
-    @Override
-    public JsonResult getRenterOrderRentAccount() {
-        return null;
-    }
-
-    /**
-     * 租赁商租赁账户下
-     * 租赁明细列表
-     * 涉及到分页
-     *
-     * @param currentPage
-     * @param pageSize
-     * @return
-     */
-    @Override
-    public JsonResult listRenterOrderRentAccount(Integer currentPage, Integer pageSize) {
-        return null;
-    }
-
-    /**
-     * 租赁商租赁账户下
-     * 租赁明细列表
-     * 根据订单的Id,去查看详情
-     *
-     * @param orderId
-     * @return
-     */
-    @Override
-    public JsonResult getRenterOrderRentDetail(Long orderId) {
-        return null;
-    }
-
-    /**
-     * 获取租赁商订单逾期账户
-     * 涉及到
-     * 1、逾期金额合计
-     * 2、逾期笔数
-     * 3、逾期率
-     *
-     * @return
-     */
-    @Override
-    public JsonResult getRenterOrderOverdueAccount() {
-        return null;
-    }
-
-    /**
-     * 租赁商订单逾期账户下
-     * 租赁明细列表
-     * 涉及到分页
-     *
-     * @param currentPage
-     * @param pageSize
-     * @return
-     */
-    @Override
-    public JsonResult listRenterOrderOverdue(Integer currentPage, Integer pageSize) {
-        return null;
-    }
-
-    /**
-     * 租赁商订单逾期账户下
-     * 逾期订单租赁明细列表
-     * 根据订单的Id,去查看详情
-     *
-     * @param orderId
-     * @return
-     */
-    @Override
-    public JsonResult getRenterOrderOverdueDetail(Long orderId) {
         return null;
     }
 
@@ -660,12 +551,12 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public AccountRenter getAccountRenter(Long uid) {
+    public Account getAccountRenter(Long uid) {
         if (null == uid) {
             return null;
         }
 
-        Optional<AccountRenter> result = accountRenterSlave.findById(uid);
+        Optional<Account> result = accountRenterSlave.findById(uid);
         if (!result.isPresent()) {
             return null;
         }
@@ -865,5 +756,20 @@ public class AccountServiceImpl implements AccountService {
 
 
         return accountRenterOverdueDetailSlave.findAll(query, pageRequest);
+    }
+
+    /**
+     * 保存账户的接口
+     *
+     * @param account
+     * @return
+     */
+    @Override
+    public Account saveAccount(Account account) {
+        if (null == account){
+            return null;
+        }
+
+        return accountMaster.saveAndFlush(account);
     }
 }

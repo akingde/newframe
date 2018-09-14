@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 /**
  * <p>
- * 租赁商账户表
+ * 商账户表
  * </p>
  *
  * @author wangdong
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Data
 @Entity
-public class AccountRenter {
+public class Account {
     /**
      * uid
      */
@@ -66,4 +66,16 @@ public class AccountRenter {
      * utime
      */
     private Integer utime;
+
+    public void setAccount(Long uid){
+        this.uid = uid;
+        this.useableAmount = BigDecimal.valueOf(0);
+        this.totalAssets = BigDecimal.valueOf(0);
+        this.frozenAssets = BigDecimal.valueOf(0);
+        this.marginBalance = BigDecimal.valueOf(0);
+        this.marginAdvances = BigDecimal.valueOf(0);
+        this.dueAmount = BigDecimal.valueOf(0);
+        this.accountStatus = 1;
+        this.currentMonthPayment=BigDecimal.valueOf(0);
+    }
 }

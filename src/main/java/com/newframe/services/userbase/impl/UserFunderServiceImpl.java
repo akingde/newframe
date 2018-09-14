@@ -131,6 +131,9 @@ public class UserFunderServiceImpl implements UserFunderService {
         List<String> updateFields = new ArrayList();
         UserFunderQuery query = new UserFunderQuery();
         query.setUid(userFunder.getUid());
+        if(StringUtils.isNotEmpty(userFunder.getPhoneNumber())){
+            updateFields.add("phoneNumber");
+        }
         if(StringUtils.isNotEmpty(userFunder.getMerchantName())){
             updateFields.add("merchantName");
         }

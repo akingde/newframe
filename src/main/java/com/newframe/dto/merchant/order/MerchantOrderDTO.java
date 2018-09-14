@@ -23,7 +23,7 @@ public class MerchantOrderDTO {
 
     /**租赁商身份证号码，通过身份证号码与我们平台的租赁商进行关联*/
     @NotBlank(message = "租赁商身份证号码不能为空")
-    private String renterIdNumber;
+    private String renterMobile;
 
     @NotBlank(message = "租赁姓名不能为空")
     private String userRealname;

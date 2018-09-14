@@ -14,6 +14,7 @@ import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
@@ -39,9 +40,9 @@ public class FunderServiceImpl implements RoleService {
     @Autowired
     private UserBaseInfoService userBaseInfoService;
     @Autowired
-    private UserHirerService userHirerService;
-    @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -120,8 +121,36 @@ public class FunderServiceImpl implements RoleService {
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
         Integer[] roleIds = new Integer[]{RoleEnum.FUNDER.getRoleId(), RoleEnum.HIRER.getRoleId()};
         userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        addAccount(userRoleApply.getUid(), userRoleApply);
+        roleBaseService.addAccount(userRoleApply.getUid(), RoleEnum.HIRER.getRoleId(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserFunder userFunder = new UserFunder();
+        userFunder.setUid(uid);
+        userFunder.setPhoneNumber(mobile);
+        userFunderService.update(userFunder);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
         userFunderService.insert(new UserFunder(userRoleApply));
-        userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);
     }
 

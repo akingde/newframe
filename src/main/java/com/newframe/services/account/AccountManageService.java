@@ -24,7 +24,7 @@ public interface AccountManageService {
      * @param uid
      * @return
      */
-    OperationResult<AccountRenter> getRenterAssetAccount(Long uid);
+    OperationResult<Account> getRenterAssetAccount(Long uid);
 
     /**
      *
@@ -92,4 +92,11 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<RenterOrderOverdueDetailInfo> listRenterOrderOverdue(Long uid, Integer currentPage, Integer pageSize);
+
+    /**
+     * 这个是用户模块在创建用户的时候，需要默认一个创建账户
+     * @param uid
+     * @return
+     */
+    OperationResult<Boolean> saveAccount(Long uid);
 }

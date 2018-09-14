@@ -53,6 +53,13 @@ public interface UserRentMerchantService {
     void delete(Long uid);
 
     /**
+     * 根据手机号查找
+     * @param phoneNumber
+     * @return
+     */
+    UserRentMerchant findOne(String phoneNumber);
+
+    /**
      * 获取小B列表
      * @param parentUid
      * @return
