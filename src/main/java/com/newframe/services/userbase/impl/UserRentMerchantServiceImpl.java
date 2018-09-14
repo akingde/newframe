@@ -160,6 +160,19 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
     }
 
     /**
+     * 根据手机号查找
+     *
+     * @param phoneNumber
+     * @return
+     */
+    @Override
+    public UserRentMerchant findOne(String phoneNumber) {
+        UserRentMerchantQuery query = new UserRentMerchantQuery();
+        query.setPhoneNumber(phoneNumber);
+        return userRentMerchantSlave.findOne(query);
+    }
+
+    /**
      * 获取小B列表
      *
      * @param parentUid

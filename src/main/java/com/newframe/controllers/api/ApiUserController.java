@@ -264,6 +264,11 @@ public class ApiUserController extends BaseController {
         return success(result.getEntity());
     }
 
+    @PostMapping("saveBankNumber")
+    public JsonResult saveBankNumber(){
+        return null;
+    }
+
     /**
      * @param roleId 角色id
      * @return

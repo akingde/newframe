@@ -19,4 +19,7 @@ public class UserRentMerchantQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "parentId", where = Where.equal)
     private Long parentId;
+
+    @QBindAttrField(fieldName = "merchantPhoneNumber", where = Where.equal)
+    private String phoneNumber;
 }
