@@ -90,6 +90,9 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
         List<String> updateFields = new ArrayList();
         UserRentMerchantQuery query = new UserRentMerchantQuery();
         query.setUid(userRentMerchant.getUid());
+        if(StringUtils.isNotEmpty(userRentMerchant.getMerchantPhoneNumber())){
+            updateFields.add("merchantPhoneNumber");
+        }
         if (StringUtils.isNotEmpty(userRentMerchant.getMerchantName())){
             updateFields.add("merchantName");
         }

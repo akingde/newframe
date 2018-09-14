@@ -72,6 +72,9 @@ public class UserHirerServiceImpl implements UserHirerService {
         List<String> updateFields = new ArrayList();
         UserHirerQuery query = new UserHirerQuery();
         query.setUid(userHirer.getUid());
+        if(StringUtils.isNotEmpty(userHirer.getPhoneNumber())){
+            updateFields.add("phoneNumber");
+        }
         if(StringUtils.isNotEmpty(userHirer.getMerchantName())){
             updateFields.add("merchantName");
         }
