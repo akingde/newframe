@@ -2,6 +2,8 @@ package com.newframe.services.order;
 
 import com.newframe.enums.order.MessagePushEnum;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -17,6 +19,17 @@ public interface OrderBaseService {
     Integer getOrderFinancingTimes(Long orderId);
 
     Integer getOrderRentTimes(Long orderId);
+
+    /**
+     * 生成资金方收款计划
+     * @param financingAmount 融资金额
+     * @param tenancyTerm 融资期限
+     * @param renterId 租赁商id
+     * @param funderId 资金方id
+     * @param orderId 订单id
+     */
+    void generateFundingSchedule(BigDecimal financingAmount, Integer tenancyTerm,
+                                 Long renterId, Long funderId, Long orderId) throws ParseException;
 
     /**
      * 消息推送

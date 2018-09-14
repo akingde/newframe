@@ -51,4 +51,8 @@ public class AccountRenterRepay {
      * utime
      */
     private Integer utime;
+    private String partnerOrderId;
+    private Integer lastRepayTime;
+    private Integer actualRepayTime;
+    private Long payeeId;
 }

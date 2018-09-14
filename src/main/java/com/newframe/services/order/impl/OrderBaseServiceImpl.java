@@ -1,18 +1,22 @@
 package com.newframe.services.order.impl;
 
 import com.newframe.controllers.api.TestCommonController;
+import com.newframe.entity.order.FundingGatheringSchedule;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.repositories.dataMaster.order.FundingGatheringScheduleMaster;
+import com.newframe.repositories.dataSlave.order.FundingGatheringScheduleSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import com.newframe.utils.log.GwsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +51,12 @@ public class OrderBaseServiceImpl implements OrderBaseService {
 
     @Autowired
     private TestManageService pushService;
+    @Autowired
+    private IdGlobalGenerator idGen;
+    @Autowired
+    private FundingGatheringScheduleMaster fundingGatheringScheduleMaster;
+    @Autowired
+    private FundingGatheringScheduleSlave fundingGatheringScheduleSlave;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -95,14 +105,19 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         return 0;
     }
 
+    public void generateRenterSchedule(Long renterId,Long payeeId,Integer orderType,Integer orderAmount ){
+
+    }
+
     /**
-     * 生成租赁商还款计划
+     * 生成资金方收款计划
      * @param financingAmount 融资金额
      * @param tenancyTerm 融资期限
      * @param renterId 租赁商id
      * @param funderId 资金方id
      * @param orderId 订单id
      */
+    @Override
     public void generateFundingSchedule(BigDecimal financingAmount,Integer tenancyTerm,
                                         Long renterId,Long funderId,Long orderId) throws ParseException {
         // 计算月租金
@@ -111,7 +126,28 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         );
         Calendar calendar = Calendar.getInstance();
         List<Integer> schedule = getFundingScheduleTime(calendar,tenancyTerm);
-
+        // 日利率
+        BigDecimal rate = new BigDecimal("0.0006");
+        List<FundingGatheringSchedule> gatheringSchedules = new ArrayList<>();
+        for(int i=0;i<tenancyTerm;i++){
+            FundingGatheringSchedule fundingGatheringSchedule = new FundingGatheringSchedule();
+            fundingGatheringSchedule.setId(idGen.getSeqId(FundingGatheringSchedule.class));
+            fundingGatheringSchedule.setUid(funderId);
+            fundingGatheringSchedule.setOrderId(orderId);
+            fundingGatheringSchedule.setRenterId(renterId);
+            fundingGatheringSchedule.setRepayAmount(monthlyAmount);
+            // todo 利息暂时按照日利息0.0006计算，利息=剩余待还金额*日利率*30
+            BigDecimal interest = financingAmount.subtract(
+                    monthlyAmount.multiply(new BigDecimal(i))
+            ).multiply(rate).multiply(new BigDecimal(30));
+            fundingGatheringSchedule.setInterest(interest);
+            fundingGatheringSchedule.setTotalAmount(monthlyAmount.add(interest));
+            fundingGatheringSchedule.setLastRepayTime(schedule.get(i));
+            fundingGatheringSchedule.setRepayStatus(1);
+            fundingGatheringSchedule.setNumberPeriods(i+1);
+            gatheringSchedules.add(fundingGatheringSchedule);
+        }
+        fundingGatheringScheduleMaster.saveAll(gatheringSchedules);
     }
 
     @Override
