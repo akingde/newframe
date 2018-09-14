@@ -396,7 +396,11 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         userRoleApply.setCheckUid(new UserDTO().getUid());
         userRoleApply.setCheckPerson(new UserDTO().getUserName());
         userRoleApplyService.updateByRoleApplyId(userRoleApply);
-        return roleServiceMap.get(userRoleApply.getRoleId()).passCheck(userRoleApply);
+        Integer[] roleIds = RoleEnum.getRoleIdsByRoleId(userRoleApply.getRoleId());
+        for (Integer roleId : roleIds) {
+            roleServiceMap.get(roleId).passCheck(userRoleApply);
+        }
+        return new OperationResult(true);
     }
 
     /**

@@ -9,7 +9,6 @@ import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
-import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +37,6 @@ public class SupplierServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private RoleBaseService roleBaseService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -104,10 +101,9 @@ public class SupplierServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        Integer[] roleIds = new Integer[]{RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
-        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
-        roleBaseService.addAccount(userRoleApply.getUid(), getRoleId(), userRoleApply);
-        roleBaseService.addAccount(userRoleApply.getUid(), RoleEnum.HIRER.getRoleId(), userRoleApply);
+        insertRole(userRoleApply.getUid());
+        userSupplierService.insert(new UserSupplier(userRoleApply));
+        addAccount(userRoleApply.getUid(), userRoleApply);
         return new OperationResult(true);
     }
 
@@ -288,12 +284,13 @@ public class SupplierServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**
