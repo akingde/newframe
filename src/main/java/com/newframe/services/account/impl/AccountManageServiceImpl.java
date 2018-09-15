@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.Null;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -306,4 +307,41 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         return new OperationResult<>(true);
     }
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @param uid
+     * @param orderId
+     * @param relevanceOrderId
+     * @param receivableAccount
+     * @param receivedAccount
+     * @param dueInAccount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, Long relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount) {
+        if (null == uid || null == orderId || null == relevanceOrderId || null == receivableAccount || null == receivedAccount || null == dueInAccount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountRenterRent accountRenterRent = new AccountRenterRent();
+        accountRenterRent.setAccountRenterRent(uid,orderId,relevanceOrderId,receivableAccount,receivedAccount,dueInAccount);
+        AccountRenterRent result = accountService.saveAccountRenterRent(accountRenterRent);
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @return
+     */
+
 }

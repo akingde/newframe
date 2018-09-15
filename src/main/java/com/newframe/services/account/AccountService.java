@@ -333,4 +333,11 @@ public interface AccountService {
      * @return
      */
     Account saveAccount(Account account);
+
+    /**
+     * 保存租赁商的账户资产下的租赁明细
+     * @param accountRenterRent
+     * @return
+     */
+    AccountRenterRent saveAccountRenterRent(AccountRenterRent accountRenterRent);
 }

@@ -61,4 +61,13 @@ public class AccountRenterRent {
      * utime
      */
     private Integer utime;
+
+    public void setAccountRenterRent(Long uid, Long orderId, Long relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount){
+        this.uid = uid;
+        this.orderId = orderId;
+        this.relevanceOrderId = relevanceOrderId;
+        this.receivableAccount = receivableAccount;
+        this.receivedAccount = receivedAccount;
+        this.dueInAccount = dueInAccount;
+    }
 }
