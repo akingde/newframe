@@ -2,25 +2,26 @@ package com.newframe.services.account.impl;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
+import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
-import com.newframe.repositories.dataMaster.account.AccountMaster;
-import com.newframe.repositories.dataMaster.account.AccountRenterRentDetailMaster;
-import com.newframe.repositories.dataMaster.account.AccountRenterRentMaster;
-import com.newframe.repositories.dataMaster.account.AccountRenterRepayMaster;
+import com.newframe.repositories.dataMaster.account.*;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderSupplierSlave;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -114,6 +115,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterRepayMaster accountRenterRepayMaster;
+
+    @Autowired
+    AccountFundingFinanceAssetMaster accountFundingFinanceAssetMaster;
+    @Autowired
+    AccountLessorMatterAssetMaster accountLessorMatterAssetMaster;
+    @Autowired
+    AccountSupplierMaster accountSupplierMaster;
+    @Autowired
+    AccountManageService accountManageService;
+    @Autowired
+    OrderSupplierMaster orderSupplierMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -838,4 +850,113 @@ public class AccountServiceImpl implements AccountService {
 
         return accountRenterRepayMaster.saveAll(accountRenterRepays);
     }
+
+    /**
+     * 出租方(租户)账户
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountLessorMatterAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String associatedOrderId,
+                                                                       String productBrand, String productModel, String productColour, String productStorage, String productMemory,
+                                                                       BigDecimal totalRentAccount, Integer monthNumber) {
+        if (null == uid || null == orderId || null == associatedOrderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
+                StringUtils.isEmpty(productColour) || StringUtils.isEmpty(productStorage) || StringUtils.isEmpty(productMemory) || null == totalRentAccount || null == monthNumber) {
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountLessorMatterAsset accountLessorMatterAsset = new AccountLessorMatterAsset();
+        accountLessorMatterAsset.setTotalAmount(totalRentAccount);
+        accountLessorMatterAsset.setRentDeadline(monthNumber);
+
+        accountLessorMatterAsset.setOrderId(orderId);
+        accountLessorMatterAsset.setRentTime(orderTime);
+        accountLessorMatterAsset.setRenterId(renterId);
+        accountLessorMatterAsset.setRenterName(renterName);
+
+        accountLessorMatterAsset.setProductBrand(productBrand);
+        accountLessorMatterAsset.setProductModel(productModel);
+        accountLessorMatterAsset.setProductColour(productColour);
+        accountLessorMatterAsset.setProductStorage(productStorage);
+        accountLessorMatterAsset.setProductMemory(productMemory);
+        accountLessorMatterAsset.setOrderStatus(1);
+
+        accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
+        accountManageService.saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 资金方账户
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountFundingFinanceAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String relevanceOrderId, BigDecimal totalRentAccount, Integer monthNumber) {
+        if (null == uid || null == orderId || null == totalRentAccount || null == monthNumber) {
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountFundingFinanceAsset accountFundingFinanceAsset = new AccountFundingFinanceAsset();
+        accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
+        accountFundingFinanceAsset.setInvestDeadline(monthNumber);
+        accountFundingFinanceAsset.setInvestAmount(totalRentAccount);
+        accountFundingFinanceAsset.setUid(uid);
+        accountFundingFinanceAsset.setOrderId(orderId);
+        accountFundingFinanceAsset.setOrderTime(orderTime);
+        accountFundingFinanceAsset.setOrderStatus(1);
+        accountFundingFinanceAsset.setInvestWay(1);
+        accountFundingFinanceAsset.setRenterId(renterId);
+        accountFundingFinanceAsset.setRenterName(renterName);
+
+        accountManageService.saveAccountRenterRent(uid, orderId, relevanceOrderId, totalRentAccount, BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 供应商账户
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
+                                                              Long renterId, String renterName, Long expressTime,
+                                                              String productBrand, String productName,String productModel, String productColour, Integer productStorage, Integer productMemory) {
+        if (null == uid || null == orderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
+                StringUtils.isEmpty(productColour)) {
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountSupplier accountSupplier = new AccountSupplier();
+        accountSupplier.setUid(uid);
+        accountSupplier.setUseableAmount(usableAmount);
+        accountSupplier.setTotalAsset(totalAsset);
+        accountSupplier.setFrozenAsset(frozenAsset);
+        accountSupplierMaster.save(accountSupplier);
+
+        OrderSupplier orderSupplier = new OrderSupplier();
+        orderSupplier.setUid(uid);
+        orderSupplier.setOrderId(orderId);
+//        orderSupplier.setProductMemory(entity.getProductRandomMemory());
+//        orderSupplier.setRenterId(entity.getMerchantId());
+//        dto.setRenterName(entity.getMerchantName());
+//        dto.setUserId(entity.getUid());
+//        dto.setUserName(entity.getReceiverName());
+//        dto.setDeliverTime(entity.getExpressTime());
+        orderSupplier.setProductBrand(productBrand);
+        orderSupplier.setProductName(productName);
+        orderSupplier.setProductModel(productModel);
+        orderSupplier.setProductColor(productColour);
+        orderSupplier.setProductStorage(productStorage);
+        orderSupplier.setProductRandomMemory(productMemory);
+        orderSupplier.setMerchantId(renterId);
+        orderSupplier.setMerchantName(renterName);
+        orderSupplier.setUid(uid);
+        orderSupplier.setReceiverName(userName);
+        orderSupplier.setExpressTime(expressTime);
+        orderSupplierMaster.save(orderSupplier);
+
+        return new OperationResult<>(true);
+    }
+
 }
