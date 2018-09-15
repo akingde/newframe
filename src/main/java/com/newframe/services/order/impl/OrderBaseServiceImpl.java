@@ -1,6 +1,7 @@
 package com.newframe.services.order.impl;
 
 import com.newframe.controllers.api.TestCommonController;
+import com.newframe.dto.OperationResult;
 import com.newframe.entity.order.FundingGatheringSchedule;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
@@ -8,10 +9,12 @@ import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.enums.order.PatternPaymentEnum;
 import com.newframe.repositories.dataMaster.order.FundingGatheringScheduleMaster;
 import com.newframe.repositories.dataSlave.order.FundingGatheringScheduleSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
@@ -57,6 +60,9 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     private FundingGatheringScheduleMaster fundingGatheringScheduleMaster;
     @Autowired
     private FundingGatheringScheduleSlave fundingGatheringScheduleSlave;
+
+    @Autowired
+    private AccountManageService accountManageService;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -190,5 +196,28 @@ public class OrderBaseServiceImpl implements OrderBaseService {
             schedule.add(Long.valueOf(date.getTime()/1000).intValue());
         }
         return schedule;
+    }
+
+    @Override
+    public boolean renterRentAccountOperation(OrderRenter orderRenter, OrderHirer orderHirer){
+        // 还款期限，如果是分期付款，则总租金/租期=月租金
+        // 如果是全款付款，还款期限为1
+        Integer paymentNumber = 1;
+        if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
+            paymentNumber = orderHirer.getNumberOfPeriods();
+        }
+        if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
+            paymentNumber = 1;
+        }
+        OperationResult<Boolean> operationResult = accountManageService.saveAccountRenterRentDetail(
+                orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
+                orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
+                String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),paymentNumber,
+                new BigDecimal("0"),orderHirer.getOrderAmount()
+        );
+        if(operationResult != null){
+            return operationResult.getEntity();
+        }
+        return false;
     }
 }
