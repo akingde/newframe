@@ -117,6 +117,9 @@ public class AccountServiceImpl implements AccountService {
     private AccountRenterRepayMaster accountRenterRepayMaster;
 
     @Autowired
+    private AccountStatementMaster accountStatementMaster;
+
+    @Autowired
     AccountFundingFinanceAssetMaster accountFundingFinanceAssetMaster;
     @Autowired
     AccountLessorMatterAssetMaster accountLessorMatterAssetMaster;
@@ -852,8 +855,26 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 操作账户的数据
+     *
+     * @param accountStatement
+     * @return
+     */
+    @Override
+    public AccountStatement saveAccountStatement(AccountStatement accountStatement) {
+        if (null == accountStatement){
+            return null;
+        }
+        if (null == accountStatement.getId()){
+            accountStatement.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+
+        return accountStatementMaster.saveAndFlush(accountStatement);
+    }
+
+    /**
      * 出租方(租户)账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
      *
      * @return
      */
@@ -888,7 +909,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 资金方账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
      *
      * @return
      */
@@ -915,14 +936,14 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 供应商账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
      *
      * @return
      */
     @Override
     public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
                                                               Long renterId, String renterName, Long expressTime,
-                                                              String productBrand, String productName,String productModel, String productColour, Integer productStorage, Integer productMemory) {
+                                                              String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory) {
         if (null == uid || null == orderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
                 StringUtils.isEmpty(productColour)) {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);

@@ -356,10 +356,17 @@ public interface AccountService {
      */
     List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays);
 
+    /**
+     * 操作账户的数据
+     * @param accountStatement
+     * @return
+     */
+    AccountStatement saveAccountStatement(AccountStatement accountStatement);
+
 
     /**
      * 出租方(租户)账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
      *
      * @return
      */
@@ -368,7 +375,7 @@ public interface AccountService {
                                                                 BigDecimal totalRentAccount, Integer monthNumber);
     /**
      * 资金方账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
      *
      * @return
      */
@@ -376,7 +383,7 @@ public interface AccountService {
 
     /**
      * 供应商账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和account_supplier_sell
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
      *
      * @return
      */

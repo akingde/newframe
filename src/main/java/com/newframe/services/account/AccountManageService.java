@@ -4,6 +4,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
 import com.newframe.entity.account.*;
 
+import javax.crypto.spec.OAEPParameterSpec;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -137,4 +138,17 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<Boolean> saveAccountRenterRepay(Long orderId,BigDecimal totalAccount,Integer totalPeriods);
+
+    /**
+     * 操作账户的接口
+     * 具体字段什么意思
+     * 在AccountStatement实体类有详细的描述
+     * @param uid
+     * @param dealType 交易的类型
+     * @param accountType 操作账户的类型
+     * @param dealAmount 交易的金额
+     * @param extraAmount 额外的金额
+     * @return
+     */
+    OperationResult<Boolean> saveAccountStatement(Long uid,Integer dealType,Integer accountType,BigDecimal dealAmount,BigDecimal extraAmount);
 }

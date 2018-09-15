@@ -413,11 +413,38 @@ public class AccountManageServiceImpl implements AccountManageService {
     }
 
     /**
-     * 租赁商账户资产
-     * 租赁明细
-     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     * 操作账户的接口
+     * 具体字段什么意思
+     * 在AccountStatement实体类有详细的描述
+     *
+     * @param uid
+     * @param dealType    交易的类型
+     * @param accountType 操作账户的类型
+     * @param dealAmount  交易的金额
+     * @param extraAmount 额外的金额
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountStatement(Long uid, Integer dealType, Integer accountType, BigDecimal dealAmount, BigDecimal extraAmount) {
+        if (null == uid || null == dealType || null ==accountType || null == dealAmount || null == extraAmount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountStatement accountStatement = new AccountStatement();
+        accountStatement.setAccountStatement(uid,dealType,accountType,dealAmount,extraAmount);
+        AccountStatement result = accountService.saveAccountStatement(accountStatement);
+
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 账户资产的操作接口
      *
      * @return
      */
+
 
 }
