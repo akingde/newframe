@@ -34,7 +34,7 @@ public class AccountRenterRent {
     /**
      * 关联订单的ID
      */
-    private Long relevanceOrderId;
+    private String relevanceOrderId;
     /**
      * 应收租金
      */
@@ -61,4 +61,14 @@ public class AccountRenterRent {
      * utime
      */
     private Integer utime;
+
+    public void setAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount){
+        this.uid = uid;
+        this.orderId = orderId;
+        this.relevanceOrderId = relevanceOrderId;
+        this.receivableAccount = receivableAccount;
+        this.receivedAccount = receivedAccount;
+        this.dueInAccount = dueInAccount;
+        this.orderStatus=0;
+    }
 }

@@ -9,6 +9,8 @@ import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataMaster.account.AccountMaster;
+import com.newframe.repositories.dataMaster.account.AccountRenterRentDetailMaster;
+import com.newframe.repositories.dataMaster.account.AccountRenterRentMaster;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
@@ -16,6 +18,7 @@ import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderSupplierSlave;
 import com.newframe.services.account.AccountService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +101,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountMaster accountMaster;
+
+    @Autowired
+    private IdGlobalGenerator idGlobal;
+
+    @Autowired
+    private AccountRenterRentMaster accountRenterRentMaster;
+
+    @Autowired
+    private AccountRenterRentDetailMaster accountRenterRentDetailMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -771,5 +783,40 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountMaster.saveAndFlush(account);
+    }
+
+    /**
+     * 保存租赁商的账户资产下的租赁明细
+     *
+     * @param accountRenterRent
+     * @return
+     */
+    @Override
+    public AccountRenterRent saveAccountRenterRent(AccountRenterRent accountRenterRent) {
+        if (null == accountRenterRent){
+            return null;
+        }
+        if (null == accountRenterRent.getId()){
+            accountRenterRent.setId(idGlobal.getSeqId(AccountRenterRent.class));
+        }
+
+        return accountRenterRentMaster.saveAndFlush(accountRenterRent);
+    }
+
+    /**
+     * 保存accountRenterRentDetail
+     *
+     * @param accountRenterRentDetail
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
+        if (null == accountRenterRentDetail){
+            return null;
+        }
+        if (null == accountRenterRentDetail.getId()){
+            accountRenterRentDetail.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+        return accountRenterRentDetailMaster.saveAndFlush(accountRenterRentDetail);
     }
 }

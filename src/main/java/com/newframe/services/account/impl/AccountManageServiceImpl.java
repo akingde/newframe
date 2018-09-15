@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -306,4 +306,78 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         return new OperationResult<>(true);
     }
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @param uid
+     * @param orderId
+     * @param relevanceOrderId
+     * @param receivableAccount
+     * @param receivedAccount
+     * @param dueInAccount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount) {
+        if (null == uid || null == orderId || null == relevanceOrderId || null == receivableAccount || null == receivedAccount || null == dueInAccount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountRenterRent accountRenterRent = new AccountRenterRent();
+        accountRenterRent.setAccountRenterRent(uid,orderId,relevanceOrderId,receivableAccount,receivedAccount,dueInAccount);
+        AccountRenterRent result = accountService.saveAccountRenterRent(accountRenterRent);
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 租赁商账户资产
+     * 租机账户
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @param uid
+     * @param orderId
+     * @param associatedOrderId
+     * @param productBrand
+     * @param productModel
+     * @param productColour
+     * @param productStorage
+     * @param productMemory
+     * @param totalRentAccount
+     * @param monthNumber
+     * @param payedAccount
+     * @param unpayedAccount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount) {
+        if (null == uid || null == orderId || null == associatedOrderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel)||
+                StringUtils.isEmpty(productColour) || StringUtils.isEmpty(productStorage) || StringUtils.isEmpty(productMemory) ||  null == totalRentAccount || null == monthNumber || null == payedAccount || null == unpayedAccount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountRenterRentDetail accountRenterRentDetail = new AccountRenterRentDetail();
+        accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
+        AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
+        saveAccountRenterRent(uid, orderId, associatedOrderId, BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @return
+     */
+
 }

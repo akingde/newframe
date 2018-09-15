@@ -4,6 +4,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
 import com.newframe.entity.account.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -99,4 +100,32 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<Boolean> saveAccount(Long uid);
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount);
+
+    /**
+     * 租赁商账户资产
+     * 租机账户
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     * @param uid
+     * @param orderId
+     * @param associatedOrderId
+     * @param productBrand
+     * @param productModel
+     * @param productColour
+     * @param productStorage
+     * @param productMemory
+     * @param totalRentAccount
+     * @param monthNumber
+     * @param payedAccount
+     * @param unpayedAccount
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount);
 }
