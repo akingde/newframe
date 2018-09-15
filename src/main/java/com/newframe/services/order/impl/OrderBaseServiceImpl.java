@@ -232,9 +232,17 @@ public class OrderBaseServiceImpl implements OrderBaseService {
 
     @Override
     public boolean renterFunderAccountOperation(OrderRenter orderRenter, OrderFunder orderFunder) {
-        accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getUid(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
+        // todo 融资利息怎么算
+        BigDecimal interest = orderFunder.getFinancingAmount().multiply(new BigDecimal("0.0005"))
+                .multiply(new BigDecimal(orderFunder.getNumberOfPeriods()))
+                .multiply(new BigDecimal("30"));
+        accountManageService.saveAccountRenterFinancing(orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),
+                orderFunder.getFinancingAmount(),orderFunder.getNumberOfPeriods(),orderFunder.getFinancingAmount(),interest,
+                new BigDecimal("0"),new BigDecimal(0),orderFunder.getFinancingAmount(),interest);
+
+        accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getFunderId(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
                 orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderFunder.getFinancingAmount(),
                 orderFunder.getNumberOfPeriods());
-        return false;
+        return true;
     }
 }

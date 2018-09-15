@@ -904,7 +904,8 @@ public class AccountServiceImpl implements AccountService {
         accountLessorMatterAsset.setOrderStatus(1);
 
         accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
-        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
+        // 王栋调用过了
+//        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
@@ -935,14 +936,15 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setInvestReturnRate(new BigDecimal("0"));
         accountFundingFinanceAsset.setYieldRate(new BigDecimal("0"));
         accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
-        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
+        //王栋已经调用了
+//        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
     /**
      * 供应商账户
      * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
-     * 在供应商钱到账
+     * 在供应商钱到账的时候调用
      * @return
      */
     @Override
