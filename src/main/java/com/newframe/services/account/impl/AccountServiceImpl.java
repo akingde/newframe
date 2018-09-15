@@ -128,8 +128,6 @@ public class AccountServiceImpl implements AccountService {
     AccountSupplierMaster accountSupplierMaster;
     @Autowired
     AccountManageService accountManageService;
-    @Autowired
-    OrderSupplierMaster orderSupplierMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -798,7 +796,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Account saveAccount(Account account) {
-        if (null == account){
+        if (null == account) {
             return null;
         }
 
@@ -813,10 +811,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRent saveAccountRenterRent(AccountRenterRent accountRenterRent) {
-        if (null == accountRenterRent){
+        if (null == accountRenterRent) {
             return null;
         }
-        if (null == accountRenterRent.getId()){
+        if (null == accountRenterRent.getId()) {
             accountRenterRent.setId(idGlobal.getSeqId(AccountRenterRent.class));
         }
 
@@ -831,10 +829,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
-        if (null == accountRenterRentDetail){
+        if (null == accountRenterRentDetail) {
             return null;
         }
-        if (null == accountRenterRentDetail.getId()){
+        if (null == accountRenterRentDetail.getId()) {
             accountRenterRentDetail.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
         }
         return accountRenterRentDetailMaster.saveAndFlush(accountRenterRentDetail);
@@ -848,7 +846,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays) {
-        if (CollectionUtils.isEmpty(accountRenterRepays)){
+        if (CollectionUtils.isEmpty(accountRenterRepays)) {
             return Collections.EMPTY_LIST;
         }
 
@@ -863,10 +861,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountStatement saveAccountStatement(AccountStatement accountStatement) {
-        if (null == accountStatement){
+        if (null == accountStatement) {
             return null;
         }
-        if (null == accountStatement.getId()){
+        if (null == accountStatement.getId()) {
             accountStatement.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
         }
 
@@ -890,7 +888,7 @@ public class AccountServiceImpl implements AccountService {
         AccountLessorMatterAsset accountLessorMatterAsset = new AccountLessorMatterAsset();
         accountLessorMatterAsset.setTotalAmount(totalRentAccount);
         accountLessorMatterAsset.setRentDeadline(monthNumber);
-
+        accountLessorMatterAsset.setId(idGlobal.getSeqId(AccountLessorMatterAsset.class));
         accountLessorMatterAsset.setOrderId(orderId);
         accountLessorMatterAsset.setRentTime(orderTime);
         accountLessorMatterAsset.setRenterId(renterId);
@@ -904,7 +902,7 @@ public class AccountServiceImpl implements AccountService {
         accountLessorMatterAsset.setOrderStatus(1);
 
         accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
-        accountManageService.saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
@@ -921,6 +919,7 @@ public class AccountServiceImpl implements AccountService {
         }
         AccountFundingFinanceAsset accountFundingFinanceAsset = new AccountFundingFinanceAsset();
         accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
+        accountFundingFinanceAsset.setId(idGlobal.getSeqId(AccountFundingFinanceAsset.class));
         accountFundingFinanceAsset.setInvestDeadline(monthNumber);
         accountFundingFinanceAsset.setInvestAmount(totalRentAccount);
         accountFundingFinanceAsset.setUid(uid);
@@ -931,7 +930,7 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setRenterId(renterId);
         accountFundingFinanceAsset.setRenterName(renterName);
 
-        accountManageService.saveAccountRenterRent(uid, orderId, relevanceOrderId, totalRentAccount, BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
@@ -942,42 +941,13 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
-                                                              Long renterId, String renterName, Long expressTime,
-                                                              String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory) {
-        if (null == uid || null == orderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
-                StringUtils.isEmpty(productColour)) {
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
-        }
+    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset) {
         AccountSupplier accountSupplier = new AccountSupplier();
         accountSupplier.setUid(uid);
         accountSupplier.setUseableAmount(usableAmount);
         accountSupplier.setTotalAsset(totalAsset);
         accountSupplier.setFrozenAsset(frozenAsset);
         accountSupplierMaster.save(accountSupplier);
-
-        OrderSupplier orderSupplier = new OrderSupplier();
-        orderSupplier.setUid(uid);
-        orderSupplier.setOrderId(orderId);
-//        orderSupplier.setProductMemory(entity.getProductRandomMemory());
-//        orderSupplier.setRenterId(entity.getMerchantId());
-//        dto.setRenterName(entity.getMerchantName());
-//        dto.setUserId(entity.getUid());
-//        dto.setUserName(entity.getReceiverName());
-//        dto.setDeliverTime(entity.getExpressTime());
-        orderSupplier.setProductBrand(productBrand);
-        orderSupplier.setProductName(productName);
-        orderSupplier.setProductModel(productModel);
-        orderSupplier.setProductColor(productColour);
-        orderSupplier.setProductStorage(productStorage);
-        orderSupplier.setProductRandomMemory(productMemory);
-        orderSupplier.setMerchantId(renterId);
-        orderSupplier.setMerchantName(renterName);
-        orderSupplier.setUid(uid);
-        orderSupplier.setReceiverName(userName);
-        orderSupplier.setExpressTime(expressTime);
-        orderSupplierMaster.save(orderSupplier);
-
         return new OperationResult<>(true);
     }
 

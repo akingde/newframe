@@ -382,16 +382,6 @@ public interface AccountService {
     OperationResult<Boolean> saveAccountFundingFinanceAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String relevanceOrderId, BigDecimal totalRentAccount, Integer monthNumber);
 
     /**
-     * 供应商账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
-     *
-     * @return
-     */
-    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
-                                                       Long renterId, String renterName, Long expressTime,
-                                                       String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory);
-
-    /**
      * 根据UID查询到账户
      * @param uid
      * @return
@@ -404,4 +394,5 @@ public interface AccountService {
      * @return
      */
     Account updateAccount(Account acc);
+    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset);
 }

@@ -461,25 +461,26 @@ public class AccountManageServiceImpl implements AccountManageService {
             return new OperationResult<>(BizErrorCode.ACCOUNT_NOTEXIST);
         }
         BigDecimal amount;
-        Account acc = new Account();
-        acc.setUid(uid);
         if (accountTypeEnum.equals(AccountTypeEnum.TOTALASSETS)){
-            amount = account.getTotalAssets().multiply(dealAmount);
-            acc.setTotalAssets(amount);
+            amount = account.getTotalAssets().add(dealAmount);
+            account.setTotalAssets(amount);
         }else if (accountTypeEnum.equals(AccountTypeEnum.USEABLEASSETS)){
-            amount = account.getUseableAmount().multiply(dealAmount);
-            acc.setUseableAmount(amount);
+            amount = account.getUseableAmount().add(dealAmount);
+            account.setUseableAmount(amount);
+            account.setTotalAssets(account.getTotalAssets().add(dealAmount));
         }else if (accountTypeEnum.equals(AccountTypeEnum.FROZENASSETS)){
-            amount = account.getFrozenAssets().multiply(dealAmount);
-            acc.setFrozenAssets(amount);
+            amount = account.getFrozenAssets().add(dealAmount);
+            account.setFrozenAssets(amount);
+            account.setTotalAssets(account.getTotalAssets().add(dealAmount));
         }else if (accountTypeEnum.equals(AccountTypeEnum.MARGINASSETS)){
-            amount = account.getMarginBalance().multiply(dealAmount);
-            acc.setMarginBalance(amount);
+            amount = account.getMarginBalance().add(dealAmount);
+            account.setMarginBalance(amount);
+            account.setTotalAssets(account.getTotalAssets().add(dealAmount));
         }else {
             return new OperationResult<>(BizErrorCode.ACCOUNTTYPE_NOTEXIST);
         }
 
-        Account result = accountService.updateAccount(acc);
+        Account result = accountService.updateAccount(account);
         if (null == result){
             return new OperationResult<>(false);
         }

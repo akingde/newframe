@@ -4,8 +4,11 @@ import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.test.TestUser;
+import com.newframe.enums.account.AccountTypeEnum;
+import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.test.TestManageService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -188,5 +191,16 @@ public class TestJpaController extends BaseController {
 
         return error(result.getCode(),result.getMessage());
 
+    }
+
+    @RequestMapping("saveAccountStatement")
+    public JsonResult saveAccountStatement(Long uid, Integer dealType, Integer accountType, BigDecimal dealAmount, BigDecimal extraAmount){
+
+        OperationResult<Boolean> result = accountManageServicel.saveAccountStatement(uid, DealTypeEnum.getEnum(dealType), AccountTypeEnum.getEnum(accountType),dealAmount,extraAmount);
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
     }
 }
