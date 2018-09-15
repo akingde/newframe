@@ -32,6 +32,7 @@ public class MerchantOrderControllerTest extends NewFrameApplicationTests {
         merchantOrderDTO.setNumberOfPayments(12);
         merchantOrderDTO.setPartnerId(1535433927622895L);
         merchantOrderDTO.setPartnerOrderId("52_1234567");
+        merchantOrderDTO.setRenterMobile("13543244344");
         merchantOrderDTO.setProductBrand("apple");
         merchantOrderDTO.setProductName("iPhone X");
         merchantOrderDTO.setProductColor("黑色");

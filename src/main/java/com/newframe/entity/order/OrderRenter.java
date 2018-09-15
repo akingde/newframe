@@ -35,7 +35,7 @@ public class OrderRenter {
     private String partnerOrderId;
 
     @Column(name = "partner_id")
-    private Integer partnerId;
+    private Long partnerId;
 
     @Column(name = "renter_id")
     private Long renterId;

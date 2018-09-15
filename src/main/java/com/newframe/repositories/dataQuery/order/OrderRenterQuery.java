@@ -32,4 +32,10 @@ public class OrderRenterQuery extends BaseQuery {
     @QBindAttrField(fieldName = "orderId",where = Where.equal)
     private Long orderId;
 
+    @QBindAttrField(fieldName = "partnerOrderId",where = Where.equal)
+    private String partnerOrderId;
+
+    @QBindAttrField(fieldName = "partnerId",where = Where.equal)
+     private Long partnerId;
+
 }
