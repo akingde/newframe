@@ -89,6 +89,25 @@ public class RoleBaseServiceImpl implements RoleBaseService {
     }
 
     /**
+     * 修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        List<UserRole> roles = userRoleService.findAll(uid);
+        if (CollectionUtils.isEmpty(roles)){
+            return new OperationResult(true);
+        }
+        for (UserRole role : roles) {
+            roleServiceMap.get(role.getRoleId()).modifyMobile(uid, mobile);
+        }
+        return new OperationResult(true);
+    }
+
+    /**
      * 角色申请
      *
      * @param uid
@@ -377,7 +396,23 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         userRoleApply.setCheckUid(new UserDTO().getUid());
         userRoleApply.setCheckPerson(new UserDTO().getUserName());
         userRoleApplyService.updateByRoleApplyId(userRoleApply);
-        return roleServiceMap.get(userRoleApply.getRoleId()).passCheck(userRoleApply);
+        Integer[] roleIds = RoleEnum.getRoleIdsByRoleId(userRoleApply.getRoleId());
+        for (Integer roleId : roleIds) {
+            roleServiceMap.get(roleId).passCheck(userRoleApply);
+        }
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加账户信息
+     *
+     * @param uid
+     * @param roleId
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, Integer roleId, UserRoleApply userRoleApply) {
+        return roleServiceMap.get(roleId).addAccount(uid, userRoleApply);
     }
 
     /**

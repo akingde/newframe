@@ -9,6 +9,7 @@ import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.UserStatusEnum;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.*;
@@ -42,6 +43,8 @@ public class UserServiceImpl implements UserService {
     private UserRoleApplyService userRoleApplyService;
     @Autowired
     private UserFunderService userFunderService;
+    @Autowired
+    private RoleBaseService roleBaseService;
 
     /**
      * @param mobile
@@ -341,15 +344,11 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(newMobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
-        UserBaseInfo info = userBaseInfoService.findOne(uid);
-        if(info.getPhoneNumber().equals(newMobile)){
-            return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
+        OperationResult<Boolean> result = modifyPhoneNumber(uid, newMobile);
+        if (!result.getEntity()){
+            return result;
         }
-        if(userBaseInfoService.checkMmobileExists(newMobile)){
-            return new OperationResult(RequestResultEnum.MOBILE_EXISTS, false);
-        }
-        info.setPhoneNumber(newMobile);
-        userBaseInfoService.updateByUid(info);
+        roleBaseService.modifyMobile(uid, newMobile);
         return new OperationResult(true);
     }
 

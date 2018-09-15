@@ -36,8 +36,6 @@ public class SupplierServiceImpl implements RoleService {
     @Autowired
     private UserBaseInfoService userBaseInfoService;
     @Autowired
-    private UserHirerService userHirerService;
-    @Autowired
     private UserRoleService userRoleService;
 
     private static final String bucket = "fzmsupplychain";
@@ -103,10 +101,37 @@ public class SupplierServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        Integer[] roleIds = new Integer[]{RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
-        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        insertRole(userRoleApply.getUid());
         userSupplierService.insert(new UserSupplier(userRoleApply));
-        userHirerService.insert(new UserHirer(userRoleApply));
+        addAccount(userRoleApply.getUid(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserSupplier userSupplier = new UserSupplier();
+        userSupplier.setUid(uid);
+        userSupplier.setPhoneNumber(mobile);
+        userSupplierService.update(userSupplier);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
+        userSupplierService.insert(new UserSupplier(userRoleApply));
         return new OperationResult(true);
     }
 
@@ -259,12 +284,13 @@ public class SupplierServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

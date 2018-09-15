@@ -11,6 +11,7 @@ import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.order.OrderService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
@@ -43,10 +44,6 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private AliossService aliossService;
     @Autowired
     private UserBaseInfoService userBaseInfoService;
-    @Autowired
-    private UserHirerService userHirerService;
-    @Autowired
-    private UserSupplierService userSupplierService;
     @Autowired
     private UserRoleService userRoleService;
     @Autowired
@@ -134,12 +131,35 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        Integer[] roleIds = new Integer[]{RoleEnum.FIRST_RENT_MERCHANT.getRoleId(),
-                        RoleEnum.SUPPLIER.getRoleId(), RoleEnum.HIRER.getRoleId()};
-        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        insertRole(userRoleApply.getUid());
         userRentMerchantService.insert(new UserRentMerchant(userRoleApply));
-        userSupplierService.insert(new UserSupplier(userRoleApply));
-        userHirerService.insert(new UserHirer(userRoleApply));
+        addAccount(userRoleApply.getUid(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserRentMerchant userRentMerchant = new UserRentMerchant();
+        userRentMerchantService.update(userRentMerchant);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
+        userRentMerchantService.insert(new UserRentMerchant(userRoleApply));
         return new OperationResult(true);
     }
 
@@ -367,12 +387,12 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

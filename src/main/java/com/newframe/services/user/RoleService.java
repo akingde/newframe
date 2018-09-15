@@ -41,6 +41,21 @@ public interface RoleService {
     OperationResult<Boolean> passCheck(UserRoleApply userRoleApply);
 
     /**
+     * 根据uid修改手机号
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    OperationResult<Boolean> modifyMobile(Long uid, String mobile);
+
+    /**
+     * 添加资产记录
+     * @param uid
+     * @return
+     */
+    OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply);
+
+    /**
      * 根据uid获取角色信息
      * @param uid
      * @return
@@ -132,10 +147,10 @@ public interface RoleService {
 
     /**
      * 生成角色记录
-     * @param roleId
+     * @param uid
      * @return
      */
-    OperationResult<Boolean> insertRole(Integer roleId);
+    OperationResult<Boolean> insertRole(Long uid);
 
     /**
      * 获取商品列表

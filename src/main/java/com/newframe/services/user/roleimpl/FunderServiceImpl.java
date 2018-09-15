@@ -9,11 +9,10 @@ import com.newframe.dto.user.response.UserRoleApplyDTO;
 import com.newframe.dto.user.response.UserRoleDTO;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
-import com.newframe.enums.user.PatternEnum;
-import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import com.newframe.utils.FileUtils;
@@ -38,8 +37,6 @@ public class FunderServiceImpl implements RoleService {
     private AliossService aliossService;
     @Autowired
     private UserBaseInfoService userBaseInfoService;
-    @Autowired
-    private UserHirerService userHirerService;
     @Autowired
     private UserRoleService userRoleService;
 
@@ -118,10 +115,37 @@ public class FunderServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        Integer[] roleIds = new Integer[]{RoleEnum.FUNDER.getRoleId(), RoleEnum.HIRER.getRoleId()};
-        userRoleService.batchInsert(userRoleApply.getUid(), roleIds);
+        insertRole(userRoleApply.getUid());
         userFunderService.insert(new UserFunder(userRoleApply));
-        userHirerService.insert(new UserHirer(userRoleApply));
+        addAccount(userRoleApply.getUid(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserFunder userFunder = new UserFunder();
+        userFunder.setUid(uid);
+        userFunder.setPhoneNumber(mobile);
+        userFunderService.update(userFunder);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
+        userFunderService.insert(new UserFunder(userRoleApply));
         return new OperationResult(true);
     }
 
@@ -264,12 +288,13 @@ public class FunderServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

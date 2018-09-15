@@ -14,6 +14,14 @@ import java.util.List;
 public interface RoleBaseService {
 
     /**
+     * 修改手机号
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    OperationResult<Boolean> modifyMobile(Long uid, String mobile);
+
+    /**
      * 角色申请
      * @param uid
      * @param role
@@ -126,6 +134,14 @@ public interface RoleBaseService {
      * @return
      */
     OperationResult<Boolean> passRoleApply(UserRoleApply userRoleApply);
+
+    /**
+     * 添加账户信息
+     * @param uid
+     * @param roleId
+     * @return
+     */
+    OperationResult<Boolean> addAccount(Long uid, Integer roleId, UserRoleApply userRoleApply);
 
     /**
      * 获取商品列表

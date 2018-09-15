@@ -89,6 +89,30 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     }
 
     /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        return null;
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
+        return new OperationResult(true);
+    }
+
+    /**
      * 根据uid获取角色信息
      *
      * @param uid
@@ -333,8 +357,9 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**

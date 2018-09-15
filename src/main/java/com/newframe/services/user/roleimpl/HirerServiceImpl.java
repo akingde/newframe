@@ -11,6 +11,7 @@ import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.common.AliossService;
+import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
 import org.apache.commons.lang3.StringUtils;
@@ -102,10 +103,36 @@ public class HirerServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
-        UserRole userRole = new UserRole();
-        userRole.setUid(userRoleApply.getUid());
-        userRole.setRoleId(RoleEnum.HIRER.getRoleId());
-        userRoleService.insert(userRole);
+        insertRole(userRoleApply.getUid());
+        userHirerService.insert(new UserHirer(userRoleApply));
+        addAccount(userRoleApply.getUid(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 根据uid修改手机号
+     *
+     * @param uid
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyMobile(Long uid, String mobile) {
+        UserHirer userHirer = new UserHirer();
+        userHirer.setUid(uid);
+        userHirer.setPhoneNumber(mobile);
+        userHirerService.update(userHirer);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 添加资产记录
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> addAccount(Long uid, UserRoleApply userRoleApply) {
         userHirerService.insert(new UserHirer(userRoleApply));
         return new OperationResult(true);
     }
@@ -249,12 +276,13 @@ public class HirerServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override
-    public OperationResult<Boolean> insertRole(Integer roleId) {
-        return null;
+    public OperationResult<Boolean> insertRole(Long uid) {
+        userRoleService.insert(new UserRole(uid, getRoleId(), RoleStatusEnum.NORMAL.getRoleStatue()));
+        return new OperationResult(true);
     }
 
     /**
