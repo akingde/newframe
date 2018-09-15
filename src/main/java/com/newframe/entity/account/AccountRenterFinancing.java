@@ -33,7 +33,7 @@ public class AccountRenterFinancing {
     /**
      * 关联订单的ID
      */
-    private Long associatedOrderId;
+    private String associatedOrderId;
     /**
      * 融资金额
      */
@@ -44,7 +44,7 @@ public class AccountRenterFinancing {
     private Integer financingMaturity;
 
     /**
-     * 融资本息
+     * 融资本金
      */
     private BigDecimal financingPrincipalInterest;
 
@@ -54,7 +54,7 @@ public class AccountRenterFinancing {
     private BigDecimal financingInterest;
 
     /**
-     * 已经偿还的本息
+     * 已经偿还的本金
      */
     private BigDecimal settlePrincipalInterest;
 
@@ -64,7 +64,7 @@ public class AccountRenterFinancing {
     private BigDecimal settleInterest;
 
     /**
-     * 待偿还的本息
+     * 待偿还的本金
      */
     private BigDecimal unsettlePrincipalInterest;
 
@@ -91,4 +91,21 @@ public class AccountRenterFinancing {
      * utime
      */
     private Integer utime;
+
+    public void setAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity,
+                                          BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest){
+        this.uid =uid;
+        this.orderId = orderId;
+        this.associatedOrderId =associatedOrderId;
+        this.financingAmount = financingAmount;
+        this.financingMaturity = financingMaturity;
+        this.financingPrincipalInterest = financingPrincipalInterest;
+        this.financingInterest = financingInterest;
+        this.settlePrincipalInterest = settlePrincipalInterest;
+        this.settleInterest = settleInterest;
+        this.unsettlePrincipalInterest = unsettlePrincipalInterest;
+        this.unsettleInterest = unsettleInterest;
+        this.repaymentStatus =1;
+        this.orderStatus = 1;
+    }
 }

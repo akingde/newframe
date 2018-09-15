@@ -102,6 +102,7 @@ public class TestJpaController extends BaseController {
 
     /**
      * 分页查询
+     *
      * @param name
      * @param currentPage
      * @param pageSize
@@ -112,28 +113,29 @@ public class TestJpaController extends BaseController {
 
         OperationResult<Page<TestUser>> result = testManageService.listTestUser(name, currentPage, pageSize);
 
-        if (result.getSucc()){
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
      * 更新，根据主键Id进行单个更新
+     *
      * @param uid
      * @return
      */
     @RequestMapping("updateTestUserByUid")
-    private JsonResult updateTestUserByUid(Long uid){
+    private JsonResult updateTestUserByUid(Long uid) {
 
         OperationResult<Boolean> result = testManageService.updateTestUserByUid(uid);
 
-        if (result.getSucc()){
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
@@ -144,63 +146,77 @@ public class TestJpaController extends BaseController {
     private JsonResult updateTestUserByAge(Integer age) {
         OperationResult<Boolean> result = testManageService.updateTestUserByAge(age);
 
-        if (result.getSucc()){
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
     }
 
     /**
      * 查询其中的一个
+     *
      * @param uid
      */
     @RequestMapping("getTestUserByUid")
-    public JsonResult getTestUserByUid(Long uid){
+    public JsonResult getTestUserByUid(Long uid) {
 
         OperationResult<TestUser> result = testManageService.getTestUserByUid(uid);
 
-        if (result.getSucc()){
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
     }
 
     @RequestMapping("getTestUserByQuery")
-    public JsonResult getTestUserByQuery(Long uid){
+    public JsonResult getTestUserByQuery(Long uid) {
 
         OperationResult<TestUser> result = testManageService.getTestUserByQuery(uid);
 
-        if (result.getSucc()){
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
     }
 
 
     @RequestMapping("saveAccountRenterRentDetail")
-    public JsonResult saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount){
+    public JsonResult saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount) {
 
-        OperationResult<Boolean> result = accountManageServicel.saveAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
+        OperationResult<Boolean> result = accountManageServicel.saveAccountRenterRentDetail(uid, orderId, associatedOrderId, productBrand, productModel, productColour, productStorage, productMemory, totalRentAccount, monthNumber, payedAccount, unpayedAccount);
 
-        if (result.getSucc()){
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
 
     }
 
     @RequestMapping("saveAccountStatement")
-    public JsonResult saveAccountStatement(Long uid, Integer dealType, Integer accountType, BigDecimal dealAmount, BigDecimal extraAmount){
+    public JsonResult saveAccountStatement(Long uid, Integer dealType, Integer accountType, BigDecimal dealAmount, BigDecimal extraAmount) {
 
-        OperationResult<Boolean> result = accountManageServicel.saveAccountStatement(uid, DealTypeEnum.getEnum(dealType), AccountTypeEnum.getEnum(accountType),dealAmount,extraAmount);
-        if (result.getSucc()){
+        OperationResult<Boolean> result = accountManageServicel.saveAccountStatement(uid, DealTypeEnum.getEnum(dealType), AccountTypeEnum.getEnum(accountType), dealAmount, extraAmount);
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
 
-        return error(result.getCode(),result.getMessage());
+        return error(result.getCode(), result.getMessage());
+    }
+
+    @RequestMapping("saveAccountRenterFinancing")
+    public JsonResult saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest) {
+
+        OperationResult<Boolean> result = accountManageServicel.saveAccountRenterFinancing(uid, orderId, associatedOrderId, financingAmount, financingMaturity,
+                financingPrincipalInterest, financingInterest, settlePrincipalInterest, settleInterest, unsettlePrincipalInterest, unsettleInterest);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(), result.getMessage());
     }
 }
