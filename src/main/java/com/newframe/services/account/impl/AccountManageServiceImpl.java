@@ -393,16 +393,18 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         List<AccountRenterRepay> accountRenterRepays = new ArrayList<>(totalPeriods);
         BigDecimal orderAmount = totalAccount.divide(BigDecimal.valueOf(totalPeriods),2, RoundingMode.HALF_UP);
-        accountRenterRepays.forEach(accountRenterRepay -> {
-            int i = 1;
+
+        for (int i = 1; i <= totalPeriods; i++){
+            AccountRenterRepay accountRenterRepay = new AccountRenterRepay();
             accountRenterRepay.setId(idGlobal.getSeqId(AccountRenterRepay.class));
             accountRenterRepay.setNumberPeriods(i);
             accountRenterRepay.setOrderAmount(orderAmount);
             accountRenterRepay.setOrderId(orderId);
             accountRenterRepay.setWithhold(1);
             accountRenterRepay.setOrderStatus(1);
-            i++;
-        });
+
+            accountRenterRepays.add(accountRenterRepay);
+        };
         List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
         if (CollectionUtils.isEmpty(result)){
             return new OperationResult<>(false);

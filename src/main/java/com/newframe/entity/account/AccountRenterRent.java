@@ -69,6 +69,6 @@ public class AccountRenterRent {
         this.receivableAccount = receivableAccount;
         this.receivedAccount = receivedAccount;
         this.dueInAccount = dueInAccount;
-        this.orderStatus=0;
+        this.orderStatus=1;
     }
 }
