@@ -1,5 +1,6 @@
 package com.newframe.services.account.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
@@ -948,6 +949,55 @@ public class AccountServiceImpl implements AccountService {
         accountSupplier.setFrozenAsset(frozenAsset);
         accountSupplierMaster.save(accountSupplier);
         return new OperationResult<>(true);
+    }
+
+    /**
+     * 根据UID查询到账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public Account getAccount(Long uid) {
+        if (null == uid){
+            return null;
+        }
+
+        return accountMaster.findOne(uid);
+    }
+
+    /**
+     * 更新Account
+     *
+     * @param acc
+     * @return
+     */
+    @Override
+    public Account updateAccount(Account acc) {
+        if (null == acc || null == acc.getUid()){
+            return null;
+        }
+
+        List<String> updateFields = Lists.newArrayList();
+        if (null != acc.getTotalAssets()){
+            updateFields.add("totalAssets");
+        }
+        if (null != acc.getUseableAmount()){
+            updateFields.add("useableAmount");
+        }
+        if (null != acc.getFrozenAssets()){
+            updateFields.add("frozenAssets");
+        }
+        if (null != acc.getMarginBalance()){
+            updateFields.add("marginBalance");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountMaster.updateById(acc,acc.getUid(),array);
+
+        return acc;
     }
 
 }
