@@ -795,7 +795,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Account saveAccount(Account account) {
-        if (null == account){
+        if (null == account) {
             return null;
         }
 
@@ -810,10 +810,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRent saveAccountRenterRent(AccountRenterRent accountRenterRent) {
-        if (null == accountRenterRent){
+        if (null == accountRenterRent) {
             return null;
         }
-        if (null == accountRenterRent.getId()){
+        if (null == accountRenterRent.getId()) {
             accountRenterRent.setId(idGlobal.getSeqId(AccountRenterRent.class));
         }
 
@@ -828,10 +828,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
-        if (null == accountRenterRentDetail){
+        if (null == accountRenterRentDetail) {
             return null;
         }
-        if (null == accountRenterRentDetail.getId()){
+        if (null == accountRenterRentDetail.getId()) {
             accountRenterRentDetail.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
         }
         return accountRenterRentDetailMaster.saveAndFlush(accountRenterRentDetail);
@@ -845,7 +845,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays) {
-        if (CollectionUtils.isEmpty(accountRenterRepays)){
+        if (CollectionUtils.isEmpty(accountRenterRepays)) {
             return Collections.EMPTY_LIST;
         }
 
@@ -860,10 +860,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountStatement saveAccountStatement(AccountStatement accountStatement) {
-        if (null == accountStatement){
+        if (null == accountStatement) {
             return null;
         }
-        if (null == accountStatement.getId()){
+        if (null == accountStatement.getId()) {
             accountStatement.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
         }
 
@@ -940,13 +940,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
-                                                              Long renterId, String renterName, Long expressTime,
-                                                              String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory) {
-        if (null == uid || null == orderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
-                StringUtils.isEmpty(productColour)) {
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
-        }
+    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset) {
         AccountSupplier accountSupplier = new AccountSupplier();
         accountSupplier.setUid(uid);
         accountSupplier.setUseableAmount(usableAmount);

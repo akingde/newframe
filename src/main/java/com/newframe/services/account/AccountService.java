@@ -387,8 +387,5 @@ public interface AccountService {
      *
      * @return
      */
-    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
-                                                       Long renterId, String renterName, Long expressTime,
-                                                       String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory);
-
+    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset);
 }
