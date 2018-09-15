@@ -33,7 +33,7 @@ public class AccountRenterRentDetail {
     /**
      * 关联订单的ID
      */
-    private Long associatedOrderId;
+    private String associatedOrderId;
     /**
      * 手机品牌
      */
@@ -96,4 +96,22 @@ public class AccountRenterRentDetail {
      * utime
      */
     private Integer utime;
+
+    public void setAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount){
+        this.uid = uid;
+        this.orderId = orderId;
+        this.associatedOrderId = associatedOrderId;
+        this.productBrand = productBrand;
+        this.productModel= productModel;
+        this.productColour=productColour;
+        this.productStorage = productStorage;
+        this.productMemory=productMemory;
+        this.totalRentAccount = totalRentAccount;
+        this.monthNumber = monthNumber;
+        this.payedAccount=payedAccount;
+        this.unpayedAccount = unpayedAccount;
+        this.orderStatus=1;
+        this.payStatus=1;
+
+    }
 }

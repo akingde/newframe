@@ -26,7 +26,7 @@ public class OrderSupplier {
     @Column(name = "partner_order_id")
     private String partnerOrderId;
     @Column(name = "partner_id")
-    private Integer partnerId;
+    private Long partnerId;
     @Column(name = "supplier_id")
     private Long supplierId;
     @Column(name = "merchant_id")

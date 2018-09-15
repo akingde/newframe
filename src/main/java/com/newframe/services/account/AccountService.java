@@ -1,6 +1,7 @@
 package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.entity.account.*;
 import org.springframework.data.domain.Page;
 
@@ -333,4 +334,65 @@ public interface AccountService {
      * @return
      */
     Account saveAccount(Account account);
+
+    /**
+     * 保存租赁商的账户资产下的租赁明细
+     * @param accountRenterRent
+     * @return
+     */
+    AccountRenterRent saveAccountRenterRent(AccountRenterRent accountRenterRent);
+
+    /**
+     * 保存accountRenterRentDetail
+     * @param accountRenterRentDetail
+     * @return
+     */
+    AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail);
+
+    /**
+     * 保存AccountRenterRepay
+     * @param accountRenterRepays
+     * @return
+     */
+    List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays);
+
+    /**
+     * 操作账户的数据
+     * @param accountStatement
+     * @return
+     */
+    AccountStatement saveAccountStatement(AccountStatement accountStatement);
+
+
+    /**
+     * 出租方(租户)账户
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
+     *
+     * @return
+     */
+    OperationResult<Boolean> saveAccountLessorMatterAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String associatedOrderId,
+                                                                String productBrand, String productModel, String productColour, String productStorage, String productMemory,
+                                                                BigDecimal totalRentAccount, Integer monthNumber);
+    /**
+     * 资金方账户
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
+     *
+     * @return
+     */
+    OperationResult<Boolean> saveAccountFundingFinanceAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String relevanceOrderId, BigDecimal totalRentAccount, Integer monthNumber);
+
+    /**
+     * 根据UID查询到账户
+     * @param uid
+     * @return
+     */
+    Account getAccount(Long uid);
+
+    /**
+     * 更新Account
+     * @param acc
+     * @return
+     */
+    Account updateAccount(Account acc);
+    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset);
 }

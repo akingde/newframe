@@ -29,6 +29,11 @@ public class AccountFundingFinanceAssetListDTO {
     private Long orderId;
 
     /**
+     * 关联订单时间
+     */
+    private Long orderTime;
+
+    /**
      * 投资方式(1：融资购机)
      */
     private Integer investWay;

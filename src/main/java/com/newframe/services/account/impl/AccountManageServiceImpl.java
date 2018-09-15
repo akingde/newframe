@@ -9,19 +9,24 @@ import com.newframe.entity.user.UserBaseInfo;
 import com.newframe.entity.user.UserPwd;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.enums.BizErrorCode;
+import com.newframe.enums.account.AccountTypeEnum;
+import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.userbase.UserAddressService;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.services.userbase.UserPwdService;
 import com.newframe.services.userbase.UserRentMerchantService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +50,9 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     @Autowired
     private UserRentMerchantService userRentMerchantService;
+
+    @Autowired
+    private IdGlobalGenerator idGlobal;
     /**
      * 租赁商获取账户信息
      *
@@ -306,4 +314,185 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         return new OperationResult<>(true);
     }
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @param uid
+     * @param orderId
+     * @param relevanceOrderId
+     * @param receivableAccount
+     * @param receivedAccount
+     * @param dueInAccount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount) {
+        if (null == uid || null == orderId || null == relevanceOrderId || null == receivableAccount || null == receivedAccount || null == dueInAccount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountRenterRent accountRenterRent = new AccountRenterRent();
+        accountRenterRent.setAccountRenterRent(uid,orderId,relevanceOrderId,receivableAccount,receivedAccount,dueInAccount);
+        AccountRenterRent result = accountService.saveAccountRenterRent(accountRenterRent);
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 租赁商账户资产
+     * 租机账户
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     *
+     * @param uid
+     * @param orderId
+     * @param associatedOrderId
+     * @param productBrand
+     * @param productModel
+     * @param productColour
+     * @param productStorage
+     * @param productMemory
+     * @param totalRentAccount
+     * @param monthNumber
+     * @param payedAccount
+     * @param unpayedAccount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount) {
+        if (null == uid || null == orderId || null == associatedOrderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel)||
+                StringUtils.isEmpty(productColour) || StringUtils.isEmpty(productStorage) || StringUtils.isEmpty(productMemory) ||  null == totalRentAccount || null == monthNumber || null == payedAccount || null == unpayedAccount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountRenterRentDetail accountRenterRentDetail = new AccountRenterRentDetail();
+        accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
+        AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
+        OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,totalRentAccount,monthNumber);
+        if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 生成还款计划表
+     *
+     * @param orderId       订单的ID
+     * @param totalAccount  总金额
+     * @param totalPeriods 一共几期
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods) {
+        if (null == orderId || null == totalAccount || null == totalPeriods){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        List<AccountRenterRepay> accountRenterRepays = new ArrayList<>(totalPeriods);
+        BigDecimal orderAmount = totalAccount.divide(BigDecimal.valueOf(totalPeriods),2, RoundingMode.HALF_UP);
+
+        for (int i = 1; i <= totalPeriods; i++){
+            AccountRenterRepay accountRenterRepay = new AccountRenterRepay();
+            accountRenterRepay.setId(idGlobal.getSeqId(AccountRenterRepay.class));
+            accountRenterRepay.setNumberPeriods(i);
+            accountRenterRepay.setOrderAmount(orderAmount);
+            accountRenterRepay.setOrderId(orderId);
+            accountRenterRepay.setWithhold(1);
+            accountRenterRepay.setOrderStatus(1);
+
+            accountRenterRepays.add(accountRenterRepay);
+        };
+        List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
+        if (CollectionUtils.isEmpty(result)){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 操作账户的接口
+     * 具体字段什么意思
+     * 在AccountStatement实体类有详细的描述
+     *
+     * @param uid
+     * @param dealType    交易的类型
+     * @param accountType 操作账户的类型
+     * @param dealAmount  交易的金额
+     * @param extraAmount 额外的金额
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountStatement(Long uid, DealTypeEnum dealType, AccountTypeEnum accountType, BigDecimal dealAmount, BigDecimal extraAmount) {
+        if (null == uid || null == dealType || null ==accountType || null == dealAmount || null == extraAmount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+
+        AccountStatement accountStatement = new AccountStatement();
+        accountStatement.setAccountStatement(uid,dealType.getCode(),accountType.getCode(),dealAmount,extraAmount);
+        AccountStatement result = accountService.saveAccountStatement(accountStatement);
+
+        OperationResult<Boolean> res = updateAccount(uid,accountType,dealAmount);
+        if (null == result || !res.getEntity()){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 对指定的账户做操作
+     *
+     * @param uid
+     * @param accountTypeEnum
+     * @param dealAmount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> updateAccount(Long uid, AccountTypeEnum accountTypeEnum, BigDecimal dealAmount) {
+        if (null == uid || null == accountTypeEnum || null == dealAmount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        Account account = accountService.getAccount(uid);
+        if (null == account){
+            return new OperationResult<>(BizErrorCode.ACCOUNT_NOTEXIST);
+        }
+        BigDecimal amount;
+        if (accountTypeEnum.equals(AccountTypeEnum.TOTALASSETS)){
+            amount = account.getTotalAssets().add(dealAmount);
+            account.setTotalAssets(amount);
+        }else if (accountTypeEnum.equals(AccountTypeEnum.USEABLEASSETS)){
+            amount = account.getUseableAmount().add(dealAmount);
+            account.setUseableAmount(amount);
+            account.setTotalAssets(account.getTotalAssets().add(dealAmount));
+        }else if (accountTypeEnum.equals(AccountTypeEnum.FROZENASSETS)){
+            amount = account.getFrozenAssets().add(dealAmount);
+            account.setFrozenAssets(amount);
+            account.setTotalAssets(account.getTotalAssets().add(dealAmount));
+        }else if (accountTypeEnum.equals(AccountTypeEnum.MARGINASSETS)){
+            amount = account.getMarginBalance().add(dealAmount);
+            account.setMarginBalance(amount);
+            account.setTotalAssets(account.getTotalAssets().add(dealAmount));
+        }else {
+            return new OperationResult<>(BizErrorCode.ACCOUNTTYPE_NOTEXIST);
+        }
+
+        Account result = accountService.updateAccount(account);
+        if (null == result){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 账户资产的操作接口
+     *
+     * @return
+     */
+
+
+
 }

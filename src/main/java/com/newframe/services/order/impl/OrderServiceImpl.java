@@ -269,11 +269,14 @@ public class OrderServiceImpl implements OrderService {
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
             orderFunders.add(orderFunder);
+            orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
         }
         // 修改租赁商订单状态和订单类型
         updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
         // 生成资金方订单
         orderFunderMaser.saveAll(orderFunders);
+
+
 
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
         // todo 要不要操作账户表？
@@ -332,16 +335,37 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setUtime(null);
             // 出租方订单为 待出租方审核
             orderHirer.setOrderStatus(OrderLessorStatus.WATIING_LESSOR_AUDIT.getCode());
-            // 出租方订单的租机价格，意外保险等由平台指定
-            orderHirer.setDownPayment(downPayment);
-            orderHirer.setAccidentBenefit(accidentBenefit);
+
             //修改为出租方租赁期限
-            orderHirer.setNumberOfPeriods(tenancyTerm);
             orderHirer.setPatternPayment(patternPayment);
             orderHirer.setLessorId(lessorId);
 
+            LessorProductPriceQuery query = new LessorProductPriceQuery();
+            query.setPaymentNumber(tenancyTerm);
+            query.setProductBrand(orderRenter.getProductBrand());
+            query.setProductColor(orderRenter.getProductColor());
+            query.setProductName(orderRenter.getProductName());
+            query.setProductRandomMemory(orderRenter.getProductRandomMemory());
+            query.setProductStorage(orderRenter.getProductStorage());
+            LessorProductPrice productPrice = lessorProductPriceSlave.findOne(query);
+            if (productPrice != null){
+                orderHirer.setOrderAmount(productPrice.getRentPrice());
+                orderHirer.setAccidentBenefit(accidentBenefit);
+                orderHirer.setNumberOfPeriods(tenancyTerm);
+                if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(patternPayment)) {
+                    // 出租方订单的租机价格，意外保险等由平台指定
+                    orderHirer.setDownPayment(downPayment);
+                    orderHirer.setMonthlyPayment(productPrice.getMonthPayment());
+                }else{
+                    // 全款支付的首付、月租金等都为0
+                    orderHirer.setDownPayment(new BigDecimal("0"));
+                    orderHirer.setMonthlyPayment(new BigDecimal("0"));
+                }
+            }
+
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
+            orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
@@ -824,20 +848,25 @@ public class OrderServiceImpl implements OrderService {
         hirerDeliver.setSerialNumber(deliverInfo.getSerialNumber());
         hirerDeliver.setExpressCode(deliverInfo.getDeliverCode());
         hirerDeliverMaster.save(hirerDeliver);
+        OrderHirer orderHirer = null;
+        OrderRenter orderRenter = null;
         // 修改出租方订单状态为待收货
         Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(deliverInfo.getOrderId());
         if (optionalOrderHirer.isPresent()) {
-            OrderHirer orderHirer = optionalOrderHirer.get();
+            orderHirer = optionalOrderHirer.get();
             orderHirer.setOrderStatus(OrderLessorStatus.WAITING_RECEIVE.getCode());
             orderHirerMaser.save(orderHirer);
         }
         // 修改资金方订单状态为待收货
         Optional<OrderRenter> optionalOrderRenter = orderRenterSlave.findById(deliverInfo.getOrderId());
         if (optionalOrderRenter.isPresent()) {
-            OrderRenter orderRenter = optionalOrderRenter.get();
+            orderRenter = optionalOrderRenter.get();
             orderRenter.setOrderStatus(OrderRenterStatus.WAITING_LESSOR_RECEIVE.getCode());
             orderRenterMaser.save(orderRenter);
+
         }
+        // 操作租赁商账户
+        orderBaseService.renterRentAccountOperation(orderRenter,orderHirer);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -1328,5 +1357,6 @@ public class OrderServiceImpl implements OrderService {
             orderSupplier.setTotalAccount(product.getSupplyPrice());
         }
         orderSupplierMaster.save(orderSupplier);
+        orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
     }
 }

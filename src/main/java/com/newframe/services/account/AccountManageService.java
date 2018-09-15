@@ -3,7 +3,10 @@ package com.newframe.services.account;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
 import com.newframe.entity.account.*;
+import com.newframe.enums.account.AccountTypeEnum;
+import com.newframe.enums.account.DealTypeEnum;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -99,4 +102,63 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<Boolean> saveAccount(Long uid);
+
+    /**
+     * 租赁商账户资产
+     * 租赁明细
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount);
+
+    /**
+     * 租赁商账户资产
+     * 租机账户
+     * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
+     * @param uid
+     * @param orderId
+     * @param associatedOrderId
+     * @param productBrand
+     * @param productModel
+     * @param productColour
+     * @param productStorage
+     * @param productMemory
+     * @param totalRentAccount
+     * @param monthNumber
+     * @param payedAccount
+     * @param unpayedAccount
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount);
+
+    /**
+     * 生成还款计划表
+     * @param orderId 订单的ID
+     * @param totalAccount 总金额
+     * @param totalPeriods 一共几期
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId,BigDecimal totalAccount,Integer totalPeriods);
+
+    /**
+     * 操作账户的接口
+     * 具体字段什么意思
+     * 在AccountStatement实体类有详细的描述
+     * @param uid
+     * @param dealType 交易的类型
+     * @param accountType 操作账户的类型
+     * @param dealAmount 交易的金额
+     * @param extraAmount 额外的金额
+     * @return
+     */
+    OperationResult<Boolean> saveAccountStatement(Long uid, DealTypeEnum dealType, AccountTypeEnum accountType, BigDecimal dealAmount, BigDecimal extraAmount);
+
+    /**
+     * 对指定的账户做操作
+     * @param uid
+     * @param accountTypeEnum
+     * @param dealAmount
+     * @return
+     */
+    OperationResult<Boolean> updateAccount(Long uid,AccountTypeEnum accountTypeEnum,BigDecimal dealAmount);
 }

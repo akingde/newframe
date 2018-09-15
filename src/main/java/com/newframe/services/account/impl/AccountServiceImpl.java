@@ -1,22 +1,28 @@
 package com.newframe.services.account.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
+import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
-import com.newframe.repositories.dataMaster.account.AccountMaster;
+import com.newframe.repositories.dataMaster.account.*;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderSupplierSlave;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -98,6 +104,30 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountMaster accountMaster;
+
+    @Autowired
+    private IdGlobalGenerator idGlobal;
+
+    @Autowired
+    private AccountRenterRentMaster accountRenterRentMaster;
+
+    @Autowired
+    private AccountRenterRentDetailMaster accountRenterRentDetailMaster;
+
+    @Autowired
+    private AccountRenterRepayMaster accountRenterRepayMaster;
+
+    @Autowired
+    private AccountStatementMaster accountStatementMaster;
+
+    @Autowired
+    AccountFundingFinanceAssetMaster accountFundingFinanceAssetMaster;
+    @Autowired
+    AccountLessorMatterAssetMaster accountLessorMatterAssetMaster;
+    @Autowired
+    AccountSupplierMaster accountSupplierMaster;
+    @Autowired
+    AccountManageService accountManageService;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -766,10 +796,208 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Account saveAccount(Account account) {
-        if (null == account){
+        if (null == account) {
             return null;
         }
 
         return accountMaster.saveAndFlush(account);
     }
+
+    /**
+     * 保存租赁商的账户资产下的租赁明细
+     *
+     * @param accountRenterRent
+     * @return
+     */
+    @Override
+    public AccountRenterRent saveAccountRenterRent(AccountRenterRent accountRenterRent) {
+        if (null == accountRenterRent) {
+            return null;
+        }
+        if (null == accountRenterRent.getId()) {
+            accountRenterRent.setId(idGlobal.getSeqId(AccountRenterRent.class));
+        }
+
+        return accountRenterRentMaster.saveAndFlush(accountRenterRent);
+    }
+
+    /**
+     * 保存accountRenterRentDetail
+     *
+     * @param accountRenterRentDetail
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
+        if (null == accountRenterRentDetail) {
+            return null;
+        }
+        if (null == accountRenterRentDetail.getId()) {
+            accountRenterRentDetail.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+        return accountRenterRentDetailMaster.saveAndFlush(accountRenterRentDetail);
+    }
+
+    /**
+     * 保存AccountRenterRepay
+     *
+     * @param accountRenterRepays
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays) {
+        if (CollectionUtils.isEmpty(accountRenterRepays)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return accountRenterRepayMaster.saveAll(accountRenterRepays);
+    }
+
+    /**
+     * 操作账户的数据
+     *
+     * @param accountStatement
+     * @return
+     */
+    @Override
+    public AccountStatement saveAccountStatement(AccountStatement accountStatement) {
+        if (null == accountStatement) {
+            return null;
+        }
+        if (null == accountStatement.getId()) {
+            accountStatement.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+
+        return accountStatementMaster.saveAndFlush(accountStatement);
+    }
+
+    /**
+     * 出租方(租户)账户
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountLessorMatterAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String associatedOrderId,
+                                                                       String productBrand, String productModel, String productColour, String productStorage, String productMemory,
+                                                                       BigDecimal totalRentAccount, Integer monthNumber) {
+        if (null == uid || null == orderId || null == associatedOrderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
+                StringUtils.isEmpty(productColour) || StringUtils.isEmpty(productStorage) || StringUtils.isEmpty(productMemory) || null == totalRentAccount || null == monthNumber) {
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountLessorMatterAsset accountLessorMatterAsset = new AccountLessorMatterAsset();
+        accountLessorMatterAsset.setTotalAmount(totalRentAccount);
+        accountLessorMatterAsset.setRentDeadline(monthNumber);
+        accountLessorMatterAsset.setId(idGlobal.getSeqId(AccountLessorMatterAsset.class));
+        accountLessorMatterAsset.setOrderId(orderId);
+        accountLessorMatterAsset.setRentTime(orderTime);
+        accountLessorMatterAsset.setRenterId(renterId);
+        accountLessorMatterAsset.setRenterName(renterName);
+
+        accountLessorMatterAsset.setProductBrand(productBrand);
+        accountLessorMatterAsset.setProductModel(productModel);
+        accountLessorMatterAsset.setProductColour(productColour);
+        accountLessorMatterAsset.setProductStorage(productStorage);
+        accountLessorMatterAsset.setProductMemory(productMemory);
+        accountLessorMatterAsset.setOrderStatus(1);
+
+        accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
+        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 资金方账户
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountFundingFinanceAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String relevanceOrderId, BigDecimal totalRentAccount, Integer monthNumber) {
+        if (null == uid || null == orderId || null == totalRentAccount || null == monthNumber) {
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountFundingFinanceAsset accountFundingFinanceAsset = new AccountFundingFinanceAsset();
+        accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
+        accountFundingFinanceAsset.setId(idGlobal.getSeqId(AccountFundingFinanceAsset.class));
+        accountFundingFinanceAsset.setInvestDeadline(monthNumber);
+        accountFundingFinanceAsset.setInvestAmount(totalRentAccount);
+        accountFundingFinanceAsset.setUid(uid);
+        accountFundingFinanceAsset.setOrderId(orderId);
+        accountFundingFinanceAsset.setOrderTime(orderTime);
+        accountFundingFinanceAsset.setOrderStatus(1);
+        accountFundingFinanceAsset.setInvestWay(1);
+        accountFundingFinanceAsset.setRenterId(renterId);
+        accountFundingFinanceAsset.setRenterName(renterName);
+
+        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 供应商账户
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset) {
+        AccountSupplier accountSupplier = new AccountSupplier();
+        accountSupplier.setUid(uid);
+        accountSupplier.setUseableAmount(usableAmount);
+        accountSupplier.setTotalAsset(totalAsset);
+        accountSupplier.setFrozenAsset(frozenAsset);
+        accountSupplierMaster.save(accountSupplier);
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 根据UID查询到账户
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public Account getAccount(Long uid) {
+        if (null == uid){
+            return null;
+        }
+
+        return accountMaster.findOne(uid);
+    }
+
+    /**
+     * 更新Account
+     *
+     * @param acc
+     * @return
+     */
+    @Override
+    public Account updateAccount(Account acc) {
+        if (null == acc || null == acc.getUid()){
+            return null;
+        }
+
+        List<String> updateFields = Lists.newArrayList();
+        if (null != acc.getTotalAssets()){
+            updateFields.add("totalAssets");
+        }
+        if (null != acc.getUseableAmount()){
+            updateFields.add("useableAmount");
+        }
+        if (null != acc.getFrozenAssets()){
+            updateFields.add("frozenAssets");
+        }
+        if (null != acc.getMarginBalance()){
+            updateFields.add("marginBalance");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountMaster.updateById(acc,acc.getUid(),array);
+
+        return acc;
+    }
+
 }

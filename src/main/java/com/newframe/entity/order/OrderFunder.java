@@ -35,7 +35,7 @@ public class OrderFunder implements Serializable {
     private String partnerOrderId;
 
     @Column(name = "partner_id")
-    private Integer partnerId;
+    private Long partnerId;
 
     @Column(name = "merchantId")
     private Long merchantId;

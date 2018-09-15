@@ -44,7 +44,7 @@ public class AccountLessorMatterAsset implements Serializable {
     /**
      * 租机期限
      */
-    private BigDecimal rentDeadline;
+    private Integer rentDeadline;
     /**
      * 租赁物购买价款
      */
