@@ -15,6 +15,7 @@ import com.newframe.repositories.dataSlave.order.FundingGatheringScheduleSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
+import com.newframe.services.account.AccountService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
@@ -61,6 +62,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     @Autowired
     private FundingGatheringScheduleSlave fundingGatheringScheduleSlave;
 
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private AccountManageService accountManageService;
     @Override
@@ -209,12 +212,18 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
             paymentNumber = 1;
         }
+        // 操作租赁商账户表和租赁商租赁账户明细
         OperationResult<Boolean> operationResult = accountManageService.saveAccountRenterRentDetail(
                 orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
                 orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
                 String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),paymentNumber,
                 new BigDecimal("0"),orderHirer.getOrderAmount()
         );
+        // 操作出租方账户表和生成租赁商还款明细
+        accountService.saveAccountLessorMatterAssetDetail(orderHirer.getLessorId(),orderHirer.getOrderId(),Long.valueOf(orderRenter.getCtime()),
+                orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
+                orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
+                String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),orderHirer.getNumberOfPeriods());
         if(operationResult != null){
             return operationResult.getEntity();
         }

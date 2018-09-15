@@ -873,7 +873,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * 出租方(租户)账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
-     *
+     * 在出租方发货（审核通过）时调用，更新出租方账户、生成租赁商还款计划
      * @return
      */
     @Override
@@ -908,7 +908,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * 资金方账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
-     *
+     * 在资金方放款完成之后调用，操作资金方金融资产账户、生成租赁商还款计划
      * @return
      */
     @Override
@@ -936,7 +936,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * 供应商账户
      * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
-     *
+     * 在供应商钱到账
      * @return
      */
     @Override
