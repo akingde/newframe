@@ -229,4 +229,12 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         }
         return false;
     }
+
+    @Override
+    public boolean renterFunderAccountOperation(OrderRenter orderRenter, OrderFunder orderFunder) {
+        accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getUid(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
+                orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderFunder.getFinancingAmount(),
+                orderFunder.getNumberOfPeriods());
+        return false;
+    }
 }

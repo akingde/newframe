@@ -918,7 +918,6 @@ public class AccountServiceImpl implements AccountService {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         AccountFundingFinanceAsset accountFundingFinanceAsset = new AccountFundingFinanceAsset();
-        accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
         accountFundingFinanceAsset.setId(idGlobal.getSeqId(AccountFundingFinanceAsset.class));
         accountFundingFinanceAsset.setInvestDeadline(monthNumber);
         accountFundingFinanceAsset.setInvestAmount(totalRentAccount);
@@ -929,7 +928,11 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setInvestWay(1);
         accountFundingFinanceAsset.setRenterId(renterId);
         accountFundingFinanceAsset.setRenterName(renterName);
-
+        // todo 平均投资回报率填0
+        accountFundingFinanceAsset.setAverageInvestReturnRate(new BigDecimal("0"));
+        accountFundingFinanceAsset.setInvestReturnRate(new BigDecimal("0"));
+        accountFundingFinanceAsset.setYieldRate(new BigDecimal("0"));
+        accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
         accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }

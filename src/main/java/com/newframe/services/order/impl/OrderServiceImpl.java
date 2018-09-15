@@ -649,6 +649,10 @@ public class OrderServiceImpl implements OrderService {
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
                 generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+                // 如果此线下放款订单还未上传凭证，则是确认已放款操作，去操作资金方账户和生成租赁商还款计划
+                if(!orderFunderEvidenceSlave.findById(orderRenter.getOrderId()).isPresent()){
+                    orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
+                }
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
         }
@@ -1112,7 +1116,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
             orderRenterMaser.save(orderRenter);
             generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
-
+            orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);

@@ -1,5 +1,6 @@
 package com.newframe.services.order;
 
+import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.enums.order.MessagePushEnum;
@@ -49,4 +50,6 @@ public interface OrderBaseService {
      * @return 操作结果
      */
     boolean renterRentAccountOperation(OrderRenter orderRenter, OrderHirer orderHirer);
+
+    boolean renterFunderAccountOperation(OrderRenter orderRenter, OrderFunder orderFunder);
 }
