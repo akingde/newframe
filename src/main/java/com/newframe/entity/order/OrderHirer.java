@@ -29,7 +29,7 @@ public class OrderHirer {
     private String partnerOrderId;
 
     @Column(name = "partner_id")
-    private Integer partnerId;
+    private Long partnerId;
 
     @Column(name = "merchant_id")
     private Long merchantId;

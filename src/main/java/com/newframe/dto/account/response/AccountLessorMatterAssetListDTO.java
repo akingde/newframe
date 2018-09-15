@@ -23,6 +23,10 @@ public class AccountLessorMatterAssetListDTO {
      */
     private Long orderId;
     /**
+     * 出租时间
+     */
+    private Long rentTime;
+    /**
      * 产品品牌
      */
     private String productModel;
@@ -73,7 +77,7 @@ public class AccountLessorMatterAssetListDTO {
     /**
      * 租期
      */
-    private BigDecimal rentMonth;
+    private Integer rentMonth;
     /**
      * 租金总额
      */

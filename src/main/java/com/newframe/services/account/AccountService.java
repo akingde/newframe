@@ -1,6 +1,7 @@
 package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
+import com.newframe.dto.OperationResult;
 import com.newframe.entity.account.*;
 import org.springframework.data.domain.Page;
 
@@ -361,4 +362,33 @@ public interface AccountService {
      * @return
      */
     AccountStatement saveAccountStatement(AccountStatement accountStatement);
+
+
+    /**
+     * 出租方(租户)账户
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
+     *
+     * @return
+     */
+    OperationResult<Boolean> saveAccountLessorMatterAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String associatedOrderId,
+                                                                String productBrand, String productModel, String productColour, String productStorage, String productMemory,
+                                                                BigDecimal totalRentAccount, Integer monthNumber);
+    /**
+     * 资金方账户
+     * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
+     *
+     * @return
+     */
+    OperationResult<Boolean> saveAccountFundingFinanceAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String relevanceOrderId, BigDecimal totalRentAccount, Integer monthNumber);
+
+    /**
+     * 供应商账户
+     * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
+     *
+     * @return
+     */
+    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, String userName, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset, Long orderId,
+                                                       Long renterId, String renterName, Long expressTime,
+                                                       String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory);
+
 }
