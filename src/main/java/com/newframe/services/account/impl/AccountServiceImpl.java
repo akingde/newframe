@@ -127,8 +127,6 @@ public class AccountServiceImpl implements AccountService {
     AccountSupplierMaster accountSupplierMaster;
     @Autowired
     AccountManageService accountManageService;
-    @Autowired
-    OrderSupplierMaster orderSupplierMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -903,7 +901,7 @@ public class AccountServiceImpl implements AccountService {
         accountLessorMatterAsset.setOrderStatus(1);
 
         accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
-        accountManageService.saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
@@ -920,6 +918,7 @@ public class AccountServiceImpl implements AccountService {
         }
         AccountFundingFinanceAsset accountFundingFinanceAsset = new AccountFundingFinanceAsset();
         accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
+        accountFundingFinanceAsset.setId(idGlobal.getSeqId(AccountFundingFinanceAsset.class));
         accountFundingFinanceAsset.setInvestDeadline(monthNumber);
         accountFundingFinanceAsset.setInvestAmount(totalRentAccount);
         accountFundingFinanceAsset.setUid(uid);
@@ -930,7 +929,7 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setRenterId(renterId);
         accountFundingFinanceAsset.setRenterName(renterName);
 
-        accountManageService.saveAccountRenterRent(uid, orderId, relevanceOrderId, totalRentAccount, BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
@@ -954,29 +953,6 @@ public class AccountServiceImpl implements AccountService {
         accountSupplier.setTotalAsset(totalAsset);
         accountSupplier.setFrozenAsset(frozenAsset);
         accountSupplierMaster.save(accountSupplier);
-
-        OrderSupplier orderSupplier = new OrderSupplier();
-        orderSupplier.setUid(uid);
-        orderSupplier.setOrderId(orderId);
-//        orderSupplier.setProductMemory(entity.getProductRandomMemory());
-//        orderSupplier.setRenterId(entity.getMerchantId());
-//        dto.setRenterName(entity.getMerchantName());
-//        dto.setUserId(entity.getUid());
-//        dto.setUserName(entity.getReceiverName());
-//        dto.setDeliverTime(entity.getExpressTime());
-        orderSupplier.setProductBrand(productBrand);
-        orderSupplier.setProductName(productName);
-        orderSupplier.setProductModel(productModel);
-        orderSupplier.setProductColor(productColour);
-        orderSupplier.setProductStorage(productStorage);
-        orderSupplier.setProductRandomMemory(productMemory);
-        orderSupplier.setMerchantId(renterId);
-        orderSupplier.setMerchantName(renterName);
-        orderSupplier.setUid(uid);
-        orderSupplier.setReceiverName(userName);
-        orderSupplier.setExpressTime(expressTime);
-        orderSupplierMaster.save(orderSupplier);
-
         return new OperationResult<>(true);
     }
 
