@@ -128,6 +128,8 @@ public class AccountServiceImpl implements AccountService {
     AccountSupplierMaster accountSupplierMaster;
     @Autowired
     AccountManageService accountManageService;
+    @Autowired
+    private AccountRenterFinancingMaster accountRenterFinancingMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -949,6 +951,23 @@ public class AccountServiceImpl implements AccountService {
         accountSupplier.setFrozenAsset(frozenAsset);
         accountSupplierMaster.save(accountSupplier);
         return new OperationResult<>(true);
+    }
+
+    /**
+     * 保存AccountRenterFinancing
+     *
+     * @param accountRenterFinancing
+     * @return
+     */
+    @Override
+    public AccountRenterFinancing saveAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing) {
+        if (null == accountRenterFinancing) {
+            return null;
+        }
+        if (null == accountRenterFinancing.getId()) {
+            accountRenterFinancing.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+        return accountRenterFinancingMaster.saveAndFlush(accountRenterFinancing);
     }
 
     /**

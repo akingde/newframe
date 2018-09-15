@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     OrderFunderEvidenceSlave orderFunderEvidenceSlave;
 
     @Autowired
-    OrderSupplierMaster orderSupplierMaster;
+    OrderSuppMaster orderSuppMaster;
     @Autowired
     OrderSupplierSlave orderSupplierSlave;
 
@@ -712,7 +712,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setExpressCode(deliverInfo.getDeliverCode());
         // 待收货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.WAITING_RECEIVE.getCode());
-        orderSupplierMaster.save(orderSupplier);
+        orderSuppMaster.save(orderSupplier);
         // 修改资金方订单为待收货状态
         Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(deliverInfo.getOrderId());
         if (orderFunderOptional.isPresent()) {
@@ -1356,7 +1356,7 @@ public class OrderServiceImpl implements OrderService {
             // 拿到供应商的供应价格
             orderSupplier.setTotalAccount(product.getSupplyPrice());
         }
-        orderSupplierMaster.save(orderSupplier);
+        orderSuppMaster.save(orderSupplier);
         orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
     }
 }

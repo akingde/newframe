@@ -381,6 +381,41 @@ public class AccountManageServiceImpl implements AccountManageService {
     }
 
     /**
+     * 租赁商账户资产
+     * 订单融资
+     * 能传的字段，按照接口要求传，不能提供的请传一个0
+     *
+     * @param uid
+     * @param orderId
+     * @param associatedOrderId
+     * @param financingAmount
+     * @param financingMaturity
+     * @param financingPrincipalInterest
+     * @param financingInterest
+     * @param settlePrincipalInterest
+     * @param settleInterest
+     * @param unsettlePrincipalInterest
+     * @param unsettleInterest
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest) {
+        if (null == uid || null == orderId || null == associatedOrderId || null == financingAmount || null == financingMaturity||
+                null == financingPrincipalInterest || null == financingInterest || null == settlePrincipalInterest ||  null == settleInterest || null == unsettlePrincipalInterest || null == unsettleInterest){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountRenterFinancing accountRenterFinancing = new AccountRenterFinancing();
+        accountRenterFinancing.setAccountRenterFinancing(uid,orderId,associatedOrderId,financingAmount,financingMaturity,
+                financingPrincipalInterest,financingInterest,settlePrincipalInterest,settleInterest,unsettlePrincipalInterest,unsettleInterest);
+        AccountRenterFinancing result = accountService.saveAccountRenterFinancing(accountRenterFinancing);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,financingAmount,financingMaturity);
+        if (null == result || null == result || !renterRepay.getEntity()){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
      * 生成还款计划表
      *
      * @param orderId       订单的ID

@@ -132,6 +132,25 @@ public interface AccountManageService {
     OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount);
 
     /**
+     * 租赁商账户资产
+     * 订单融资
+     * 能传的字段，按照接口要求传，不能提供的请传一个0
+     * @param uid
+     * @param orderId
+     * @param associatedOrderId
+     * @param financingAmount
+     * @param financingMaturity
+     * @param financingPrincipalInterest
+     * @param financingInterest
+     * @param settlePrincipalInterest
+     * @param settleInterest
+     * @param unsettlePrincipalInterest
+     * @param unsettleInterest
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterFinancing(Long uid,Long orderId,String associatedOrderId,BigDecimal financingAmount,Integer financingMaturity,BigDecimal financingPrincipalInterest,BigDecimal financingInterest,BigDecimal settlePrincipalInterest,BigDecimal settleInterest,BigDecimal unsettlePrincipalInterest,BigDecimal unsettleInterest);
+
+    /**
      * 生成还款计划表
      * @param orderId 订单的ID
      * @param totalAccount 总金额
@@ -161,4 +180,5 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<Boolean> updateAccount(Long uid,AccountTypeEnum accountTypeEnum,BigDecimal dealAmount);
+
 }
