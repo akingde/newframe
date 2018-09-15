@@ -868,7 +868,7 @@ public class AccountServiceImpl implements AccountService {
         AccountLessorMatterAsset accountLessorMatterAsset = new AccountLessorMatterAsset();
         accountLessorMatterAsset.setTotalAmount(totalRentAccount);
         accountLessorMatterAsset.setRentDeadline(monthNumber);
-
+        accountLessorMatterAsset.setId(idGlobal.getSeqId(AccountLessorMatterAsset.class));
         accountLessorMatterAsset.setOrderId(orderId);
         accountLessorMatterAsset.setRentTime(orderTime);
         accountLessorMatterAsset.setRenterId(renterId);
