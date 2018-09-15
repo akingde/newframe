@@ -9,6 +9,7 @@ import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataMaster.account.AccountMaster;
+import com.newframe.repositories.dataMaster.account.AccountRenterRentDetailMaster;
 import com.newframe.repositories.dataMaster.account.AccountRenterRentMaster;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
@@ -106,6 +107,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterRentMaster accountRenterRentMaster;
+
+    @Autowired
+    private AccountRenterRentDetailMaster accountRenterRentDetailMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -797,5 +801,22 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountRenterRentMaster.saveAndFlush(accountRenterRent);
+    }
+
+    /**
+     * 保存accountRenterRentDetail
+     *
+     * @param accountRenterRentDetail
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
+        if (null == accountRenterRentDetail){
+            return null;
+        }
+        if (null == accountRenterRentDetail.getId()){
+            accountRenterRentDetail.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+        return accountRenterRentDetailMaster.saveAndFlush(accountRenterRentDetail);
     }
 }
