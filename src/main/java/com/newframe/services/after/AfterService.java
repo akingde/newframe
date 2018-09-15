@@ -1,6 +1,7 @@
 package com.newframe.services.after;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.after.request.DrawAssetSearchDTO;
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.after.response.*;
@@ -82,4 +83,28 @@ public interface AfterService {
      * @return
      */
     OperationResult<FunderDTO> getFunderInfo(Long funderUid);
+
+    /**
+     * 获取资金提取列表
+     * @param uid
+     * @param drawAssetSearchDTO
+     * @return
+     */
+    OperationResult<DrawAssetListDTO> getDrawAssetList(Long uid, DrawAssetSearchDTO drawAssetSearchDTO);
+
+    /**
+     * 资金提取审核通过
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    OperationResult<Boolean> passDrawAssetCheck(Long uid, Long orderId);
+
+    /**
+     * 资金提取审核不通过
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId);
 }

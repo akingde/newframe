@@ -1,0 +1,19 @@
+package com.newframe.services.userbase;
+
+import com.newframe.dto.after.request.DrawAssetSearchDTO;
+import com.newframe.entity.user.CapitalFlow;
+import org.springframework.data.domain.Page;
+
+/**
+ * @author WangBin
+ */
+public interface CapitalFlowService {
+
+    Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO);
+
+    CapitalFlow findOne(Long orderId);
+
+    CapitalFlow insert(CapitalFlow capitalFlow);
+
+    int update(CapitalFlow capitalFlow);
+}

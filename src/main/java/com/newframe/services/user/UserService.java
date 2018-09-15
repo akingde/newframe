@@ -5,6 +5,7 @@ import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.Area;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -166,6 +167,30 @@ public interface UserService {
     OperationResult<List<UserAddressDTO>> getUserAddressList(Long uid);
 
     /**
+     * 添加或者修改银行卡
+     * @param uid
+     * @param bankDTO
+     * @return
+     */
+    OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO);
+
+    /**
+     * 添加充值记录
+     * @param uid
+     * @param amount
+     * @return
+     */
+    OperationResult<Boolean> addRechargeRecord(Long uid, BigDecimal amount);
+
+    /**
+     * 添加提现记录
+     * @param uid
+     * @param amount
+     * @return
+     */
+    OperationResult<Boolean> addDrawRecord(Long uid, BigDecimal amount);
+
+    /**
      * 添加地址
      * @param uid
      * @param addressDTO
@@ -235,4 +260,34 @@ public interface UserService {
      * @return
      */
     OperationResult<Boolean> getFunderQualification(Long uid);
+
+    /**
+     * 银行处理成功
+     * @param orderId
+     * @return
+     */
+    OperationResult<Boolean> bankDrawByPass(Long orderId);
+
+    /**
+     * 银行处理失败
+     * @param orderId
+     * @return
+     */
+    OperationResult<Boolean> bankDrawByFail(Long orderId);
+
+    /**
+     * 提取通过
+     * @param uid
+     * @param amount
+     * @return
+     */
+    OperationResult<Boolean> passDrawAssetCheck(Long uid, BigDecimal amount);
+
+    /**
+     * 提取失败
+     * @param uid
+     * @param amount
+     * @return
+     */
+    OperationResult<Boolean> failDrawAssetCheck(Long uid, BigDecimal amount);
 }

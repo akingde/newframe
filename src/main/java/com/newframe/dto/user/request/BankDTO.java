@@ -12,5 +12,4 @@ public class BankDTO {
     private String bankName;
     private String bankDetailedName;
     private String bankNumber;
-    private String bankPhoneNumber;
 }
