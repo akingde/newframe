@@ -354,4 +354,11 @@ public interface AccountService {
      * @return
      */
     List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays);
+
+    /**
+     * 操作账户的数据
+     * @param accountStatement
+     * @return
+     */
+    AccountStatement saveAccountStatement(AccountStatement accountStatement);
 }
