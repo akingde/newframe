@@ -15,6 +15,7 @@ import com.newframe.services.userbase.UserAddressService;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.services.userbase.UserPwdService;
 import com.newframe.services.userbase.UserRentMerchantService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +48,9 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     @Autowired
     private UserRentMerchantService userRentMerchantService;
+
+    @Autowired
+    private IdGlobalGenerator idGlobal;
     /**
      * 租赁商获取账户信息
      *
@@ -364,9 +370,41 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterRentDetail accountRenterRentDetail = new AccountRenterRentDetail();
         accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
-        saveAccountRenterRent(uid, orderId, associatedOrderId, BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,totalRentAccount,monthNumber);
+        if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
 
-        if (null == result){
+    /**
+     * 生成还款计划表
+     *
+     * @param orderId       订单的ID
+     * @param totalAccount  总金额
+     * @param totalPeriods 一共几期
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods) {
+        if (null == orderId || null == totalAccount || null == totalPeriods){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        List<AccountRenterRepay> accountRenterRepays = new ArrayList<>(totalPeriods);
+        BigDecimal orderAmount = totalAccount.divide(BigDecimal.valueOf(totalPeriods),2, RoundingMode.HALF_UP);
+        accountRenterRepays.forEach(accountRenterRepay -> {
+            int i = 1;
+            accountRenterRepay.setId(idGlobal.getSeqId(AccountRenterRepay.class));
+            accountRenterRepay.setNumberPeriods(i);
+            accountRenterRepay.setOrderAmount(orderAmount);
+            accountRenterRepay.setOrderId(orderId);
+            accountRenterRepay.setWithhold(1);
+            accountRenterRepay.setOrderStatus(1);
+            i++;
+        });
+        List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
+        if (CollectionUtils.isEmpty(result)){
             return new OperationResult<>(false);
         }
         return new OperationResult<>(true);

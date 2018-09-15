@@ -11,6 +11,7 @@ import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataMaster.account.AccountMaster;
 import com.newframe.repositories.dataMaster.account.AccountRenterRentDetailMaster;
 import com.newframe.repositories.dataMaster.account.AccountRenterRentMaster;
+import com.newframe.repositories.dataMaster.account.AccountRenterRepayMaster;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
@@ -110,6 +111,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterRentDetailMaster accountRenterRentDetailMaster;
+
+    @Autowired
+    private AccountRenterRepayMaster accountRenterRepayMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -818,5 +822,20 @@ public class AccountServiceImpl implements AccountService {
             accountRenterRentDetail.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
         }
         return accountRenterRentDetailMaster.saveAndFlush(accountRenterRentDetail);
+    }
+
+    /**
+     * 保存AccountRenterRepay
+     *
+     * @param accountRenterRepays
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays) {
+        if (CollectionUtils.isEmpty(accountRenterRepays)){
+            return Collections.EMPTY_LIST;
+        }
+
+        return accountRenterRepayMaster.saveAll(accountRenterRepays);
     }
 }

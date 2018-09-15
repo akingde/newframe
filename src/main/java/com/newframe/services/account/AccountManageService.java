@@ -128,4 +128,13 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount);
+
+    /**
+     * 生成还款计划表
+     * @param orderId 订单的ID
+     * @param totalAccount 总金额
+     * @param totalPeriods 一共几期
+     * @return
+     */
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId,BigDecimal totalAccount,Integer totalPeriods);
 }

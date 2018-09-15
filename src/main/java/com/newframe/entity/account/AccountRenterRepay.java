@@ -24,7 +24,7 @@ public class AccountRenterRepay {
 
     private Long orderId;
     /**
-     * 可用金额
+     * 第几期
      */
     private Integer numberPeriods;
     /**
