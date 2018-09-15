@@ -347,4 +347,11 @@ public interface AccountService {
      * @return
      */
     AccountRenterRentDetail saveAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail);
+
+    /**
+     * 保存AccountRenterRepay
+     * @param accountRenterRepays
+     * @return
+     */
+    List<AccountRenterRepay> saveAccountRenterRepay(List<AccountRenterRepay> accountRenterRepays);
 }

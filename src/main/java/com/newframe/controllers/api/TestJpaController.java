@@ -4,12 +4,14 @@ import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.test.TestUser;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.test.TestManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,6 +24,9 @@ public class TestJpaController extends BaseController {
 
     @Autowired
     private TestManageService testManageService;
+
+    @Autowired
+    private AccountManageService accountManageServicel;
 
     /**
      * 接收实体类，对应于数据库的表
@@ -169,5 +174,19 @@ public class TestJpaController extends BaseController {
         }
 
         return error(result.getCode(),result.getMessage());
+    }
+
+
+    @RequestMapping("saveAccountRenterRentDetail")
+    public JsonResult saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount){
+
+        OperationResult<Boolean> result = accountManageServicel.saveAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
+
+        if (result.getSucc()){
+            return success(result.getEntity());
+        }
+
+        return error(result.getCode(),result.getMessage());
+
     }
 }
