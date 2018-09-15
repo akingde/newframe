@@ -3,8 +3,9 @@ package com.newframe.services.account;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
 import com.newframe.entity.account.*;
+import com.newframe.enums.account.AccountTypeEnum;
+import com.newframe.enums.account.DealTypeEnum;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -150,5 +151,14 @@ public interface AccountManageService {
      * @param extraAmount 额外的金额
      * @return
      */
-    OperationResult<Boolean> saveAccountStatement(Long uid,Integer dealType,Integer accountType,BigDecimal dealAmount,BigDecimal extraAmount);
+    OperationResult<Boolean> saveAccountStatement(Long uid, DealTypeEnum dealType, AccountTypeEnum accountType, BigDecimal dealAmount, BigDecimal extraAmount);
+
+    /**
+     * 对指定的账户做操作
+     * @param uid
+     * @param accountTypeEnum
+     * @param dealAmount
+     * @return
+     */
+    OperationResult<Boolean> updateAccount(Long uid,AccountTypeEnum accountTypeEnum,BigDecimal dealAmount);
 }

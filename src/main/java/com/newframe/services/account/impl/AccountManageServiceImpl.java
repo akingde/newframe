@@ -9,6 +9,8 @@ import com.newframe.entity.user.UserBaseInfo;
 import com.newframe.entity.user.UserPwd;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.enums.BizErrorCode;
+import com.newframe.enums.account.AccountTypeEnum;
+import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.userbase.UserAddressService;
@@ -425,15 +427,59 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountStatement(Long uid, Integer dealType, Integer accountType, BigDecimal dealAmount, BigDecimal extraAmount) {
+    public OperationResult<Boolean> saveAccountStatement(Long uid, DealTypeEnum dealType, AccountTypeEnum accountType, BigDecimal dealAmount, BigDecimal extraAmount) {
         if (null == uid || null == dealType || null ==accountType || null == dealAmount || null == extraAmount){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
 
         AccountStatement accountStatement = new AccountStatement();
-        accountStatement.setAccountStatement(uid,dealType,accountType,dealAmount,extraAmount);
+        accountStatement.setAccountStatement(uid,dealType.getCode(),accountType.getCode(),dealAmount,extraAmount);
         AccountStatement result = accountService.saveAccountStatement(accountStatement);
 
+        OperationResult<Boolean> res = updateAccount(uid,accountType,dealAmount);
+        if (null == result || !res.getEntity()){
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 对指定的账户做操作
+     *
+     * @param uid
+     * @param accountTypeEnum
+     * @param dealAmount
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> updateAccount(Long uid, AccountTypeEnum accountTypeEnum, BigDecimal dealAmount) {
+        if (null == uid || null == accountTypeEnum || null == dealAmount){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        Account account = accountService.getAccount(uid);
+        if (null == account){
+            return new OperationResult<>(BizErrorCode.ACCOUNT_NOTEXIST);
+        }
+        BigDecimal amount;
+        Account acc = new Account();
+        acc.setUid(uid);
+        if (accountTypeEnum.equals(AccountTypeEnum.TOTALASSETS)){
+            amount = account.getTotalAssets().multiply(dealAmount);
+            acc.setTotalAssets(amount);
+        }else if (accountTypeEnum.equals(AccountTypeEnum.USEABLEASSETS)){
+            amount = account.getUseableAmount().multiply(dealAmount);
+            acc.setUseableAmount(amount);
+        }else if (accountTypeEnum.equals(AccountTypeEnum.FROZENASSETS)){
+            amount = account.getFrozenAssets().multiply(dealAmount);
+            acc.setFrozenAssets(amount);
+        }else if (accountTypeEnum.equals(AccountTypeEnum.MARGINASSETS)){
+            amount = account.getMarginBalance().multiply(dealAmount);
+            acc.setMarginBalance(amount);
+        }else {
+            return new OperationResult<>(BizErrorCode.ACCOUNTTYPE_NOTEXIST);
+        }
+
+        Account result = accountService.updateAccount(acc);
         if (null == result){
             return new OperationResult<>(false);
         }
@@ -445,6 +491,7 @@ public class AccountManageServiceImpl implements AccountManageService {
      *
      * @return
      */
+
 
 
 }

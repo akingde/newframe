@@ -391,4 +391,17 @@ public interface AccountService {
                                                        Long renterId, String renterName, Long expressTime,
                                                        String productBrand, String productName, String productModel, String productColour, Integer productStorage, Integer productMemory);
 
+    /**
+     * 根据UID查询到账户
+     * @param uid
+     * @return
+     */
+    Account getAccount(Long uid);
+
+    /**
+     * 更新Account
+     * @param acc
+     * @return
+     */
+    Account updateAccount(Account acc);
 }
