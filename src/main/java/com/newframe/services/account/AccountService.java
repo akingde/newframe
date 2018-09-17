@@ -423,4 +423,11 @@ public interface AccountService {
      * @return
      */
     AccountFundingFinanceAsset getAccountFundingFinanceAsset(Long orderId);
+
+    /**
+     * 还款后更新状态呀
+     * @param accountRenterFinancing
+     * @return
+     */
+    AccountRenterFinancing updateAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing);
 }
