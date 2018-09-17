@@ -55,8 +55,7 @@ public class AccountManageServiceImpl implements AccountManageService {
     @Autowired
     private IdGlobalGenerator idGlobal;
 
-    @Value("${overdue.rate}")
-    private BigDecimal overdueRate;
+    private final BigDecimal overdueRate = BigDecimal.valueOf(0.2);
     /**
      * 租赁商获取账户信息
      *
