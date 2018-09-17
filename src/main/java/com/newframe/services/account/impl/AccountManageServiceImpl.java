@@ -21,6 +21,7 @@ import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,8 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     @Autowired
     private IdGlobalGenerator idGlobal;
+
+    private final BigDecimal overdueRate = BigDecimal.valueOf(0.2);
     /**
      * 租赁商获取账户信息
      *
@@ -472,7 +475,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountStatement result = accountService.saveAccountStatement(accountStatement);
 
         OperationResult<Boolean> res = updateAccount(uid,accountType,dealAmount);
-        if (null == result || !res.getEntity()){
+        if (null == result || !res.getSucc() || !res.getEntity()){
             return new OperationResult<>(false);
         }
         return new OperationResult<>(true);
@@ -518,6 +521,54 @@ public class AccountManageServiceImpl implements AccountManageService {
         Account result = accountService.updateAccount(account);
         if (null == result){
             return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 融资购机还款
+     *
+     * @param id
+     * @param finallyPeriod
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod) {
+        if (null == id){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountRenterRepay accountRenterRepay = accountService.getAccountRenterRepay(id);
+        if (null == accountRenterRepay){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        BigDecimal extraAmount = BigDecimal.valueOf(0);
+        BigDecimal dealAmount = accountRenterRepay.getOrderAmount();
+        Long orderId = accountRenterRepay.getOrderId();
+        //如果逾期
+        if (accountRenterRepay.getOrderStatus().equals(2)){
+            extraAmount = dealAmount.multiply(overdueRate);
+        }
+        AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
+        AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
+
+        Long renterUid = accountRenterFinancing.getUid();
+        Long funderUid = accountFundingFinanceAsset.getUid();
+        //操作租赁商的账户
+        OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
+        //操作资金方的账户
+        OperationResult<Boolean> result1 = saveAccountStatement(funderUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);
+        //如果是最后一期。需要将保证金退还
+        if (finallyPeriod){
+            BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
+            //BigDecimal cashDeposit =
+            //减保证金
+            //saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,totalAmount.multiply(new BigDecimal(-0.15)),extraAmount);
+            //加可用余额
+            //saveAccountStatement(renterUid,)
+        }
+
+        if (result.getEntity()&&result1.getEntity()){
+            return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
         }
         return new OperationResult<>(true);
     }

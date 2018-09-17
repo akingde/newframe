@@ -5,6 +5,7 @@ import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.user.Area;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -164,6 +165,44 @@ public interface UserService {
      * @return
      */
     OperationResult<List<UserAddressDTO>> getUserAddressList(Long uid);
+
+    /**
+     * 添加或者修改银行卡
+     * @param uid
+     * @param bankDTO
+     * @return
+     */
+    OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO);
+
+    /**
+     * 添加充值记录
+     * @param bankNumber
+     * @param amount
+     * @return
+     */
+    OperationResult<Boolean> addRechargeRecord(String bankNumber, BigDecimal amount);
+
+    /**
+     * 添加提现记录
+     * @param uid
+     * @param amount
+     * @return
+     */
+    OperationResult<Boolean> addDrawRecord(Long uid, BigDecimal amount);
+
+    /**
+     * 银行处理成功
+     * @param bankMoneyFlowId
+     * @return
+     */
+    OperationResult<Boolean> bankDrawByPass(Long bankMoneyFlowId);
+
+    /**
+     * 银行处理失败
+     * @param bankMoneyFlowId
+     * @return
+     */
+    OperationResult<Boolean> bankDrawByFail(Long bankMoneyFlowId);
 
     /**
      * 添加地址

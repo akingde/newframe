@@ -181,4 +181,11 @@ public interface AccountManageService {
      */
     OperationResult<Boolean> updateAccount(Long uid,AccountTypeEnum accountTypeEnum,BigDecimal dealAmount);
 
+    /**
+     * 融资购机还款
+     * @param id
+     * @param finallyPeriod
+     * @return
+     */
+    OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod);
 }
