@@ -26,6 +26,10 @@ public class AccountLessorMatterAsset implements Serializable {
     @Id
     private Long id;
     /**
+     * 出租方uid
+     */
+    private Long uid;
+    /**
      * 出租时间
      */
     private Long rentTime;
