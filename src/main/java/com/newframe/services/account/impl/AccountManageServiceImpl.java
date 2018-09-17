@@ -21,7 +21,6 @@ import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +55,8 @@ public class AccountManageServiceImpl implements AccountManageService {
     private IdGlobalGenerator idGlobal;
 
     private final BigDecimal overdueRate = BigDecimal.valueOf(0.2);
+
+    private final BigDecimal depositRate = BigDecimal.valueOf(0.15);
     /**
      * 租赁商获取账户信息
      *
@@ -547,6 +548,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
             extraAmount = dealAmount.multiply(overdueRate);
+            dealAmount = dealAmount.add(extraAmount);
         }
         AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
         AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
@@ -560,14 +562,21 @@ public class AccountManageServiceImpl implements AccountManageService {
         //如果是最后一期。需要将保证金退还
         if (finallyPeriod){
             BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
-            //BigDecimal cashDeposit =
+            BigDecimal cashDeposit = totalAmount.multiply(depositRate);
             //减保证金
-            //saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,totalAmount.multiply(new BigDecimal(-0.15)),extraAmount);
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,cashDeposit.multiply(new BigDecimal(-1)),extraAmount);
             //加可用余额
-            //saveAccountStatement(renterUid,)
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.USEABLEASSETS,cashDeposit,extraAmount);
         }
 
-        if (result.getEntity()&&result1.getEntity()){
+        //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
+        if (accountRenterRepay.getOrderStatus().equals(2)){
+            accountRenterFinancing.setRepaymentStatus(1);
+            accountRenterFinancing.setOrderStatus(1);
+            accountService.updateAccountRenterFinancing(accountRenterFinancing);
+        }
+
+        if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
         }
         return new OperationResult<>(true);

@@ -1031,6 +1031,30 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * @param accountRenterFinancing
+     * @return
+     */
+    @Override
+    public AccountRenterFinancing updateAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing) {
+        if (null == accountRenterFinancing.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterFinancing.getRepaymentStatus()){
+            updateFields.add("repaymentStatus");
+        }
+        if (null != accountRenterFinancing.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterFinancingMaster.updateById(accountRenterFinancing,accountRenterFinancing.getId(),array);
+        return accountRenterFinancing;
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid
