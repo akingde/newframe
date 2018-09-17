@@ -446,6 +446,10 @@ public class AccountManageServiceImpl implements AccountManageService {
 
             accountRenterRepays.add(accountRenterRepay);
         };
+        //第一期是已扣款
+        if (null != accountRenterRepays.get(0)) {
+            accountRenterRepays.get(0).setWithhold(2);
+        }
         List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
         if (CollectionUtils.isEmpty(result)){
             return new OperationResult<>(false);
@@ -591,6 +595,41 @@ public class AccountManageServiceImpl implements AccountManageService {
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
         }
         return new OperationResult<>(true);
+    }
+
+    /**
+     * 租赁商租机还款
+     *
+     * @param id
+     * @param finallyPeriod
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> rentRepayment(Long id, Boolean finallyPeriod) {
+        if (null == id){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountRenterRepay accountRenterRepay = accountService.getAccountRenterRepay(id);
+        if (null == accountRenterRepay){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        BigDecimal extraAmount = BigDecimal.valueOf(0);
+        BigDecimal dealAmount = accountRenterRepay.getOrderAmount();
+        Long orderId = accountRenterRepay.getOrderId();
+        //如果逾期
+        if (accountRenterRepay.getOrderStatus().equals(2)){
+            extraAmount = dealAmount.multiply(overdueRate);
+            dealAmount = dealAmount.add(extraAmount);
+        }
+        AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
+        AccountLessorMatterAsset accountLessorMatterAsset = accountService.getAccountLessorMatterAsset(orderId);
+
+        Long renterUid = accountRenterFinancing.getUid();
+        //Long lessorUid = accountLessorMatterAsset.getUid();
+        //操作租赁商的账户
+        OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
+
+        return null;
     }
 
     /**

@@ -444,4 +444,11 @@ public interface AccountService {
      * @return
      */
     AccountRenterRepay updateAccountRenterRepay(AccountRenterRepay accountRenterRepay);
+
+    /**
+     * 操作出租方的账户
+     * @param orderId
+     * @return
+     */
+    AccountLessorMatterAsset getAccountLessorMatterAsset(Long orderId);
 }

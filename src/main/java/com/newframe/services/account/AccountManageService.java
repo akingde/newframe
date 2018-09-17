@@ -188,4 +188,12 @@ public interface AccountManageService {
      * @return
      */
     OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod);
+
+    /**
+     * 租赁商租机还款
+     * @param id
+     * @param finallyPeriod
+     * @return
+     */
+    OperationResult<Boolean> rentRepayment(Long id, Boolean finallyPeriod);
 }

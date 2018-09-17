@@ -1106,6 +1106,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 操作出租方的账户
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountLessorMatterAsset getAccountLessorMatterAsset(Long orderId) {
+
+        if (null == orderId){
+            return null;
+        }
+
+        AccountLessorMatterAssetQuery query = new AccountLessorMatterAssetQuery();
+        query.setOrderId(orderId);
+
+        return accountLessorMatterAssetSlave.findOne(query);
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid
