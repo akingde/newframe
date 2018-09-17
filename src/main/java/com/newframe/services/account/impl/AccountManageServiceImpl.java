@@ -55,8 +55,7 @@ public class AccountManageServiceImpl implements AccountManageService {
     @Autowired
     private IdGlobalGenerator idGlobal;
 
-    @Value("${overdue.rate}")
-    private BigDecimal overdueRate;
+    private final BigDecimal overdueRate = BigDecimal.valueOf(0.2);
     /**
      * 租赁商获取账户信息
      *
@@ -476,7 +475,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountStatement result = accountService.saveAccountStatement(accountStatement);
 
         OperationResult<Boolean> res = updateAccount(uid,accountType,dealAmount);
-        if (null == result || !res.getEntity()){
+        if (null == result || !res.getSucc() || !res.getEntity()){
             return new OperationResult<>(false);
         }
         return new OperationResult<>(true);
@@ -530,10 +529,11 @@ public class AccountManageServiceImpl implements AccountManageService {
      * 融资购机还款
      *
      * @param id
+     * @param finallyPeriod
      * @return
      */
     @Override
-    public OperationResult<Boolean> financeRepayment(Long id) {
+    public OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod) {
         if (null == id){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
@@ -557,6 +557,16 @@ public class AccountManageServiceImpl implements AccountManageService {
         OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
         //操作资金方的账户
         OperationResult<Boolean> result1 = saveAccountStatement(funderUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);
+        //如果是最后一期。需要将保证金退还
+        if (finallyPeriod){
+            BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
+            //BigDecimal cashDeposit =
+            //减保证金
+            //saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,totalAmount.multiply(new BigDecimal(-0.15)),extraAmount);
+            //加可用余额
+            //saveAccountStatement(renterUid,)
+        }
+
         if (result.getEntity()&&result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
         }

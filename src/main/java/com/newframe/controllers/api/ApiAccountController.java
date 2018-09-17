@@ -570,9 +570,9 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("financeRepayment")
-    public JsonResult financeRepayment(Long Id){
+    public JsonResult financeRepayment(Long Id,Boolean finallyPeriod){
 
-        OperationResult<Boolean> result = accountManageService.financeRepayment(Id);
+        OperationResult<Boolean> result = accountManageService.financeRepayment(Id, finallyPeriod);
 
         if (result.getSucc()) {
             return success(result.getEntity());

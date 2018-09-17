@@ -184,7 +184,8 @@ public interface AccountManageService {
     /**
      * 融资购机还款
      * @param id
+     * @param finallyPeriod
      * @return
      */
-    OperationResult<Boolean> financeRepayment(Long id);
+    OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod);
 }

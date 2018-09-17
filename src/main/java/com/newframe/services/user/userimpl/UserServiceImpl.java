@@ -584,8 +584,8 @@ public class UserServiceImpl implements UserService {
         OperationResult<UserRoleDTO> roleInfo = roleBaseService.getUserRoleInfo(userRole.getUid(), userRole.getRoleId());
         UserRoleDTO roleDTO = roleInfo.getEntity();
         Integer status = type.equals(AssetTypeEnum.RECHARGE.getType())
-                                ? AssetStatusEnum.CHECKING.getOrderStatus()
-                                : AssetStatusEnum.BANK_SUCC.getOrderStatus();
+                                ? AssetStatusEnum.BANK_SUCC.getOrderStatus()
+                                : AssetStatusEnum.CHECKING.getOrderStatus();
         CapitalFlow capitalFlow = new CapitalFlow(userBank, roleDTO, amount, status, type);
         capitalFlowService.insert(capitalFlow);
         return new OperationResult(true);

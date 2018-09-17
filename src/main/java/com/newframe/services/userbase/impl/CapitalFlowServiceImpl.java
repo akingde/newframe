@@ -67,16 +67,10 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
 
     @Override
     public CapitalFlow findOne(CapitalFlow capitalFlow) {
-        if(capitalFlow == null){
-            return null;
-        }
-        if(StringUtils.isEmpty(capitalFlow.getBankFlowId()) && capitalFlow.getBankMoneyFlowId() == null){
+        if(capitalFlow == null || capitalFlow.getBankMoneyFlowId() == null){
             return null;
         }
         CapitalFlowQuery query = new CapitalFlowQuery();
-        if(StringUtils.isNotEmpty(capitalFlow.getBankFlowId())) {
-            query.setBankFlowId(capitalFlow.getBankFlowId());
-        }
         if(capitalFlow.getBankMoneyFlowId() != null){
             query.setBankMoneyFlowId(capitalFlow.getBankMoneyFlowId());
         }
