@@ -56,7 +56,7 @@ public interface OrderService {
      * @param patternPayment  支付方式
      * @return 处理结果
      */
-    JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment);
+    JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException;
 
     /**
      * 租赁商取消订单
@@ -81,7 +81,8 @@ public interface OrderService {
      * @param productInfo 产品信息
      * @return 查询结果
      */
-    JsonResult getSupplierList(ProductInfoDTO productInfo);
+
+    JsonResult getSupplierList(ProductInfoDTO productInfo, Long orderId);
 
     /**
      * 按产品信息查询有此机型的出租方列表
@@ -196,7 +197,7 @@ public interface OrderService {
      * @param deliverInfo 发货信息
      * @return 操作结果
      */
-    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo);
+    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException;
 
     /**
      * 出租方审核不通过
@@ -204,7 +205,7 @@ public interface OrderService {
      * @param uid 用户uid
      * @return 操作结果
      */
-    JsonResult lessorRefuse(Long orderId, Long uid);
+    JsonResult lessorRefuse(Long orderId, Long uid) throws AccountOperationException;
 
     /**
      * 查询快递公司列表
@@ -273,9 +274,16 @@ public interface OrderService {
 
     /**
      * 资金方线上放款
-     * @param loanDTO
-     * @param uid
-     * @return
+     * @param loanDTO 放款信息
+     * @param uid 资金方id
+     * @return 操作结果
      */
     JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException;
+
+    /**
+     * 根据订单id查询租赁商信息
+     * @param orderId 订单id
+     * @return 操作结果
+     */
+    OperationResult<RenterInfo> getRenterInfoByOrderId(Long orderId);
 }

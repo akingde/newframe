@@ -76,7 +76,7 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/rent")
-    public JsonResult renterRent(Long uid,Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment,BigDecimal accidentBenefit,Integer patternPayment){
+    public JsonResult renterRent(Long uid,Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment,BigDecimal accidentBenefit,Integer patternPayment) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -119,8 +119,8 @@ public class ApiOrderController extends BaseController {
      * @return 查询结果
      */
     @RequestMapping("/getSupplierList")
-    public JsonResult getSupplierList(ProductInfoDTO productInfo){
-        return orderService.getSupplierList(productInfo);
+    public JsonResult getSupplierList(ProductInfoDTO productInfo,Long orderId){
+        return orderService.getSupplierList(productInfo,orderId);
     }
 
     /**
@@ -323,7 +323,7 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("lessor/deliver")
-    public JsonResult lessorLogistics(Long uid,DeliverInfoDTO deliverInfo){
+    public JsonResult lessorLogistics(Long uid,DeliverInfoDTO deliverInfo) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -337,7 +337,7 @@ public class ApiOrderController extends BaseController {
      */
     @RequestMapping("lessor/refuse")
     @Anonymous(true)
-    public JsonResult lessorRefuse(Long uid,Long orderId){
+    public JsonResult lessorRefuse(Long uid,Long orderId) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -466,6 +466,23 @@ public class ApiOrderController extends BaseController {
     @RequestMapping("renterInfo")
     public JsonResult renterInfo(Long renterId){
         OperationResult<RenterInfo> result = orderService.getRenterInfo(renterId);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
+    }
+
+    /**
+     * 33、查询租赁商信息
+     * 查询租赁商信息
+     * 租赁商信息的逾期次数和融资金额、逾期金额等可以先写死，
+     * @param orderId 订单id
+     * @return 查询结果
+     */
+    @Anonymous(true)
+    @RequestMapping("getRenterInfo")
+    public JsonResult getRenterInfo(Long orderId){
+        OperationResult<RenterInfo> result = orderService.getRenterInfoByOrderId(orderId);
         if(result.getSucc()){
             return success(result.getEntity());
         }

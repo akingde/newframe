@@ -294,9 +294,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
-                                 BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) {
+                                 BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException {
         // 参数校验
         if (orderId == null || lessorId == null
                 || tenancyTerm == null || downPayment == null
@@ -306,8 +306,7 @@ public class OrderServiceImpl implements OrderService {
 
         // todo 根据lessorId查询出租方是否存在
 
-        // todo 根据租赁商uid查出租赁商信息
-        String renterName = "小米手机租赁店";
+        String renterName = orderBaseService.getRenterName(uid);
         String renterMobile = orderBaseService.getRenterPhone(uid);
 
         Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
@@ -373,6 +372,10 @@ public class OrderServiceImpl implements OrderService {
 
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
+            OperationResult<Boolean> operationResult = accountOperation.frozenRentDownPayment(orderRenter,orderHirer);
+            if(!operationResult.getEntity()){
+                throw new AccountOperationException(operationResult);
+            }
             orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
@@ -444,7 +447,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult getSupplierList(ProductInfoDTO productInfo) {
+    public JsonResult getSupplierList(ProductInfoDTO productInfo,Long orderId) {
+        if(orderId == null){
+            return new JsonResult(SystemCode.BAD_REQUEST);
+        }
         OrderProductSupplierQuery query = new OrderProductSupplierQuery();
         query.setProductBrand(productInfo.getProductBrand());
         query.setProductColor(productInfo.getProductColor());
@@ -458,6 +464,7 @@ public class OrderServiceImpl implements OrderService {
                 SupplierInfoDTO dto = new SupplierInfoDTO();
                 dto.setSupplierId(product.getSupplierId());
                 dto.setSupplierName(userSupplier.getMerchantName());
+                dto.setFinancingAmount(getFinancingAmount(orderId));
                 dtos.add(dto);
             }
         }
@@ -669,7 +676,7 @@ public class OrderServiceImpl implements OrderService {
                 if(!orderSupplierSlave.findById(orderRenter.getOrderId()).isPresent()){
                     orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
                     // 第一次操作供应商订单，操作账户线下放款
-                    OperationResult<Boolean> operationResult = accountOperation.offlineLoan(orderRenter,orderSupplier);
+                    OperationResult<Boolean> operationResult = accountOperation.offlineLoan(orderRenter,orderSupplier,orderFunder);
                     if(!operationResult.getEntity()){
                         throw new AccountOperationException(operationResult);
                     }
@@ -857,7 +864,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) {
+    public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
@@ -892,12 +899,16 @@ public class OrderServiceImpl implements OrderService {
         }
         // 操作租赁商账户
         orderBaseService.renterRentAccountOperation(orderRenter,orderHirer);
+        OperationResult<Boolean> operationResult = accountOperation.payDownPayment(orderRenter,orderHirer);
+        if(!operationResult.getEntity()){
+            throw new AccountOperationException(operationResult);
+        }
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
-    public JsonResult lessorRefuse(Long orderId, Long uid) {
+    @Transactional(rollbackFor = Exception.class)
+    public JsonResult lessorRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
@@ -918,6 +929,10 @@ public class OrderServiceImpl implements OrderService {
             }else{
                 // 修改租赁商订单为出租方拒绝
                 orderRenterMaser.updateOrderStatus(OrderRenterStatus.LESSOR_AUDIT_REFUSE.getCode(),orderId);
+            }
+            OperationResult<Boolean> operationResult = accountOperation.unfrozenRentDownPayment(orderRenterSlave.getOne(orderId),orderHirer);
+            if(!operationResult.getEntity()){
+                throw new AccountOperationException(operationResult);
             }
         }
         return new JsonResult(SystemCode.SUCCESS, true);
@@ -1043,6 +1058,29 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OperationResult<RenterInfo> getRenterInfoByOrderId(Long orderId) {
+        if (orderId == null) {
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        }
+        OrderRenter orderRenter = orderRenterSlave.findOne(orderId);
+        if(orderRenter == null){
+            return new OperationResult<>(OrderResultEnum.ORDER_NO_EXIST);
+        }
+        Long renterId = orderRenter.getRenterId();
+        UserRentMerchant renter = userRentMerchantService.findOne(renterId);
+        RenterInfo info = new RenterInfo();
+        info.setRenterId(renterId);
+        info.setRenterName(renter.getMerchantName());
+        info.setRenterPhone(renter.getMerchantPhoneNumber());
+        info.setAddress(renter.getRentMerchantAddress());
+        info.setBadDeptTimes(0);
+        info.setOverdueTimes(0);
+        info.setFinancingAmount(new BigDecimal(12593));
+        info.setOverdueAmount(new BigDecimal(2549));
+        return new OperationResult<>(OrderResultEnum.SUCCESS, info);
+    }
+
+    @Override
     public OperationResult<FinancingInfo> getFinancingInfo(Long orderId) {
         if (orderId == null) {
             return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
@@ -1150,8 +1188,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 根据订单id查询保证金金额
-     * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
+     * 计算融资金额
+     * 融资金额 = 手机的供应价 - 用户租机首付
      *
      * @param orderId 订单id
      * @return 保证金金额
@@ -1175,13 +1213,11 @@ public class OrderServiceImpl implements OrderService {
         // 拿到供应商的供应价格
         BigDecimal supplyPrice = product.getSupplyPrice();
         BigDecimal downPayment = orderRenter.getDownPayment();
-        BigDecimal benefit = new BigDecimal(0.15);
-        return supplyPrice.subtract(downPayment)
-                .subtract(supplyPrice.subtract(downPayment).multiply(benefit));
+        return supplyPrice.subtract(downPayment);
     }
 
     /**
-     * 根据保证金金额
+     * 计算保证金金额
      * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
      *
      * @param orderId 订单id
@@ -1287,7 +1323,6 @@ public class OrderServiceImpl implements OrderService {
             OrderRenter orderRenter = orderRenterOptional.get();
             orderSupplierDTO.setRenterId(orderRenter.getRenterId());
             orderSupplierDTO.setRenterName(orderRenter.getRenterName());
-            // todo 获取租赁商联系方式
             orderSupplierDTO.setRenterPhone(orderBaseService.getRenterPhone(orderRenter.getRenterId()));
             orderSupplierDTO.setRentDeadlineMonth(orderRenter.getNumberOfPayments());
             orderSupplierDTO.setMonthlyPayment(orderRenter.getMonthlyPayment());
