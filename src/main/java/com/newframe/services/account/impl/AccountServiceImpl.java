@@ -1055,6 +1055,57 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 还款后更新状态
+     *
+     * @param accountFundingFinanceAsset
+     * @return
+     */
+    @Override
+    public AccountFundingFinanceAsset updateAccountFundingFinanceAsset(AccountFundingFinanceAsset accountFundingFinanceAsset) {
+        if (null == accountFundingFinanceAsset.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountFundingFinanceAsset.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountFundingFinanceAssetMaster.updateById(accountFundingFinanceAsset,accountFundingFinanceAsset.getId(),array);
+        return accountFundingFinanceAsset;
+    }
+
+    /**
+     * 更新还款后的状态
+     *
+     * @param accountRenterRepay
+     * @return
+     */
+    @Override
+    public AccountRenterRepay updateAccountRenterRepay(AccountRenterRepay accountRenterRepay) {
+
+        if (null == accountRenterRepay.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRepay.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        if (null != accountRenterRepay.getWithhold()){
+            updateFields.add("withhold");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRepayMaster.updateById(accountRenterRepay,accountRenterRepay.getId(),array);
+        return accountRenterRepay;
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid

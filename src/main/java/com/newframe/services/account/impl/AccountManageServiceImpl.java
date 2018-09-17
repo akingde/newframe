@@ -569,11 +569,22 @@ public class AccountManageServiceImpl implements AccountManageService {
             saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.USEABLEASSETS,cashDeposit,extraAmount);
         }
 
+        //更新还款状态
+        accountRenterRepay.setOrderStatus(1);
+        accountRenterRepay.setWithhold(2);
+        AccountRenterRepay renterRepay = accountService.updateAccountRenterRepay(accountRenterRepay);
+
+        //更新租赁商和资金方的状态
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(accountRenterRepay.getOrderId());
+        //该笔订单是否全部还清,初始值为false,只判断最后一期即可
+        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
         //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
-        if (accountRenterRepay.getOrderStatus().equals(2)){
+        if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
             accountRenterFinancing.setRepaymentStatus(1);
             accountRenterFinancing.setOrderStatus(1);
             accountService.updateAccountRenterFinancing(accountRenterFinancing);
+            accountFundingFinanceAsset.setOrderStatus(1);
+            accountService.updateAccountFundingFinanceAsset(accountFundingFinanceAsset);
         }
 
         if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
