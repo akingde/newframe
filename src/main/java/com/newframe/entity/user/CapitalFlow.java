@@ -153,14 +153,14 @@ public class CapitalFlow {
      * ctime
      */
     @Column(name = "ctime")
-    private Long ctime;
+    private Integer ctime;
 
     /**
      * utime
      * utime
      */
     @Column(name = "utime")
-    private Long utime;
+    private Integer utime;
 
     public CapitalFlow() {
     }

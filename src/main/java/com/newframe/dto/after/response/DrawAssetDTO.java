@@ -28,8 +28,7 @@ public class DrawAssetDTO {
     private Integer orderStatus;
     private Long checkUid;
     private String checkName;
-    private Long ctime;
-    private Long utime;
+    private Integer ctime;
 
     public DrawAssetDTO(CapitalFlow capitalFlow) {
         this.uid = capitalFlow.getUid();
