@@ -402,4 +402,25 @@ public interface AccountService {
      * @return
      */
     AccountRenterFinancing saveAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing);
+
+    /**
+     * 根据主键查询AccountRenterRepay
+     * @param id
+     * @return
+     */
+    AccountRenterRepay getAccountRenterRepay(Long id);
+
+    /**
+     * 根据订单Id去租赁商订单表查询信息
+     * @param orderId
+     * @return
+     */
+    AccountRenterFinancing getAccountRenterFinancing(Long orderId);
+
+    /**
+     * 根据订单Id,查询资金方的订单信息
+     * @param orderId
+     * @return
+     */
+    AccountFundingFinanceAsset getAccountFundingFinanceAsset(Long orderId);
 }

@@ -77,8 +77,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("getRenterAccountInfo")
     public JsonResult getRenterAccountInfo(Long uid) {
 
-        uid = 10001L;
-
         OperationResult<RenterAccountInfo> result = accountManageService.getRenterAccountInfo(uid);
         if (result.getSucc()) {
             return success(result.getEntity());
@@ -101,8 +99,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("getRenterAssetAccount")
     public JsonResult getRenterAssetAccount(Long uid) {
 
-        uid = 10001L;
-
         OperationResult<Account> result = accountManageService.getRenterAssetAccount(uid);
         if (result.getSucc()) {
             return success(result.getEntity());
@@ -118,8 +114,6 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("listRenterOrderRent")
     public JsonResult listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
-
-        uid = 10001L;
 
         OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRent(uid, orderStatus, currentPage, pageSize);
         if (result.getSucc()) {
@@ -141,8 +135,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("getRenterOrderFinanceAccount")
     public JsonResult getRenterOrderFinanceAccount(Long uid) {
 
-        uid = 10001L;
-
         OperationResult<AccountRenterFinancingMachine> result = accountManageService.getRenterOrderFinanceAccount(uid);
 
         if (result.getSucc()) {
@@ -162,8 +154,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("listRenterOrderFinance")
     public JsonResult listRenterOrderFinance(Long uid, Integer repaymentStatus, Integer orderStatus, Integer currentPage, Integer pageSize) {
 
-        uid = 10001L;
-
         OperationResult<RenterOrderFinanceInfo> result = accountManageService.listRenterOrderFinance(uid, repaymentStatus, orderStatus, currentPage, pageSize);
 
         if (result.getSucc()) {
@@ -181,8 +171,6 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderFinanceDetail")
     public JsonResult getRenterOrderFinanceDetail(Long orderId) {
-
-        orderId = 10089L;
 
         OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
 
@@ -205,8 +193,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("getRenterOrderRentAccount")
     public JsonResult getRenterOrderRentAccount(Long uid) {
 
-        uid = 10001L;
-
         OperationResult<AccountRenterRentMachine> result = accountManageService.getRenterOrderRentAccount(uid);
 
         if (result.getSucc()) {
@@ -227,8 +213,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("listRenterOrderRentAccount")
     public JsonResult listRenterOrderRentAccount(Long uid, Integer payStatus, Integer currentPage, Integer pageSize) {
 
-        uid = 10001L;
-
         OperationResult<RenterOrderRentDetailInfo> result = accountManageService.listRenterOrderRentAccount(uid, payStatus, currentPage, pageSize);
 
         if (result.getSucc()) {
@@ -247,8 +231,6 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderRentDetail")
     public JsonResult getRenterOrderRentDetail(Long orderId) {
-
-        orderId = 10089L;
 
         OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
 
@@ -271,8 +253,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("getRenterOrderOverdueAccount")
     public JsonResult getRenterOrderOverdueAccount(Long uid) {
 
-        uid = 10001L;
-
         OperationResult<AccountRenterOverdueAsset> result = accountManageService.getAccountRenterOverdueAsset(uid);
 
         if (result.getSucc()) {
@@ -293,8 +273,6 @@ public class ApiAccountController extends BaseController {
     @RequestMapping("listRenterOrderOverdue")
     public JsonResult listRenterOrderOverdue(Long uid, Integer currentPage, Integer pageSize) {
 
-        uid = 10001L;
-
         OperationResult<RenterOrderOverdueDetailInfo> result = accountManageService.listRenterOrderOverdue(uid, currentPage, pageSize);
 
         if (result.getSucc()) {
@@ -313,8 +291,6 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping("getRenterOrderOverdueDetail")
     public JsonResult getRenterOrderOverdueDetail(Long orderId) {
-
-        orderId = 10089L;
 
         OperationResult<List<AccountRenterRepay>> result = accountManageService.getRenterOrderFinanceDetail(orderId);
 
@@ -484,7 +460,7 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping(value = "listSupplierOrderSell", method = RequestMethod.POST)
     public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize,orderStatus);
+        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -586,5 +562,21 @@ public class ApiAccountController extends BaseController {
     @RequestMapping(value = "getHirerOrderOverdueDetail", method = RequestMethod.POST)
     public JsonResult getHirerOrderOverdueDetail(Long orderId) {
         return accountService.getHirerOrderOverdueDetail(getUid(), orderId);
+    }
+
+    /**
+     * 在订单融资的时候，传account_renter_repay表中的id
+     * @param Id
+     * @return
+     */
+    @RequestMapping("financeRepayment")
+    public JsonResult financeRepayment(Long Id){
+
+        OperationResult<Boolean> result = accountManageService.financeRepayment(Id);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
     }
 }

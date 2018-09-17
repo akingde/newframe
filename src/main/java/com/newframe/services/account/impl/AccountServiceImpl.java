@@ -976,6 +976,61 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 根据主键查询AccountRenterRepay
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public AccountRenterRepay getAccountRenterRepay(Long id) {
+        if (null == id){
+            return null;
+        }
+        Optional<AccountRenterRepay> accountRenterRepay = accountRenterRepaySlave.findById(id);
+
+        if (accountRenterRepay.isPresent()){
+            return accountRenterRepay.get();
+        }
+        return null;
+    }
+
+    /**
+     * 根据订单Id去租赁商订单表查询信息
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountRenterFinancing getAccountRenterFinancing(Long orderId) {
+
+        if (null == orderId){
+            return null;
+        }
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setOrderId(orderId);
+
+        return accountRenterFinancingSlave.findOne(query);
+    }
+
+    /**
+     * 根据订单Id,查询资金方的订单信息
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountFundingFinanceAsset getAccountFundingFinanceAsset(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountFundingFinanceAssetQuery query = new AccountFundingFinanceAssetQuery();
+        query.setOrderId(orderId);
+
+        return accountFundingFinanceAssetSlave.findOne(query);
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid

@@ -17,4 +17,7 @@ public class AccountFundingFinanceAssetQuery extends BaseQuery {
     private Long uid;
     @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
     private Integer orderStatus;
+
+    @QBindAttrField(fieldName = "orderId", where = Where.equal)
+    private Long orderId;
 }

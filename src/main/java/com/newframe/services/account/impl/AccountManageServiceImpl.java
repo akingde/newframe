@@ -21,6 +21,7 @@ import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,9 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     @Autowired
     private IdGlobalGenerator idGlobal;
+
+    @Value("${overdue.rate}")
+    private BigDecimal overdueRate;
     /**
      * 租赁商获取账户信息
      *
@@ -518,6 +522,43 @@ public class AccountManageServiceImpl implements AccountManageService {
         Account result = accountService.updateAccount(account);
         if (null == result){
             return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 融资购机还款
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> financeRepayment(Long id) {
+        if (null == id){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountRenterRepay accountRenterRepay = accountService.getAccountRenterRepay(id);
+        if (null == accountRenterRepay){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        BigDecimal extraAmount = BigDecimal.valueOf(0);
+        BigDecimal dealAmount = accountRenterRepay.getOrderAmount();
+        Long orderId = accountRenterRepay.getOrderId();
+        //如果逾期
+        if (accountRenterRepay.getOrderStatus().equals(2)){
+            extraAmount = dealAmount.multiply(overdueRate);
+        }
+        AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
+        AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
+
+        Long renterUid = accountRenterFinancing.getUid();
+        Long funderUid = accountFundingFinanceAsset.getUid();
+        //操作租赁商的账户
+        OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
+        //操作资金方的账户
+        OperationResult<Boolean> result1 = saveAccountStatement(funderUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);
+        if (result.getEntity()&&result1.getEntity()){
+            return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
         }
         return new OperationResult<>(true);
     }
