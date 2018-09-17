@@ -1,5 +1,6 @@
 package com.newframe.entity.user;
 
+import com.newframe.dto.user.request.BankDTO;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -64,4 +65,15 @@ public class UserBank {
     @Column(name = "utime")
     private Integer utime;
 
+    public UserBank() {
+    }
+
+    public UserBank(Long uid, BankDTO bankDTO, String phoneNumber) {
+        this.uid = uid;
+        this.bankName = bankDTO.getBankName();
+        this.bankDetailedName = bankDTO.getBankDetailedName();
+        this.bankNumber = bankDTO.getBankNumber();
+        this.bankUserName = bankDTO.getUserBankName();
+        this.bankPhoneNumber = phoneNumber;
+    }
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -264,11 +265,42 @@ public class ApiUserController extends BaseController {
         return success(result.getEntity());
     }
 
+    /**
+     * 增加或者修改银行卡
+     * @param uid
+     * @param bankDTO
+     * @return
+     */
     @PostMapping("saveBankNumber")
-    public JsonResult saveBankNumber(){
+    public JsonResult saveBankNumber(Long uid, BankDTO bankDTO){
+        OperationResult<Boolean> result = userService.saveBankNumber(uid, bankDTO);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 添加充值记录
+     * @param uid
+     * @param amount
+     * @return
+     */
+    @PostMapping("addRechargeRecord")
+    public JsonResult addRechargeRecord(Long uid, BigDecimal amount){
         return null;
     }
 
+    /**
+     * 添加体现记录
+     * @param uid
+     * @param amount
+     * @return
+     */
+    @PostMapping("addDrawRecord")
+    public JsonResult addDrawRecord(Long uid, BigDecimal amount){
+        return null;
+    }
     /**
      * @param roleId 角色id
      * @return

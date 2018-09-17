@@ -16,4 +16,7 @@ public class UserBankQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "uid", where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "bankNumber", where = Where.equal)
+    private String bankNumber;
 }

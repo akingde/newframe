@@ -12,4 +12,6 @@ public interface UserBankService {
     int update(UserBank userBank);
 
     UserBank findOne(Long uid);
+
+    UserBank findOne(String bankNumber);
 }

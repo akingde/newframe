@@ -33,6 +33,7 @@ public enum RequestResultEnum implements CodeStatus {
     ROLE_APPLY_TOO_MUCH("40002", "有角色正在申请"),
     ROLE_ERROR("40004", "角色权限不足"),
     ROLE_EXISTS("40005", "已有角色，无法再次申请"),
+    ROLE_EXCEPTION("40006", "未拥有角色"),
 
     RENT_MERCHANT_ADD_ERROR("50000", "供应商添加失败"),
     RENT_MERCHANT_EXISTS("50001", "此供应商已隶属于其他人"),
@@ -48,8 +49,10 @@ public enum RequestResultEnum implements CodeStatus {
     PARAMETER_LOSS("80001", "缺少必须的参数"),
     ID_NUMBER_ERROR("80002", "身份证号不正确"),
     PARAMETER_ERROR("80003", "请求数据非法"),
+    BANK_EXISTS("80004", "银行卡已存在"),
 
     MODIFY_ERROR("90000", "操作失败"),
+    ASSET_ERROR("90001", "资产余额不足"),
 
     INVALID_ACCESS("100000", "无效的访问"),
     ;

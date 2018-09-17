@@ -1,13 +1,15 @@
 package com.newframe.controllers.api;
 
-import com.newframe.common.anony.Anonymous;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.after.request.DrawAssetSearchDTO;
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.dto.after.request.ModifyFunderDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.after.response.*;
+import com.newframe.enums.SystemCode;
+import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.services.after.AfterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -148,6 +150,57 @@ public class ApiAfterController extends BaseController {
         OperationResult<Boolean> result = afterService.removeFunder(uid, funderUid);
         if(!result.getEntity()){
             return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 获取资金提取列表
+     * @param uid
+     * @param drawAssetSearchDTO
+     * @return
+     */
+    @PostMapping("getDrawAssetList")
+    public JsonResult getDrawAssetList(Long uid, DrawAssetSearchDTO drawAssetSearchDTO){
+        if(uid == null){
+            error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<DrawAssetListDTO> result = afterService.getDrawAssetList(uid, drawAssetSearchDTO);
+        return success(result.getEntity());
+    }
+
+    /**
+     * 提款审核通过
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    @PostMapping("passDrawAssetCheck")
+    public  JsonResult passDrawAssetCheck(Long uid, Long orderId){
+        if(uid == null){
+            error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = afterService.passDrawAssetCheck(uid, orderId);
+        if(!result.getEntity()){
+            error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 提款审核不通过
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    @PostMapping("failDrawAssetCheck")
+    public  JsonResult failDrawAssetCheck(Long uid, Long orderId){
+        if(uid == null){
+            error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = afterService.failDrawAssetCheck(uid, orderId);
+        if(!result.getEntity()){
+            error(result.getErrorCode());
         }
         return success(result.getEntity());
     }
