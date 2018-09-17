@@ -7,12 +7,14 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
+import com.newframe.entity.account.AccountFundingFinanceAsset;
 import com.newframe.entity.order.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.*;
+import com.newframe.repositories.dataSlave.account.AccountFundingFinanceAssetSlave;
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
@@ -79,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
     OrderFunderEvidenceSlave orderFunderEvidenceSlave;
 
     @Autowired
-    OrderSupplierMaster orderSupplierMaster;
+    OrderSuppMaster orderSuppMaster;
     @Autowired
     OrderSupplierSlave orderSupplierSlave;
 
@@ -115,6 +117,8 @@ public class OrderServiceImpl implements OrderService {
     UserHirerService userHirerService;
     @Autowired
     UserRentMerchantService userRentMerchantService;
+    @Autowired
+    AccountFundingFinanceAssetSlave accountFundingFinanceAssetSlave;
 
     @Autowired
     OrderBaseService orderBaseService;
@@ -649,6 +653,11 @@ public class OrderServiceImpl implements OrderService {
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
                 generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+                // 如果此线下放款订单还未上传凭证，则是确认已放款操作，去操作资金方账户和生成租赁商还款计划
+                // 这一步操作要判断此操作是确认已放款还是上传凭证，通过orderSupplier是否存在判断
+                if(!orderSupplierSlave.findById(orderRenter.getOrderId()).isPresent()){
+                    orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
+                }
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
         }
@@ -712,7 +721,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setExpressCode(deliverInfo.getDeliverCode());
         // 待收货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.WAITING_RECEIVE.getCode());
-        orderSupplierMaster.save(orderSupplier);
+        orderSuppMaster.save(orderSupplier);
         // 修改资金方订单为待收货状态
         Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(deliverInfo.getOrderId());
         if (orderFunderOptional.isPresent()) {
@@ -1112,7 +1121,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
             orderRenterMaser.save(orderRenter);
             generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
-
+            orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
@@ -1356,7 +1365,7 @@ public class OrderServiceImpl implements OrderService {
             // 拿到供应商的供应价格
             orderSupplier.setTotalAccount(product.getSupplyPrice());
         }
-        orderSupplierMaster.save(orderSupplier);
+        orderSuppMaster.save(orderSupplier);
         orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
     }
 }

@@ -15,6 +15,7 @@ import com.newframe.repositories.dataSlave.order.FundingGatheringScheduleSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
+import com.newframe.services.account.AccountService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
@@ -61,6 +62,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     @Autowired
     private FundingGatheringScheduleSlave fundingGatheringScheduleSlave;
 
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private AccountManageService accountManageService;
     @Override
@@ -209,15 +212,37 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
             paymentNumber = 1;
         }
+        // 操作租赁商账户表和租赁商租赁账户明细
         OperationResult<Boolean> operationResult = accountManageService.saveAccountRenterRentDetail(
                 orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
                 orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
                 String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),paymentNumber,
                 new BigDecimal("0"),orderHirer.getOrderAmount()
         );
+        // 操作出租方账户表和生成租赁商还款明细
+        accountService.saveAccountLessorMatterAssetDetail(orderHirer.getLessorId(),orderHirer.getOrderId(),Long.valueOf(orderRenter.getCtime()),
+                orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
+                orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
+                String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),orderHirer.getNumberOfPeriods());
         if(operationResult != null){
             return operationResult.getEntity();
         }
         return false;
+    }
+
+    @Override
+    public boolean renterFunderAccountOperation(OrderRenter orderRenter, OrderFunder orderFunder) {
+        // todo 融资利息怎么算
+        BigDecimal interest = orderFunder.getFinancingAmount().multiply(new BigDecimal("0.0005"))
+                .multiply(new BigDecimal(orderFunder.getNumberOfPeriods()))
+                .multiply(new BigDecimal("30"));
+        accountManageService.saveAccountRenterFinancing(orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),
+                orderFunder.getFinancingAmount(),orderFunder.getNumberOfPeriods(),orderFunder.getFinancingAmount(),interest,
+                new BigDecimal("0"),new BigDecimal(0),orderFunder.getFinancingAmount(),interest);
+
+        accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getFunderId(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
+                orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderFunder.getFinancingAmount(),
+                orderFunder.getNumberOfPeriods());
+        return true;
     }
 }

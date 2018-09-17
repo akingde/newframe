@@ -4,8 +4,9 @@ import com.newframe.entity.order.OrderSupplier;
 import com.newframe.utils.query.BaseRepository;
 
 /**
- * @author kfm
- * @date 2018.08.24 14:58
+ * @author:wangdong
+ * @description:
  */
-public interface OrderSupplierMaster extends BaseRepository<OrderSupplier,Long> {
+public interface OrderSuppMaster extends BaseRepository<OrderSupplier,Long> {
+
 }

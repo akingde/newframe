@@ -128,6 +128,8 @@ public class AccountServiceImpl implements AccountService {
     AccountSupplierMaster accountSupplierMaster;
     @Autowired
     AccountManageService accountManageService;
+    @Autowired
+    private AccountRenterFinancingMaster accountRenterFinancingMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -874,7 +876,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * 出租方(租户)账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
-     *
+     * 在出租方发货（审核通过）时调用，更新出租方账户、生成租赁商还款计划
      * @return
      */
     @Override
@@ -902,14 +904,15 @@ public class AccountServiceImpl implements AccountService {
         accountLessorMatterAsset.setOrderStatus(1);
 
         accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
-        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
+        // 王栋调用过了
+//        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
     /**
      * 资金方账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
-     *
+     * 在资金方放款完成之后调用，操作资金方金融资产账户、生成租赁商还款计划
      * @return
      */
     @Override
@@ -918,7 +921,6 @@ public class AccountServiceImpl implements AccountService {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         AccountFundingFinanceAsset accountFundingFinanceAsset = new AccountFundingFinanceAsset();
-        accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
         accountFundingFinanceAsset.setId(idGlobal.getSeqId(AccountFundingFinanceAsset.class));
         accountFundingFinanceAsset.setInvestDeadline(monthNumber);
         accountFundingFinanceAsset.setInvestAmount(totalRentAccount);
@@ -929,15 +931,20 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setInvestWay(1);
         accountFundingFinanceAsset.setRenterId(renterId);
         accountFundingFinanceAsset.setRenterName(renterName);
-
-        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
+        // todo 平均投资回报率填0
+        accountFundingFinanceAsset.setAverageInvestReturnRate(new BigDecimal("0"));
+        accountFundingFinanceAsset.setInvestReturnRate(new BigDecimal("0"));
+        accountFundingFinanceAsset.setYieldRate(new BigDecimal("0"));
+        accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
+        //王栋已经调用了
+//        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
         return new OperationResult<>(true);
     }
 
     /**
      * 供应商账户
      * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
-     *
+     * 在供应商钱到账的时候调用
      * @return
      */
     @Override
@@ -949,6 +956,23 @@ public class AccountServiceImpl implements AccountService {
         accountSupplier.setFrozenAsset(frozenAsset);
         accountSupplierMaster.save(accountSupplier);
         return new OperationResult<>(true);
+    }
+
+    /**
+     * 保存AccountRenterFinancing
+     *
+     * @param accountRenterFinancing
+     * @return
+     */
+    @Override
+    public AccountRenterFinancing saveAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing) {
+        if (null == accountRenterFinancing) {
+            return null;
+        }
+        if (null == accountRenterFinancing.getId()) {
+            accountRenterFinancing.setId(idGlobal.getSeqId(AccountRenterRentDetail.class));
+        }
+        return accountRenterFinancingMaster.saveAndFlush(accountRenterFinancing);
     }
 
     /**

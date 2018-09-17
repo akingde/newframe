@@ -23,7 +23,7 @@ public enum SystemCode implements CodeStatus {
     LOAN_FAIL("208","放款失败"),
     FILE_UPLOAD_FAIL("205","文件上传失败"),
     GENERATE_SUPPLY_ORDER_FAIL("205","生成供应商订单失败，请稍后再试"),
-    GENERATE_SUPPLY_ORDER_SUCCESS("200","确认放款成功，供应商订单已生成"),
+    GENERATE_SUPPLY_ORDER_SUCCESS("200","确认放款成功，订单已提交给供应商"),
 
 
 
