@@ -176,11 +176,11 @@ public interface UserService {
 
     /**
      * 添加充值记录
-     * @param uid
+     * @param bankNumber
      * @param amount
      * @return
      */
-    OperationResult<Boolean> addRechargeRecord(Long uid, BigDecimal amount);
+    OperationResult<Boolean> addRechargeRecord(String bankNumber, BigDecimal amount);
 
     /**
      * 添加提现记录
@@ -189,6 +189,20 @@ public interface UserService {
      * @return
      */
     OperationResult<Boolean> addDrawRecord(Long uid, BigDecimal amount);
+
+    /**
+     * 银行处理成功
+     * @param bankMoneyFlowId
+     * @return
+     */
+    OperationResult<Boolean> bankDrawByPass(Long bankMoneyFlowId);
+
+    /**
+     * 银行处理失败
+     * @param bankMoneyFlowId
+     * @return
+     */
+    OperationResult<Boolean> bankDrawByFail(Long bankMoneyFlowId);
 
     /**
      * 添加地址
@@ -260,34 +274,4 @@ public interface UserService {
      * @return
      */
     OperationResult<Boolean> getFunderQualification(Long uid);
-
-    /**
-     * 银行处理成功
-     * @param orderId
-     * @return
-     */
-    OperationResult<Boolean> bankDrawByPass(Long orderId);
-
-    /**
-     * 银行处理失败
-     * @param orderId
-     * @return
-     */
-    OperationResult<Boolean> bankDrawByFail(Long orderId);
-
-    /**
-     * 提取通过
-     * @param uid
-     * @param amount
-     * @return
-     */
-    OperationResult<Boolean> passDrawAssetCheck(Long uid, BigDecimal amount);
-
-    /**
-     * 提取失败
-     * @param uid
-     * @param amount
-     * @return
-     */
-    OperationResult<Boolean> failDrawAssetCheck(Long uid, BigDecimal amount);
 }

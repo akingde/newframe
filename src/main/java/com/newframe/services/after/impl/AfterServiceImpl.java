@@ -9,8 +9,10 @@ import com.newframe.dto.after.response.*;
 import com.newframe.entity.user.CapitalFlow;
 import com.newframe.entity.user.UserFunder;
 import com.newframe.entity.user.UserRoleApply;
+import com.newframe.enums.user.AssetStatusEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.after.AfterService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.userbase.CapitalFlowService;
@@ -21,7 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import static com.newframe.enums.account.AccountTypeEnum.FROZENASSETS;
+import static com.newframe.enums.account.AccountTypeEnum.USEABLEASSETS;
+import static com.newframe.enums.account.DealTypeEnum.WITHDRAW;
 
 /**
  * @author WangBin
@@ -37,6 +44,8 @@ public class AfterServiceImpl implements AfterService {
     private UserFunderService userFunderService;
     @Autowired
     private CapitalFlowService capitalFlowService;
+    @Autowired
+    private AccountManageService accountManageService;
 
     /**
      * 后台登陆
@@ -220,7 +229,15 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<Boolean> passDrawAssetCheck(Long uid, Long orderId) {
-        return null;
+        CapitalFlow capitalFlow = capitalFlowService.findOne(orderId);
+        if(capitalFlow == null){
+            return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
+        }
+        capitalFlow.setOrderStatus(AssetStatusEnum.BANK_PROCESSING.getOrderStatus());
+        capitalFlow.setCheckUid(new UserDTO().getUid());
+        capitalFlow.setCheckName(new UserDTO().getUserName());
+        capitalFlowService.update(capitalFlow);
+        return new OperationResult(true);
     }
 
     /**
@@ -232,6 +249,15 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId) {
-        return null;
+        CapitalFlow capitalFlow = capitalFlowService.findOne(orderId);
+        if(capitalFlow == null){
+            return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
+        }
+        capitalFlow.setOrderStatus(AssetStatusEnum.CHECK_ERROR.getOrderStatus());
+        capitalFlowService.update(capitalFlow);
+        BigDecimal amount = capitalFlow.getAmount();
+        accountManageService.saveAccountStatement(uid, WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);
+        accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
+        return new OperationResult(true);
     }
 }

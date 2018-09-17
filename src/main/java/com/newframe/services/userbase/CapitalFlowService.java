@@ -13,6 +13,8 @@ public interface CapitalFlowService {
 
     CapitalFlow findOne(Long orderId);
 
+    CapitalFlow findOne(CapitalFlow capitalFlow);
+
     CapitalFlow insert(CapitalFlow capitalFlow);
 
     int update(CapitalFlow capitalFlow);

@@ -68,4 +68,11 @@ public class UserBankServiceImpl implements UserBankService {
         query.setUid(uid);
         return userBankSlave.findOne(query);
     }
+
+    @Override
+    public UserBank findOne(String bankNumber) {
+        UserBankQuery query = new UserBankQuery();
+        query.setBankNumber(bankNumber);
+        return userBankSlave.findOne(query);
+    }
 }

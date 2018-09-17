@@ -49,8 +49,10 @@ public enum RequestResultEnum implements CodeStatus {
     PARAMETER_LOSS("80001", "缺少必须的参数"),
     ID_NUMBER_ERROR("80002", "身份证号不正确"),
     PARAMETER_ERROR("80003", "请求数据非法"),
+    BANK_EXISTS("80004", "银行卡已存在"),
 
     MODIFY_ERROR("90000", "操作失败"),
+    ASSET_ERROR("90001", "资产余额不足"),
 
     INVALID_ACCESS("100000", "无效的访问"),
     ;

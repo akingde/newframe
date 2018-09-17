@@ -142,6 +142,13 @@ public class CapitalFlow {
     private String checkName;
 
     /**
+     * bank_money_flow表id
+     * bank_money_flow_id
+     */
+    @Column(name = "bank_money_flow_id")
+    private Long bankMoneyFlowId;
+
+    /**
      * ctime
      * ctime
      */
@@ -158,9 +165,9 @@ public class CapitalFlow {
     public CapitalFlow() {
     }
 
-    public CapitalFlow(Long uid, UserBank userBank, UserRoleDTO role, BigDecimal amount, Integer status, Integer type) {
+    public CapitalFlow(UserBank userBank, UserRoleDTO role, BigDecimal amount, Integer status, Integer type) {
         PlatformBank platformBank = new PlatformBank();
-        this.uid = uid;
+        this.uid = userBank.getUid();
         this.merchantName = role.getName();
         this.userName = role.getLegalEntity();
         this.userPhoneNumber = role.getMerchantPhone();

@@ -21,6 +21,12 @@ public class CapitalFlowQuery extends BaseQuery {
     @QBindAttrField(fieldName = "uid", where = equal)
     private Long uid;
 
+    @QBindAttrField(fieldName = "bankFlowId", where = equal)
+    private String bankFlowId;
+
+    @QBindAttrField(fieldName = "bankMoneyFlowId", where = equal)
+    private Long bankMoneyFlowId;
+
     @QBindAttrField(fieldName = "orderStatus", where = equal)
     private Integer orderStatus;
 

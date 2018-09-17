@@ -9,6 +9,7 @@ import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.*;
 import com.newframe.services.account.AccountManageService;
+import com.newframe.services.account.AccountService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static com.newframe.enums.account.DealTypeEnum.*;
+import static com.newframe.enums.account.AccountTypeEnum.*;
 
 /**
  * @author WangBin
@@ -54,6 +57,8 @@ public class UserServiceImpl implements UserService {
     private AccountManageService accountManageService;
     @Autowired
     private CapitalFlowService capitalFlowService;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * @param mobile
@@ -470,7 +475,7 @@ public class UserServiceImpl implements UserService {
         }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
         if(baseInfo == null){
-            return null;
+            return new OperationResult(RequestResultEnum.USER_NOT_EXISTS, false);
         }
         List<UserRole> roles = userRoleService.findAll(uid);
         if(CollectionUtils.isEmpty(roles)){
@@ -481,30 +486,33 @@ public class UserServiceImpl implements UserService {
         if(!StringUtils.equals(bankDTO.getUserBankName(), roleInfo.getEntity().getLegalEntity())){
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
-        UserRoleDTO roleDTO = roleInfo.getEntity();
-        UserBank userBank = userBankService.findOne(uid);
-        if(userBank == null){
-            userBankService.insert(new UserBank(uid, bankDTO, baseInfo.getPhoneNumber()));
-        }else{
-            userBankService.update(new UserBank(uid, bankDTO, baseInfo.getPhoneNumber()));
+        if(userBankService.findOne(bankDTO.getBankNumber()) != null){
+            return new OperationResult(RequestResultEnum.BANK_EXISTS, false);
         }
+        userBankService.insert(new UserBank(uid, bankDTO, baseInfo.getPhoneNumber()));
         return new OperationResult(true);
     }
 
     /**
      * 添加充值记录
      *
-     * @param uid
+     * @param bankNumber
      * @param amount
      * @return
      */
     @Override
-    public OperationResult<Boolean> addRechargeRecord(Long uid, BigDecimal amount) {
-        UserBank userBank = userBankService.findOne(uid);
-        if(userBank == null){
-
+    public OperationResult<Boolean> addRechargeRecord(String bankNumber, BigDecimal amount) {
+        if(amount == null || amount.compareTo(BigDecimal.ZERO) != 1){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
-        return addCapitalFlow(uid, userBank, amount, AssetTypeEnum.RECHARGE.getType());
+        UserBank userBank = userBankService.findOne(bankNumber);
+        if(userBank == null){
+            return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
+        }
+        addCapitalFlow(userBank, amount, AssetTypeEnum.RECHARGE.getType());
+        accountManageService.saveAccountStatement(userBank.getUid(), WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);
+        //上链
+        return new OperationResult(true);
     }
 
     /**
@@ -518,31 +526,67 @@ public class UserServiceImpl implements UserService {
     public OperationResult<Boolean> addDrawRecord(Long uid, BigDecimal amount) {
         UserBank userBank = userBankService.findOne(uid);
         if(userBank == null){
-
+            return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
         }
-        Account account = new Account();
+        Account account = accountService.getAccount(uid);
         if (account.getUseableAmount().compareTo(amount) == -1){
-
+            return new OperationResult(RequestResultEnum.ASSET_ERROR, false);
         }
+        accountManageService.saveAccountStatement(uid, WITHDRAW, USEABLEASSETS, amount.negate(), BigDecimal.ZERO);
+        accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount, BigDecimal.ZERO);
+        return addCapitalFlow(userBank, amount, AssetTypeEnum.DRAW.getType());
+    }
 
-        return addCapitalFlow(uid, userBank, amount, AssetTypeEnum.DRAW.getType());
+    /**
+     * 银行处理成功
+     *
+     * @param bankMoneyFlowId
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> bankDrawByPass(Long bankMoneyFlowId) {
+        CapitalFlow condition = new CapitalFlow();
+        condition.setBankMoneyFlowId(bankMoneyFlowId);
+        CapitalFlow flow = capitalFlowService.findOne(condition);
+        Long uid = flow.getUid();
+        BigDecimal amount = flow.getAmount();
+        accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
+        // 上链
+        return new OperationResult<Boolean>(true);
+    }
+
+    /**
+     * 银行处理失败
+     *
+     * @param bankMoneyFlowId
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> bankDrawByFail(Long bankMoneyFlowId) {
+        CapitalFlow condition = new CapitalFlow();
+        condition.setBankMoneyFlowId(bankMoneyFlowId);
+        CapitalFlow flow = capitalFlowService.findOne(condition);
+        Long uid = flow.getUid();
+        BigDecimal amount = flow.getAmount();
+        accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
+        accountManageService.saveAccountStatement(uid, WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);
+        return new OperationResult<Boolean>(true);
     }
 
     /**
      * 添加流水
-     * @param uid
      * @param amount
      * @param type
      * @return
      */
-    public OperationResult<Boolean> addCapitalFlow(Long uid, UserBank userBank, BigDecimal amount, Integer type){
-        UserRole userRole = userRoleService.findAll(uid).get(0);
+    public OperationResult<Boolean> addCapitalFlow(UserBank userBank, BigDecimal amount, Integer type){
+        UserRole userRole = userRoleService.findAll(userBank.getUid()).get(0);
         OperationResult<UserRoleDTO> roleInfo = roleBaseService.getUserRoleInfo(userRole.getUid(), userRole.getRoleId());
         UserRoleDTO roleDTO = roleInfo.getEntity();
         Integer status = type.equals(AssetTypeEnum.RECHARGE.getType())
-                                ? AssetStatusEnum.BANK_PROCESSING.getOrderStatus()
-                                : AssetStatusEnum.CHECKING.getOrderStatus();
-        CapitalFlow capitalFlow = new CapitalFlow(uid, userBank, roleDTO, amount, status, type);
+                                ? AssetStatusEnum.CHECKING.getOrderStatus()
+                                : AssetStatusEnum.BANK_SUCC.getOrderStatus();
+        CapitalFlow capitalFlow = new CapitalFlow(userBank, roleDTO, amount, status, type);
         capitalFlowService.insert(capitalFlow);
         return new OperationResult(true);
     }
@@ -744,6 +788,21 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 获取资金方线下放款资格
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> getFunderQualification(Long uid) {
+        UserFunder funder = userFunderService.findOne(uid);
+        if (funder == null){
+            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS);
+        }
+        return new OperationResult(funder.getIsWhite());
+    }
+
+    /**
      * 对token进行更新
      *
      * @param uid
@@ -780,66 +839,5 @@ public class UserServiceImpl implements UserService {
                 return new UserBaseInfoDTO.Role(RoleEnum.SUPPLIER.getRoleId(), true);
             }
         }
-    }
-
-    /**
-     * 获取资金方线下放款资格
-     *
-     * @param uid
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> getFunderQualification(Long uid) {
-        UserFunder funder = userFunderService.findOne(uid);
-        if (funder == null){
-            return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS);
-        }
-        return new OperationResult(funder.getIsWhite());
-    }
-
-    /**
-     * 银行处理成功
-     *
-     * @param orderId
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> bankDrawByPass(Long orderId) {
-        return null;
-    }
-
-    /**
-     * 银行处理失败
-     *
-     * @param orderId
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> bankDrawByFail(Long orderId) {
-        return null;
-    }
-
-    /**
-     * 提取通过
-     *
-     * @param uid
-     * @param amount
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> passDrawAssetCheck(Long uid, BigDecimal amount) {
-        return null;
-    }
-
-    /**
-     * 提取失败
-     *
-     * @param uid
-     * @param amount
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> failDrawAssetCheck(Long uid, BigDecimal amount) {
-        return null;
     }
 }
