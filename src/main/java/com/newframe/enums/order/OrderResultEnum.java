@@ -18,7 +18,10 @@ public enum OrderResultEnum implements CodeStatus {
     ORDER_RENTING_FAIL("206","订单租赁审核不通过超过最大次数限制，不允许再次租赁"),
     ORDER_AUDITTING("208","订单审核中"),
     ORDER_NO_EXIST("209","订单不存在"),
-    LOAN_ORDER_STATUS_ERROR("210","订单状态错误，不能进行放款")
+    LOAN_ORDER_STATUS_ERROR("210","订单状态错误，不能进行放款"),
+    RENTER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT("401011","租赁商账户可用余额不足，扣款失败"),
+    FUNDER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT("401011","资金方账户可用余额不足，扣款失败"),
+    ACCOUNT_NO_EXIST("401012","账户不存在"),
     ;
 
     String code;
