@@ -123,6 +123,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderBaseService orderBaseService;
 
+    @Autowired
+    OrderAccountOperationServiceImpl accountOperation;
+
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
     @Value("${order.renting.max.times}")
@@ -217,13 +220,11 @@ public class OrderServiceImpl implements OrderService {
         if (orderId == null || supplierId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
-        // todo 根据uid查出租赁商信息
-        String renterName = "小米手机租赁店";
+        String renterName = orderBaseService.getRenterName(uid);
         // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
         Long funderId = 1535433927622896L;
-        List<OrderFunder> orderFunders = new ArrayList<>();
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
         //查询订单融资是否超过3次
@@ -272,18 +273,18 @@ public class OrderServiceImpl implements OrderService {
                     .add(orderRenter.getMonthlyPayment()
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
-            orderFunders.add(orderFunder);
             orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
+            // 修改租赁商订单状态和订单类型
+            updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
+            // 生成资金方订单
+            orderFunderMaser.save(orderFunder);
+            // 账户操作，冻结保证金
+            boolean success = accountOperation.financing(orderRenter,orderFunder);
+            if (!success){
+                // todo 账户操作不成功要不要抛出异常回滚
+            }
         }
-        // 修改租赁商订单状态和订单类型
-        updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
-        // 生成资金方订单
-        orderFunderMaser.saveAll(orderFunders);
-
-
-
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
-        // todo 要不要操作账户表？
 
         // 返回订单融资成功
         return new JsonResult(SystemCode.SUCCESS, true);
@@ -562,6 +563,8 @@ public class OrderServiceImpl implements OrderService {
                 }
                 orderFunder.setOrderStatus(OrderFunderStatus.AUDIT_REFUSE.getCode());
                 orderFunderMaser.save(orderFunder);
+                // 操作租赁商账户退还保证金
+                accountOperation.releaseMarginBalance(orderRenter,orderFunder);
                 return new JsonResult(SystemCode.SUCCESS, true);
             }
         }
@@ -601,6 +604,7 @@ public class OrderServiceImpl implements OrderService {
             }
             orderFunder.setLoanModel(loanDTO.getLoanModel());
             orderFunderMaser.save(orderFunder);
+            return new JsonResult(SystemCode.SUCCESS);
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
@@ -652,11 +656,13 @@ public class OrderServiceImpl implements OrderService {
                 orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
-                generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+                OrderSupplier orderSupplier = generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
                 // 如果此线下放款订单还未上传凭证，则是确认已放款操作，去操作资金方账户和生成租赁商还款计划
                 // 这一步操作要判断此操作是确认已放款还是上传凭证，通过orderSupplier是否存在判断
                 if(!orderSupplierSlave.findById(orderRenter.getOrderId()).isPresent()){
                     orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
+                    // 第一次操作供应商订单，操作账户线下放款
+                    accountOperation.offlineLoan(orderRenter,orderSupplier);
                 }
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
@@ -1120,8 +1126,10 @@ public class OrderServiceImpl implements OrderService {
             // 修改租赁商订单状态
             orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_ONLINE_LOAN_SUCCESS.getCode());
             orderRenterMaser.save(orderRenter);
-            generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
+            OrderSupplier orderSupplier = generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
             orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
+            // 线上放款操作账户
+            accountOperation.onlineLoan(orderRenter,orderFunder,orderSupplier);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
@@ -1330,7 +1338,7 @@ public class OrderServiceImpl implements OrderService {
      * @param orderRenter 租赁商订单
      * @param orderFunder 资金方订单
      */
-    private void generateSupplyOrder(OrderRenter orderRenter, OrderFunder orderFunder,Integer supplierOrderStatus) {
+    private OrderSupplier generateSupplyOrder(OrderRenter orderRenter, OrderFunder orderFunder,Integer supplierOrderStatus) {
 
         OrderSupplier orderSupplier = new OrderSupplier();
         orderSupplier.setOrderId(orderRenter.getOrderId());
@@ -1367,5 +1375,6 @@ public class OrderServiceImpl implements OrderService {
         }
         orderSuppMaster.save(orderSupplier);
         orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
+        return orderSupplier;
     }
 }
