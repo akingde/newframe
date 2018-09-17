@@ -1,13 +1,13 @@
 package com.newframe.services.order.impl;
 
 import com.google.common.collect.Lists;
+import com.newframe.common.exception.AccountOperationException;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
-import com.newframe.entity.account.AccountFundingFinanceAsset;
 import com.newframe.entity.order.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
@@ -213,9 +213,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId,
-                                         BigDecimal financingAmount, Integer financingDeadline) {
+                                         BigDecimal financingAmount, Integer financingDeadline) throws AccountOperationException {
         // 参数校验
         if (orderId == null || supplierId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
@@ -273,16 +273,19 @@ public class OrderServiceImpl implements OrderService {
                     .add(orderRenter.getMonthlyPayment()
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
-            orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
+
             // 修改租赁商订单状态和订单类型
             updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
             // 生成资金方订单
             orderFunderMaser.save(orderFunder);
             // 账户操作，冻结保证金
-            boolean success = accountOperation.financing(orderRenter,orderFunder);
-            if (!success){
-                // todo 账户操作不成功要不要抛出异常回滚
+            OperationResult<Boolean> accountOperationResult = accountOperation.financing(orderRenter,orderFunder);
+            if (!accountOperationResult.getEntity()){
+                // 账户操作不成功抛出异常回滚
+                throw new AccountOperationException(accountOperationResult);
             }
+            // 推送消息
+            orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
         }
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
 
@@ -537,7 +540,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult funderRefuse(Long orderId, Long uid) {
+    @Transactional(rollbackFor = Exception.class)
+    public JsonResult funderRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
@@ -564,7 +568,10 @@ public class OrderServiceImpl implements OrderService {
                 orderFunder.setOrderStatus(OrderFunderStatus.AUDIT_REFUSE.getCode());
                 orderFunderMaser.save(orderFunder);
                 // 操作租赁商账户退还保证金
-                accountOperation.releaseMarginBalance(orderRenter,orderFunder);
+                OperationResult<Boolean> operationResult = accountOperation.releaseMarginBalance(orderRenter,orderFunder);
+                if(!operationResult.getEntity()){
+                    throw new AccountOperationException(operationResult);
+                }
                 return new JsonResult(SystemCode.SUCCESS, true);
             }
         }
@@ -611,7 +618,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) {
+    public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
@@ -662,7 +669,10 @@ public class OrderServiceImpl implements OrderService {
                 if(!orderSupplierSlave.findById(orderRenter.getOrderId()).isPresent()){
                     orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
                     // 第一次操作供应商订单，操作账户线下放款
-                    accountOperation.offlineLoan(orderRenter,orderSupplier);
+                    OperationResult<Boolean> operationResult = accountOperation.offlineLoan(orderRenter,orderSupplier);
+                    if(!operationResult.getEntity()){
+                        throw new AccountOperationException(operationResult);
+                    }
                 }
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
@@ -1103,8 +1113,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
-    public JsonResult onlineLoan(LoanDTO loanDTO, Long uid) {
+    @Transactional(rollbackFor = Exception.class)
+    public JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException {
         if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
             return new JsonResult(OrderResultEnum.PARAM_ERROR,false);
         }
@@ -1129,7 +1139,10 @@ public class OrderServiceImpl implements OrderService {
             OrderSupplier orderSupplier = generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
             orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
             // 线上放款操作账户
-            accountOperation.onlineLoan(orderRenter,orderFunder,orderSupplier);
+            OperationResult<Boolean> operationResult = accountOperation.onlineLoan(orderRenter,orderFunder,orderSupplier);
+            if(!operationResult.getEntity()){
+                throw new AccountOperationException(operationResult);
+            }
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);

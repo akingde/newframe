@@ -1,5 +1,6 @@
 package com.newframe.services.order;
 
+import com.newframe.common.exception.AccountOperationException;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
@@ -41,7 +42,7 @@ public interface OrderService {
      * @param supplierId 供应商id
      * @return 处理结果
      */
-    JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId, BigDecimal financingAmount, Integer financingDeadline);
+    JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId, BigDecimal financingAmount, Integer financingDeadline) throws AccountOperationException;
 
     /**
      * 租赁商租机
@@ -115,7 +116,7 @@ public interface OrderService {
      * @param uid     资金方uid
      * @return 返回结果
      */
-    JsonResult funderRefuse(Long orderId, Long uid);
+    JsonResult funderRefuse(Long orderId, Long uid) throws AccountOperationException;
 
     /**
      * 资金方放款
@@ -134,7 +135,7 @@ public interface OrderService {
      * @param file    凭证图片
      * @return 返回结果
      */
-    JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file);
+    JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException;
 
     /**
      * 查询供应商订单
@@ -276,5 +277,5 @@ public interface OrderService {
      * @param uid
      * @return
      */
-    JsonResult onlineLoan(LoanDTO loanDTO, Long uid);
+    JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException;
 }

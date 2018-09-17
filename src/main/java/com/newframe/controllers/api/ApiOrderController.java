@@ -1,6 +1,7 @@
 package com.newframe.controllers.api;
 
 import com.newframe.common.anony.Anonymous;
+import com.newframe.common.exception.AccountOperationException;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
@@ -55,7 +56,7 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
-    public JsonResult renterFinancingBuy(Long orderId,Long supplierId,Long uid,BigDecimal financingAmount,Integer financingDeadline){
+    public JsonResult renterFinancingBuy(Long orderId,Long supplierId,Long uid,BigDecimal financingAmount,Integer financingDeadline) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -170,7 +171,7 @@ public class ApiOrderController extends BaseController {
      * @return 操作结果
      */
     @RequestMapping("funder/refuse")
-    public JsonResult funderRefuse(Long orderId,String reason,Long uid){
+    public JsonResult funderRefuse(Long orderId,String reason,Long uid) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -201,7 +202,7 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("funder/online/loan")
-    public JsonResult funderOnlineLoan(LoanDTO loanDTO,Long uid){
+    public JsonResult funderOnlineLoan(LoanDTO loanDTO,Long uid) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -216,7 +217,7 @@ public class ApiOrderController extends BaseController {
      */
     @RequestMapping("funder/upload/evidence")
     @Anonymous(true)
-    public JsonResult funderUploadEvidence(Long uid,Long orderId,MultipartFile file){
+    public JsonResult funderUploadEvidence(Long uid,Long orderId,MultipartFile file) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }

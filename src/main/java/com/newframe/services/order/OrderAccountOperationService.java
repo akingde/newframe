@@ -10,9 +10,11 @@ import com.newframe.entity.order.OrderSupplier;
  * @date 2018.09.17 9:57
  */
 public interface OrderAccountOperationService {
-    Boolean financing(OrderRenter orderRenter, OrderFunder orderFunder);
+    OperationResult<Boolean> financing(OrderRenter orderRenter, OrderFunder orderFunder);
 
-    Boolean releaseMarginBalance(OrderRenter orderRenter, OrderFunder orderFunder);
+    OperationResult<Boolean> releaseMarginBalance(OrderRenter orderRenter, OrderFunder orderFunder);
 
     OperationResult<Boolean> onlineLoan(OrderRenter orderRenter, OrderFunder orderFunder, OrderSupplier orderSupplier);
+
+    OperationResult<Boolean> offlineLoan(OrderRenter orderRenter, OrderSupplier orderSupplier);
 }

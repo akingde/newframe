@@ -36,7 +36,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
      * @return
      */
     @Override
-    public Boolean financing(OrderRenter orderRenter, OrderFunder orderFunder) {
+    public OperationResult<Boolean> financing(OrderRenter orderRenter, OrderFunder orderFunder) {
         // 查询租赁商账户
         Account account = accountService.getAccount(orderRenter.getRenterId());
         if (account != null) {
@@ -55,10 +55,10 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                         AccountTypeEnum.USEABLEASSETS,
                         orderFunder.getDeposit().multiply(new BigDecimal(-1)),
                         new BigDecimal("0"));
-                return true;
+                return new OperationResult<>(OrderResultEnum.SUCCESS,true);
             }
         }
-        return false;
+        return new OperationResult<>(OrderResultEnum.ACCOUNT_NO_EXIST,false);
     }
 
     /**
@@ -68,7 +68,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
      * @return
      */
     @Override
-    public Boolean releaseMarginBalance(OrderRenter orderRenter, OrderFunder orderFunder) {
+    public OperationResult<Boolean> releaseMarginBalance(OrderRenter orderRenter, OrderFunder orderFunder) {
 
         // 账户间操作，将账户余额划转到保证金
         // 保证金减少
@@ -83,7 +83,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                 AccountTypeEnum.USEABLEASSETS,
                 orderFunder.getDeposit(),
                 new BigDecimal("0"));
-        return true;
+        return new OperationResult<>(OrderResultEnum.SUCCESS,true);
 
     }
 
@@ -138,6 +138,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
      * （租赁商扣除金额转入供应商账户）
      * @return
      */
+    @Override
     public OperationResult<Boolean> offlineLoan(OrderRenter orderRenter, OrderSupplier orderSupplier) {
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         Account supplierAccount = accountService.getAccount(orderSupplier.getSupplierId());
