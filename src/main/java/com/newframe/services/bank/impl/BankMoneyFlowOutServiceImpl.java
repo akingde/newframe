@@ -4,8 +4,8 @@ import com.newframe.entity.bank.BankMoneyFlow;
 import com.newframe.enums.bank.BankMoneyFlowStatus;
 import com.newframe.repositories.dataMaster.bank.BankMoneyFlowMaster;
 import com.newframe.repositories.dataSlave.bank.BankMoneyFlowSlave;
+import com.newframe.services.bank.BankMoneyFlowOutService;
 import com.newframe.services.bank.BankSupport;
-import com.newframe.services.bank.IBankMoneyFlowOutService;
 import com.newframe.services.user.UserService;
 import com.newframe.utils.DateUtils;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2018-07-13
  */
 @Service
-public class BankMoneyFlowOutServiceImpl implements IBankMoneyFlowOutService {
+public class BankMoneyFlowOutServiceImpl implements BankMoneyFlowOutService {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
     @Autowired
