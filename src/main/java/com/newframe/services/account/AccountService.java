@@ -430,4 +430,18 @@ public interface AccountService {
      * @return
      */
     AccountRenterFinancing updateAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing);
+
+    /**
+     * 还款后更新状态
+     * @param accountFundingFinanceAsset
+     * @return
+     */
+    AccountFundingFinanceAsset updateAccountFundingFinanceAsset(AccountFundingFinanceAsset accountFundingFinanceAsset);
+
+    /**
+     * 更新还款后的状态
+     * @param accountRenterRepay
+     * @return
+     */
+    AccountRenterRepay updateAccountRenterRepay(AccountRenterRepay accountRenterRepay);
 }
