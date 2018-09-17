@@ -430,4 +430,32 @@ public interface AccountService {
      * @return
      */
     AccountRenterFinancing updateAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing);
+
+    /**
+     * 还款后更新状态
+     * @param accountFundingFinanceAsset
+     * @return
+     */
+    AccountFundingFinanceAsset updateAccountFundingFinanceAsset(AccountFundingFinanceAsset accountFundingFinanceAsset);
+
+    /**
+     * 更新还款后的状态
+     * @param accountRenterRepay
+     * @return
+     */
+    AccountRenterRepay updateAccountRenterRepay(AccountRenterRepay accountRenterRepay);
+
+    /**
+     * 操作出租方的账户
+     * @param orderId
+     * @return
+     */
+    AccountLessorMatterAsset getAccountLessorMatterAsset(Long orderId);
+
+    /**
+     * 更新AccountLessorMatterAsset
+     * @param accountLessorMatterAsset
+     * @return
+     */
+    AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset);
 }

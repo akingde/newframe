@@ -1,0 +1,27 @@
+DROP TABLE if EXISTS bank_money_flow;
+CREATE TABLE `bank_money_flow` (
+  `id` BIGINT COMMENT 'id',
+  `type` TINYINT  COMMENT '类型 0代表充值 1代表提现',
+  `status` TINYINT  COMMENT '状态(62, "银行处理中"),(63, "银行处理成功"),(64, "银行处理失败");',
+  `transaction_no` VARCHAR(64) UNIQUE COMMENT '交易编号',
+  `bank_transaction_no` VARCHAR(255) UNIQUE DEFAULT NULL COMMENT '银行交易流水编号',
+  `amount` DECIMAL(20,2)  COMMENT '交易金额',
+  `bank_card` VARCHAR(64)  COMMENT '银行卡号',
+  `bank_name` VARCHAR(64)  COMMENT '银行名称',
+  `sub_bank_name` VARCHAR(64)  COMMENT '支行名称',
+  `transfer_type` TINYINT  COMMENT '转账类型',
+  `serial_number` varchar(255) UNIQUE COMMENT '银行返回序列id',
+  `cash_flow_hash` varchar(255)  COMMENT '交易流水hash',
+  `sign` varchar(1000)  COMMENT '签名',
+  `chain_status` TINYINT COMMENT '标识性 0代表上链成功 1上链失败',
+  `auditor_id` CHAR(32)  COMMENT '审核人id',
+  `auditor_name` VARCHAR(16)  COMMENT '审核人名字',
+  `auditor_time` BIGINT NULL COMMENT '初审时间',
+  `apply_time` BIGINT NULL COMMENT '申请时间',
+  `finish_time` BIGINT NULL COMMENT '完成时间',
+  `remarks` varchar(255)  COMMENT '备注信息',
+  `ctime` BIGINT  COMMENT '创建时间',
+  `utime` BIGINT  COMMENT '更新时间',
+  `version` int(11) DEFAULT 0 COMMENT '版本控制（乐观锁）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '银行流水';

@@ -1055,6 +1055,99 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 还款后更新状态
+     *
+     * @param accountFundingFinanceAsset
+     * @return
+     */
+    @Override
+    public AccountFundingFinanceAsset updateAccountFundingFinanceAsset(AccountFundingFinanceAsset accountFundingFinanceAsset) {
+        if (null == accountFundingFinanceAsset.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountFundingFinanceAsset.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountFundingFinanceAssetMaster.updateById(accountFundingFinanceAsset,accountFundingFinanceAsset.getId(),array);
+        return accountFundingFinanceAsset;
+    }
+
+    /**
+     * 更新还款后的状态
+     *
+     * @param accountRenterRepay
+     * @return
+     */
+    @Override
+    public AccountRenterRepay updateAccountRenterRepay(AccountRenterRepay accountRenterRepay) {
+
+        if (null == accountRenterRepay.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRepay.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        if (null != accountRenterRepay.getWithhold()){
+            updateFields.add("withhold");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRepayMaster.updateById(accountRenterRepay,accountRenterRepay.getId(),array);
+        return accountRenterRepay;
+    }
+
+    /**
+     * 操作出租方的账户
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountLessorMatterAsset getAccountLessorMatterAsset(Long orderId) {
+
+        if (null == orderId){
+            return null;
+        }
+
+        AccountLessorMatterAssetQuery query = new AccountLessorMatterAssetQuery();
+        query.setOrderId(orderId);
+
+        return accountLessorMatterAssetSlave.findOne(query);
+    }
+
+    /**
+     * 更新AccountLessorMatterAsset
+     *
+     * @param accountLessorMatterAsset
+     * @return
+     */
+    @Override
+    public AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset) {
+        if (null == accountLessorMatterAsset.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountLessorMatterAsset.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountLessorMatterAssetMaster.updateById(accountLessorMatterAsset,accountLessorMatterAsset.getId(),array);
+        return accountLessorMatterAsset;
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid
