@@ -8,11 +8,15 @@ package com.newframe.enums.bank;
  * <p>
  */
 public enum BankMoneyFlowStatus {
+
+    IN_READY(10, "待处理"),
+    IN_SUCCESS(11, "处理完成"),
+
     OUT_AUDIT_READY(60, "待审核"),
     OUT_AUDIT_FAIL(61, "审核拒绝"),
     OUT_AUDIT_SUCCESS(62, "银行处理中"),
-    OUT_AUDIT_BANK_SUCCESS(63, "银行处理成功"),
-    OUT_AUDIT_BANK_FAIL(64, "银行处理失败");
+    OUT_BANK_SUCCESS(63, "银行处理成功"),
+    OUT_BANK_FAIL(64, "银行处理失败");
 
     private int value;
     private String desc;

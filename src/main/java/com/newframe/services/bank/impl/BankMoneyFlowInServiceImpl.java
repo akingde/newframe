@@ -83,8 +83,8 @@ public class BankMoneyFlowInServiceImpl implements BankMoneyFlowInService {
         int count = 0;
         if (!listBankMoneyFlow.isEmpty()) {
             bankMoneyFlowMaster.saveAll(listBankMoneyFlow);
+            //更新到业务系统
             for (BankMoneyFlow bankMoneyFlow : listBankMoneyFlow) {
-                //更新到业务系统
                 userService.addRechargeRecord(bankMoneyFlow.getBankCard(), bankMoneyFlow.getAmount());
             }
         }

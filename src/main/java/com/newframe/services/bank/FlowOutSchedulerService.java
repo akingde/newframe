@@ -50,7 +50,7 @@ public class FlowOutSchedulerService {
                 Boolean bool = BankSupport.dealTransferQuery(bankMoneyFlow);
                 if (null != bool) {
                     count++;
-                    bankMoneyFlow.setStatus(bool ? BankMoneyFlowStatus.OUT_AUDIT_BANK_SUCCESS.getIntValue() : BankMoneyFlowStatus.OUT_AUDIT_BANK_FAIL.getIntValue());
+                    bankMoneyFlow.setStatus(bool ? BankMoneyFlowStatus.OUT_BANK_SUCCESS.getIntValue() : BankMoneyFlowStatus.OUT_BANK_FAIL.getIntValue());
                     bankMoneyFlow.setFinishTime(DateUtils.getTimeOfEastEight());
                     bankMoneyFlowMaster.updateById(bankMoneyFlow, bankMoneyFlow.getId(), "status", "finishTime");
                     if (bool) {

@@ -80,7 +80,7 @@ public class BankMoneyFlowOutServiceImpl implements BankMoneyFlowOutService {
 
     @Override
     public void finishOutOk(BankMoneyFlow bankMoneyFlow) {
-        bankMoneyFlow.setStatus(BankMoneyFlowStatus.OUT_AUDIT_BANK_SUCCESS.getIntValue());
+        bankMoneyFlow.setStatus(BankMoneyFlowStatus.OUT_BANK_SUCCESS.getIntValue());
         bankMoneyFlow.setFinishTime(DateUtils.getTimeOfEastEight());
         bankMoneyFlowMaster.updateById(bankMoneyFlow, bankMoneyFlow.getId(),
                 "version", "finishTime", "status");
@@ -89,7 +89,7 @@ public class BankMoneyFlowOutServiceImpl implements BankMoneyFlowOutService {
 
     @Override
     public void finishOutNo(BankMoneyFlow bankMoneyFlow) {
-        bankMoneyFlow.setStatus(BankMoneyFlowStatus.OUT_AUDIT_BANK_FAIL.getIntValue());
+        bankMoneyFlow.setStatus(BankMoneyFlowStatus.OUT_BANK_FAIL.getIntValue());
         bankMoneyFlow.setFinishTime(DateUtils.getTimeOfEastEight());
         bankMoneyFlowMaster.updateById(bankMoneyFlow, bankMoneyFlow.getId(),
                 "version", "finishTime", "status");
