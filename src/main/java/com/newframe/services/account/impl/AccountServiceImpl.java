@@ -1125,6 +1125,29 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 更新AccountLessorMatterAsset
+     *
+     * @param accountLessorMatterAsset
+     * @return
+     */
+    @Override
+    public AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset) {
+        if (null == accountLessorMatterAsset.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountLessorMatterAsset.getOrderStatus()){
+            updateFields.add("orderStatus");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountLessorMatterAssetMaster.updateById(accountLessorMatterAsset,accountLessorMatterAsset.getId(),array);
+        return accountLessorMatterAsset;
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid

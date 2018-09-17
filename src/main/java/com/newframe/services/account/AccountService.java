@@ -451,4 +451,11 @@ public interface AccountService {
      * @return
      */
     AccountLessorMatterAsset getAccountLessorMatterAsset(Long orderId);
+
+    /**
+     * 更新AccountLessorMatterAsset
+     * @param accountLessorMatterAsset
+     * @return
+     */
+    AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset);
 }

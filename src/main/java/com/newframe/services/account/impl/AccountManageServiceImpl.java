@@ -625,11 +625,42 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountLessorMatterAsset accountLessorMatterAsset = accountService.getAccountLessorMatterAsset(orderId);
 
         Long renterUid = accountRenterFinancing.getUid();
-        //Long lessorUid = accountLessorMatterAsset.getUid();
+        Long lessorUid = accountLessorMatterAsset.getUid();
         //操作租赁商的账户
         OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
+        OperationResult<Boolean> result1 = saveAccountStatement(lessorUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);
 
-        return null;
+        if (finallyPeriod){
+            BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
+            BigDecimal cashDeposit = totalAmount.multiply(depositRate);
+            //减保证金
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,cashDeposit.multiply(new BigDecimal(-1)),extraAmount);
+            //加可用余额
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.USEABLEASSETS,cashDeposit,extraAmount);
+        }
+
+        //更新还款状态
+        accountRenterRepay.setOrderStatus(1);
+        accountRenterRepay.setWithhold(2);
+        AccountRenterRepay renterRepay = accountService.updateAccountRenterRepay(accountRenterRepay);
+
+        //更新租赁商和资金方的状态
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(accountRenterRepay.getOrderId());
+        //该笔订单是否全部还清,初始值为false,只判断最后一期即可
+        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
+        //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
+        if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
+            accountRenterFinancing.setRepaymentStatus(1);
+            accountRenterFinancing.setOrderStatus(1);
+            accountService.updateAccountRenterFinancing(accountRenterFinancing);
+            accountLessorMatterAsset.setOrderStatus(1);
+            accountService.updateAccountLessorMatterAsset(accountLessorMatterAsset);
+        }
+
+        if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
+            return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
+        }
+        return new OperationResult<>(true);
     }
 
     /**
