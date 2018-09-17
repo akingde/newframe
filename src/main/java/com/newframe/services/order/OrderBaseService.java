@@ -19,6 +19,8 @@ public interface OrderBaseService {
 
     String getRenterPhone(Long renterId);
 
+    String getRenterName(Long renterId);
+
     Integer getOrderFinancingTimes(Long orderId);
 
     Integer getOrderRentTimes(Long orderId);

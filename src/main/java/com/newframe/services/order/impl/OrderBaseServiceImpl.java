@@ -91,6 +91,18 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     }
 
     @Override
+    public String getRenterName(Long renterId){
+        if(renterId == null){
+            return null;
+        }
+        UserRentMerchant rentMerchant = rentMerchantService.findOne(renterId);
+        if(rentMerchant != null){
+            return rentMerchant.getMerchantName();
+        }
+        return null;
+    }
+
+    @Override
     public Integer getOrderFinancingTimes(Long orderId) {
         if(orderId == null){
             return 0;
