@@ -35,6 +35,10 @@ public class AccountFundingFinanceAsset {
      */
     private Long orderTime;
     /**
+     * 关联订单的ID
+     */
+    private String associatedOrderId;
+    /**
      * 投资金额
      */
     private BigDecimal investAmount;
