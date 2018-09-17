@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author zww
  * @since 2018-07-13
  */
-public interface IBankMoneyFlowOutService {
+public interface BankMoneyFlowOutService {
 
 
     /**
