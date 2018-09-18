@@ -6,12 +6,14 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.RequestUser;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
+import com.newframe.enums.PlatformBank;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.SystemCode;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -262,6 +264,18 @@ public class ApiUserController extends BaseController {
     }
 
     /**
+     * 获取平台银行信息
+     * @return
+     */
+    @PostMapping("getPlatformMsg")
+    public JsonResult getPlatformMsg(Long uid){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        return success(new PlatformBank());
+    }
+
+    /**
      * 获取银行卡列表
      * @param uid
      * @return
@@ -300,11 +314,11 @@ public class ApiUserController extends BaseController {
      * @return
      */
     @PostMapping("getAssetFlowRecord")
-    public JsonResult getAssetFlowRecord(Long uid, Integer type, PageSearchDTO condition){
+    public JsonResult getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition){
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<BankFlowDTO> result = userService.getAssetFlowRecord(uid, type, condition);
+        OperationResult<BankFlowDTO> result = userService.getAssetFlowRecord(uid, type, status, condition);
         return success(result.getEntity());
     }
 

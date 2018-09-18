@@ -188,7 +188,7 @@ public interface UserService {
      * @param condition
      * @return
      */
-    OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, PageSearchDTO condition);
+    OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition);
 
     /**
      * 添加充值记录

@@ -7,6 +7,7 @@ import com.newframe.dto.user.response.*;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.bank.BankEnum;
 import com.newframe.enums.user.*;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -477,7 +478,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO) {
 
-        if(StringUtils.isEmpty(bankDTO.getBankName())){
+        if(BankEnum.isEmpty(bankDTO.getBankName())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
         if(StringUtils.isEmpty(bankDTO.getBankDetailedName())){
@@ -512,8 +513,8 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, PageSearchDTO condition) {
-        Page<CapitalFlow> flowPage = capitalFlowService.findAll(uid, condition, type);
+    public OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition) {
+        Page<CapitalFlow> flowPage = capitalFlowService.findAll(uid, condition, status, type);
         return new OperationResult(new BankFlowDTO(flowPage));
     }
 

@@ -217,7 +217,7 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<DrawAssetListDTO> getDrawAssetList(Long uid, DrawAssetSearchDTO drawAssetSearchDTO) {
-        Page<CapitalFlow> flows = capitalFlowService.findAll(uid, drawAssetSearchDTO, AssetTypeEnum.DRAW.getType());
+        Page<CapitalFlow> flows = capitalFlowService.findAll(drawAssetSearchDTO);
         return new OperationResult(new DrawAssetListDTO(flows));
     }
 
