@@ -3,6 +3,7 @@ package com.newframe.services.userbase.impl;
 import com.google.common.collect.Lists;
 import com.newframe.dto.after.request.DrawAssetSearchDTO;
 import com.newframe.entity.user.CapitalFlow;
+import com.newframe.enums.user.AssetTypeEnum;
 import com.newframe.repositories.dataMaster.user.CapitalFlowMaster;
 import com.newframe.repositories.dataQuery.user.CapitalFlowQuery;
 import com.newframe.repositories.dataSlave.user.CapitalFlowSlave;
@@ -32,7 +33,7 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
     private IdGlobalGenerator idGlobalGenerator;
 
     @Override
-    public Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO) {
+    public Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO, Integer type) {
         CapitalFlowQuery query = new CapitalFlowQuery();
         query.setUid(uid);
         if(drawAssetSearchDTO.getOrderId() != null) {
@@ -52,6 +53,9 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         }
         if(drawAssetSearchDTO.getEndTime() != null){
             query.setEndTime(drawAssetSearchDTO.getEndTime());
+        }
+        if(!AssetTypeEnum.isEmpty(type)){
+            query.setType(type);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         Pageable page = PageRequest.of(drawAssetSearchDTO.getCurrentPage() - 1, drawAssetSearchDTO.getPageSize(), sort);
@@ -102,6 +106,9 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         }
         if(StringUtils.isNotEmpty(capitalFlow.getCheckName())){
             updateFields.add("checkName");
+        }
+        if(capitalFlow.getBankMoneyFlowId() != null){
+            updateFields.add("bankMoneyFlowId");
         }
         String[] array =new String[updateFields.size()];
         updateFields.toArray(array);

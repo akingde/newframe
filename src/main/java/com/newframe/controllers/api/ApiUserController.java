@@ -1,7 +1,5 @@
 package com.newframe.controllers.api;
 
-import com.newframe.common.anony.Anonymous;
-import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
@@ -10,8 +8,6 @@ import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.SystemCode;
-import com.newframe.enums.TypeEnum;
-import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
@@ -278,17 +274,6 @@ public class ApiUserController extends BaseController {
             return error(result.getErrorCode());
         }
         return success(result.getEntity());
-    }
-
-    /**
-     * 添加充值记录
-     * @param uid
-     * @param amount
-     * @return
-     */
-    @PostMapping("addRechargeRecord")
-    public JsonResult addRechargeRecord(Long uid, BigDecimal amount){
-        return null;
     }
 
     /**
@@ -725,7 +710,7 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:34
      */
-    @PostMapping("modifyAddress")
+    @PostMapping("modiyAddress")
     public JsonResult modifyAddress(Long uid, AddressDTO addressDTO) {
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){

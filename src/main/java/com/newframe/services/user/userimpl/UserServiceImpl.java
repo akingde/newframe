@@ -470,7 +470,7 @@ public class UserServiceImpl implements UserService {
         if(StringUtils.isEmpty(bankDTO.getBankDetailedName())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
-        if(!BankCardUtils.checkBankCard(bankDTO.getBankNumber())){
+        if(StringUtils.isEmpty(bankDTO.getBankNumber())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
@@ -483,9 +483,6 @@ public class UserServiceImpl implements UserService {
         }
         UserRole userRole = roles.get(0);
         OperationResult<UserRoleDTO> roleInfo = roleBaseService.getUserRoleInfo(userRole.getUid(), userRole.getRoleId());
-        if(!StringUtils.equals(bankDTO.getUserBankName(), roleInfo.getEntity().getLegalEntity())){
-            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
-        }
         if(userBankService.findOne(bankDTO.getBankNumber()) != null){
             return new OperationResult(RequestResultEnum.BANK_EXISTS, false);
         }
@@ -548,6 +545,11 @@ public class UserServiceImpl implements UserService {
         CapitalFlow condition = new CapitalFlow();
         condition.setBankMoneyFlowId(bankMoneyFlowId);
         CapitalFlow flow = capitalFlowService.findOne(condition);
+        if(!flow.getOrderStatus().equals(AssetStatusEnum.BANK_PROCESSING.getOrderStatus())){
+            return new OperationResult(false);
+        }
+        flow.setOrderStatus(AssetStatusEnum.BANK_SUCC.getOrderStatus());
+        capitalFlowService.update(flow);
         Long uid = flow.getUid();
         BigDecimal amount = flow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
@@ -566,6 +568,11 @@ public class UserServiceImpl implements UserService {
         CapitalFlow condition = new CapitalFlow();
         condition.setBankMoneyFlowId(bankMoneyFlowId);
         CapitalFlow flow = capitalFlowService.findOne(condition);
+        if(!flow.getOrderStatus().equals(AssetStatusEnum.BANK_PROCESSING.getOrderStatus())){
+            return new OperationResult(false);
+        }
+        flow.setOrderStatus(AssetStatusEnum.BANK_ERROR.getOrderStatus());
+        capitalFlowService.update(flow);
         Long uid = flow.getUid();
         BigDecimal amount = flow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);

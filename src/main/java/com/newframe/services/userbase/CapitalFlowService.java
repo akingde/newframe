@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
  */
 public interface CapitalFlowService {
 
-    Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO);
+    Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO, Integer type);
 
     CapitalFlow findOne(Long orderId);
 
