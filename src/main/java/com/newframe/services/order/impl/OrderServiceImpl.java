@@ -19,6 +19,7 @@ import com.newframe.repositories.dataSlave.account.AccountFundingFinanceAssetSla
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
+import com.newframe.repositories.dataSlave.user.UserFunderSlave;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
@@ -128,6 +129,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderAccountOperationServiceImpl accountOperation;
 
+    @Autowired
+    UserFunderSlave userFunderSlave;
+
     @Value("${order.financing.max.times}")
     private Integer maxOrderFinancingTimes;
     @Value("${order.renting.max.times}")
@@ -226,7 +230,16 @@ public class OrderServiceImpl implements OrderService {
         // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
-        Long funderId = 1535433927622896L;
+        List<UserFunder> funders = userFunderSlave.findAll();
+        Long funderId = null;
+        if(funders!= null && funders.size() > 0){
+            Integer size = funders.size();
+            Random random = new Random();
+            funderId = funders.get(random.nextInt(size)).getUid();
+        }else{
+            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
+        }
+
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
         //查询订单融资是否超过3次

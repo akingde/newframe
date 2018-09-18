@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author kfm
@@ -22,16 +23,15 @@ public class GenerateGatheringScheduleTest extends NewFrameApplicationTests {
     @Autowired
     OrderFunderMaser orderFunderMaser;
 
-    @Test
-    public void generateFundingSchedule() throws Exception{
-        List<OrderFunder> orderFunders = orderFunderMaser.findAll();
-        for(OrderFunder orderFunder:orderFunders){
-            orderBaseService.generateFundingSchedule(orderFunder.getFinancingAmount(),orderFunder.getNumberOfPeriods(),
-                    orderFunder.getMerchantId(),orderFunder.getFunderId(),orderFunder.getOrderId());
-        }
-    }
+
     @Test
     public void testMvc(){
 //        mockMvc.perform(post(""))
+    }
+
+    @Test
+    public void test(){
+        Random random = new Random(2);
+        System.out.println(random.nextInt());
     }
 }

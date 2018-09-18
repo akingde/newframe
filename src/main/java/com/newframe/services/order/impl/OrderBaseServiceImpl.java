@@ -130,46 +130,6 @@ public class OrderBaseServiceImpl implements OrderBaseService {
 
     }
 
-    /**
-     * 生成资金方收款计划
-     * @param financingAmount 融资金额
-     * @param tenancyTerm 融资期限
-     * @param renterId 租赁商id
-     * @param funderId 资金方id
-     * @param orderId 订单id
-     */
-    @Override
-    public void generateFundingSchedule(BigDecimal financingAmount,Integer tenancyTerm,
-                                        Long renterId,Long funderId,Long orderId) throws ParseException {
-        // 计算月租金
-        BigDecimal monthlyAmount = financingAmount.divide(
-                new BigDecimal(tenancyTerm),2,RoundingMode.HALF_UP
-        );
-        Calendar calendar = Calendar.getInstance();
-        List<Integer> schedule = getFundingScheduleTime(calendar,tenancyTerm);
-        // 日利率
-        BigDecimal rate = new BigDecimal("0.0006");
-        List<FundingGatheringSchedule> gatheringSchedules = new ArrayList<>();
-        for(int i=0;i<tenancyTerm;i++){
-            FundingGatheringSchedule fundingGatheringSchedule = new FundingGatheringSchedule();
-            fundingGatheringSchedule.setId(idGen.getSeqId(FundingGatheringSchedule.class));
-            fundingGatheringSchedule.setUid(funderId);
-            fundingGatheringSchedule.setOrderId(orderId);
-            fundingGatheringSchedule.setRenterId(renterId);
-            fundingGatheringSchedule.setRepayAmount(monthlyAmount);
-            // todo 利息暂时按照日利息0.0006计算，利息=剩余待还金额*日利率*30
-            BigDecimal interest = financingAmount.subtract(
-                    monthlyAmount.multiply(new BigDecimal(i))
-            ).multiply(rate).multiply(new BigDecimal(30));
-            fundingGatheringSchedule.setInterest(interest);
-            fundingGatheringSchedule.setTotalAmount(monthlyAmount.add(interest));
-            fundingGatheringSchedule.setLastRepayTime(schedule.get(i));
-            fundingGatheringSchedule.setRepayStatus(1);
-            fundingGatheringSchedule.setNumberPeriods(i+1);
-            gatheringSchedules.add(fundingGatheringSchedule);
-        }
-        fundingGatheringScheduleMaster.saveAll(gatheringSchedules);
-    }
 
     @Override
     public void messagePush(Long receiverId, Long orderId, String associatedOrderId, MessagePushEnum info){
@@ -178,40 +138,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         GwsLogger.getLogger().info("推送消息给："+receiverId+",消息内容："+info.toString());
     }
 
-    /**
-     * 生成租赁商向资金方还款的还款计划时间表，根据当前日期往后推一天生成
-     *
-     * @param calendar 放款时间
-     * @param tenancyTerm 还款期限
-     * @return 时间表
-     */
-    private List<Integer> getFundingScheduleTime(Calendar calendar, Integer tenancyTerm) throws ParseException {
-        calendar.setTimeInMillis(calendar.getTimeInMillis() + 24*60*60*1000);
-        Integer currentMonth = calendar.get(Calendar.MONTH) + 1;
-        Integer currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-        Integer currentYear = calendar.get(Calendar.YEAR);
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        List<Integer> schedule = new ArrayList<>();
-        // 当前日期的下一天为第一次还款日期
-        schedule.add(Long.valueOf(format.parse(currentYear.toString()+
-                (currentMonth<10?"0"+currentMonth:currentMonth) +
-                (currentDay<10?"0"+currentDay:currentDay)
-            ).getTime()/1000).intValue());
-        for(int i=0;i<tenancyTerm-1;i++){
-            if(currentMonth.equals(12)){
-                currentMonth = 1;
-                currentYear++;
-            }else{
-                currentMonth++;
-            }
-            Date date = format.parse(currentYear.toString()+
-                    (currentMonth<10?"0"+currentMonth:currentMonth) +
-                    (currentDay<10?"0"+currentDay:currentDay)
-            );
-            schedule.add(Long.valueOf(date.getTime()/1000).intValue());
-        }
-        return schedule;
-    }
+
 
     @Override
     public boolean renterRentAccountOperation(OrderRenter orderRenter, OrderHirer orderHirer){
@@ -245,12 +172,22 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     @Override
     public boolean renterFunderAccountOperation(OrderRenter orderRenter, OrderFunder orderFunder) {
         // todo 融资利息怎么算
-        BigDecimal interest = orderFunder.getFinancingAmount().multiply(new BigDecimal("0.0005"))
-                .multiply(new BigDecimal(orderFunder.getNumberOfPeriods()))
-                .multiply(new BigDecimal("30"));
-        accountManageService.saveAccountRenterFinancing(orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),
-                orderFunder.getFinancingAmount(),orderFunder.getNumberOfPeriods(),orderFunder.getFinancingAmount(),interest,
-                new BigDecimal("0"),new BigDecimal(0),orderFunder.getFinancingAmount(),interest);
+        BigDecimal interest = BigDecimal.ZERO;
+        BigDecimal monthPayment = orderFunder.getFinancingAmount()
+                .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+        // 首付已经还清，所以待还和已还要除去首付
+        accountManageService.saveAccountRenterFinancing(
+                orderRenter.getRenterId(),
+                orderRenter.getOrderId(),
+                orderRenter.getPartnerOrderId(),
+                orderFunder.getFinancingAmount(),
+                orderFunder.getNumberOfPeriods(),
+                orderFunder.getFinancingAmount(),
+                interest,
+                monthPayment,
+                BigDecimal.ZERO,
+                orderFunder.getFinancingAmount().subtract(monthPayment),
+                interest);
 
         accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getFunderId(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
                 orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderFunder.getFinancingAmount(),
