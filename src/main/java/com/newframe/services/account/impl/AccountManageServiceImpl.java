@@ -21,7 +21,6 @@ import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +55,8 @@ public class AccountManageServiceImpl implements AccountManageService {
     private IdGlobalGenerator idGlobal;
 
     private final BigDecimal overdueRate = BigDecimal.valueOf(0.2);
+
+    private final BigDecimal depositRate = BigDecimal.valueOf(0.15);
     /**
      * 租赁商获取账户信息
      *
@@ -445,6 +446,10 @@ public class AccountManageServiceImpl implements AccountManageService {
 
             accountRenterRepays.add(accountRenterRepay);
         };
+        //第一期是已扣款
+        if (null != accountRenterRepays.get(0)) {
+            accountRenterRepays.get(0).setWithhold(2);
+        }
         List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
         if (CollectionUtils.isEmpty(result)){
             return new OperationResult<>(false);
@@ -547,6 +552,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
             extraAmount = dealAmount.multiply(overdueRate);
+            dealAmount = dealAmount.add(extraAmount);
         }
         AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
         AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
@@ -560,14 +566,98 @@ public class AccountManageServiceImpl implements AccountManageService {
         //如果是最后一期。需要将保证金退还
         if (finallyPeriod){
             BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
-            //BigDecimal cashDeposit =
+            BigDecimal cashDeposit = totalAmount.multiply(depositRate);
             //减保证金
-            //saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,totalAmount.multiply(new BigDecimal(-0.15)),extraAmount);
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,cashDeposit.multiply(new BigDecimal(-1)),extraAmount);
             //加可用余额
-            //saveAccountStatement(renterUid,)
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.USEABLEASSETS,cashDeposit,extraAmount);
         }
 
-        if (result.getEntity()&&result1.getEntity()){
+        //更新还款状态
+        accountRenterRepay.setOrderStatus(1);
+        accountRenterRepay.setWithhold(2);
+        AccountRenterRepay renterRepay = accountService.updateAccountRenterRepay(accountRenterRepay);
+
+        //更新租赁商和资金方的状态
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(accountRenterRepay.getOrderId());
+        //该笔订单是否全部还清,初始值为false,只判断最后一期即可
+        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
+        //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
+        if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
+            accountRenterFinancing.setRepaymentStatus(1);
+            accountRenterFinancing.setOrderStatus(1);
+            accountService.updateAccountRenterFinancing(accountRenterFinancing);
+            accountFundingFinanceAsset.setOrderStatus(1);
+            accountService.updateAccountFundingFinanceAsset(accountFundingFinanceAsset);
+        }
+
+        if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
+            return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 租赁商租机还款
+     *
+     * @param id
+     * @param finallyPeriod
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> rentRepayment(Long id, Boolean finallyPeriod) {
+        if (null == id){
+            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+        }
+        AccountRenterRepay accountRenterRepay = accountService.getAccountRenterRepay(id);
+        if (null == accountRenterRepay){
+            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+        }
+        BigDecimal extraAmount = BigDecimal.valueOf(0);
+        BigDecimal dealAmount = accountRenterRepay.getOrderAmount();
+        Long orderId = accountRenterRepay.getOrderId();
+        //如果逾期
+        if (accountRenterRepay.getOrderStatus().equals(2)){
+            extraAmount = dealAmount.multiply(overdueRate);
+            dealAmount = dealAmount.add(extraAmount);
+        }
+        AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
+        AccountLessorMatterAsset accountLessorMatterAsset = accountService.getAccountLessorMatterAsset(orderId);
+
+        Long renterUid = accountRenterFinancing.getUid();
+        Long lessorUid = accountLessorMatterAsset.getUid();
+        //操作租赁商的账户
+        OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
+        OperationResult<Boolean> result1 = saveAccountStatement(lessorUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);
+
+        if (finallyPeriod){
+            BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
+            BigDecimal cashDeposit = totalAmount.multiply(depositRate);
+            //减保证金
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,cashDeposit.multiply(new BigDecimal(-1)),extraAmount);
+            //加可用余额
+            saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.USEABLEASSETS,cashDeposit,extraAmount);
+        }
+
+        //更新还款状态
+        accountRenterRepay.setOrderStatus(1);
+        accountRenterRepay.setWithhold(2);
+        AccountRenterRepay renterRepay = accountService.updateAccountRenterRepay(accountRenterRepay);
+
+        //更新租赁商和资金方的状态
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(accountRenterRepay.getOrderId());
+        //该笔订单是否全部还清,初始值为false,只判断最后一期即可
+        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
+        //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
+        if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
+            accountRenterFinancing.setRepaymentStatus(1);
+            accountRenterFinancing.setOrderStatus(1);
+            accountService.updateAccountRenterFinancing(accountRenterFinancing);
+            accountLessorMatterAsset.setOrderStatus(1);
+            accountService.updateAccountLessorMatterAsset(accountLessorMatterAsset);
+        }
+
+        if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
         }
         return new OperationResult<>(true);

@@ -26,6 +26,10 @@ public class AccountLessorMatterAsset implements Serializable {
     @Id
     private Long id;
     /**
+     * 出租方uid
+     */
+    private Long uid;
+    /**
      * 出租时间
      */
     private Long rentTime;
@@ -33,6 +37,10 @@ public class AccountLessorMatterAsset implements Serializable {
      * 关联订单id
      */
     private Long orderId;
+    /**
+     * 关联订单的ID
+     */
+    private String associatedOrderId;
     /**
      * 租赁产品信息
      */

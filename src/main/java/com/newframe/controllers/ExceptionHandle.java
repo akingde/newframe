@@ -1,5 +1,7 @@
 package com.newframe.controllers;
 
+import com.newframe.common.exception.AccountOperationException;
+import com.newframe.dto.OperationResult;
 import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.enums.merchant.MerchantResult;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +46,13 @@ public class ExceptionHandle {
             map.put(errors.getField(), errors.getDefaultMessage());
         }
         return new JsonResult(MerchantResult.VALID_EXCEPTION, map);
+    }
+
+    @ExceptionHandler(AccountOperationException.class)
+    @ResponseBody
+    public JsonResult handleAccountOperateException(AccountOperationException e) {
+        log.error(e.getMessage());
+        OperationResult result = e.getOperationResult();
+        return new JsonResult(result.getErrorCode(),false);
     }
 }

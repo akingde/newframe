@@ -1,5 +1,6 @@
 package com.newframe.services.order;
 
+import com.newframe.common.exception.AccountOperationException;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
@@ -41,7 +42,7 @@ public interface OrderService {
      * @param supplierId 供应商id
      * @return 处理结果
      */
-    JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId, BigDecimal financingAmount, Integer financingDeadline);
+    JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId, BigDecimal financingAmount, Integer financingDeadline) throws AccountOperationException;
 
     /**
      * 租赁商租机
@@ -55,15 +56,16 @@ public interface OrderService {
      * @param patternPayment  支付方式
      * @return 处理结果
      */
-    JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment);
+    JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException;
 
     /**
      * 租赁商取消订单
      *
      * @param orderId 订单id
+     * @param uid
      * @return 处理结果
      */
-    JsonResult cancelOrder(List<Long> orderId);
+    JsonResult cancelOrder(List<Long> orderId, Long uid);
 
     /**
      * 租赁商查看订单详情
@@ -80,7 +82,8 @@ public interface OrderService {
      * @param productInfo 产品信息
      * @return 查询结果
      */
-    JsonResult getSupplierList(ProductInfoDTO productInfo);
+
+    JsonResult getSupplierList(ProductInfoDTO productInfo, Long orderId);
 
     /**
      * 按产品信息查询有此机型的出租方列表
@@ -115,7 +118,7 @@ public interface OrderService {
      * @param uid     资金方uid
      * @return 返回结果
      */
-    JsonResult funderRefuse(Long orderId, Long uid);
+    JsonResult funderRefuse(Long orderId, Long uid) throws AccountOperationException;
 
     /**
      * 资金方放款
@@ -134,7 +137,7 @@ public interface OrderService {
      * @param file    凭证图片
      * @return 返回结果
      */
-    JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file);
+    JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException;
 
     /**
      * 查询供应商订单
@@ -195,7 +198,7 @@ public interface OrderService {
      * @param deliverInfo 发货信息
      * @return 操作结果
      */
-    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo);
+    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException;
 
     /**
      * 出租方审核不通过
@@ -203,7 +206,7 @@ public interface OrderService {
      * @param uid 用户uid
      * @return 操作结果
      */
-    JsonResult lessorRefuse(Long orderId, Long uid);
+    JsonResult lessorRefuse(Long orderId, Long uid) throws AccountOperationException;
 
     /**
      * 查询快递公司列表
@@ -268,13 +271,20 @@ public interface OrderService {
      * @param paymentNumber
      * @return 返回结果
      */
-    OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber);
+    OperationResult getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber);
 
     /**
      * 资金方线上放款
-     * @param loanDTO
-     * @param uid
-     * @return
+     * @param loanDTO 放款信息
+     * @param uid 资金方id
+     * @return 操作结果
      */
-    JsonResult onlineLoan(LoanDTO loanDTO, Long uid);
+    JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException;
+
+    /**
+     * 根据订单id查询租赁商信息
+     * @param orderId 订单id
+     * @return 操作结果
+     */
+    OperationResult<RenterInfo> getRenterInfoByOrderId(Long orderId);
 }
