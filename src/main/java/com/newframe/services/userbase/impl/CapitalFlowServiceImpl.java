@@ -2,7 +2,9 @@ package com.newframe.services.userbase.impl;
 
 import com.google.common.collect.Lists;
 import com.newframe.dto.after.request.DrawAssetSearchDTO;
+import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.CapitalFlow;
+import com.newframe.enums.user.AssetTypeEnum;
 import com.newframe.repositories.dataMaster.user.CapitalFlowMaster;
 import com.newframe.repositories.dataQuery.user.CapitalFlowQuery;
 import com.newframe.repositories.dataSlave.user.CapitalFlowSlave;
@@ -32,9 +34,8 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
     private IdGlobalGenerator idGlobalGenerator;
 
     @Override
-    public Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO) {
+    public Page<CapitalFlow> findAll(DrawAssetSearchDTO drawAssetSearchDTO) {
         CapitalFlowQuery query = new CapitalFlowQuery();
-        query.setUid(uid);
         if(drawAssetSearchDTO.getOrderId() != null) {
             query.setOrderId(drawAssetSearchDTO.getOrderId());
         }
@@ -53,6 +54,7 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         if(drawAssetSearchDTO.getEndTime() != null){
             query.setEndTime(drawAssetSearchDTO.getEndTime());
         }
+        query.setType(AssetTypeEnum.DRAW.getType());
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         Pageable page = PageRequest.of(drawAssetSearchDTO.getCurrentPage() - 1, drawAssetSearchDTO.getPageSize(), sort);
         return capitalFlowSlave.findAll(query, page);
@@ -103,8 +105,26 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         if(StringUtils.isNotEmpty(capitalFlow.getCheckName())){
             updateFields.add("checkName");
         }
+        if(capitalFlow.getBankMoneyFlowId() != null){
+            updateFields.add("bankMoneyFlowId");
+        }
         String[] array =new String[updateFields.size()];
         updateFields.toArray(array);
         return capitalFlowMaster.update(capitalFlow, query, array);
+    }
+
+    @Override
+    public Page<CapitalFlow> findAll(Long uid, PageSearchDTO condition, Integer status, Integer type) {
+        CapitalFlowQuery query = new CapitalFlowQuery();
+        query.setUid(uid);
+        if(!AssetTypeEnum.isEmpty(type)){
+            query.setType(type);
+        }
+        if(status != null){
+            query.setOrderStatus(status);
+        }
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        Pageable page = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), sort);
+        return capitalFlowSlave.findAll(query, page);
     }
 }

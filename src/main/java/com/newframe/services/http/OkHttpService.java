@@ -1,5 +1,6 @@
 package com.newframe.services.http;
 
+import com.newframe.blockchain.entity.ResponseBean;
 import com.newframe.resp.block.BlockAddress;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
@@ -97,4 +98,12 @@ public interface OkHttpService {
      * @return
      */
     BlockAddress getBlockAddress(String apiAddressService, String jsonBody);
+
+    /**
+     * 发送区块链
+     * @param blockUrl
+     * @param json
+     * @return
+     */
+    ResponseBean<String> sendBlockChain(String blockUrl, String json);
 }

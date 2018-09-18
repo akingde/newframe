@@ -1,12 +1,13 @@
 DROP TABLE if EXISTS bank_money_flow;
 CREATE TABLE `bank_money_flow` (
   `id` BIGINT COMMENT 'id',
-  `type` TINYINT  COMMENT '类型 0代表充值 1代表提现',
-  `status` TINYINT  COMMENT '状态(62, "银行处理中"),(63, "银行处理成功"),(64, "银行处理失败");',
+  `type` TINYINT  COMMENT '类型 0代表提现 1代表充值',
+  `status` TINYINT  COMMENT '提现状态(62, "银行处理中"),(63, "银行处理成功"),(64, "银行处理失败");',
   `transaction_no` VARCHAR(64) UNIQUE COMMENT '交易编号',
   `bank_transaction_no` VARCHAR(255) UNIQUE DEFAULT NULL COMMENT '银行交易流水编号',
   `amount` DECIMAL(20,2)  COMMENT '交易金额',
   `bank_card` VARCHAR(64)  COMMENT '银行卡号',
+  `bank_card_holder` VARCHAR(64)  COMMENT '持卡人',
   `bank_name` VARCHAR(64)  COMMENT '银行名称',
   `sub_bank_name` VARCHAR(64)  COMMENT '支行名称',
   `transfer_type` TINYINT  COMMENT '转账类型',

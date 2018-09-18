@@ -1,21 +1,19 @@
 package com.newframe.controllers.api;
 
-import com.newframe.common.anony.Anonymous;
-import com.newframe.common.anony.UserType;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.RequestUser;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
+import com.newframe.enums.PlatformBank;
 import com.newframe.enums.RoleEnum;
 import com.newframe.enums.SystemCode;
-import com.newframe.enums.TypeEnum;
-import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -266,6 +264,32 @@ public class ApiUserController extends BaseController {
     }
 
     /**
+     * 获取平台银行信息
+     * @return
+     */
+    @PostMapping("getPlatformMsg")
+    public JsonResult getPlatformMsg(Long uid){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        return success(new PlatformBank());
+    }
+
+    /**
+     * 获取银行卡列表
+     * @param uid
+     * @return
+     */
+    @PostMapping("getBanklist")
+    public JsonResult getBanklist(Long uid){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<UserBankDTO> result = userService.getBankList(uid);
+        return success(result.getEntity());
+    }
+
+    /**
      * 增加或者修改银行卡
      * @param uid
      * @param bankDTO
@@ -273,6 +297,9 @@ public class ApiUserController extends BaseController {
      */
     @PostMapping("saveBankNumber")
     public JsonResult saveBankNumber(Long uid, BankDTO bankDTO){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.saveBankNumber(uid, bankDTO);
         if(!result.getEntity()){
             return error(result.getErrorCode());
@@ -281,25 +308,36 @@ public class ApiUserController extends BaseController {
     }
 
     /**
-     * 添加充值记录
+     * 获取资金流水记录
      * @param uid
-     * @param amount
+     * @param type
      * @return
      */
-    @PostMapping("addRechargeRecord")
-    public JsonResult addRechargeRecord(Long uid, BigDecimal amount){
-        return null;
+    @PostMapping("getAssetFlowRecord")
+    public JsonResult getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<BankFlowDTO> result = userService.getAssetFlowRecord(uid, type, status, condition);
+        return success(result.getEntity());
     }
 
     /**
-     * 添加体现记录
+     * 添加提现记录
      * @param uid
      * @param amount
      * @return
      */
     @PostMapping("addDrawRecord")
     public JsonResult addDrawRecord(Long uid, BigDecimal amount){
-        return null;
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = userService.addDrawRecord(uid, amount);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
     /**
      * @param roleId 角色id
@@ -725,7 +763,7 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:34
      */
-    @PostMapping("modifyAddress")
+    @PostMapping("modiyAddress")
     public JsonResult modifyAddress(Long uid, AddressDTO addressDTO) {
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){

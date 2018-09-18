@@ -7,6 +7,7 @@ import com.newframe.dto.user.response.*;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.bank.BankEnum;
 import com.newframe.enums.user.*;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -18,6 +19,7 @@ import com.newframe.utils.BankCardUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -456,6 +458,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 获取银行列表
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<UserBankDTO> getBankList(Long uid) {
+        UserBank userBank = userBankService.findOne(uid);
+        return new OperationResult(new UserBankDTO(userBank));
+    }
+
+    /**
      * 添加或者修改银行卡
      *
      * @param bankDTO
@@ -464,13 +478,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO) {
 
-        if(StringUtils.isEmpty(bankDTO.getBankName())){
+        if(BankEnum.isEmpty(bankDTO.getBankName())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
         if(StringUtils.isEmpty(bankDTO.getBankDetailedName())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
-        if(!BankCardUtils.checkBankCard(bankDTO.getBankNumber())){
+        if(StringUtils.isEmpty(bankDTO.getBankNumber())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
@@ -483,14 +497,25 @@ public class UserServiceImpl implements UserService {
         }
         UserRole userRole = roles.get(0);
         OperationResult<UserRoleDTO> roleInfo = roleBaseService.getUserRoleInfo(userRole.getUid(), userRole.getRoleId());
-        if(!StringUtils.equals(bankDTO.getUserBankName(), roleInfo.getEntity().getLegalEntity())){
-            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
-        }
         if(userBankService.findOne(bankDTO.getBankNumber()) != null){
             return new OperationResult(RequestResultEnum.BANK_EXISTS, false);
         }
         userBankService.insert(new UserBank(uid, bankDTO, baseInfo.getPhoneNumber()));
         return new OperationResult(true);
+    }
+
+    /**
+     * 获取资金流水记录
+     *
+     * @param uid
+     * @param type
+     * @param condition
+     * @return
+     */
+    @Override
+    public OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition) {
+        Page<CapitalFlow> flowPage = capitalFlowService.findAll(uid, condition, status, type);
+        return new OperationResult(new BankFlowDTO(flowPage));
     }
 
     /**
@@ -524,6 +549,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> addDrawRecord(Long uid, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) != 1){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
         UserBank userBank = userBankService.findOne(uid);
         if(userBank == null){
             return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
@@ -548,6 +576,11 @@ public class UserServiceImpl implements UserService {
         CapitalFlow condition = new CapitalFlow();
         condition.setBankMoneyFlowId(bankMoneyFlowId);
         CapitalFlow flow = capitalFlowService.findOne(condition);
+        if(!flow.getOrderStatus().equals(AssetStatusEnum.BANK_PROCESSING.getOrderStatus())){
+            return new OperationResult(false);
+        }
+        flow.setOrderStatus(AssetStatusEnum.BANK_SUCC.getOrderStatus());
+        capitalFlowService.update(flow);
         Long uid = flow.getUid();
         BigDecimal amount = flow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
@@ -566,6 +599,11 @@ public class UserServiceImpl implements UserService {
         CapitalFlow condition = new CapitalFlow();
         condition.setBankMoneyFlowId(bankMoneyFlowId);
         CapitalFlow flow = capitalFlowService.findOne(condition);
+        if(!flow.getOrderStatus().equals(AssetStatusEnum.BANK_PROCESSING.getOrderStatus())){
+            return new OperationResult(false);
+        }
+        flow.setOrderStatus(AssetStatusEnum.BANK_ERROR.getOrderStatus());
+        capitalFlowService.update(flow);
         Long uid = flow.getUid();
         BigDecimal amount = flow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);

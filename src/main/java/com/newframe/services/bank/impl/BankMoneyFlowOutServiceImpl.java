@@ -8,6 +8,7 @@ import com.newframe.services.bank.BankMoneyFlowOutService;
 import com.newframe.services.bank.BankSupport;
 import com.newframe.services.user.UserService;
 import com.newframe.utils.DateUtils;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,24 +38,31 @@ public class BankMoneyFlowOutServiceImpl implements BankMoneyFlowOutService {
 
     @Autowired
     UserService userService;
+    @Autowired
+    IdGlobalGenerator idGlobalGenerator;
+
 
     @Override
-    public BankMoneyFlow agreeAuditBankMoneyFlowOut(Long bankMoneyFlowId) {
-        BankMoneyFlow bankMoneyFlow = bankMoneyFlowSlave.findOne(bankMoneyFlowId);
-        if (null == bankMoneyFlow) {
-            return null;
-        }
+    public BankMoneyFlow withdraw(BankMoneyFlow bankMoneyFlow) {
+        bankMoneyFlow.setId(idGlobalGenerator.getSeqId(BankMoneyFlow.class));
+        bankMoneyFlow.setStatus(BankMoneyFlowStatus.OUT_AUDIT_READY.getIntValue());
+        bankMoneyFlowMaster.save(bankMoneyFlow);
+        return agreeAuditBankMoneyFlowOut(bankMoneyFlow);
+    }
+
+    private BankMoneyFlow agreeAuditBankMoneyFlowOut(BankMoneyFlow bankMoneyFlow) {
         //提交银行处理
         String serialNumber = BankSupport.dealTransfer(bankMoneyFlow);
         if (StringUtils.isEmpty(serialNumber)) {
-            logger.error("银行处理失败:返回serialNumber为空");
+            throw new RuntimeException("银行处理失败:返回serialNumber为空");
         }
 
         //更新银行返回序列号
         BankMoneyFlow moneyFlow = new BankMoneyFlow();
         moneyFlow.setId(bankMoneyFlow.getId());
         moneyFlow.setSerialNumber(serialNumber);
-        bankMoneyFlowMaster.updateById(moneyFlow, moneyFlow.getId(), "serialNumber");
+        moneyFlow.setStatus(BankMoneyFlowStatus.OUT_AUDIT_SUCCESS.getIntValue());
+        bankMoneyFlowMaster.updateById(moneyFlow, moneyFlow.getId(), "serialNumber","status");
 
         //新线程处理银行结果
         try {

@@ -167,12 +167,28 @@ public interface UserService {
     OperationResult<List<UserAddressDTO>> getUserAddressList(Long uid);
 
     /**
+     * 获取银行列表
+     * @param uid
+     * @return
+     */
+    OperationResult<UserBankDTO> getBankList(Long uid);
+
+    /**
      * 添加或者修改银行卡
      * @param uid
      * @param bankDTO
      * @return
      */
     OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO);
+
+    /**
+     * 获取资金流水记录
+     * @param uid
+     * @param type
+     * @param condition
+     * @return
+     */
+    OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition);
 
     /**
      * 添加充值记录

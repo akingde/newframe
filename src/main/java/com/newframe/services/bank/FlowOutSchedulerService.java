@@ -33,7 +33,7 @@ public class FlowOutSchedulerService {
     @Autowired
     UserService userService;
 
-    @Scheduled(cron = "${schedule.moneyFlowOutTask}")
+//    @Scheduled(cron = "${schedule.moneyFlowOutTask}")
     public void statusCheckTask() {
         if (isFlowOutDoing.compareAndSet(false, true)) {
             return;

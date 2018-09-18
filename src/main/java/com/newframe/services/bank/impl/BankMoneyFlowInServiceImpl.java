@@ -1,6 +1,7 @@
 package com.newframe.services.bank.impl;
 
 import com.newframe.entity.bank.BankMoneyFlow;
+import com.newframe.enums.bank.BankMoneyFlowStatus;
 import com.newframe.repositories.dataMaster.bank.BankMoneyFlowMaster;
 import com.newframe.repositories.dataQuery.bank.BankMoneyFlowQuery;
 import com.newframe.repositories.dataSlave.bank.BankMoneyFlowSlave;
@@ -101,6 +102,7 @@ public class BankMoneyFlowInServiceImpl implements BankMoneyFlowInService {
         bankMoneyFlow.setTransactionNo(MathUtils.getNo());
         bankMoneyFlow.setBankName(bankFlowDataBean.getCadbank_Nm());
         bankMoneyFlow.setType(BankQueryType.FLOW_IN);//充值
+        bankMoneyFlow.setStatus(BankMoneyFlowStatus.IN_READY.getIntValue());
         bankMoneyFlow.setRemarks(bankFlowDataBean.getDet());
         try {
             bankMoneyFlow.setApplyTime(dateFormat.parse(bankFlowDataBean.getCreattime()).getTime());

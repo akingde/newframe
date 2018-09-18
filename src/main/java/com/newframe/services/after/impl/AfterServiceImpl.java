@@ -10,6 +10,7 @@ import com.newframe.entity.user.CapitalFlow;
 import com.newframe.entity.user.UserFunder;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.enums.user.AssetStatusEnum;
+import com.newframe.enums.user.AssetTypeEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.account.AccountManageService;
@@ -216,7 +217,7 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<DrawAssetListDTO> getDrawAssetList(Long uid, DrawAssetSearchDTO drawAssetSearchDTO) {
-        Page<CapitalFlow> flows = capitalFlowService.findAll(uid, drawAssetSearchDTO);
+        Page<CapitalFlow> flows = capitalFlowService.findAll(drawAssetSearchDTO);
         return new OperationResult(new DrawAssetListDTO(flows));
     }
 
@@ -233,9 +234,13 @@ public class AfterServiceImpl implements AfterService {
         if(capitalFlow == null){
             return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
         }
+        if (!capitalFlow.getOrderStatus().equals(AssetStatusEnum.CHECKING.getOrderStatus())){
+            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
+        }
         capitalFlow.setOrderStatus(AssetStatusEnum.BANK_PROCESSING.getOrderStatus());
         capitalFlow.setCheckUid(new UserDTO().getUid());
         capitalFlow.setCheckName(new UserDTO().getUserName());
+        capitalFlow.setBankMoneyFlowId(System.currentTimeMillis());
         capitalFlowService.update(capitalFlow);
         return new OperationResult(true);
     }
@@ -252,6 +257,9 @@ public class AfterServiceImpl implements AfterService {
         CapitalFlow capitalFlow = capitalFlowService.findOne(orderId);
         if(capitalFlow == null){
             return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
+        }
+        if (!capitalFlow.getOrderStatus().equals(AssetStatusEnum.CHECKING.getOrderStatus())){
+            return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
         }
         capitalFlow.setOrderStatus(AssetStatusEnum.CHECK_ERROR.getOrderStatus());
         capitalFlowService.update(capitalFlow);

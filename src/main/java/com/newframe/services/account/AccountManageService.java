@@ -187,13 +187,12 @@ public interface AccountManageService {
      * @param finallyPeriod
      * @return
      */
-    OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod);
+    OperationResult<Boolean> financeRepayment(Long id);
 
     /**
      * 租赁商租机还款
      * @param id
-     * @param finallyPeriod
      * @return
      */
-    OperationResult<Boolean> rentRepayment(Long id, Boolean finallyPeriod);
+    OperationResult<Boolean> rentRepayment(Long id);
 }
