@@ -534,14 +534,14 @@ public class AccountManageServiceImpl implements AccountManageService {
      * 融资购机还款
      *
      * @param id
-     * @param finallyPeriod
      * @return
      */
     @Override
-    public OperationResult<Boolean> financeRepayment(Long id, Boolean finallyPeriod) {
+    public OperationResult<Boolean> financeRepayment(Long id) {
         if (null == id){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
+        Boolean finallyPeriod = false;
         AccountRenterRepay accountRenterRepay = accountService.getAccountRenterRepay(id);
         if (null == accountRenterRepay){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
@@ -549,6 +549,13 @@ public class AccountManageServiceImpl implements AccountManageService {
         BigDecimal extraAmount = BigDecimal.valueOf(0);
         BigDecimal dealAmount = accountRenterRepay.getOrderAmount();
         Long orderId = accountRenterRepay.getOrderId();
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(orderId);
+        //获取该笔订单的最后一期
+        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
+        //判断目前正要付款的订单是否是最后一期
+        if (id.equals(acc.getId())){
+            finallyPeriod = true;
+        }
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
             extraAmount = dealAmount.multiply(overdueRate);
@@ -579,9 +586,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterRepay renterRepay = accountService.updateAccountRenterRepay(accountRenterRepay);
 
         //更新租赁商和资金方的状态
-        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(accountRenterRepay.getOrderId());
         //该笔订单是否全部还清,初始值为false,只判断最后一期即可
-        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
         //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
         if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
             accountRenterFinancing.setRepaymentStatus(1);
@@ -601,11 +606,10 @@ public class AccountManageServiceImpl implements AccountManageService {
      * 租赁商租机还款
      *
      * @param id
-     * @param finallyPeriod
      * @return
      */
     @Override
-    public OperationResult<Boolean> rentRepayment(Long id, Boolean finallyPeriod) {
+    public OperationResult<Boolean> rentRepayment(Long id) {
         if (null == id){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
@@ -616,6 +620,15 @@ public class AccountManageServiceImpl implements AccountManageService {
         BigDecimal extraAmount = BigDecimal.valueOf(0);
         BigDecimal dealAmount = accountRenterRepay.getOrderAmount();
         Long orderId = accountRenterRepay.getOrderId();
+        Boolean finallyPeriod = false;
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(orderId);
+        //获取该笔订单的最后一期
+        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
+        //判断目前正要付款的订单是否是最后一期
+        if (id.equals(acc.getId())){
+            finallyPeriod = true;
+        }
+
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
             extraAmount = dealAmount.multiply(overdueRate);
@@ -645,9 +658,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterRepay renterRepay = accountService.updateAccountRenterRepay(accountRenterRepay);
 
         //更新租赁商和资金方的状态
-        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(accountRenterRepay.getOrderId());
         //该笔订单是否全部还清,初始值为false,只判断最后一期即可
-        AccountRenterRepay acc = accountRenterRepays.get(accountRenterRepays.size()-1);
         //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
         if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
             accountRenterFinancing.setRepaymentStatus(1);

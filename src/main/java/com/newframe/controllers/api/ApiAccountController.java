@@ -565,14 +565,29 @@ public class ApiAccountController extends BaseController {
     }
 
     /**
+     * 租赁商融资购机还款
      * 在订单融资的时候，传account_renter_repay表中的id
-     * @param Id
      * @return
      */
     @RequestMapping("financeRepayment")
-    public JsonResult financeRepayment(Long Id,Boolean finallyPeriod){
+    public JsonResult financeRepayment(Long id){
 
-        OperationResult<Boolean> result = accountManageService.financeRepayment(Id, finallyPeriod);
+        OperationResult<Boolean> result = accountManageService.financeRepayment(id);
+
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getCode(), result.getMessage());
+    }
+
+    /**
+     * 租赁商租机订单的还款
+     * @return
+     */
+    @RequestMapping("rentRepayment")
+    public JsonResult rentRepayment(Long id){
+
+        OperationResult<Boolean> result = accountManageService.rentRepayment(id);
 
         if (result.getSucc()) {
             return success(result.getEntity());
