@@ -2,6 +2,7 @@ package com.newframe.services.userbase.impl;
 
 import com.google.common.collect.Lists;
 import com.newframe.dto.after.request.DrawAssetSearchDTO;
+import com.newframe.dto.user.request.PageSearchDTO;
 import com.newframe.entity.user.CapitalFlow;
 import com.newframe.enums.user.AssetTypeEnum;
 import com.newframe.repositories.dataMaster.user.CapitalFlowMaster;
@@ -113,5 +114,17 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         String[] array =new String[updateFields.size()];
         updateFields.toArray(array);
         return capitalFlowMaster.update(capitalFlow, query, array);
+    }
+
+    @Override
+    public Page<CapitalFlow> findAll(Long uid, PageSearchDTO condition, Integer type) {
+        CapitalFlowQuery query = new CapitalFlowQuery();
+        query.setUid(uid);
+        if(!AssetTypeEnum.isEmpty(type)){
+            query.setType(type);
+        }
+        Sort sort = new Sort(Sort.Direction.DESC, "ctime");
+        Pageable page = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), sort);
+        return capitalFlowSlave.findAll(query, page);
     }
 }

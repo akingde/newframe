@@ -18,6 +18,7 @@ import com.newframe.utils.BankCardUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -456,6 +457,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 获取银行列表
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<UserBankDTO> getBankList(Long uid) {
+        UserBank userBank = userBankService.findOne(uid);
+        return new OperationResult(new UserBankDTO(userBank));
+    }
+
+    /**
      * 添加或者修改银行卡
      *
      * @param bankDTO
@@ -491,6 +504,20 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 获取资金流水记录
+     *
+     * @param uid
+     * @param type
+     * @param condition
+     * @return
+     */
+    @Override
+    public OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, PageSearchDTO condition) {
+        Page<CapitalFlow> flowPage = capitalFlowService.findAll(uid, condition, type);
+        return new OperationResult(new BankFlowDTO(flowPage));
+    }
+
+    /**
      * 添加充值记录
      *
      * @param bankNumber
@@ -521,6 +548,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<Boolean> addDrawRecord(Long uid, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) != 1){
+            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+        }
         UserBank userBank = userBankService.findOne(uid);
         if(userBank == null){
             return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);

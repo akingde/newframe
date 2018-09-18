@@ -262,6 +262,20 @@ public class ApiUserController extends BaseController {
     }
 
     /**
+     * 获取银行卡列表
+     * @param uid
+     * @return
+     */
+    @PostMapping("getBanklist")
+    public JsonResult getBanklist(Long uid){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<UserBankDTO> result = userService.getBankList(uid);
+        return success(result.getEntity());
+    }
+
+    /**
      * 增加或者修改银行卡
      * @param uid
      * @param bankDTO
@@ -269,6 +283,9 @@ public class ApiUserController extends BaseController {
      */
     @PostMapping("saveBankNumber")
     public JsonResult saveBankNumber(Long uid, BankDTO bankDTO){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
         OperationResult<Boolean> result = userService.saveBankNumber(uid, bankDTO);
         if(!result.getEntity()){
             return error(result.getErrorCode());
@@ -277,14 +294,36 @@ public class ApiUserController extends BaseController {
     }
 
     /**
-     * 添加体现记录
+     * 获取资金流水记录
+     * @param uid
+     * @param type
+     * @return
+     */
+    @PostMapping("getAssetFlowRecord")
+    public JsonResult getAssetFlowRecord(Long uid, Integer type, PageSearchDTO condition){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<BankFlowDTO> result = userService.getAssetFlowRecord(uid, type, condition);
+        return success(result.getEntity());
+    }
+
+    /**
+     * 添加提现记录
      * @param uid
      * @param amount
      * @return
      */
     @PostMapping("addDrawRecord")
     public JsonResult addDrawRecord(Long uid, BigDecimal amount){
-        return null;
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = userService.addDrawRecord(uid, amount);
+        if (!result.getEntity()) {
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
     }
     /**
      * @param roleId 角色id

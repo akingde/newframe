@@ -169,8 +169,8 @@ public class CapitalFlow {
         PlatformBank platformBank = new PlatformBank();
         this.uid = userBank.getUid();
         this.merchantName = role.getName();
-        this.userName = role.getLegalEntity();
-        this.userPhoneNumber = role.getMerchantPhone();
+        this.userName = userBank.getBankUserName();
+        this.userPhoneNumber = userBank.getBankPhoneNumber();
         this.userBankNumber = userBank.getBankNumber();
         this.userBankName = userBank.getBankName();
         this.userBankDetailedName = userBank.getBankDetailedName();
