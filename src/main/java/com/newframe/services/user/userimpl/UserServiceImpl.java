@@ -548,6 +548,11 @@ public class UserServiceImpl implements UserService {
         CapitalFlow condition = new CapitalFlow();
         condition.setBankMoneyFlowId(bankMoneyFlowId);
         CapitalFlow flow = capitalFlowService.findOne(condition);
+        if(!flow.getOrderStatus().equals(AssetStatusEnum.BANK_PROCESSING.getOrderStatus())){
+            return new OperationResult(false);
+        }
+        flow.setOrderStatus(AssetStatusEnum.BANK_SUCC.getOrderStatus());
+        capitalFlowService.update(flow);
         Long uid = flow.getUid();
         BigDecimal amount = flow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
@@ -566,6 +571,11 @@ public class UserServiceImpl implements UserService {
         CapitalFlow condition = new CapitalFlow();
         condition.setBankMoneyFlowId(bankMoneyFlowId);
         CapitalFlow flow = capitalFlowService.findOne(condition);
+        if(!flow.getOrderStatus().equals(AssetStatusEnum.BANK_PROCESSING.getOrderStatus())){
+            return new OperationResult(false);
+        }
+        flow.setOrderStatus(AssetStatusEnum.BANK_ERROR.getOrderStatus());
+        capitalFlowService.update(flow);
         Long uid = flow.getUid();
         BigDecimal amount = flow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);

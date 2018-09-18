@@ -21,4 +21,16 @@ public enum AssetTypeEnum {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    public static boolean isEmpty(Integer type){
+        if(type == null){
+            return true;
+        }
+        for (AssetTypeEnum assetTypeEnum : AssetTypeEnum.values()) {
+            if(assetTypeEnum.getType().equals(type)){
+                return false;
+            }
+        }
+        return true;
+    }
 }

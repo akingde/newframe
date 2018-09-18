@@ -41,4 +41,7 @@ public class CapitalFlowQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "ctime", where = lessThanOrEqualTo)
     private Integer endTime;
+
+    @QBindAttrField(fieldName = "type", where = equal)
+    private Integer type;
 }
