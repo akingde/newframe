@@ -62,9 +62,10 @@ public interface OrderService {
      * 租赁商取消订单
      *
      * @param orderId 订单id
+     * @param uid
      * @return 处理结果
      */
-    JsonResult cancelOrder(List<Long> orderId);
+    JsonResult cancelOrder(List<Long> orderId, Long uid);
 
     /**
      * 租赁商查看订单详情
@@ -270,7 +271,7 @@ public interface OrderService {
      * @param paymentNumber
      * @return 返回结果
      */
-    OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber);
+    OperationResult getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber);
 
     /**
      * 资金方线上放款

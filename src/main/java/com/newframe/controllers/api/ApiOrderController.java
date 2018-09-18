@@ -13,7 +13,6 @@ import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -109,8 +108,7 @@ public class ApiOrderController extends BaseController {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        // todo 取消订单应该有uid条件
-        return orderService.cancelOrder(orderId);
+        return orderService.cancelOrder(orderId, uid);
     }
 
     /**
@@ -167,11 +165,10 @@ public class ApiOrderController extends BaseController {
      * 10、资金方-拒绝融资订单
      * 资金方审核订单不通过
      * @param orderId 订单id
-     * @param reason 不通过原因
      * @return 操作结果
      */
     @RequestMapping("funder/refuse")
-    public JsonResult funderRefuse(Long orderId,String reason,Long uid) throws AccountOperationException {
+    public JsonResult funderRefuse(Long orderId,Long uid) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
@@ -448,7 +445,7 @@ public class ApiOrderController extends BaseController {
     @Anonymous(true)
     @RequestMapping("renter/getProductPrice")
     public JsonResult getProductPrice(ProductInfoDTO productInfoDTO,Integer paymentNumber){
-        OperationResult<LessorProductPriceDTO> result = orderService.getProductPrice(productInfoDTO, paymentNumber);
+        OperationResult result = orderService.getProductPrice(productInfoDTO, paymentNumber);
         if(result.getSucc()){
             return success(result.getEntity());
         }
@@ -524,15 +521,5 @@ public class ApiOrderController extends BaseController {
         return error(result.getErrorCode());
     }
 
-    /**
-     * 25、查询还机地址
-     * 查询还机地址
-     * @param orderId 订单id
-     * @return 查询结果
-     */
-    @Anonymous(true)
-    @RequestMapping("return/address")
-    public JsonResult returnAddress(Long orderId){
-        return null;
-    }
+
 }

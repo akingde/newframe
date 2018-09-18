@@ -389,7 +389,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public JsonResult cancelOrder(List<Long> orders) {
+    public JsonResult cancelOrder(List<Long> orders, Long uid) {
         // 参数校验
         if (orders == null || orders.size() == 0) {
             return new JsonResult(SystemCode.BAD_REQUEST);
@@ -767,14 +767,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OperationResult<DeliverDTO> supplierGetLogistics(Long orderId) {
         if (orderId == null) {
-            return new OperationResult(OrderResultEnum.PARAM_ERROR);
+            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
         }
         Optional<OrderSupplier> orderSupplierOptional = orderSupplierSlave.findById(orderId);
         if (orderSupplierOptional.isPresent()) {
             OrderSupplier orderSupplier = orderSupplierOptional.get();
             String expressNumber = orderSupplier.getExpressNumber();
             if (StringUtils.isEmpty(expressNumber)) {
-                return new OperationResult(OrderResultEnum.NO_EXPRESS_INFO);
+                return new OperationResult<>(OrderResultEnum.NO_EXPRESS_INFO);
             }
             String expressCode = orderSupplier.getExpressCode();
             OperationResult<ExpressInfo> result = commonService.getExpressMessage(expressCode, expressNumber);
@@ -788,11 +788,11 @@ public class OrderServiceImpl implements OrderService {
                 deliverDTO.setExpressNumber(orderSupplier.getExpressNumber());
                 deliverDTO.setExpressTime(orderSupplier.getExpressTime());
                 deliverDTO.setSerialNumber(orderSupplier.getSerialNumber());
-                return new OperationResult(SystemCode.SUCCESS, deliverDTO);
+                return new OperationResult<>(SystemCode.SUCCESS, deliverDTO);
 
             }
         }
-        return new OperationResult(OrderResultEnum.NO_EXPRESS_INFO);
+        return new OperationResult<>(OrderResultEnum.NO_EXPRESS_INFO);
     }
 
     @Override
@@ -1141,7 +1141,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OperationResult<LessorProductPriceDTO> getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber) {
+    public OperationResult getProductPrice(ProductInfoDTO productInfoDTO, Integer paymentNumber) {
         LessorProductPriceQuery query = new LessorProductPriceQuery();
         BeanUtils.copyProperties(productInfoDTO, query);
         query.setPaymentNumber(paymentNumber);
@@ -1154,7 +1154,7 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(lessorProductPrice, dto);
             dtos.add(dto);
         }
-        return new OperationResult(OrderResultEnum.SUCCESS, dtos);
+        return new OperationResult<>(OrderResultEnum.SUCCESS, dtos);
     }
 
     @Override
