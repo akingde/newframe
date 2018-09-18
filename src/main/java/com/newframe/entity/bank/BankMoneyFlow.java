@@ -49,6 +49,10 @@ public class BankMoneyFlow implements Serializable {
      */
     private String bankCard;
     /**
+     * 持卡人
+     */
+    private String bankCardHolder;
+    /**
      * 银行名称
      */
     private String bankName;
@@ -79,7 +83,7 @@ public class BankMoneyFlow implements Serializable {
     /**
      * 审核人id
      */
-    private String auditor;
+    private String auditorId;
     /**
      * 审核人名字
      */

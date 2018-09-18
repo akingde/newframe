@@ -15,13 +15,13 @@ public interface BankMoneyFlowOutService {
 
 
     /**
-     * 提款审核通过
+     * 提现
      *
-     * @param bankMoneyFlowId
+     * @param bankMoneyFlow
      * @return
      */
     @Transactional(rollbackFor = Exception.class, timeout = 20)
-    BankMoneyFlow agreeAuditBankMoneyFlowOut(Long bankMoneyFlowId);
+    BankMoneyFlow withdraw(BankMoneyFlow bankMoneyFlow);
 
     /**
      * 出账成功
