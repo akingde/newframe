@@ -8,6 +8,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
+import com.newframe.entity.account.Account;
 import com.newframe.entity.order.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
@@ -44,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1021,17 +1023,22 @@ public class OrderServiceImpl implements OrderService {
         if (orderId == null) {
             return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
         }
-        Optional<OrderRenterAccount> optional = orderRenterAccountSlave.findById(uid);
-        if (optional.isPresent()) {
-            OrderRenterAccount orderRenterAccount = optional.get();
+        Account renterAccount = accountOperation.getAccount(uid);
+        Optional<OrderRenter> optionalOrderRenter = orderRenterSlave.findById(orderId);
+        if (renterAccount != null && optionalOrderRenter.isPresent()) {
+            OrderRenter orderRenter = optionalOrderRenter.get();
             // 获取账户余额
-            BigDecimal amount = orderRenterAccount.getUseableAmount();
+            BigDecimal amount = renterAccount.getUseableAmount();
             // 计算融资金额
             BigDecimal financingAmount = getFinancingAmount(orderId);
             if (financingAmount != null) {
                 BigDecimal benefit = new BigDecimal(0.15);
-                BigDecimal deposit = financingAmount.multiply(benefit);
-                if (amount.compareTo(deposit) > 0) {
+                // 要满足可用余额大于（保证金加融资还款首付）
+                BigDecimal deposit = financingAmount.multiply(benefit)
+                        .add(
+                                financingAmount.divide(new BigDecimal(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP)
+                        );
+                if (amount.compareTo(deposit) >= 0) {
                     return new OperationResult<>(OrderResultEnum.FINANCINGABLE, true);
                 }
             }

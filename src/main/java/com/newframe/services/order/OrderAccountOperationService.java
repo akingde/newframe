@@ -1,6 +1,7 @@
 package com.newframe.services.order;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.entity.account.Account;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.order.OrderSupplier;
@@ -40,4 +41,11 @@ public interface OrderAccountOperationService {
      * @return
      */
     OperationResult<Boolean> offlineLoan(OrderRenter orderRenter, OrderSupplier orderSupplier,OrderFunder orderFunder);
+
+    /**
+     * 获取用户账户
+     * @param uid 用户uid
+     * @return 返回结果
+     */
+    Account getAccount(Long uid);
 }

@@ -365,4 +365,17 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         return new OperationResult<>(OrderResultEnum.ACCOUNT_NO_EXIST,false);
     }
 
+    /**
+     * 获取用户账户
+     * @param uid 用户uid
+     * @return 返回结果
+     */
+    @Override
+    public Account getAccount(Long uid){
+        if(uid == null){
+            return null;
+        }
+        return accountService.getAccount(uid);
+    }
+
 }
