@@ -34,9 +34,8 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
     private IdGlobalGenerator idGlobalGenerator;
 
     @Override
-    public Page<CapitalFlow> findAll(Long uid, DrawAssetSearchDTO drawAssetSearchDTO, Integer type) {
+    public Page<CapitalFlow> findAll(DrawAssetSearchDTO drawAssetSearchDTO) {
         CapitalFlowQuery query = new CapitalFlowQuery();
-        query.setUid(uid);
         if(drawAssetSearchDTO.getOrderId() != null) {
             query.setOrderId(drawAssetSearchDTO.getOrderId());
         }
@@ -55,9 +54,7 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         if(drawAssetSearchDTO.getEndTime() != null){
             query.setEndTime(drawAssetSearchDTO.getEndTime());
         }
-        if(!AssetTypeEnum.isEmpty(type)){
-            query.setType(type);
-        }
+        query.setType(AssetTypeEnum.DRAW.getType());
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         Pageable page = PageRequest.of(drawAssetSearchDTO.getCurrentPage() - 1, drawAssetSearchDTO.getPageSize(), sort);
         return capitalFlowSlave.findAll(query, page);
@@ -117,11 +114,14 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
     }
 
     @Override
-    public Page<CapitalFlow> findAll(Long uid, PageSearchDTO condition, Integer type) {
+    public Page<CapitalFlow> findAll(Long uid, PageSearchDTO condition, Integer status, Integer type) {
         CapitalFlowQuery query = new CapitalFlowQuery();
         query.setUid(uid);
         if(!AssetTypeEnum.isEmpty(type)){
             query.setType(type);
+        }
+        if(status != null){
+            query.setOrderStatus(status);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         Pageable page = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), sort);
