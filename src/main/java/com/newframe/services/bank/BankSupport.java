@@ -111,6 +111,7 @@ public class BankSupport {
                 .accnoname(bankMoneyFlow.getBankName())
                 .amount(bankMoneyFlow.getAmount().doubleValue())
                 .pecvopenaccdept(bankMoneyFlow.getSubBankName())
+                .pevvaccname(bankMoneyFlow.getBankCardHolder())
                 .useof("提现")
                 .build();
         String serialNumber = BankRestUtils.bankDealTransfer(transferUrl, transferBean);
@@ -131,11 +132,12 @@ public class BankSupport {
                 .serialnumber(bankMoneyFlow.getSerialNumber())
                 .bankCard(bankMoneyFlow.getBankCard())
                 .build();
-        if (BankDealResultBean.okSet.contains(BankRestUtils.bankDealQuery(queryUrl, queryBean))) {
+        String code = BankRestUtils.bankDealQuery(queryUrl, queryBean);
+        if (BankDealResultBean.okSet.contains(code)) {
             logger.info("银行出账成功:{}", queryBean);
             return true;
         }
-        if (BankDealResultBean.noSet.contains(BankRestUtils.bankDealQuery(queryUrl, queryBean))) {
+        if (BankDealResultBean.noSet.contains(code)) {
             logger.info("银行出账失败:{}", queryBean);
             return false;
         }

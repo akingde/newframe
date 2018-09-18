@@ -32,13 +32,17 @@ public class BankDealResultBean {
     @Setter
     @ToString
     public class Data {
-        private String code;
+//        private String code;
+        private String dealresult;
         private String serialnumber;
     }
 
-    public String getCode() {
-        return data.getCode();
+    public String getDealresult() {
+        return data.getDealresult();
     }
+//    public String getCode() {
+//        return data.getCode();
+//    }
 
     public String getSerialnumber() {
         return data.getSerialnumber();

@@ -78,7 +78,7 @@ public class BankRestUtils {
         logger.debug("请求:{},参数:{}", url, bankDealQueryBean);
         ResponseEntity<BankDealResultBean> responseEntity = RestUtils.getRestTemplate().postForEntity(url, bankDealQueryBean, BankDealResultBean.class);
         if (HttpStatus.OK == responseEntity.getStatusCode()) {
-            String code = responseEntity.getBody().getCode();
+            String code = responseEntity.getBody().getDealresult();
             return code;
         }
         logger.error("请求银行接口失败statusCode={}", responseEntity.getStatusCode());
