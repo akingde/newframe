@@ -46,7 +46,7 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void passDrawAssetCheck(){
-        afterService.passDrawAssetCheck(-1L, 1537167000850149L);
+        afterService.passDrawAssetCheck(-1L, 1537167000850150L);
     }
 
     @Test
@@ -56,6 +56,6 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void blockTest(){
-        blockChain.funderCheckPass(123L, "test");
+        blockChain.funderCheckPass(1234L, "test");
     }
 }

@@ -3,6 +3,7 @@ package com.newframe.services.http.impl;
 import com.mzlion.easyokhttp.HttpClient;
 import com.mzlion.easyokhttp.request.PostRequest;
 import com.newframe.blockchain.entity.ResponseBean;
+import com.newframe.blockchain.entity.TransactionResultBean;
 import com.newframe.resp.block.BlockAddress;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
@@ -237,6 +238,22 @@ public class OkHttpServiceImpl implements OkHttpService {
                 .json(json)
                 .charset("utf-8")
                 .asBean(new ResponseBean<String>().getClass());
-        return null;
+        return result;
+    }
+
+    /**
+     * 发送区块链 获取结果
+     *
+     * @param blockUrl
+     * @param json
+     * @return
+     */
+    @Override
+    public ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json) {
+        ResponseBean<TransactionResultBean> result = HttpClient.textBody(blockUrl)
+                .json(json)
+                .charset("utf-8")
+                .asBean(new ResponseBean<TransactionResultBean>().getClass());
+        return result;
     }
 }

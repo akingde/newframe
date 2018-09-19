@@ -1,6 +1,7 @@
 package com.newframe.services.user.userimpl;
 
 import com.google.common.collect.Lists;
+import com.newframe.blockchain.util.KeyUtil;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
@@ -61,6 +62,8 @@ public class UserServiceImpl implements UserService {
     private CapitalFlowService capitalFlowService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private UserContractService userContractService;
 
     /**
      * @param mobile
@@ -92,7 +95,7 @@ public class UserServiceImpl implements UserService {
      * @Date 2018/8/15 16:45
      **/
     @Override
-    public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode) {
+    public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode){
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
@@ -110,6 +113,7 @@ public class UserServiceImpl implements UserService {
         userPwd.setUid(baseInfo.getUid());
         userPwdService.insert(userPwd);
         accountManageService.saveAccount(userBaseInfo.getUid());
+        userContractService.insert(baseInfo.getUid());
 //        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
 //        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
 //        String token = isWeb ? webToken : appToken;
@@ -466,7 +470,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<UserBankDTO> getBankList(Long uid) {
         UserBank userBank = userBankService.findOne(uid);
-        return new OperationResult(new UserBankDTO(userBank));
+        return new OperationResult(userBank == null ? null : new UserBankDTO(userBank));
     }
 
     /**

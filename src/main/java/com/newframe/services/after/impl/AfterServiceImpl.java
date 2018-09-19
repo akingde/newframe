@@ -6,6 +6,7 @@ import com.newframe.dto.after.request.DrawAssetSearchDTO;
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.after.response.*;
+import com.newframe.entity.bank.BankMoneyFlow;
 import com.newframe.entity.user.CapitalFlow;
 import com.newframe.entity.user.UserFunder;
 import com.newframe.entity.user.UserRoleApply;
@@ -15,6 +16,7 @@ import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.after.AfterService;
+import com.newframe.services.bank.BankMoneyFlowOutService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.userbase.CapitalFlowService;
 import com.newframe.services.userbase.UserFunderService;
@@ -47,6 +49,8 @@ public class AfterServiceImpl implements AfterService {
     private CapitalFlowService capitalFlowService;
     @Autowired
     private AccountManageService accountManageService;
+    @Autowired
+    private BankMoneyFlowOutService bankMoneyFlowOutService;
 
     /**
      * 后台登陆
@@ -237,10 +241,19 @@ public class AfterServiceImpl implements AfterService {
         if (!capitalFlow.getOrderStatus().equals(AssetStatusEnum.CHECKING.getOrderStatus())){
             return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
         }
+
+        BankMoneyFlow bankMoneyFlow = new BankMoneyFlow();
+        bankMoneyFlow.setAmount(capitalFlow.getAmount());
+        bankMoneyFlow.setBankCard(capitalFlow.getUserBankNumber());
+        bankMoneyFlow.setBankCardHolder(capitalFlow.getUserName());
+        bankMoneyFlow.setBankName(capitalFlow.getUserBankName());
+        bankMoneyFlow.setSubBankName(capitalFlow.getUserBankDetailedName());
+        BankMoneyFlow withdraw = bankMoneyFlowOutService.withdraw(bankMoneyFlow);
+
         capitalFlow.setOrderStatus(AssetStatusEnum.BANK_PROCESSING.getOrderStatus());
         capitalFlow.setCheckUid(new UserDTO().getUid());
         capitalFlow.setCheckName(new UserDTO().getUserName());
-        capitalFlow.setBankMoneyFlowId(System.currentTimeMillis());
+        capitalFlow.setBankMoneyFlowId(withdraw.getId());
         capitalFlowService.update(capitalFlow);
         return new OperationResult(true);
     }

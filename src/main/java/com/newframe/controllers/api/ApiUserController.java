@@ -280,8 +280,8 @@ public class ApiUserController extends BaseController {
      * @param uid
      * @return
      */
-    @PostMapping("getBanklist")
-    public JsonResult getBanklist(Long uid){
+    @PostMapping("getBankList")
+    public JsonResult getBankList(Long uid){
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }

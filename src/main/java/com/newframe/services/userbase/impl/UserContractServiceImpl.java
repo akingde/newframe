@@ -1,5 +1,6 @@
 package com.newframe.services.userbase.impl;
 
+import com.newframe.blockchain.util.KeyUtil;
 import com.newframe.entity.user.UserContract;
 import com.newframe.repositories.dataMaster.user.UserContractMaster;
 import com.newframe.repositories.dataQuery.user.UserContractQuery;
@@ -40,14 +41,20 @@ public class UserContractServiceImpl implements UserContractService {
     /**
      * 插入用户公私钥信息
      *
-     * @param userContract
+     * @param uid
      * @return
      */
     @Override
-    public UserContract insert(UserContract userContract) {
-        if(userContract == null){
+    public UserContract insert(Long uid) {
+
+        if(uid == null){
             return null;
         }
+        UserContract userContract = new UserContract();
+        String privateKey = KeyUtil.privateKey();
+        String publicKey = KeyUtil.publicKey(privateKey);
+        userContract.setPrivatekey(privateKey);
+        userContract.setPublickey(publicKey);
         return userContractMaster.save(userContract);
     }
 

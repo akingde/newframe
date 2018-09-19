@@ -96,9 +96,13 @@ public final class EzTransfer {
      */
     AT_ADD_WHITELISTS(17),
     /**
-     * <code>AT_ADD_BLACKLISTS = 18;</code>
+     * <code>AT_RM_WHITELISTS = 18;</code>
      */
-    AT_ADD_BLACKLISTS(18),
+    AT_RM_WHITELISTS(18),
+    /**
+     * <code>AT_ADD_BLACKLISTS = 19;</code>
+     */
+    AT_ADD_BLACKLISTS(19),
     UNRECOGNIZED(-1),
     ;
 
@@ -179,9 +183,13 @@ public final class EzTransfer {
      */
     public static final int AT_ADD_WHITELISTS_VALUE = 17;
     /**
-     * <code>AT_ADD_BLACKLISTS = 18;</code>
+     * <code>AT_RM_WHITELISTS = 18;</code>
      */
-    public static final int AT_ADD_BLACKLISTS_VALUE = 18;
+    public static final int AT_RM_WHITELISTS_VALUE = 18;
+    /**
+     * <code>AT_ADD_BLACKLISTS = 19;</code>
+     */
+    public static final int AT_ADD_BLACKLISTS_VALUE = 19;
 
 
     public final int getNumber() {
@@ -220,7 +228,8 @@ public final class EzTransfer {
         case 15: return AT_CONFIRM_FOR_RENTAL;
         case 16: return AT_ADD_DISCREDIT_RECORD;
         case 17: return AT_ADD_WHITELISTS;
-        case 18: return AT_ADD_BLACKLISTS;
+        case 18: return AT_RM_WHITELISTS;
+        case 19: return AT_ADD_BLACKLISTS;
         default: return null;
       }
     }
@@ -1701,10 +1710,27 @@ public final class EzTransfer {
 
     /**
      * <pre>
+     *删除白名单
+     * </pre>
+     *
+     * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+     */
+    types.EzTransfer.EzRmWhitelists getRmWhitelists();
+    /**
+     * <pre>
+     *删除白名单
+     * </pre>
+     *
+     * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+     */
+    types.EzTransfer.EzRmWhitelistsOrBuilder getRmWhitelistsOrBuilder();
+
+    /**
+     * <pre>
      *添加黑名单
      * </pre>
      *
-     * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+     * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
      */
     types.EzTransfer.EzAddBlacklists getAddBlacklists();
     /**
@@ -1712,7 +1738,7 @@ public final class EzTransfer {
      *添加黑名单
      * </pre>
      *
-     * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+     * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
      */
     types.EzTransfer.EzAddBlacklistsOrBuilder getAddBlacklistsOrBuilder();
 
@@ -2025,8 +2051,22 @@ public final class EzTransfer {
               break;
             }
             case 146: {
-              types.EzTransfer.EzAddBlacklists.Builder subBuilder = null;
+              types.EzTransfer.EzRmWhitelists.Builder subBuilder = null;
               if (valueCase_ == 18) {
+                subBuilder = ((types.EzTransfer.EzRmWhitelists) value_).toBuilder();
+              }
+              value_ =
+                      input.readMessage(types.EzTransfer.EzRmWhitelists.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((types.EzTransfer.EzRmWhitelists) value_);
+                value_ = subBuilder.buildPartial();
+              }
+              valueCase_ = 18;
+              break;
+            }
+            case 154: {
+              types.EzTransfer.EzAddBlacklists.Builder subBuilder = null;
+              if (valueCase_ == 19) {
                 subBuilder = ((types.EzTransfer.EzAddBlacklists) value_).toBuilder();
               }
               value_ =
@@ -2035,7 +2075,7 @@ public final class EzTransfer {
                 subBuilder.mergeFrom((types.EzTransfer.EzAddBlacklists) value_);
                 value_ = subBuilder.buildPartial();
               }
-              valueCase_ = 18;
+              valueCase_ = 19;
               break;
             }
             case 240: {
@@ -2094,7 +2134,8 @@ public final class EzTransfer {
       CONFIRMFORRENTAL(15),
       ADDDISCREDITRECORD(16),
       ADDWHITELISTS(17),
-      ADDBLACKLISTS(18),
+      RMWHITELISTS(18),
+      ADDBLACKLISTS(19),
       VALUE_NOT_SET(0);
       private final int value;
       private ValueCase(int value) {
@@ -2127,7 +2168,8 @@ public final class EzTransfer {
           case 15: return CONFIRMFORRENTAL;
           case 16: return ADDDISCREDITRECORD;
           case 17: return ADDWHITELISTS;
-          case 18: return ADDBLACKLISTS;
+          case 18: return RMWHITELISTS;
+          case 19: return ADDBLACKLISTS;
           case 0: return VALUE_NOT_SET;
           default: return null;
         }
@@ -2619,16 +2661,44 @@ public final class EzTransfer {
       return types.EzTransfer.EzAddWhitelists.getDefaultInstance();
     }
 
-    public static final int ADDBLACKLISTS_FIELD_NUMBER = 18;
+    public static final int RMWHITELISTS_FIELD_NUMBER = 18;
+    /**
+     * <pre>
+     *删除白名单
+     * </pre>
+     *
+     * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+     */
+    public types.EzTransfer.EzRmWhitelists getRmWhitelists() {
+      if (valueCase_ == 18) {
+        return (types.EzTransfer.EzRmWhitelists) value_;
+      }
+      return types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+    }
+    /**
+     * <pre>
+     *删除白名单
+     * </pre>
+     *
+     * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+     */
+    public types.EzTransfer.EzRmWhitelistsOrBuilder getRmWhitelistsOrBuilder() {
+      if (valueCase_ == 18) {
+        return (types.EzTransfer.EzRmWhitelists) value_;
+      }
+      return types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+    }
+
+    public static final int ADDBLACKLISTS_FIELD_NUMBER = 19;
     /**
      * <pre>
      *添加黑名单
      * </pre>
      *
-     * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+     * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
      */
     public types.EzTransfer.EzAddBlacklists getAddBlacklists() {
-      if (valueCase_ == 18) {
+      if (valueCase_ == 19) {
         return (types.EzTransfer.EzAddBlacklists) value_;
       }
       return types.EzTransfer.EzAddBlacklists.getDefaultInstance();
@@ -2638,10 +2708,10 @@ public final class EzTransfer {
      *添加黑名单
      * </pre>
      *
-     * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+     * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
      */
     public types.EzTransfer.EzAddBlacklistsOrBuilder getAddBlacklistsOrBuilder() {
-      if (valueCase_ == 18) {
+      if (valueCase_ == 19) {
         return (types.EzTransfer.EzAddBlacklists) value_;
       }
       return types.EzTransfer.EzAddBlacklists.getDefaultInstance();
@@ -2769,7 +2839,10 @@ public final class EzTransfer {
         output.writeMessage(17, (types.EzTransfer.EzAddWhitelists) value_);
       }
       if (valueCase_ == 18) {
-        output.writeMessage(18, (types.EzTransfer.EzAddBlacklists) value_);
+        output.writeMessage(18, (types.EzTransfer.EzRmWhitelists) value_);
+      }
+      if (valueCase_ == 19) {
+        output.writeMessage(19, (types.EzTransfer.EzAddBlacklists) value_);
       }
       if (ty_ != types.EzTransfer.EzActionType.AT_UNKNOWN.getNumber()) {
         output.writeEnum(30, ty_);
@@ -2854,7 +2927,11 @@ public final class EzTransfer {
       }
       if (valueCase_ == 18) {
         size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(18, (types.EzTransfer.EzAddBlacklists) value_);
+                .computeMessageSize(18, (types.EzTransfer.EzRmWhitelists) value_);
+      }
+      if (valueCase_ == 19) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(19, (types.EzTransfer.EzAddBlacklists) value_);
       }
       if (ty_ != types.EzTransfer.EzActionType.AT_UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
@@ -2955,6 +3032,10 @@ public final class EzTransfer {
                   .equals(other.getAddWhitelists());
           break;
         case 18:
+          result = result && getRmWhitelists()
+                  .equals(other.getRmWhitelists());
+          break;
+        case 19:
           result = result && getAddBlacklists()
                   .equals(other.getAddBlacklists());
           break;
@@ -3045,6 +3126,10 @@ public final class EzTransfer {
           hash = (53 * hash) + getAddWhitelists().hashCode();
           break;
         case 18:
+          hash = (37 * hash) + RMWHITELISTS_FIELD_NUMBER;
+          hash = (53 * hash) + getRmWhitelists().hashCode();
+          break;
+        case 19:
           hash = (37 * hash) + ADDBLACKLISTS_FIELD_NUMBER;
           hash = (53 * hash) + getAddBlacklists().hashCode();
           break;
@@ -3317,6 +3402,13 @@ public final class EzTransfer {
           }
         }
         if (valueCase_ == 18) {
+          if (rmWhitelistsBuilder_ == null) {
+            result.value_ = value_;
+          } else {
+            result.value_ = rmWhitelistsBuilder_.build();
+          }
+        }
+        if (valueCase_ == 19) {
           if (addBlacklistsBuilder_ == null) {
             result.value_ = value_;
           } else {
@@ -3441,6 +3533,10 @@ public final class EzTransfer {
           }
           case ADDWHITELISTS: {
             mergeAddWhitelists(other.getAddWhitelists());
+            break;
+          }
+          case RMWHITELISTS: {
+            mergeRmWhitelists(other.getRmWhitelists());
             break;
           }
           case ADDBLACKLISTS: {
@@ -6247,22 +6343,184 @@ public final class EzTransfer {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
+              types.EzTransfer.EzRmWhitelists, types.EzTransfer.EzRmWhitelists.Builder, types.EzTransfer.EzRmWhitelistsOrBuilder> rmWhitelistsBuilder_;
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public types.EzTransfer.EzRmWhitelists getRmWhitelists() {
+        if (rmWhitelistsBuilder_ == null) {
+          if (valueCase_ == 18) {
+            return (types.EzTransfer.EzRmWhitelists) value_;
+          }
+          return types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+        } else {
+          if (valueCase_ == 18) {
+            return rmWhitelistsBuilder_.getMessage();
+          }
+          return types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+        }
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public Builder setRmWhitelists(types.EzTransfer.EzRmWhitelists value) {
+        if (rmWhitelistsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          value_ = value;
+          onChanged();
+        } else {
+          rmWhitelistsBuilder_.setMessage(value);
+        }
+        valueCase_ = 18;
+        return this;
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public Builder setRmWhitelists(
+              types.EzTransfer.EzRmWhitelists.Builder builderForValue) {
+        if (rmWhitelistsBuilder_ == null) {
+          value_ = builderForValue.build();
+          onChanged();
+        } else {
+          rmWhitelistsBuilder_.setMessage(builderForValue.build());
+        }
+        valueCase_ = 18;
+        return this;
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public Builder mergeRmWhitelists(types.EzTransfer.EzRmWhitelists value) {
+        if (rmWhitelistsBuilder_ == null) {
+          if (valueCase_ == 18 &&
+                  value_ != types.EzTransfer.EzRmWhitelists.getDefaultInstance()) {
+            value_ = types.EzTransfer.EzRmWhitelists.newBuilder((types.EzTransfer.EzRmWhitelists) value_)
+                    .mergeFrom(value).buildPartial();
+          } else {
+            value_ = value;
+          }
+          onChanged();
+        } else {
+          if (valueCase_ == 18) {
+            rmWhitelistsBuilder_.mergeFrom(value);
+          }
+          rmWhitelistsBuilder_.setMessage(value);
+        }
+        valueCase_ = 18;
+        return this;
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public Builder clearRmWhitelists() {
+        if (rmWhitelistsBuilder_ == null) {
+          if (valueCase_ == 18) {
+            valueCase_ = 0;
+            value_ = null;
+            onChanged();
+          }
+        } else {
+          if (valueCase_ == 18) {
+            valueCase_ = 0;
+            value_ = null;
+          }
+          rmWhitelistsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public types.EzTransfer.EzRmWhitelists.Builder getRmWhitelistsBuilder() {
+        return getRmWhitelistsFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      public types.EzTransfer.EzRmWhitelistsOrBuilder getRmWhitelistsOrBuilder() {
+        if ((valueCase_ == 18) && (rmWhitelistsBuilder_ != null)) {
+          return rmWhitelistsBuilder_.getMessageOrBuilder();
+        } else {
+          if (valueCase_ == 18) {
+            return (types.EzTransfer.EzRmWhitelists) value_;
+          }
+          return types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+        }
+      }
+      /**
+       * <pre>
+       *删除白名单
+       * </pre>
+       *
+       * <code>optional .types.EzRmWhitelists rmWhitelists = 18;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+              types.EzTransfer.EzRmWhitelists, types.EzTransfer.EzRmWhitelists.Builder, types.EzTransfer.EzRmWhitelistsOrBuilder>
+      getRmWhitelistsFieldBuilder() {
+        if (rmWhitelistsBuilder_ == null) {
+          if (!(valueCase_ == 18)) {
+            value_ = types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+          }
+          rmWhitelistsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                  types.EzTransfer.EzRmWhitelists, types.EzTransfer.EzRmWhitelists.Builder, types.EzTransfer.EzRmWhitelistsOrBuilder>(
+                  (types.EzTransfer.EzRmWhitelists) value_,
+                  getParentForChildren(),
+                  isClean());
+          value_ = null;
+        }
+        valueCase_ = 18;
+        onChanged();;
+        return rmWhitelistsBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
               types.EzTransfer.EzAddBlacklists, types.EzTransfer.EzAddBlacklists.Builder, types.EzTransfer.EzAddBlacklistsOrBuilder> addBlacklistsBuilder_;
       /**
        * <pre>
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public types.EzTransfer.EzAddBlacklists getAddBlacklists() {
         if (addBlacklistsBuilder_ == null) {
-          if (valueCase_ == 18) {
+          if (valueCase_ == 19) {
             return (types.EzTransfer.EzAddBlacklists) value_;
           }
           return types.EzTransfer.EzAddBlacklists.getDefaultInstance();
         } else {
-          if (valueCase_ == 18) {
+          if (valueCase_ == 19) {
             return addBlacklistsBuilder_.getMessage();
           }
           return types.EzTransfer.EzAddBlacklists.getDefaultInstance();
@@ -6273,7 +6531,7 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public Builder setAddBlacklists(types.EzTransfer.EzAddBlacklists value) {
         if (addBlacklistsBuilder_ == null) {
@@ -6285,7 +6543,7 @@ public final class EzTransfer {
         } else {
           addBlacklistsBuilder_.setMessage(value);
         }
-        valueCase_ = 18;
+        valueCase_ = 19;
         return this;
       }
       /**
@@ -6293,7 +6551,7 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public Builder setAddBlacklists(
               types.EzTransfer.EzAddBlacklists.Builder builderForValue) {
@@ -6303,7 +6561,7 @@ public final class EzTransfer {
         } else {
           addBlacklistsBuilder_.setMessage(builderForValue.build());
         }
-        valueCase_ = 18;
+        valueCase_ = 19;
         return this;
       }
       /**
@@ -6311,11 +6569,11 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public Builder mergeAddBlacklists(types.EzTransfer.EzAddBlacklists value) {
         if (addBlacklistsBuilder_ == null) {
-          if (valueCase_ == 18 &&
+          if (valueCase_ == 19 &&
                   value_ != types.EzTransfer.EzAddBlacklists.getDefaultInstance()) {
             value_ = types.EzTransfer.EzAddBlacklists.newBuilder((types.EzTransfer.EzAddBlacklists) value_)
                     .mergeFrom(value).buildPartial();
@@ -6324,12 +6582,12 @@ public final class EzTransfer {
           }
           onChanged();
         } else {
-          if (valueCase_ == 18) {
+          if (valueCase_ == 19) {
             addBlacklistsBuilder_.mergeFrom(value);
           }
           addBlacklistsBuilder_.setMessage(value);
         }
-        valueCase_ = 18;
+        valueCase_ = 19;
         return this;
       }
       /**
@@ -6337,17 +6595,17 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public Builder clearAddBlacklists() {
         if (addBlacklistsBuilder_ == null) {
-          if (valueCase_ == 18) {
+          if (valueCase_ == 19) {
             valueCase_ = 0;
             value_ = null;
             onChanged();
           }
         } else {
-          if (valueCase_ == 18) {
+          if (valueCase_ == 19) {
             valueCase_ = 0;
             value_ = null;
           }
@@ -6360,7 +6618,7 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public types.EzTransfer.EzAddBlacklists.Builder getAddBlacklistsBuilder() {
         return getAddBlacklistsFieldBuilder().getBuilder();
@@ -6370,13 +6628,13 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       public types.EzTransfer.EzAddBlacklistsOrBuilder getAddBlacklistsOrBuilder() {
-        if ((valueCase_ == 18) && (addBlacklistsBuilder_ != null)) {
+        if ((valueCase_ == 19) && (addBlacklistsBuilder_ != null)) {
           return addBlacklistsBuilder_.getMessageOrBuilder();
         } else {
-          if (valueCase_ == 18) {
+          if (valueCase_ == 19) {
             return (types.EzTransfer.EzAddBlacklists) value_;
           }
           return types.EzTransfer.EzAddBlacklists.getDefaultInstance();
@@ -6387,13 +6645,13 @@ public final class EzTransfer {
        *添加黑名单
        * </pre>
        *
-       * <code>optional .types.EzAddBlacklists addBlacklists = 18;</code>
+       * <code>optional .types.EzAddBlacklists addBlacklists = 19;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
               types.EzTransfer.EzAddBlacklists, types.EzTransfer.EzAddBlacklists.Builder, types.EzTransfer.EzAddBlacklistsOrBuilder>
       getAddBlacklistsFieldBuilder() {
         if (addBlacklistsBuilder_ == null) {
-          if (!(valueCase_ == 18)) {
+          if (!(valueCase_ == 19)) {
             value_ = types.EzTransfer.EzAddBlacklists.getDefaultInstance();
           }
           addBlacklistsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
@@ -6403,7 +6661,7 @@ public final class EzTransfer {
                   isClean());
           value_ = null;
         }
-        valueCase_ = 18;
+        valueCase_ = 19;
         onChanged();;
         return addBlacklistsBuilder_;
       }
@@ -6603,12 +6861,30 @@ public final class EzTransfer {
      *    int64 businessLicenseNum = 2;
      * </pre>
      *
+     * <code>optional string pubKey = 2;</code>
+     */
+    java.lang.String getPubKey();
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getPubKeyBytes();
+
+    /**
+     * <pre>
+     *商家名
+     * </pre>
+     *
      * <code>optional string merchantName = 3;</code>
      */
     java.lang.String getMerchantName();
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -6633,6 +6909,7 @@ public final class EzTransfer {
     }
     private EzFunderApply() {
       uid_ = 0L;
+      pubKey_ = "";
       merchantName_ = "";
     }
 
@@ -6664,6 +6941,12 @@ public final class EzTransfer {
             case 8: {
 
               uid_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pubKey_ = s;
               break;
             }
             case 26: {
@@ -6704,11 +6987,53 @@ public final class EzTransfer {
       return uid_;
     }
 
+    public static final int PUBKEY_FIELD_NUMBER = 2;
+    private volatile java.lang.Object pubKey_;
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public java.lang.String getPubKey() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pubKey_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPubKeyBytes() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pubKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int MERCHANTNAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object merchantName_;
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -6727,7 +7052,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -6761,6 +7086,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         output.writeInt64(1, uid_);
       }
+      if (!getPubKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, pubKey_);
+      }
       if (!getMerchantNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, merchantName_);
       }
@@ -6774,6 +7102,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(1, uid_);
+      }
+      if (!getPubKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, pubKey_);
       }
       if (!getMerchantNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, merchantName_);
@@ -6796,6 +7127,8 @@ public final class EzTransfer {
       boolean result = true;
       result = result && (getUid()
               == other.getUid());
+      result = result && getPubKey()
+              .equals(other.getPubKey());
       result = result && getMerchantName()
               .equals(other.getMerchantName());
       return result;
@@ -6811,6 +7144,8 @@ public final class EzTransfer {
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getUid());
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubKey().hashCode();
       hash = (37 * hash) + MERCHANTNAME_FIELD_NUMBER;
       hash = (53 * hash) + getMerchantName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -6937,6 +7272,8 @@ public final class EzTransfer {
         super.clear();
         uid_ = 0L;
 
+        pubKey_ = "";
+
         merchantName_ = "";
 
         return this;
@@ -6962,6 +7299,7 @@ public final class EzTransfer {
       public types.EzTransfer.EzFunderApply buildPartial() {
         types.EzTransfer.EzFunderApply result = new types.EzTransfer.EzFunderApply(this);
         result.uid_ = uid_;
+        result.pubKey_ = pubKey_;
         result.merchantName_ = merchantName_;
         onBuilt();
         return result;
@@ -7006,6 +7344,10 @@ public final class EzTransfer {
         if (other == types.EzTransfer.EzFunderApply.getDefaultInstance()) return this;
         if (other.getUid() != 0L) {
           setUid(other.getUid());
+        }
+        if (!other.getPubKey().isEmpty()) {
+          pubKey_ = other.pubKey_;
+          onChanged();
         }
         if (!other.getMerchantName().isEmpty()) {
           merchantName_ = other.merchantName_;
@@ -7063,10 +7405,99 @@ public final class EzTransfer {
         return this;
       }
 
-      private java.lang.Object merchantName_ = "";
+      private java.lang.Object pubKey_ = "";
       /**
        * <pre>
        *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public java.lang.String getPubKey() {
+        java.lang.Object ref = pubKey_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pubKey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPubKeyBytes() {
+        java.lang.Object ref = pubKey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pubKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKey(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder clearPubKey() {
+
+        pubKey_ = getDefaultInstance().getPubKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKeyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object merchantName_ = "";
+      /**
+       * <pre>
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7085,7 +7516,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7105,7 +7536,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7122,7 +7553,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7135,7 +7566,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7214,12 +7645,30 @@ public final class EzTransfer {
      *    int64 businessLicenseNum = 2;
      * </pre>
      *
+     * <code>optional string pubKey = 2;</code>
+     */
+    java.lang.String getPubKey();
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getPubKeyBytes();
+
+    /**
+     * <pre>
+     *商家名
+     * </pre>
+     *
      * <code>optional string merchantName = 3;</code>
      */
     java.lang.String getMerchantName();
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -7244,6 +7693,7 @@ public final class EzTransfer {
     }
     private EzLessorApply() {
       uid_ = 0L;
+      pubKey_ = "";
       merchantName_ = "";
     }
 
@@ -7275,6 +7725,12 @@ public final class EzTransfer {
             case 8: {
 
               uid_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pubKey_ = s;
               break;
             }
             case 26: {
@@ -7315,11 +7771,53 @@ public final class EzTransfer {
       return uid_;
     }
 
+    public static final int PUBKEY_FIELD_NUMBER = 2;
+    private volatile java.lang.Object pubKey_;
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public java.lang.String getPubKey() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pubKey_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPubKeyBytes() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pubKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int MERCHANTNAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object merchantName_;
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -7338,7 +7836,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -7372,6 +7870,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         output.writeInt64(1, uid_);
       }
+      if (!getPubKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, pubKey_);
+      }
       if (!getMerchantNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, merchantName_);
       }
@@ -7385,6 +7886,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(1, uid_);
+      }
+      if (!getPubKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, pubKey_);
       }
       if (!getMerchantNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, merchantName_);
@@ -7407,6 +7911,8 @@ public final class EzTransfer {
       boolean result = true;
       result = result && (getUid()
               == other.getUid());
+      result = result && getPubKey()
+              .equals(other.getPubKey());
       result = result && getMerchantName()
               .equals(other.getMerchantName());
       return result;
@@ -7422,6 +7928,8 @@ public final class EzTransfer {
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getUid());
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubKey().hashCode();
       hash = (37 * hash) + MERCHANTNAME_FIELD_NUMBER;
       hash = (53 * hash) + getMerchantName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -7548,6 +8056,8 @@ public final class EzTransfer {
         super.clear();
         uid_ = 0L;
 
+        pubKey_ = "";
+
         merchantName_ = "";
 
         return this;
@@ -7573,6 +8083,7 @@ public final class EzTransfer {
       public types.EzTransfer.EzLessorApply buildPartial() {
         types.EzTransfer.EzLessorApply result = new types.EzTransfer.EzLessorApply(this);
         result.uid_ = uid_;
+        result.pubKey_ = pubKey_;
         result.merchantName_ = merchantName_;
         onBuilt();
         return result;
@@ -7617,6 +8128,10 @@ public final class EzTransfer {
         if (other == types.EzTransfer.EzLessorApply.getDefaultInstance()) return this;
         if (other.getUid() != 0L) {
           setUid(other.getUid());
+        }
+        if (!other.getPubKey().isEmpty()) {
+          pubKey_ = other.pubKey_;
+          onChanged();
         }
         if (!other.getMerchantName().isEmpty()) {
           merchantName_ = other.merchantName_;
@@ -7674,10 +8189,99 @@ public final class EzTransfer {
         return this;
       }
 
-      private java.lang.Object merchantName_ = "";
+      private java.lang.Object pubKey_ = "";
       /**
        * <pre>
        *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public java.lang.String getPubKey() {
+        java.lang.Object ref = pubKey_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pubKey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPubKeyBytes() {
+        java.lang.Object ref = pubKey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pubKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKey(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder clearPubKey() {
+
+        pubKey_ = getDefaultInstance().getPubKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKeyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object merchantName_ = "";
+      /**
+       * <pre>
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7696,7 +8300,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7716,7 +8320,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7733,7 +8337,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7746,7 +8350,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -7825,12 +8429,30 @@ public final class EzTransfer {
      *    int64 businessLicenseNum = 2;
      * </pre>
      *
+     * <code>optional string pubKey = 2;</code>
+     */
+    java.lang.String getPubKey();
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getPubKeyBytes();
+
+    /**
+     * <pre>
+     *商家名
+     * </pre>
+     *
      * <code>optional string merchantName = 3;</code>
      */
     java.lang.String getMerchantName();
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -7855,6 +8477,7 @@ public final class EzTransfer {
     }
     private EzSupplierApply() {
       uid_ = 0L;
+      pubKey_ = "";
       merchantName_ = "";
     }
 
@@ -7886,6 +8509,12 @@ public final class EzTransfer {
             case 8: {
 
               uid_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pubKey_ = s;
               break;
             }
             case 26: {
@@ -7926,11 +8555,53 @@ public final class EzTransfer {
       return uid_;
     }
 
+    public static final int PUBKEY_FIELD_NUMBER = 2;
+    private volatile java.lang.Object pubKey_;
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public java.lang.String getPubKey() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pubKey_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPubKeyBytes() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pubKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int MERCHANTNAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object merchantName_;
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -7949,7 +8620,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -7983,6 +8654,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         output.writeInt64(1, uid_);
       }
+      if (!getPubKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, pubKey_);
+      }
       if (!getMerchantNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, merchantName_);
       }
@@ -7996,6 +8670,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(1, uid_);
+      }
+      if (!getPubKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, pubKey_);
       }
       if (!getMerchantNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, merchantName_);
@@ -8018,6 +8695,8 @@ public final class EzTransfer {
       boolean result = true;
       result = result && (getUid()
               == other.getUid());
+      result = result && getPubKey()
+              .equals(other.getPubKey());
       result = result && getMerchantName()
               .equals(other.getMerchantName());
       return result;
@@ -8033,6 +8712,8 @@ public final class EzTransfer {
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getUid());
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubKey().hashCode();
       hash = (37 * hash) + MERCHANTNAME_FIELD_NUMBER;
       hash = (53 * hash) + getMerchantName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -8159,6 +8840,8 @@ public final class EzTransfer {
         super.clear();
         uid_ = 0L;
 
+        pubKey_ = "";
+
         merchantName_ = "";
 
         return this;
@@ -8184,6 +8867,7 @@ public final class EzTransfer {
       public types.EzTransfer.EzSupplierApply buildPartial() {
         types.EzTransfer.EzSupplierApply result = new types.EzTransfer.EzSupplierApply(this);
         result.uid_ = uid_;
+        result.pubKey_ = pubKey_;
         result.merchantName_ = merchantName_;
         onBuilt();
         return result;
@@ -8228,6 +8912,10 @@ public final class EzTransfer {
         if (other == types.EzTransfer.EzSupplierApply.getDefaultInstance()) return this;
         if (other.getUid() != 0L) {
           setUid(other.getUid());
+        }
+        if (!other.getPubKey().isEmpty()) {
+          pubKey_ = other.pubKey_;
+          onChanged();
         }
         if (!other.getMerchantName().isEmpty()) {
           merchantName_ = other.merchantName_;
@@ -8285,10 +8973,99 @@ public final class EzTransfer {
         return this;
       }
 
-      private java.lang.Object merchantName_ = "";
+      private java.lang.Object pubKey_ = "";
       /**
        * <pre>
        *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public java.lang.String getPubKey() {
+        java.lang.Object ref = pubKey_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pubKey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPubKeyBytes() {
+        java.lang.Object ref = pubKey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pubKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKey(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder clearPubKey() {
+
+        pubKey_ = getDefaultInstance().getPubKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKeyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object merchantName_ = "";
+      /**
+       * <pre>
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8307,7 +9084,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8327,7 +9104,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8344,7 +9121,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8357,7 +9134,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8436,12 +9213,30 @@ public final class EzTransfer {
      *    int64 businessLicenseNum = 2;
      * </pre>
      *
+     * <code>optional string pubKey = 2;</code>
+     */
+    java.lang.String getPubKey();
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getPubKeyBytes();
+
+    /**
+     * <pre>
+     *商家名
+     * </pre>
+     *
      * <code>optional string merchantName = 3;</code>
      */
     java.lang.String getMerchantName();
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -8466,6 +9261,7 @@ public final class EzTransfer {
     }
     private EzT1MerchantApply() {
       uid_ = 0L;
+      pubKey_ = "";
       merchantName_ = "";
     }
 
@@ -8497,6 +9293,12 @@ public final class EzTransfer {
             case 8: {
 
               uid_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pubKey_ = s;
               break;
             }
             case 26: {
@@ -8537,11 +9339,53 @@ public final class EzTransfer {
       return uid_;
     }
 
+    public static final int PUBKEY_FIELD_NUMBER = 2;
+    private volatile java.lang.Object pubKey_;
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public java.lang.String getPubKey() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pubKey_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPubKeyBytes() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pubKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int MERCHANTNAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object merchantName_;
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -8560,7 +9404,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -8594,6 +9438,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         output.writeInt64(1, uid_);
       }
+      if (!getPubKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, pubKey_);
+      }
       if (!getMerchantNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, merchantName_);
       }
@@ -8607,6 +9454,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(1, uid_);
+      }
+      if (!getPubKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, pubKey_);
       }
       if (!getMerchantNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, merchantName_);
@@ -8629,6 +9479,8 @@ public final class EzTransfer {
       boolean result = true;
       result = result && (getUid()
               == other.getUid());
+      result = result && getPubKey()
+              .equals(other.getPubKey());
       result = result && getMerchantName()
               .equals(other.getMerchantName());
       return result;
@@ -8644,6 +9496,8 @@ public final class EzTransfer {
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getUid());
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubKey().hashCode();
       hash = (37 * hash) + MERCHANTNAME_FIELD_NUMBER;
       hash = (53 * hash) + getMerchantName().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -8770,6 +9624,8 @@ public final class EzTransfer {
         super.clear();
         uid_ = 0L;
 
+        pubKey_ = "";
+
         merchantName_ = "";
 
         return this;
@@ -8795,6 +9651,7 @@ public final class EzTransfer {
       public types.EzTransfer.EzT1MerchantApply buildPartial() {
         types.EzTransfer.EzT1MerchantApply result = new types.EzTransfer.EzT1MerchantApply(this);
         result.uid_ = uid_;
+        result.pubKey_ = pubKey_;
         result.merchantName_ = merchantName_;
         onBuilt();
         return result;
@@ -8839,6 +9696,10 @@ public final class EzTransfer {
         if (other == types.EzTransfer.EzT1MerchantApply.getDefaultInstance()) return this;
         if (other.getUid() != 0L) {
           setUid(other.getUid());
+        }
+        if (!other.getPubKey().isEmpty()) {
+          pubKey_ = other.pubKey_;
+          onChanged();
         }
         if (!other.getMerchantName().isEmpty()) {
           merchantName_ = other.merchantName_;
@@ -8896,10 +9757,99 @@ public final class EzTransfer {
         return this;
       }
 
-      private java.lang.Object merchantName_ = "";
+      private java.lang.Object pubKey_ = "";
       /**
        * <pre>
        *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public java.lang.String getPubKey() {
+        java.lang.Object ref = pubKey_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pubKey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPubKeyBytes() {
+        java.lang.Object ref = pubKey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pubKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKey(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder clearPubKey() {
+
+        pubKey_ = getDefaultInstance().getPubKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKeyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object merchantName_ = "";
+      /**
+       * <pre>
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8918,7 +9868,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8938,7 +9888,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8955,7 +9905,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -8968,7 +9918,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -9047,12 +9997,30 @@ public final class EzTransfer {
      *    int64 businessLicenseNum = 2;
      * </pre>
      *
+     * <code>optional string pubKey = 2;</code>
+     */
+    java.lang.String getPubKey();
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getPubKeyBytes();
+
+    /**
+     * <pre>
+     *商家名
+     * </pre>
+     *
      * <code>optional string merchantName = 3;</code>
      */
     java.lang.String getMerchantName();
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -9089,6 +10057,7 @@ public final class EzTransfer {
     }
     private EzT2MerchantApply() {
       uid_ = 0L;
+      pubKey_ = "";
       merchantName_ = "";
       belongTo_ = 0L;
     }
@@ -9121,6 +10090,12 @@ public final class EzTransfer {
             case 8: {
 
               uid_ = input.readInt64();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              pubKey_ = s;
               break;
             }
             case 26: {
@@ -9166,11 +10141,53 @@ public final class EzTransfer {
       return uid_;
     }
 
+    public static final int PUBKEY_FIELD_NUMBER = 2;
+    private volatile java.lang.Object pubKey_;
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public java.lang.String getPubKey() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        pubKey_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *    int64 businessLicenseNum = 2;
+     * </pre>
+     *
+     * <code>optional string pubKey = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPubKeyBytes() {
+      java.lang.Object ref = pubKey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        pubKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int MERCHANTNAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object merchantName_;
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -9189,7 +10206,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *    int64 businessLicenseNum = 2;
+     *商家名
      * </pre>
      *
      * <code>optional string merchantName = 3;</code>
@@ -9239,6 +10256,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         output.writeInt64(1, uid_);
       }
+      if (!getPubKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, pubKey_);
+      }
       if (!getMerchantNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, merchantName_);
       }
@@ -9255,6 +10275,9 @@ public final class EzTransfer {
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(1, uid_);
+      }
+      if (!getPubKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, pubKey_);
       }
       if (!getMerchantNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, merchantName_);
@@ -9281,6 +10304,8 @@ public final class EzTransfer {
       boolean result = true;
       result = result && (getUid()
               == other.getUid());
+      result = result && getPubKey()
+              .equals(other.getPubKey());
       result = result && getMerchantName()
               .equals(other.getMerchantName());
       result = result && (getBelongTo()
@@ -9298,6 +10323,8 @@ public final class EzTransfer {
       hash = (37 * hash) + UID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getUid());
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubKey().hashCode();
       hash = (37 * hash) + MERCHANTNAME_FIELD_NUMBER;
       hash = (53 * hash) + getMerchantName().hashCode();
       hash = (37 * hash) + BELONGTO_FIELD_NUMBER;
@@ -9427,6 +10454,8 @@ public final class EzTransfer {
         super.clear();
         uid_ = 0L;
 
+        pubKey_ = "";
+
         merchantName_ = "";
 
         belongTo_ = 0L;
@@ -9454,6 +10483,7 @@ public final class EzTransfer {
       public types.EzTransfer.EzT2MerchantApply buildPartial() {
         types.EzTransfer.EzT2MerchantApply result = new types.EzTransfer.EzT2MerchantApply(this);
         result.uid_ = uid_;
+        result.pubKey_ = pubKey_;
         result.merchantName_ = merchantName_;
         result.belongTo_ = belongTo_;
         onBuilt();
@@ -9499,6 +10529,10 @@ public final class EzTransfer {
         if (other == types.EzTransfer.EzT2MerchantApply.getDefaultInstance()) return this;
         if (other.getUid() != 0L) {
           setUid(other.getUid());
+        }
+        if (!other.getPubKey().isEmpty()) {
+          pubKey_ = other.pubKey_;
+          onChanged();
         }
         if (!other.getMerchantName().isEmpty()) {
           merchantName_ = other.merchantName_;
@@ -9559,10 +10593,99 @@ public final class EzTransfer {
         return this;
       }
 
-      private java.lang.Object merchantName_ = "";
+      private java.lang.Object pubKey_ = "";
       /**
        * <pre>
        *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public java.lang.String getPubKey() {
+        java.lang.Object ref = pubKey_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          pubKey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPubKeyBytes() {
+        java.lang.Object ref = pubKey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          pubKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKey(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder clearPubKey() {
+
+        pubKey_ = getDefaultInstance().getPubKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *    int64 businessLicenseNum = 2;
+       * </pre>
+       *
+       * <code>optional string pubKey = 2;</code>
+       */
+      public Builder setPubKeyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        pubKey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object merchantName_ = "";
+      /**
+       * <pre>
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -9581,7 +10704,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -9601,7 +10724,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -9618,7 +10741,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -9631,7 +10754,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *    int64 businessLicenseNum = 2;
+       *商家名
        * </pre>
        *
        * <code>optional string merchantName = 3;</code>
@@ -9837,7 +10960,7 @@ public final class EzTransfer {
   }
   /**
    * <pre>
-   *租赁商向资金方融资(推过来的订单上链    是谁的订单由谁签名   点击后上链)
+   *租赁商向资金方融资
    * </pre>
    *
    * Protobuf type {@code types.EzFinanceApply}
@@ -10309,7 +11432,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *租赁商向资金方融资(推过来的订单上链    是谁的订单由谁签名   点击后上链)
+     *租赁商向资金方融资
      * </pre>
      *
      * Protobuf type {@code types.EzFinanceApply}
@@ -11542,7 +12665,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *资金方uid
+     *供应商uid
      * </pre>
      *
      * <code>optional int64 supplierUid = 4;</code>
@@ -11578,7 +12701,7 @@ public final class EzTransfer {
   }
   /**
    * <pre>
-   *资金方放款
+   *资金方放款给供应商
    * </pre>
    *
    * Protobuf type {@code types.EzFundSupplier}
@@ -11734,7 +12857,7 @@ public final class EzTransfer {
     private long supplierUid_;
     /**
      * <pre>
-     *资金方uid
+     *供应商uid
      * </pre>
      *
      * <code>optional int64 supplierUid = 4;</code>
@@ -11994,7 +13117,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *资金方放款
+     *资金方放款给供应商
      * </pre>
      *
      * Protobuf type {@code types.EzFundSupplier}
@@ -12301,7 +13424,7 @@ public final class EzTransfer {
       private long supplierUid_ ;
       /**
        * <pre>
-       *资金方uid
+       *供应商uid
        * </pre>
        *
        * <code>optional int64 supplierUid = 4;</code>
@@ -12311,7 +13434,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方uid
+       *供应商uid
        * </pre>
        *
        * <code>optional int64 supplierUid = 4;</code>
@@ -12324,7 +13447,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方uid
+       *供应商uid
        * </pre>
        *
        * <code>optional int64 supplierUid = 4;</code>
@@ -13354,7 +14477,7 @@ public final class EzTransfer {
   }
   /**
    * <pre>
-   *融资购机订单确认收货（暂无）
+   *融资购机订单确认收货
    * </pre>
    *
    * Protobuf type {@code types.EzConfirmForFinance}
@@ -13639,7 +14762,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *融资购机订单确认收货（暂无）
+     *融资购机订单确认收货
      * </pre>
      *
      * Protobuf type {@code types.EzConfirmForFinance}
@@ -17932,7 +19055,7 @@ public final class EzTransfer {
   }
   /**
    * <pre>
-   *添加失信记录（管理员）
+   *添加失信记录
    * </pre>
    *
    * Protobuf type {@code types.EzAddDiscreditRecord}
@@ -18267,7 +19390,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *添加失信记录（管理员）
+     *添加失信记录
      * </pre>
      *
      * Protobuf type {@code types.EzAddDiscreditRecord}
@@ -18677,7 +19800,7 @@ public final class EzTransfer {
   }
   /**
    * <pre>
-   *添加白名单（管理员）
+   *添加白名单
    * </pre>
    *
    * Protobuf type {@code types.EzAddWhitelists}
@@ -18946,7 +20069,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *添加白名单（管理员）
+     *添加白名单
      * </pre>
      *
      * Protobuf type {@code types.EzAddWhitelists}
@@ -19201,6 +20324,554 @@ public final class EzTransfer {
     }
 
     public types.EzTransfer.EzAddWhitelists getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface EzRmWhitelistsOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:types.EzRmWhitelists)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated int64 uid = 1;</code>
+     */
+    java.util.List<java.lang.Long> getUidList();
+    /**
+     * <code>repeated int64 uid = 1;</code>
+     */
+    int getUidCount();
+    /**
+     * <code>repeated int64 uid = 1;</code>
+     */
+    long getUid(int index);
+  }
+  /**
+   * <pre>
+   *删除白名单
+   * </pre>
+   *
+   * Protobuf type {@code types.EzRmWhitelists}
+   */
+  public  static final class EzRmWhitelists extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:types.EzRmWhitelists)
+          EzRmWhitelistsOrBuilder {
+    // Use EzRmWhitelists.newBuilder() to construct.
+    private EzRmWhitelists(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private EzRmWhitelists() {
+      uid_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private EzRmWhitelists(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                uid_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              uid_.add(input.readInt64());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
+                uid_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                uid_.add(input.readInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          uid_ = java.util.Collections.unmodifiableList(uid_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return types.EzTransfer.internal_static_types_EzRmWhitelists_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return types.EzTransfer.internal_static_types_EzRmWhitelists_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      types.EzTransfer.EzRmWhitelists.class, types.EzTransfer.EzRmWhitelists.Builder.class);
+    }
+
+    public static final int UID_FIELD_NUMBER = 1;
+    private java.util.List<java.lang.Long> uid_;
+    /**
+     * <code>repeated int64 uid = 1;</code>
+     */
+    public java.util.List<java.lang.Long>
+    getUidList() {
+      return uid_;
+    }
+    /**
+     * <code>repeated int64 uid = 1;</code>
+     */
+    public int getUidCount() {
+      return uid_.size();
+    }
+    /**
+     * <code>repeated int64 uid = 1;</code>
+     */
+    public long getUid(int index) {
+      return uid_.get(index);
+    }
+    private int uidMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      getSerializedSize();
+      if (getUidList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(uidMemoizedSerializedSize);
+      }
+      for (int i = 0; i < uid_.size(); i++) {
+        output.writeInt64NoTag(uid_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < uid_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeInt64SizeNoTag(uid_.get(i));
+        }
+        size += dataSize;
+        if (!getUidList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+                  .computeInt32SizeNoTag(dataSize);
+        }
+        uidMemoizedSerializedSize = dataSize;
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof types.EzTransfer.EzRmWhitelists)) {
+        return super.equals(obj);
+      }
+      types.EzTransfer.EzRmWhitelists other = (types.EzTransfer.EzRmWhitelists) obj;
+
+      boolean result = true;
+      result = result && getUidList()
+              .equals(other.getUidList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (getUidCount() > 0) {
+        hash = (37 * hash) + UID_FIELD_NUMBER;
+        hash = (53 * hash) + getUidList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static types.EzTransfer.EzRmWhitelists parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static types.EzTransfer.EzRmWhitelists parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(types.EzTransfer.EzRmWhitelists prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *删除白名单
+     * </pre>
+     *
+     * Protobuf type {@code types.EzRmWhitelists}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:types.EzRmWhitelists)
+            types.EzTransfer.EzRmWhitelistsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return types.EzTransfer.internal_static_types_EzRmWhitelists_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return types.EzTransfer.internal_static_types_EzRmWhitelists_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        types.EzTransfer.EzRmWhitelists.class, types.EzTransfer.EzRmWhitelists.Builder.class);
+      }
+
+      // Construct using types.EzTransfer.EzRmWhitelists.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        uid_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return types.EzTransfer.internal_static_types_EzRmWhitelists_descriptor;
+      }
+
+      public types.EzTransfer.EzRmWhitelists getDefaultInstanceForType() {
+        return types.EzTransfer.EzRmWhitelists.getDefaultInstance();
+      }
+
+      public types.EzTransfer.EzRmWhitelists build() {
+        types.EzTransfer.EzRmWhitelists result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public types.EzTransfer.EzRmWhitelists buildPartial() {
+        types.EzTransfer.EzRmWhitelists result = new types.EzTransfer.EzRmWhitelists(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          uid_ = java.util.Collections.unmodifiableList(uid_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.uid_ = uid_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof types.EzTransfer.EzRmWhitelists) {
+          return mergeFrom((types.EzTransfer.EzRmWhitelists)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(types.EzTransfer.EzRmWhitelists other) {
+        if (other == types.EzTransfer.EzRmWhitelists.getDefaultInstance()) return this;
+        if (!other.uid_.isEmpty()) {
+          if (uid_.isEmpty()) {
+            uid_ = other.uid_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureUidIsMutable();
+            uid_.addAll(other.uid_);
+          }
+          onChanged();
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        types.EzTransfer.EzRmWhitelists parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (types.EzTransfer.EzRmWhitelists) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<java.lang.Long> uid_ = java.util.Collections.emptyList();
+      private void ensureUidIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          uid_ = new java.util.ArrayList<java.lang.Long>(uid_);
+          bitField0_ |= 0x00000001;
+        }
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public java.util.List<java.lang.Long>
+      getUidList() {
+        return java.util.Collections.unmodifiableList(uid_);
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public int getUidCount() {
+        return uid_.size();
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public long getUid(int index) {
+        return uid_.get(index);
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public Builder setUid(
+              int index, long value) {
+        ensureUidIsMutable();
+        uid_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public Builder addUid(long value) {
+        ensureUidIsMutable();
+        uid_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public Builder addAllUid(
+              java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureUidIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, uid_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 uid = 1;</code>
+       */
+      public Builder clearUid() {
+        uid_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:types.EzRmWhitelists)
+    }
+
+    // @@protoc_insertion_point(class_scope:types.EzRmWhitelists)
+    private static final types.EzTransfer.EzRmWhitelists DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new types.EzTransfer.EzRmWhitelists();
+    }
+
+    public static types.EzTransfer.EzRmWhitelists getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<EzRmWhitelists>
+            PARSER = new com.google.protobuf.AbstractParser<EzRmWhitelists>() {
+      public EzRmWhitelists parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new EzRmWhitelists(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<EzRmWhitelists> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<EzRmWhitelists> getParserForType() {
+      return PARSER;
+    }
+
+    public types.EzTransfer.EzRmWhitelists getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -23206,6 +24877,530 @@ public final class EzTransfer {
 
   }
 
+  public interface GoldbillUserStateOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:types.GoldbillUserState)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>optional int64 usernum = 1;</code>
+     */
+    long getUsernum();
+
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>optional int64 adminnum = 2;</code>
+     */
+    long getAdminnum();
+  }
+  /**
+   * Protobuf type {@code types.GoldbillUserState}
+   */
+  public  static final class GoldbillUserState extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:types.GoldbillUserState)
+          GoldbillUserStateOrBuilder {
+    // Use GoldbillUserState.newBuilder() to construct.
+    private GoldbillUserState(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GoldbillUserState() {
+      usernum_ = 0L;
+      adminnum_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private GoldbillUserState(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              usernum_ = input.readInt64();
+              break;
+            }
+            case 16: {
+
+              adminnum_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return types.EzTransfer.internal_static_types_GoldbillUserState_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return types.EzTransfer.internal_static_types_GoldbillUserState_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      types.EzTransfer.GoldbillUserState.class, types.EzTransfer.GoldbillUserState.Builder.class);
+    }
+
+    public static final int USERNUM_FIELD_NUMBER = 1;
+    private long usernum_;
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>optional int64 usernum = 1;</code>
+     */
+    public long getUsernum() {
+      return usernum_;
+    }
+
+    public static final int ADMINNUM_FIELD_NUMBER = 2;
+    private long adminnum_;
+    /**
+     * <pre>
+     * </pre>
+     *
+     * <code>optional int64 adminnum = 2;</code>
+     */
+    public long getAdminnum() {
+      return adminnum_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (usernum_ != 0L) {
+        output.writeInt64(1, usernum_);
+      }
+      if (adminnum_ != 0L) {
+        output.writeInt64(2, adminnum_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (usernum_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(1, usernum_);
+      }
+      if (adminnum_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(2, adminnum_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof types.EzTransfer.GoldbillUserState)) {
+        return super.equals(obj);
+      }
+      types.EzTransfer.GoldbillUserState other = (types.EzTransfer.GoldbillUserState) obj;
+
+      boolean result = true;
+      result = result && (getUsernum()
+              == other.getUsernum());
+      result = result && (getAdminnum()
+              == other.getAdminnum());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + USERNUM_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getUsernum());
+      hash = (37 * hash) + ADMINNUM_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getAdminnum());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static types.EzTransfer.GoldbillUserState parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static types.EzTransfer.GoldbillUserState parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static types.EzTransfer.GoldbillUserState parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+    public static types.EzTransfer.GoldbillUserState parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(types.EzTransfer.GoldbillUserState prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code types.GoldbillUserState}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:types.GoldbillUserState)
+            types.EzTransfer.GoldbillUserStateOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return types.EzTransfer.internal_static_types_GoldbillUserState_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return types.EzTransfer.internal_static_types_GoldbillUserState_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        types.EzTransfer.GoldbillUserState.class, types.EzTransfer.GoldbillUserState.Builder.class);
+      }
+
+      // Construct using types.EzTransfer.GoldbillUserState.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        usernum_ = 0L;
+
+        adminnum_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return types.EzTransfer.internal_static_types_GoldbillUserState_descriptor;
+      }
+
+      public types.EzTransfer.GoldbillUserState getDefaultInstanceForType() {
+        return types.EzTransfer.GoldbillUserState.getDefaultInstance();
+      }
+
+      public types.EzTransfer.GoldbillUserState build() {
+        types.EzTransfer.GoldbillUserState result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public types.EzTransfer.GoldbillUserState buildPartial() {
+        types.EzTransfer.GoldbillUserState result = new types.EzTransfer.GoldbillUserState(this);
+        result.usernum_ = usernum_;
+        result.adminnum_ = adminnum_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof types.EzTransfer.GoldbillUserState) {
+          return mergeFrom((types.EzTransfer.GoldbillUserState)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(types.EzTransfer.GoldbillUserState other) {
+        if (other == types.EzTransfer.GoldbillUserState.getDefaultInstance()) return this;
+        if (other.getUsernum() != 0L) {
+          setUsernum(other.getUsernum());
+        }
+        if (other.getAdminnum() != 0L) {
+          setAdminnum(other.getAdminnum());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        types.EzTransfer.GoldbillUserState parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (types.EzTransfer.GoldbillUserState) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private long usernum_ ;
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>optional int64 usernum = 1;</code>
+       */
+      public long getUsernum() {
+        return usernum_;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>optional int64 usernum = 1;</code>
+       */
+      public Builder setUsernum(long value) {
+
+        usernum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>optional int64 usernum = 1;</code>
+       */
+      public Builder clearUsernum() {
+
+        usernum_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long adminnum_ ;
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>optional int64 adminnum = 2;</code>
+       */
+      public long getAdminnum() {
+        return adminnum_;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>optional int64 adminnum = 2;</code>
+       */
+      public Builder setAdminnum(long value) {
+
+        adminnum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * </pre>
+       *
+       * <code>optional int64 adminnum = 2;</code>
+       */
+      public Builder clearAdminnum() {
+
+        adminnum_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:types.GoldbillUserState)
+    }
+
+    // @@protoc_insertion_point(class_scope:types.GoldbillUserState)
+    private static final types.EzTransfer.GoldbillUserState DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new types.EzTransfer.GoldbillUserState();
+    }
+
+    public static types.EzTransfer.GoldbillUserState getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GoldbillUserState>
+            PARSER = new com.google.protobuf.AbstractParser<GoldbillUserState>() {
+      public GoldbillUserState parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GoldbillUserState(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GoldbillUserState> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GoldbillUserState> getParserForType() {
+      return PARSER;
+    }
+
+    public types.EzTransfer.GoldbillUserState getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface TransactionOrBuilder extends
           // @@protoc_insertion_point(interface_extends:types.Transaction)
           com.google.protobuf.MessageOrBuilder {
@@ -25176,6 +27371,11 @@ public final class EzTransfer {
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internal_static_types_EzAddWhitelists_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_types_EzRmWhitelists_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_types_EzRmWhitelists_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_types_EzAddBlacklists_descriptor;
   private static final
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -25196,6 +27396,11 @@ public final class EzTransfer {
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internal_static_types_EzExpressInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_types_GoldbillUserState_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_types_GoldbillUserState_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_types_Transaction_descriptor;
   private static final
   com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -25214,7 +27419,7 @@ public final class EzTransfer {
           descriptor;
   static {
     java.lang.String[] descriptorData = {
-            "\n\021ez_transfer.proto\022\005types\"\276\007\n\010EzAction\022" +
+            "\n\021ez_transfer.proto\022\005types\"\355\007\n\010EzAction\022" +
                     "+\n\013funderApply\030\001 \001(\0132\024.types.EzFunderApp" +
                     "lyH\000\022+\n\013lessorApply\030\002 \001(\0132\024.types.EzLess" +
                     "orApplyH\000\022/\n\rsupplierApply\030\003 \001(\0132\026.types" +
@@ -25236,102 +27441,108 @@ public final class EzTransfer {
                     "irmForRentalH\000\0229\n\022addDiscreditRecord\030\020 \001",
             "(\0132\033.types.EzAddDiscreditRecordH\000\022/\n\radd" +
                     "Whitelists\030\021 \001(\0132\026.types.EzAddWhitelists" +
-                    "H\000\022/\n\raddBlacklists\030\022 \001(\0132\026.types.EzAddB" +
-                    "lacklistsH\000\022\037\n\002ty\030\036 \001(\0162\023.types.EzAction" +
-                    "Type\022\014\n\004hash\030\037 \001(\tB\007\n\005value\"2\n\rEzFunderA" +
-                    "pply\022\013\n\003uid\030\001 \001(\003\022\024\n\014merchantName\030\003 \001(\t\"" +
-                    "2\n\rEzLessorApply\022\013\n\003uid\030\001 \001(\003\022\024\n\014merchan" +
-                    "tName\030\003 \001(\t\"4\n\017EzSupplierApply\022\013\n\003uid\030\001 " +
-                    "\001(\003\022\024\n\014merchantName\030\003 \001(\t\"6\n\021EzT1Merchan" +
-                    "tApply\022\013\n\003uid\030\001 \001(\003\022\024\n\014merchantName\030\003 \001(",
-            "\t\"H\n\021EzT2MerchantApply\022\013\n\003uid\030\001 \001(\003\022\024\n\014m" +
-                    "erchantName\030\003 \001(\t\022\020\n\010belongTo\030\010 \001(\003\"\315\001\n\016" +
-                    "EzFinanceApply\022\020\n\010orderNum\030\001 \001(\003\022\023\n\013merc" +
-                    "hantUid\030\002 \001(\003\022\027\n\017financingAmount\030\003 \001(\002\022\025" +
-                    "\n\rfinancingTerm\030\004 \001(\005\022\021\n\tfunderUid\030\005 \001(\003" +
-                    "\022\023\n\013supplierUid\030\006 \001(\003\022\021\n\tapplyTime\030\007 \001(\005" +
-                    "\022)\n\013lesseeOrder\030\010 \001(\0132\024.types.EzLesseeOr" +
-                    "der\"6\n\017EzFinanceRefuse\022\020\n\010orderNum\030\001 \001(\003" +
-                    "\022\021\n\tfunderUid\030\002 \001(\003\"\233\001\n\016EzFundSupplier\022\020" +
-                    "\n\010orderNum\030\001 \001(\003\022\021\n\tfunderUid\030\002 \001(\003\022(\n\006m",
-            "ethod\030\003 \001(\0162\030.types.EzFinancingMethod\022\023\n" +
-                    "\013supplierUid\030\004 \001(\003\022\023\n\013fundVoucher\030\005 \001(\t\022" +
-                    "\020\n\010loanTime\030\006 \001(\005\"e\n\021EzSupplierDeliver\022\020" +
-                    "\n\010orderNum\030\001 \001(\003\022\023\n\013supplierUid\030\002 \001(\003\022)\n" +
-                    "\013expressInfo\030\003 \001(\0132\024.types.EzExpressInfo" +
-                    "\"Q\n\023EzConfirmForFinance\022\020\n\010orderNum\030\001 \001(" +
+                    "H\000\022-\n\014rmWhitelists\030\022 \001(\0132\025.types.EzRmWhi" +
+                    "telistsH\000\022/\n\raddBlacklists\030\023 \001(\0132\026.types" +
+                    ".EzAddBlacklistsH\000\022\037\n\002ty\030\036 \001(\0162\023.types.E" +
+                    "zActionType\022\014\n\004hash\030\037 \001(\tB\007\n\005value\"B\n\rEz" +
+                    "FunderApply\022\013\n\003uid\030\001 \001(\003\022\016\n\006pubKey\030\002 \001(\t" +
+                    "\022\024\n\014merchantName\030\003 \001(\t\"B\n\rEzLessorApply\022" +
+                    "\013\n\003uid\030\001 \001(\003\022\016\n\006pubKey\030\002 \001(\t\022\024\n\014merchant" +
+                    "Name\030\003 \001(\t\"D\n\017EzSupplierApply\022\013\n\003uid\030\001 \001",
+            "(\003\022\016\n\006pubKey\030\002 \001(\t\022\024\n\014merchantName\030\003 \001(\t" +
+                    "\"F\n\021EzT1MerchantApply\022\013\n\003uid\030\001 \001(\003\022\016\n\006pu" +
+                    "bKey\030\002 \001(\t\022\024\n\014merchantName\030\003 \001(\t\"X\n\021EzT2" +
+                    "MerchantApply\022\013\n\003uid\030\001 \001(\003\022\016\n\006pubKey\030\002 \001" +
+                    "(\t\022\024\n\014merchantName\030\003 \001(\t\022\020\n\010belongTo\030\010 \001" +
+                    "(\003\"\315\001\n\016EzFinanceApply\022\020\n\010orderNum\030\001 \001(\003\022" +
+                    "\023\n\013merchantUid\030\002 \001(\003\022\027\n\017financingAmount\030" +
+                    "\003 \001(\002\022\025\n\rfinancingTerm\030\004 \001(\005\022\021\n\tfunderUi" +
+                    "d\030\005 \001(\003\022\023\n\013supplierUid\030\006 \001(\003\022\021\n\tapplyTim" +
+                    "e\030\007 \001(\005\022)\n\013lesseeOrder\030\010 \001(\0132\024.types.EzL",
+            "esseeOrder\"6\n\017EzFinanceRefuse\022\020\n\010orderNu" +
+                    "m\030\001 \001(\003\022\021\n\tfunderUid\030\002 \001(\003\"\233\001\n\016EzFundSup" +
+                    "plier\022\020\n\010orderNum\030\001 \001(\003\022\021\n\tfunderUid\030\002 \001" +
+                    "(\003\022(\n\006method\030\003 \001(\0162\030.types.EzFinancingMe" +
+                    "thod\022\023\n\013supplierUid\030\004 \001(\003\022\023\n\013fundVoucher" +
+                    "\030\005 \001(\t\022\020\n\010loanTime\030\006 \001(\005\"e\n\021EzSupplierDe" +
+                    "liver\022\020\n\010orderNum\030\001 \001(\003\022\023\n\013supplierUid\030\002" +
+                    " \001(\003\022)\n\013expressInfo\030\003 \001(\0132\024.types.EzExpr" +
+                    "essInfo\"Q\n\023EzConfirmForFinance\022\020\n\010orderN" +
+                    "um\030\001 \001(\003\022\023\n\013trackingNum\030\002 \001(\003\022\023\n\013confirm",
+            "Time\030\003 \001(\005\"\340\001\n\rEzRentalApply\022\020\n\010orderNum" +
+                    "\030\001 \001(\003\022\021\n\tlessorUid\030\002 \001(\003\022\023\n\013merchantUid" +
+                    "\030\003 \001(\003\022-\n\rpaymentMethod\030\004 \001(\0162\026.types.Ez" +
+                    "PaymentMethod\022\024\n\014rentalAmount\030\005 \001(\002\022\022\n\nr" +
+                    "entalTerm\030\006 \001(\005\022\021\n\tapplyTime\030\007 \001(\005\022)\n\013le" +
+                    "sseeOrder\030\010 \001(\0132\024.types.EzLesseeOrder\"5\n" +
+                    "\016EzRentalRefuse\022\020\n\010orderNum\030\001 \001(\003\022\021\n\tLes" +
+                    "sorUid\030\002 \001(\003\"X\n\013EzPayLessor\022\020\n\010orderNum\030" +
+                    "\001 \001(\003\022\021\n\tlessorUid\030\002 \001(\003\022\023\n\013merchantUid\030" +
+                    "\003 \001(\003\022\017\n\007payTime\030\004 \001(\005\"a\n\017EzLessorDelive",
+            "r\022\020\n\010orderNum\030\001 \001(\003\022\021\n\tlessorUid\030\002 \001(\003\022)" +
+                    "\n\013expressInfo\030\003 \001(\0132\024.types.EzExpressInf" +
+                    "o\"P\n\022EzConfirmForRental\022\020\n\010orderNum\030\001 \001(" +
                     "\003\022\023\n\013trackingNum\030\002 \001(\003\022\023\n\013confirmTime\030\003 " +
-                    "\001(\005\"\340\001\n\rEzRentalApply\022\020\n\010orderNum\030\001 \001(\003\022" +
-                    "\021\n\tlessorUid\030\002 \001(\003\022\023\n\013merchantUid\030\003 \001(\003\022" +
-                    "-\n\rpaymentMethod\030\004 \001(\0162\026.types.EzPayment",
-            "Method\022\024\n\014rentalAmount\030\005 \001(\002\022\022\n\nrentalTe" +
-                    "rm\030\006 \001(\005\022\021\n\tapplyTime\030\007 \001(\005\022)\n\013lesseeOrd" +
-                    "er\030\010 \001(\0132\024.types.EzLesseeOrder\"5\n\016EzRent" +
-                    "alRefuse\022\020\n\010orderNum\030\001 \001(\003\022\021\n\tLessorUid\030" +
-                    "\002 \001(\003\"X\n\013EzPayLessor\022\020\n\010orderNum\030\001 \001(\003\022\021" +
-                    "\n\tlessorUid\030\002 \001(\003\022\023\n\013merchantUid\030\003 \001(\003\022\017" +
-                    "\n\007payTime\030\004 \001(\005\"a\n\017EzLessorDeliver\022\020\n\010or" +
-                    "derNum\030\001 \001(\003\022\021\n\tlessorUid\030\002 \001(\003\022)\n\013expre" +
-                    "ssInfo\030\003 \001(\0132\024.types.EzExpressInfo\"P\n\022Ez" +
-                    "ConfirmForRental\022\020\n\010orderNum\030\001 \001(\003\022\023\n\013tr",
-            "ackingNum\030\002 \001(\003\022\023\n\013confirmTime\030\003 \001(\005\"\233\001\n" +
-                    "\024EzAddDiscreditRecord\022\013\n\003uid\030\001 \001(\003\022#\n\010us" +
-                    "erType\030\002 \001(\0162\021.types.EzUserType\0229\n\023discr" +
-                    "editRecordType\030\003 \001(\0162\034.types.EzDiscredit" +
-                    "RecordType\022\026\n\016badDebtsAmount\030\004 \001(\002\"\036\n\017Ez" +
-                    "AddWhitelists\022\013\n\003uid\030\001 \003(\003\"C\n\017EzAddBlack" +
-                    "lists\022\013\n\003uid\030\001 \003(\003\022#\n\010userType\030\002 \001(\0162\021.t" +
-                    "ypes.EzUserType\"\305\001\n\rEzLesseeOrder\022\020\n\010ord" +
-                    "erNum\030\001 \001(\003\022\021\n\tlesseeUid\030\002 \001(\003\022\021\n\tapplyT" +
-                    "ime\030\003 \001(\005\022\'\n\nprodDetail\030\004 \001(\0132\023.types.Ez",
-            "ProdDetail\022(\n\005state\030\t \001(\0162\031.types.EzLess" +
-                    "eeOrderState\022)\n\013expressInfo\030\n \001(\0132\024.type" +
-                    "s.EzExpressInfo\"\202\001\n\014EzProdDetail\022\021\n\tprod" +
-                    "Brand\030\001 \001(\t\022\020\n\010prodName\030\002 \001(\t\022\021\n\tprodCol" +
-                    "or\030\003 \001(\t\022\023\n\013prodStorage\030\004 \001(\t\022\021\n\tleaseTe" +
-                    "rm\030\005 \001(\005\022\022\n\nprodAmount\030\006 \001(\005\"t\n\rEzExpres" +
-                    "sInfo\022\023\n\013trackingNum\030\001 \001(\003\022\014\n\004IMEI\030\002 \001(\003" +
-                    "\022\025\n\rexpressCoName\030\003 \001(\t\022\024\n\014deliveryTime\030" +
-                    "\004 \001(\005\022\023\n\013confirmTime\030\005 \001(\005\"\275\001\n\013Transacti" +
-                    "on\022\016\n\006execer\030\001 \001(\014\022\017\n\007payload\030\002 \001(\014\022#\n\ts",
-            "ignature\030\003 \001(\0132\020.types.Signature\022\013\n\003fee\030" +
-                    "\004 \001(\003\022\016\n\006expire\030\005 \001(\003\022\r\n\005nonce\030\006 \001(\003\022\n\n\002" +
-                    "to\030\007 \001(\t\022\022\n\ngroupCount\030\010 \001(\005\022\016\n\006header\030\t" +
-                    " \001(\014\022\014\n\004next\030\n \001(\014\":\n\tSignature\022\n\n\002ty\030\001 " +
-                    "\001(\005\022\016\n\006pubkey\030\002 \001(\014\022\021\n\tsignature\030\003 \001(\014*\306" +
-                    "\003\n\014EzActionType\022\016\n\nAT_UNKNOWN\020\000\022\023\n\017AT_FU" +
-                    "NDER_APPLY\020\001\022\023\n\017AT_LESSOR_APPLY\020\002\022\025\n\021AT_" +
-                    "SUPPLIER_APPLY\020\003\022\030\n\024AT_T1_MERCHANT_APPLY" +
-                    "\020\004\022\030\n\024AT_T2_MERCHANT_APPLY\020\005\022\024\n\020AT_FINAN" +
-                    "CE_APPLY\020\006\022\025\n\021AT_FINANCE_REFUSE\020\007\022\024\n\020AT_",
-            "FUND_SUPPLIER\020\010\022\027\n\023AT_SUPPLIER_DELIVER\020\t" +
-                    "\022\032\n\026AT_CONFIRM_FOR_FINANCE\020\n\022\023\n\017AT_RENTA" +
-                    "L_APPLY\020\013\022\024\n\020AT_RENTAL_REFUSE\020\014\022\021\n\rAT_PA" +
-                    "Y_LESSOR\020\r\022\025\n\021AT_LESSOR_DELIVER\020\016\022\031\n\025AT_" +
-                    "CONFIRM_FOR_RENTAL\020\017\022\033\n\027AT_ADD_DISCREDIT" +
-                    "_RECORD\020\020\022\025\n\021AT_ADD_WHITELISTS\020\021\022\025\n\021AT_A" +
-                    "DD_BLACKLISTS\020\022*\202\001\n\nEzUserType\022\016\n\nUT_UNK" +
-                    "NOWN\020\000\022\r\n\tUT_FUNDER\020\001\022\r\n\tUT_LESSOR\020\002\022\017\n\013" +
-                    "UT_SUPPLIER\020\003\022\022\n\016UT_T1_MERCHANT\020\004\022\022\n\016UT_" +
-                    "T2_MERCHANT\020\005\022\r\n\tUT_LESSEE\020\006*\216\001\n\022EzLesse",
-            "eOrderState\022\017\n\013LOS_UNKNOWN\020\000\022\017\n\013LOS_PEND" +
-                    "ING\020\001\022\024\n\020LOS_AUDIT_FAILED\020\002\022\025\n\021LOS_TO_BE" +
-                    "_SHIPPED\020\003\022\026\n\022LOS_TO_BE_RECEIVED\020\004\022\021\n\rLO" +
-                    "S_CONFIRMED\020\005*\177\n\021EzFinancingMethod\022\016\n\nFM" +
-                    "_UNKNOWN\020\000\022\013\n\007FM_LOAN\020\001\022\020\n\014FM_FACTORING\020" +
-                    "\002\022\020\n\014FM_FINANCIAL\020\003\022\031\n\025FM_ASSIGNMENT_OF_" +
-                    "DEBT\020\004\022\016\n\nFM_OFFLINE\020\005*\221\001\n\025EzFinancingOr" +
-                    "derState\022\017\n\013FOS_UNKNOWN\020\000\022\017\n\013FOS_PENDING" +
-                    "\020\001\022\024\n\020FOS_AUDIT_FAILED\020\002\022\025\n\021FOS_TO_BE_SH" +
-                    "IPPED\020\003\022\026\n\022FOS_TO_BE_RECEIVED\020\004\022\021\n\rFOS_C",
-            "ONFIRMED\020\005*\216\001\n\022EzRentalOrderState\022\017\n\013ROS" +
-                    "_UNKNOWN\020\000\022\017\n\013ROS_PENDING\020\001\022\024\n\020ROS_AUDIT" +
-                    "_FAILED\020\002\022\025\n\021ROS_TO_BE_SHIPPED\020\003\022\026\n\022ROS_" +
-                    "TO_BE_RECEIVED\020\004\022\021\n\rROS_CONFIRMED\020\005*F\n\017E" +
-                    "zPaymentMethod\022\016\n\nPM_UNKNOWN\020\000\022\017\n\013PM_LUM" +
-                    "P_SUM\020\001\022\022\n\016PM_INSTALLMENT\020\002*L\n\025EzDiscred" +
-                    "itRecordType\022\017\n\013DRT_UNKNOWN\020\000\022\017\n\013DRT_OVE" +
-                    "RDUE\020\001\022\021\n\rDRT_BAD_DEBTS\020\002b\006proto3"
+                    "\001(\005\"\233\001\n\024EzAddDiscreditRecord\022\013\n\003uid\030\001 \001(" +
+                    "\003\022#\n\010userType\030\002 \001(\0162\021.types.EzUserType\0229" +
+                    "\n\023discreditRecordType\030\003 \001(\0162\034.types.EzDi" +
+                    "screditRecordType\022\026\n\016badDebtsAmount\030\004 \001(" +
+                    "\002\"\036\n\017EzAddWhitelists\022\013\n\003uid\030\001 \003(\003\"\035\n\016EzR" +
+                    "mWhitelists\022\013\n\003uid\030\001 \003(\003\"C\n\017EzAddBlackli",
+            "sts\022\013\n\003uid\030\001 \003(\003\022#\n\010userType\030\002 \001(\0162\021.typ" +
+                    "es.EzUserType\"\305\001\n\rEzLesseeOrder\022\020\n\010order" +
+                    "Num\030\001 \001(\003\022\021\n\tlesseeUid\030\002 \001(\003\022\021\n\tapplyTim" +
+                    "e\030\003 \001(\005\022\'\n\nprodDetail\030\004 \001(\0132\023.types.EzPr" +
+                    "odDetail\022(\n\005state\030\t \001(\0162\031.types.EzLessee" +
+                    "OrderState\022)\n\013expressInfo\030\n \001(\0132\024.types." +
+                    "EzExpressInfo\"\202\001\n\014EzProdDetail\022\021\n\tprodBr" +
+                    "and\030\001 \001(\t\022\020\n\010prodName\030\002 \001(\t\022\021\n\tprodColor" +
+                    "\030\003 \001(\t\022\023\n\013prodStorage\030\004 \001(\t\022\021\n\tleaseTerm" +
+                    "\030\005 \001(\005\022\022\n\nprodAmount\030\006 \001(\005\"t\n\rEzExpressI",
+            "nfo\022\023\n\013trackingNum\030\001 \001(\003\022\014\n\004IMEI\030\002 \001(\003\022\025" +
+                    "\n\rexpressCoName\030\003 \001(\t\022\024\n\014deliveryTime\030\004 " +
+                    "\001(\005\022\023\n\013confirmTime\030\005 \001(\005\"6\n\021GoldbillUser" +
+                    "State\022\017\n\007usernum\030\001 \001(\003\022\020\n\010adminnum\030\002 \001(\003" +
+                    "\"\275\001\n\013Transaction\022\016\n\006execer\030\001 \001(\014\022\017\n\007payl" +
+                    "oad\030\002 \001(\014\022#\n\tsignature\030\003 \001(\0132\020.types.Sig" +
+                    "nature\022\013\n\003fee\030\004 \001(\003\022\016\n\006expire\030\005 \001(\003\022\r\n\005n" +
+                    "once\030\006 \001(\003\022\n\n\002to\030\007 \001(\t\022\022\n\ngroupCount\030\010 \001" +
+                    "(\005\022\016\n\006header\030\t \001(\014\022\014\n\004next\030\n \001(\014\":\n\tSign" +
+                    "ature\022\n\n\002ty\030\001 \001(\005\022\016\n\006pubkey\030\002 \001(\014\022\021\n\tsig",
+            "nature\030\003 \001(\014*\334\003\n\014EzActionType\022\016\n\nAT_UNKN" +
+                    "OWN\020\000\022\023\n\017AT_FUNDER_APPLY\020\001\022\023\n\017AT_LESSOR_" +
+                    "APPLY\020\002\022\025\n\021AT_SUPPLIER_APPLY\020\003\022\030\n\024AT_T1_" +
+                    "MERCHANT_APPLY\020\004\022\030\n\024AT_T2_MERCHANT_APPLY" +
+                    "\020\005\022\024\n\020AT_FINANCE_APPLY\020\006\022\025\n\021AT_FINANCE_R" +
+                    "EFUSE\020\007\022\024\n\020AT_FUND_SUPPLIER\020\010\022\027\n\023AT_SUPP" +
+                    "LIER_DELIVER\020\t\022\032\n\026AT_CONFIRM_FOR_FINANCE" +
+                    "\020\n\022\023\n\017AT_RENTAL_APPLY\020\013\022\024\n\020AT_RENTAL_REF" +
+                    "USE\020\014\022\021\n\rAT_PAY_LESSOR\020\r\022\025\n\021AT_LESSOR_DE" +
+                    "LIVER\020\016\022\031\n\025AT_CONFIRM_FOR_RENTAL\020\017\022\033\n\027AT",
+            "_ADD_DISCREDIT_RECORD\020\020\022\025\n\021AT_ADD_WHITEL" +
+                    "ISTS\020\021\022\024\n\020AT_RM_WHITELISTS\020\022\022\025\n\021AT_ADD_B" +
+                    "LACKLISTS\020\023*\202\001\n\nEzUserType\022\016\n\nUT_UNKNOWN" +
+                    "\020\000\022\r\n\tUT_FUNDER\020\001\022\r\n\tUT_LESSOR\020\002\022\017\n\013UT_S" +
+                    "UPPLIER\020\003\022\022\n\016UT_T1_MERCHANT\020\004\022\022\n\016UT_T2_M" +
+                    "ERCHANT\020\005\022\r\n\tUT_LESSEE\020\006*\216\001\n\022EzLesseeOrd" +
+                    "erState\022\017\n\013LOS_UNKNOWN\020\000\022\017\n\013LOS_PENDING\020" +
+                    "\001\022\024\n\020LOS_AUDIT_FAILED\020\002\022\025\n\021LOS_TO_BE_SHI" +
+                    "PPED\020\003\022\026\n\022LOS_TO_BE_RECEIVED\020\004\022\021\n\rLOS_CO" +
+                    "NFIRMED\020\005*\177\n\021EzFinancingMethod\022\016\n\nFM_UNK",
+            "NOWN\020\000\022\013\n\007FM_LOAN\020\001\022\020\n\014FM_FACTORING\020\002\022\020\n" +
+                    "\014FM_FINANCIAL\020\003\022\031\n\025FM_ASSIGNMENT_OF_DEBT" +
+                    "\020\004\022\016\n\nFM_OFFLINE\020\005*\221\001\n\025EzFinancingOrderS" +
+                    "tate\022\017\n\013FOS_UNKNOWN\020\000\022\017\n\013FOS_PENDING\020\001\022\024" +
+                    "\n\020FOS_AUDIT_FAILED\020\002\022\025\n\021FOS_TO_BE_SHIPPE" +
+                    "D\020\003\022\026\n\022FOS_TO_BE_RECEIVED\020\004\022\021\n\rFOS_CONFI" +
+                    "RMED\020\005*\216\001\n\022EzRentalOrderState\022\017\n\013ROS_UNK" +
+                    "NOWN\020\000\022\017\n\013ROS_PENDING\020\001\022\024\n\020ROS_AUDIT_FAI" +
+                    "LED\020\002\022\025\n\021ROS_TO_BE_SHIPPED\020\003\022\026\n\022ROS_TO_B" +
+                    "E_RECEIVED\020\004\022\021\n\rROS_CONFIRMED\020\005*F\n\017EzPay",
+            "mentMethod\022\016\n\nPM_UNKNOWN\020\000\022\017\n\013PM_LUMP_SU" +
+                    "M\020\001\022\022\n\016PM_INSTALLMENT\020\002*L\n\025EzDiscreditRe" +
+                    "cordType\022\017\n\013DRT_UNKNOWN\020\000\022\017\n\013DRT_OVERDUE" +
+                    "\020\001\022\021\n\rDRT_BAD_DEBTS\020\002b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -25350,37 +27561,37 @@ public final class EzTransfer {
     internal_static_types_EzAction_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzAction_descriptor,
-            new java.lang.String[] { "FunderApply", "LessorApply", "SupplierApply", "T1MerchantApply", "T2MerchantApply", "FinanceApply", "FinanceRefuse", "FundSupplier", "SupplierDeliver", "ConfirmForFinance", "RentalApply", "RentalRefuse", "PayLessor", "LessorDeliver", "ConfirmForRental", "AddDiscreditRecord", "AddWhitelists", "AddBlacklists", "Ty", "Hash", "Value", });
+            new java.lang.String[] { "FunderApply", "LessorApply", "SupplierApply", "T1MerchantApply", "T2MerchantApply", "FinanceApply", "FinanceRefuse", "FundSupplier", "SupplierDeliver", "ConfirmForFinance", "RentalApply", "RentalRefuse", "PayLessor", "LessorDeliver", "ConfirmForRental", "AddDiscreditRecord", "AddWhitelists", "RmWhitelists", "AddBlacklists", "Ty", "Hash", "Value", });
     internal_static_types_EzFunderApply_descriptor =
             getDescriptor().getMessageTypes().get(1);
     internal_static_types_EzFunderApply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzFunderApply_descriptor,
-            new java.lang.String[] { "Uid", "MerchantName", });
+            new java.lang.String[] { "Uid", "PubKey", "MerchantName", });
     internal_static_types_EzLessorApply_descriptor =
             getDescriptor().getMessageTypes().get(2);
     internal_static_types_EzLessorApply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzLessorApply_descriptor,
-            new java.lang.String[] { "Uid", "MerchantName", });
+            new java.lang.String[] { "Uid", "PubKey", "MerchantName", });
     internal_static_types_EzSupplierApply_descriptor =
             getDescriptor().getMessageTypes().get(3);
     internal_static_types_EzSupplierApply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzSupplierApply_descriptor,
-            new java.lang.String[] { "Uid", "MerchantName", });
+            new java.lang.String[] { "Uid", "PubKey", "MerchantName", });
     internal_static_types_EzT1MerchantApply_descriptor =
             getDescriptor().getMessageTypes().get(4);
     internal_static_types_EzT1MerchantApply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzT1MerchantApply_descriptor,
-            new java.lang.String[] { "Uid", "MerchantName", });
+            new java.lang.String[] { "Uid", "PubKey", "MerchantName", });
     internal_static_types_EzT2MerchantApply_descriptor =
             getDescriptor().getMessageTypes().get(5);
     internal_static_types_EzT2MerchantApply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzT2MerchantApply_descriptor,
-            new java.lang.String[] { "Uid", "MerchantName", "BelongTo", });
+            new java.lang.String[] { "Uid", "PubKey", "MerchantName", "BelongTo", });
     internal_static_types_EzFinanceApply_descriptor =
             getDescriptor().getMessageTypes().get(6);
     internal_static_types_EzFinanceApply_fieldAccessorTable = new
@@ -25453,38 +27664,50 @@ public final class EzTransfer {
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzAddWhitelists_descriptor,
             new java.lang.String[] { "Uid", });
-    internal_static_types_EzAddBlacklists_descriptor =
+    internal_static_types_EzRmWhitelists_descriptor =
             getDescriptor().getMessageTypes().get(18);
+    internal_static_types_EzRmWhitelists_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_types_EzRmWhitelists_descriptor,
+            new java.lang.String[] { "Uid", });
+    internal_static_types_EzAddBlacklists_descriptor =
+            getDescriptor().getMessageTypes().get(19);
     internal_static_types_EzAddBlacklists_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzAddBlacklists_descriptor,
             new java.lang.String[] { "Uid", "UserType", });
     internal_static_types_EzLesseeOrder_descriptor =
-            getDescriptor().getMessageTypes().get(19);
+            getDescriptor().getMessageTypes().get(20);
     internal_static_types_EzLesseeOrder_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzLesseeOrder_descriptor,
             new java.lang.String[] { "OrderNum", "LesseeUid", "ApplyTime", "ProdDetail", "State", "ExpressInfo", });
     internal_static_types_EzProdDetail_descriptor =
-            getDescriptor().getMessageTypes().get(20);
+            getDescriptor().getMessageTypes().get(21);
     internal_static_types_EzProdDetail_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzProdDetail_descriptor,
             new java.lang.String[] { "ProdBrand", "ProdName", "ProdColor", "ProdStorage", "LeaseTerm", "ProdAmount", });
     internal_static_types_EzExpressInfo_descriptor =
-            getDescriptor().getMessageTypes().get(21);
+            getDescriptor().getMessageTypes().get(22);
     internal_static_types_EzExpressInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzExpressInfo_descriptor,
             new java.lang.String[] { "TrackingNum", "IMEI", "ExpressCoName", "DeliveryTime", "ConfirmTime", });
+    internal_static_types_GoldbillUserState_descriptor =
+            getDescriptor().getMessageTypes().get(23);
+    internal_static_types_GoldbillUserState_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_types_GoldbillUserState_descriptor,
+            new java.lang.String[] { "Usernum", "Adminnum", });
     internal_static_types_Transaction_descriptor =
-            getDescriptor().getMessageTypes().get(22);
+            getDescriptor().getMessageTypes().get(24);
     internal_static_types_Transaction_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_Transaction_descriptor,
             new java.lang.String[] { "Execer", "Payload", "Signature", "Fee", "Expire", "Nonce", "To", "GroupCount", "Header", "Next", });
     internal_static_types_Signature_descriptor =
-            getDescriptor().getMessageTypes().get(23);
+            getDescriptor().getMessageTypes().get(25);
     internal_static_types_Signature_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_Signature_descriptor,

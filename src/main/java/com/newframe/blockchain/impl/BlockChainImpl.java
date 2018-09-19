@@ -30,9 +30,11 @@ public class BlockChainImpl implements BlockChain {
         builder.setMerchantName(merchantName);
         EzTransfer.EzAction.Builder action = EzTransfer.EzAction.newBuilder();
         action.setFunderApply(builder);
+        action.setTy(EzTransfer.EzActionType.AT_FUNDER_APPLY);
         try {
             return blockChainRepository.sendTransaction(adminPubkey, adminPriKey, action.build());
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
