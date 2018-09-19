@@ -63,10 +63,13 @@ public class BankSupport {
         }
         //保存到数据库
         logger.debug("保存银行最新的充值流水到数据库...");
-        saveBankMoneyFlowIn(bankFlowResultBean);
+        List<String> savedNos = saveBankMoneyFlowIn(bankFlowResultBean);
+        if(savedNos.isEmpty()){
+            return true;
+        }
         //确认完成流水处理
         logger.debug("向银行确认完成最新的充值流水...");
-        boolean result = BankRestUtils.realTimeQueryConfirm(confirmUrl, account, nos);
+        boolean result = BankRestUtils.realTimeQueryConfirm(confirmUrl, account, savedNos);
         return result;
     }
 
