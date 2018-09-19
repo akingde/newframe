@@ -323,6 +323,21 @@ public class ApiUserController extends BaseController {
     }
 
     /**
+     * 获取资金流水详细记录
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    @PostMapping("getAssetFlow")
+    public JsonResult getAssetFlow(Long uid, Long orderId){
+        if (uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<BankFlowResultDTO> result = userService.getAssetFlow(uid, orderId);
+        return success(result.getEntity());
+    }
+
+    /**
      * 添加提现记录
      * @param uid
      * @param amount

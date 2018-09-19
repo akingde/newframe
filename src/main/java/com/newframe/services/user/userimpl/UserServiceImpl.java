@@ -523,6 +523,22 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 获取资金流水详细记录
+     *
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OperationResult<BankFlowResultDTO> getAssetFlow(Long uid, Long orderId) {
+        CapitalFlow capitalFlow = capitalFlowService.findOne(orderId);
+        if(capitalFlow == null || !capitalFlow.getUid().equals(uid)){
+            return new OperationResult();
+        }
+        return new OperationResult(new BankFlowResultDTO(capitalFlow));
+    }
+
+    /**
      * 添加充值记录
      *
      * @param bankNumber

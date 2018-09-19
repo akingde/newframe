@@ -191,6 +191,14 @@ public interface UserService {
     OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition);
 
     /**
+     * 获取资金流水详细记录
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    OperationResult<BankFlowResultDTO> getAssetFlow(Long uid, Long orderId);
+
+    /**
      * 添加充值记录
      * @param bankNumber
      * @param amount
