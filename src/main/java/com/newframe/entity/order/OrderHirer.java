@@ -122,4 +122,6 @@ public class OrderHirer {
 
     private Integer dispatchTimes;
 
+    private Integer platformCreditScore;
+
 }
