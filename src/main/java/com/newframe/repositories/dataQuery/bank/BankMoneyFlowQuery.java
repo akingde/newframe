@@ -7,13 +7,14 @@ import com.newframe.utils.query.annotation.QBindAttrField;
 import com.newframe.utils.query.annotation.QBindEntity;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @QBindEntity(entityClass = BankMoneyFlow.class)
 public class BankMoneyFlowQuery extends BaseQuery {
-    @QBindAttrField(fieldName = "bank_transaction_no", where = Where.in)
-    private List<String> bankTransactionNos;
+    @QBindAttrField(fieldName = "bankTransactionNo", where = Where.in)
+    private List<String> bankTransactionNos = new ArrayList<>();
 
     @QBindAttrField(fieldName = "status", where = Where.equal)
     private Integer status;
