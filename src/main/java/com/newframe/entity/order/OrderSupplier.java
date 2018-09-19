@@ -86,4 +86,6 @@ public class OrderSupplier {
      * 发货时间
      */
     private Long deliverTime;
+
+    private Integer platformCreditScore;
 }

@@ -43,6 +43,9 @@ public class MerchantOrderDTO {
     /**用户信用评级*/
     private Integer userCreditLine;
 
+    @NotNull(message = "第三方平台对租客的信用评分不能为空")
+    private Integer platformCreditScore;
+
     @NotBlank(message = "租赁机器品牌不能为空")
     private String productBrand;
 
