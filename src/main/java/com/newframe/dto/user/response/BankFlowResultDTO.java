@@ -26,6 +26,7 @@ public class BankFlowResultDTO {
     private BigDecimal amount;
     private Integer type;
     private Integer orderStatus;
+    private String remarks;
     private Integer ctime;
 
     public BankFlowResultDTO(CapitalFlow capitalFlow) {
@@ -44,6 +45,7 @@ public class BankFlowResultDTO {
         this.amount = capitalFlow.getAmount();
         this.type = capitalFlow.getType();
         this.orderStatus = capitalFlow.getOrderStatus();
+        this.remarks = capitalFlow.getRemarks();
         this.ctime = capitalFlow.getCtime();
     }
 }

@@ -266,7 +266,7 @@ public class AfterServiceImpl implements AfterService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId) {
+    public OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId, String remaks) {
         CapitalFlow capitalFlow = capitalFlowService.findOne(orderId);
         if(capitalFlow == null){
             return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
@@ -275,6 +275,7 @@ public class AfterServiceImpl implements AfterService {
             return new OperationResult(RequestResultEnum.INVALID_ACCESS, false);
         }
         capitalFlow.setOrderStatus(AssetStatusEnum.CHECK_ERROR.getOrderStatus());
+        capitalFlow.setRemarks(remaks);
         capitalFlowService.update(capitalFlow);
         BigDecimal amount = capitalFlow.getAmount();
         accountManageService.saveAccountStatement(uid, WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);

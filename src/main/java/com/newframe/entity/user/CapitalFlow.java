@@ -142,6 +142,13 @@ public class CapitalFlow {
     private String checkName;
 
     /**
+     * 备注
+     * remarks
+     */
+    @Column(name="remarks")
+    private String remarks;
+
+    /**
      * bank_money_flow表id
      * bank_money_flow_id
      */

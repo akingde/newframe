@@ -108,6 +108,9 @@ public class CapitalFlowServiceImpl implements CapitalFlowService {
         if(capitalFlow.getBankMoneyFlowId() != null){
             updateFields.add("bankMoneyFlowId");
         }
+        if(StringUtils.isNotEmpty(capitalFlow.getRemarks())){
+            updateFields.add("remarks");
+        }
         String[] array =new String[updateFields.size()];
         updateFields.toArray(array);
         return capitalFlowMaster.update(capitalFlow, query, array);
