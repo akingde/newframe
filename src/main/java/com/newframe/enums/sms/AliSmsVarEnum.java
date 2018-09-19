@@ -47,6 +47,8 @@ public enum AliSmsVarEnum {
     REGISTER_SUCCESS("SMS_139977034",null,null),
     //新用户注册短信验证
     NEW_USER_REGISTER("SMS_139986850","code",null),
+    // 添加银行卡验证短信
+    ADD_BANK_CARD("SMS_145595497","code",null),
     /*******************黄金交易所*************************/
     //用户注册验证码
     USER_REGISTER("SMS_119525052","code",null),
