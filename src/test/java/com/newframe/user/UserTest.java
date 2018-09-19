@@ -51,7 +51,7 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void failDrawAssetCheck(){
-        afterService.failDrawAssetCheck(-1L, 1537167000850148L);
+        afterService.failDrawAssetCheck(-1L, 1537167000850148L, "");
     }
 
     @Test
