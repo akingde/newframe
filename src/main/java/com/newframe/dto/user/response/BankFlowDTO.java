@@ -31,36 +31,20 @@ public class BankFlowDTO {
     public static class Result{
         private Long orderId;
         private Long uid;
-        private String merchantName;
-        private String userName;
-        private String userPhoneNumber;
-        private String userBankNumber;
-        private String userBankName;
-        private String userBankDetailedName;
-        private String platformName;
-        private String platformBankNumber;
-        private String platformBankName;
-        private String platformBankDetailedName;
         private BigDecimal amount;
         private Integer type;
         private Integer orderStatus;
+        private String remarks;
+        private Integer ctime;
 
         public Result(CapitalFlow capitalFlow) {
             this.orderId = capitalFlow.getOrderId();
             this.uid = capitalFlow.getUid();
-            this.merchantName = capitalFlow.getMerchantName();
-            this.userName = capitalFlow.getUserName();
-            this.userPhoneNumber = capitalFlow.getUserPhoneNumber();
-            this.userBankNumber = capitalFlow.getUserBankNumber();
-            this.userBankName = capitalFlow.getUserBankName();
-            this.userBankDetailedName = capitalFlow.getUserBankDetailedName();
-            this.platformName = capitalFlow.getPlatformName();
-            this.platformBankNumber = capitalFlow.getPlatformBankNumber();
-            this.platformBankName = capitalFlow.getPlatformBankName();
-            this.platformBankDetailedName = capitalFlow.getPlatformBankDetailedName();
             this.amount = capitalFlow.getAmount();
             this.type = capitalFlow.getType();
             this.orderStatus = capitalFlow.getOrderStatus();
+            this.remarks = capitalFlow.getRemarks();
+            this.ctime = capitalFlow.getCtime();
         }
     }
 }

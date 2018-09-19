@@ -38,7 +38,7 @@ public class BankRealTimeResultBean {
         private String platformtoken;
         private String accountid;
         private String tran_FLOW;//交易流水号
-        private String bflow;    //企业支付流水号
+//        private String bflow;    //企业支付流水号
         private String amt;    //发生额
         private String amt1;    //余额
         private String accno2;    //对方账号
@@ -58,7 +58,7 @@ public class BankRealTimeResultBean {
         }
         for (Iterator<BankFlowDataBean> iter = data.iterator(); iter.hasNext(); ) {
             BankRealTimeResultBean.BankFlowDataBean bean = iter.next();
-            if (StringUtils.isEmpty(bean.getBflow())) {
+            if (StringUtils.isEmpty(bean.getTran_FLOW())) {
                 continue;//去掉企业支付流水号为空
             }
             set.add(bean.getTran_FLOW());//银行流水(用于查询数据库)
@@ -80,7 +80,7 @@ public class BankRealTimeResultBean {
         }
         for (Iterator<BankFlowDataBean> iter = data.iterator(); iter.hasNext(); ) {
             BankRealTimeResultBean.BankFlowDataBean bean = iter.next();
-            if (StringUtils.isEmpty(bean.getBflow())) {
+            if (StringUtils.isEmpty(bean.getTran_FLOW())) {
                 continue;//去掉企业支付流水号为空
             }
             set.add(bean.getAcc_NAME1());//企业名称(用于查询数据库)
@@ -100,7 +100,7 @@ public class BankRealTimeResultBean {
         }
         for (Iterator<BankFlowDataBean> iter = data.iterator(); iter.hasNext(); ) {
             BankRealTimeResultBean.BankFlowDataBean bean = iter.next();
-            if (StringUtils.isEmpty(bean.getBflow())) {
+            if (StringUtils.isEmpty(bean.getTran_FLOW())) {
                 continue;//去掉企业支付流水号为空
             }
             set.add(bean.getAccno2());//企业银行卡号(用于查询数据库)

@@ -1,12 +1,14 @@
 package com.newframe.services.user.userimpl;
 
 import com.google.common.collect.Lists;
+import com.newframe.blockchain.util.KeyUtil;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.user.*;
 import com.newframe.enums.RoleEnum;
+import com.newframe.enums.bank.BankEnum;
 import com.newframe.enums.user.*;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -60,6 +62,8 @@ public class UserServiceImpl implements UserService {
     private CapitalFlowService capitalFlowService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private UserContractService userContractService;
 
     /**
      * @param mobile
@@ -91,7 +95,7 @@ public class UserServiceImpl implements UserService {
      * @Date 2018/8/15 16:45
      **/
     @Override
-    public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode) {
+    public OperationResult<UserBaseInfoDTO> register(String mobile, String mCode){
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
@@ -109,6 +113,7 @@ public class UserServiceImpl implements UserService {
         userPwd.setUid(baseInfo.getUid());
         userPwdService.insert(userPwd);
         accountManageService.saveAccount(userBaseInfo.getUid());
+        userContractService.insert(baseInfo.getUid());
 //        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
 //        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
 //        String token = isWeb ? webToken : appToken;
@@ -465,7 +470,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<UserBankDTO> getBankList(Long uid) {
         UserBank userBank = userBankService.findOne(uid);
-        return new OperationResult(new UserBankDTO(userBank));
+        return new OperationResult(userBank == null ? null : new UserBankDTO(userBank));
     }
 
     /**
@@ -477,7 +482,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO) {
 
-        if(StringUtils.isEmpty(bankDTO.getBankName())){
+        if(BankEnum.isEmpty(bankDTO.getBankName())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
         if(StringUtils.isEmpty(bankDTO.getBankDetailedName())){
@@ -512,9 +517,25 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, PageSearchDTO condition) {
-        Page<CapitalFlow> flowPage = capitalFlowService.findAll(uid, condition, type);
+    public OperationResult<BankFlowDTO> getAssetFlowRecord(Long uid, Integer type, Integer status, PageSearchDTO condition) {
+        Page<CapitalFlow> flowPage = capitalFlowService.findAll(uid, condition, status, type);
         return new OperationResult(new BankFlowDTO(flowPage));
+    }
+
+    /**
+     * 获取资金流水详细记录
+     *
+     * @param uid
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OperationResult<BankFlowResultDTO> getAssetFlow(Long uid, Long orderId) {
+        CapitalFlow capitalFlow = capitalFlowService.findOne(orderId);
+        if(capitalFlow == null || !capitalFlow.getUid().equals(uid)){
+            return new OperationResult();
+        }
+        return new OperationResult(new BankFlowResultDTO(capitalFlow));
     }
 
     /**

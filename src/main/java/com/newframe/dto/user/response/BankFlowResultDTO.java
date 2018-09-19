@@ -1,4 +1,4 @@
-package com.newframe.dto.after.response;
+package com.newframe.dto.user.response;
 
 import com.newframe.entity.user.CapitalFlow;
 import lombok.Data;
@@ -9,10 +9,10 @@ import java.math.BigDecimal;
  * @author WangBin
  */
 @Data
-public class DrawAssetDTO {
+public class BankFlowResultDTO {
 
-    private Long uid;
     private Long orderId;
+    private Long uid;
     private String merchantName;
     private String userName;
     private String userPhoneNumber;
@@ -26,14 +26,12 @@ public class DrawAssetDTO {
     private BigDecimal amount;
     private Integer type;
     private Integer orderStatus;
-    private Long checkUid;
-    private String checkName;
     private String remarks;
     private Integer ctime;
 
-    public DrawAssetDTO(CapitalFlow capitalFlow) {
-        this.uid = capitalFlow.getUid();
+    public BankFlowResultDTO(CapitalFlow capitalFlow) {
         this.orderId = capitalFlow.getOrderId();
+        this.uid = capitalFlow.getUid();
         this.merchantName = capitalFlow.getMerchantName();
         this.userName = capitalFlow.getUserName();
         this.userPhoneNumber = capitalFlow.getUserPhoneNumber();
@@ -47,8 +45,6 @@ public class DrawAssetDTO {
         this.amount = capitalFlow.getAmount();
         this.type = capitalFlow.getType();
         this.orderStatus = capitalFlow.getOrderStatus();
-        this.checkUid = capitalFlow.getCheckUid();
-        this.checkName = capitalFlow.getCheckName();
         this.remarks = capitalFlow.getRemarks();
         this.ctime = capitalFlow.getCtime();
     }

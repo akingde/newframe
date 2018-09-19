@@ -45,6 +45,6 @@ public class OrderSupplierDTO {
     private String serialNumber;
     private Integer orderTime;
     private Integer consumerOrderTime;
-
+    private Integer platformCreditScore;
 
 }

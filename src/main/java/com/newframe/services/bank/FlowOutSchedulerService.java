@@ -23,7 +23,6 @@ public class FlowOutSchedulerService {
      * 正在处理提现
      */
     private static AtomicBoolean isFlowOutDoing = new AtomicBoolean(false);
-    private static AtomicBoolean isFlowOutChainDoing = new AtomicBoolean(false);
 
     @Autowired
     BankMoneyFlowSlave bankMoneyFlowSlave;

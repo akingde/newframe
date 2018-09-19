@@ -43,4 +43,5 @@ public class OrderRenterDTO {
     private Integer orderFinancingTimes;
     private Integer orderRentTimes;
     private Integer consumerOrderTime;
+    private Integer platformCreditScore;
 }

@@ -25,7 +25,7 @@ public class KeyUtil {
     /**
      * 获取私钥
      */
-    public static String privateKey() throws Exception {
+    public static String privateKey(){
         String message = UUID.randomUUID().toString() + System.currentTimeMillis();
         System.out.println(message);
         Keccak keccak = new Keccak();
@@ -37,7 +37,7 @@ public class KeyUtil {
     /**
      * 获取公钥
      */
-    public static String publicKey(String privateKey) throws Exception {
+    public static String publicKey(String privateKey){
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
         EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(HexUtil.hexToBytes(privateKey), spec);
         EdDSAPrivateKey sKey = new EdDSAPrivateKey(privKey);

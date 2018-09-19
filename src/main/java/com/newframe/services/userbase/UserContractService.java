@@ -22,10 +22,10 @@ public interface UserContractService {
 
     /**
      * 插入用户公私钥信息
-     * @param userContract
+     * @param uid
      * @return
      */
-    UserContract insert(UserContract userContract);
+    UserContract insert(Long uid);
 
     /**
      * 删除

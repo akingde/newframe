@@ -106,5 +106,6 @@ public class OrderRenter {
     @Column(name = "order_type")
     private Integer orderType;
 
+    private Integer platformCreditScore;
 
 }

@@ -22,6 +22,7 @@ public enum OrderResultEnum implements CodeStatus {
     RENTER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT("401011","租赁商账户可用余额不足，扣款失败"),
     FUNDER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT("401011","资金方账户可用余额不足，扣款失败"),
     ACCOUNT_NO_EXIST("401012","账户不存在"),
+    NO_HAVE_FUNDER("401013","资金方不存在"),
     ;
 
     String code;

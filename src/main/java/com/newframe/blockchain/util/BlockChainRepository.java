@@ -1,8 +1,6 @@
 package com.newframe.blockchain.util;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.newframe.blockchain.constant.BlankChainUrlConst;
 import com.newframe.blockchain.entity.*;
 import com.google.protobuf.ByteString;
@@ -25,6 +23,10 @@ public class BlockChainRepository {
 
     @Value("${blockChain.url}")
     private String blockChainUrl;
+    @Value("${blockChain.to}")
+    private String blockChainTo;
+    @Value("${blockChain.execer}")
+    private String blockChainExecer;
     @Autowired
     private OkHttpService okHttpService;
 
@@ -35,10 +37,12 @@ public class BlockChainRepository {
      */
     public ResponseChain sendTransaction(String publicKey, String privateKey, EzTransfer.EzAction actionBuilder) throws Exception{
         EzTransfer.Transaction.Builder transaction = EzTransfer.Transaction.newBuilder();
-        transaction.setExecer(ByteString.copyFrom("".getBytes(StandardCharsets.UTF_8)));
+
+        transaction.setExecer(ByteString.copyFrom(blockChainExecer.getBytes(StandardCharsets.UTF_8)));
         transaction.setPayload(actionBuilder.toByteString());
         transaction.setFee(1000000);
         transaction.setNonce(SnowFlakeUtil.CHAIN.nextId());
+        transaction.setTo(blockChainTo);
         ByteString sign = ED25519Util.sign(transaction.build().toByteArray(), HexUtil.hexToBytes(privateKey));
 
         EzTransfer.Signature.Builder signture = EzTransfer.Signature.newBuilder();
@@ -93,9 +97,7 @@ public class BlockChainRepository {
             RequestBean requestBean = new RequestBean<>(bean, BlankChainUrlConst.QUERY_TRANSACTION);
             String requestBeanStr = JSON.toJSONString(requestBean);
             // 发送区块链
-            String httpPostResult = "";
-
-            ResponseBean<TransactionResultBean> queryTransaction = JSONObject.parseObject(httpPostResult, new TypeReference<ResponseBean<TransactionResultBean>>(){});
+            ResponseBean<TransactionResultBean> queryTransaction = okHttpService.queryTransactionResult(blockChainUrl, requestBeanStr);
             if(queryTransaction == null){
                 continue;
             }

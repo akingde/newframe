@@ -63,10 +63,13 @@ public class BankSupport {
         }
         //保存到数据库
         logger.debug("保存银行最新的充值流水到数据库...");
-        saveBankMoneyFlowIn(bankFlowResultBean);
+        List<String> savedNos = saveBankMoneyFlowIn(bankFlowResultBean);
+        if(savedNos.isEmpty()){
+            return true;
+        }
         //确认完成流水处理
         logger.debug("向银行确认完成最新的充值流水...");
-        boolean result = BankRestUtils.realTimeQueryConfirm(confirmUrl, account, nos);
+        boolean result = BankRestUtils.realTimeQueryConfirm(confirmUrl, account, savedNos);
         return result;
     }
 
@@ -111,6 +114,7 @@ public class BankSupport {
                 .accnoname(bankMoneyFlow.getBankName())
                 .amount(bankMoneyFlow.getAmount().doubleValue())
                 .pecvopenaccdept(bankMoneyFlow.getSubBankName())
+                .pevvaccname(bankMoneyFlow.getBankCardHolder())
                 .useof("提现")
                 .build();
         String serialNumber = BankRestUtils.bankDealTransfer(transferUrl, transferBean);
@@ -131,11 +135,12 @@ public class BankSupport {
                 .serialnumber(bankMoneyFlow.getSerialNumber())
                 .bankCard(bankMoneyFlow.getBankCard())
                 .build();
-        if (BankDealResultBean.okSet.contains(BankRestUtils.bankDealQuery(queryUrl, queryBean))) {
+        String code = BankRestUtils.bankDealQuery(queryUrl, queryBean);
+        if (BankDealResultBean.okSet.contains(code)) {
             logger.info("银行出账成功:{}", queryBean);
             return true;
         }
-        if (BankDealResultBean.noSet.contains(BankRestUtils.bankDealQuery(queryUrl, queryBean))) {
+        if (BankDealResultBean.noSet.contains(code)) {
             logger.info("银行出账失败:{}", queryBean);
             return false;
         }

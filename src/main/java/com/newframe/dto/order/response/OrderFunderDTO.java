@@ -45,4 +45,5 @@ public class OrderFunderDTO {
     private String consumerAddress;
     private Integer consumerOrderTime;
     private Integer consumerBedDebtTimes;
+    private Integer platformCreditScore;
 }
