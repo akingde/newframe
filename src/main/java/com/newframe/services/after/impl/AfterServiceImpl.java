@@ -248,8 +248,12 @@ public class AfterServiceImpl implements AfterService {
         bankMoneyFlow.setBankCardHolder(capitalFlow.getUserName());
         bankMoneyFlow.setBankName(capitalFlow.getUserBankName());
         bankMoneyFlow.setSubBankName(capitalFlow.getUserBankDetailedName());
-        BankMoneyFlow withdraw = bankMoneyFlowOutService.withdraw(bankMoneyFlow);
-
+        BankMoneyFlow withdraw = new BankMoneyFlow();
+        try {
+            withdraw = bankMoneyFlowOutService.withdraw(bankMoneyFlow);
+        }catch (Exception e){
+            return new OperationResult(RequestResultEnum.MODIFY_ERROR, false);
+        }
         capitalFlow.setOrderStatus(AssetStatusEnum.BANK_PROCESSING.getOrderStatus());
         capitalFlow.setCheckUid(new UserDTO().getUid());
         capitalFlow.setCheckName(new UserDTO().getUserName());
@@ -278,8 +282,8 @@ public class AfterServiceImpl implements AfterService {
         capitalFlow.setRemarks(remaks);
         capitalFlowService.update(capitalFlow);
         BigDecimal amount = capitalFlow.getAmount();
-        accountManageService.saveAccountStatement(uid, WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);
-        accountManageService.saveAccountStatement(uid, WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
+        accountManageService.saveAccountStatement(capitalFlow.getUid(), WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);
+        accountManageService.saveAccountStatement(capitalFlow.getUid(), WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
         return new OperationResult(true);
     }
 }

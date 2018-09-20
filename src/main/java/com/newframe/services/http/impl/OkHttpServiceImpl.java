@@ -4,6 +4,7 @@ import com.mzlion.easyokhttp.HttpClient;
 import com.mzlion.easyokhttp.request.PostRequest;
 import com.newframe.blockchain.entity.ResponseBean;
 import com.newframe.blockchain.entity.TransactionResultBean;
+import com.newframe.dto.SmsResult;
 import com.newframe.resp.block.BlockAddress;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
@@ -11,6 +12,7 @@ import com.newframe.resp.file.UploadFilesResp;
 import com.newframe.services.http.OkHttpService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +27,9 @@ import java.util.List;
  */
 @Service
 public class OkHttpServiceImpl implements OkHttpService {
+
+    @Value("${api.besetool.service}")
+    private String smsUrl;
 
     /**
      * 传送文件到服务器去
@@ -255,5 +260,36 @@ public class OkHttpServiceImpl implements OkHttpService {
                 .charset("utf-8")
                 .asBean(new ResponseBean<TransactionResultBean>().getClass());
         return result;
+    }
+
+    /**
+     * 发送验证码
+     *
+     * @param mobile
+     * @param code
+     * @return
+     */
+    @Override
+    public SmsResult sendVerificationCode(String mobile, String templateCode, String code) {
+        String url = smsUrl + "/api/sms/sendAliVcode";
+        return HttpClient.post(url)
+                .param("mobile", mobile)
+                .param("templateCode", templateCode)
+                .param("code", code)
+                .asBean(SmsResult.class);
+    }
+
+    /**
+     * 发送通知短信
+     *
+     * @param mobile
+     * @param templateCode
+     */
+    @Override
+    public void sendSmallMessage(String mobile, String templateCode) {
+        String url = smsUrl + "/api/sms/sendAliNotice";
+        HttpClient.post(url)
+                .param("mobile", mobile)
+                .param("templateCode", templateCode);
     }
 }

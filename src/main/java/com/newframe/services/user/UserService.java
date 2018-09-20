@@ -125,16 +125,6 @@ public interface UserService {
     OperationResult<Boolean> modifyMobile(Long uid, String newMobile, String mobileCode);
 
     /**
-     * @Description 注销手机号
-     * @Author WangBin
-     * @param uid
-     * @Param mobileCode 验证码
-     * @Return
-     * @Date 2018/8/9 16:19
-     */
-    OperationResult<Boolean> removeMobile(Long uid, String mobileCode);
-
-    /**
      * @param mobile 手机号
      * @return
      * @description 校验手机号和密码是否存在
@@ -179,7 +169,7 @@ public interface UserService {
      * @param bankDTO
      * @return
      */
-    OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO);
+    OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO, String mCode);
 
     /**
      * 获取资金流水记录
