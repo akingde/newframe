@@ -32,10 +32,6 @@ public class ApiAccountController extends BaseController {
     @Autowired
     private AccountManageService accountManageService;
 
-    private Long getUid() {
-        return 3436672695388700980L;
-    }
-
     /**
      * 充值
      * 这里应该有一个公共的账户系统
@@ -320,7 +316,7 @@ public class ApiAccountController extends BaseController {
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
     public JsonResult getFunderAssetAccount(Long uid) {
-        return accountService.getFunderAssetAccount(getUid());
+        return accountService.getFunderAssetAccount(uid);
     }
 
 
@@ -335,8 +331,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderOrderFinancialAssets", method = RequestMethod.POST)
-    public JsonResult getFunderOrderFinancialAssets() {
-        return accountService.getFunderOrderFinancialAssets(getUid());
+    public JsonResult getFunderOrderFinancialAssets(Long uid) {
+        return accountService.getFunderOrderFinancialAssets(uid);
     }
 
     /**
@@ -351,8 +347,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "listFunderOrderInvestment", method = RequestMethod.POST)
-    public JsonResult listFunderOrderInvestment(Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listFunderOrderInvestment(getUid(), currentPage, pageSize, orderStatus);
+    public JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listFunderOrderInvestment(uid, currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -366,8 +362,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderOrderInvestmentDetail", method = RequestMethod.POST)
-    public JsonResult getFunderOrderInvestmentDetail(Long orderId) {
-        return accountService.getFunderOrderInvestmentDetail(getUid(), orderId);
+    public JsonResult getFunderOrderInvestmentDetail(Long uid, Long orderId) {
+        return accountService.getFunderOrderInvestmentDetail(uid, orderId);
     }
 
     /**
@@ -382,8 +378,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderOrderOverdueAssets", method = RequestMethod.POST)
-    public JsonResult getFunderOrderOverdueAssets() {
-        return accountService.getFunderOrderOverdueAssets(getUid());
+    public JsonResult getFunderOrderOverdueAssets(Long uid) {
+        return accountService.getFunderOrderOverdueAssets(uid);
     }
 
     /**
@@ -398,8 +394,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "listFunderOrderOverdue", method = RequestMethod.POST)
-    public JsonResult listFunderOrderOverdue(Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listFunderOrderOverdue(getUid(), currentPage, pageSize, orderStatus);
+    public JsonResult listFunderOrderOverdue(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listFunderOrderOverdue(uid, currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -413,8 +409,8 @@ public class ApiAccountController extends BaseController {
     @Anonymous(true)
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderOrderOverdueDetail", method = RequestMethod.POST)
-    public JsonResult getFunderOrderOverdueDetail(Long orderId) {
-        return accountService.getFunderOrderOverdueDetail(getUid(), orderId);
+    public JsonResult getFunderOrderOverdueDetail(Long uid, Long orderId) {
+        return accountService.getFunderOrderOverdueDetail(uid, orderId);
     }
 
     /**
@@ -430,8 +426,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getSupplierAssetAccount", method = RequestMethod.POST)
-    public JsonResult getSupplierAssetAccount() {
-        return accountService.getSupplierAssetAccount(getUid());
+    public JsonResult getSupplierAssetAccount(Long uid) {
+        return accountService.getSupplierAssetAccount(uid);
     }
 
 
@@ -445,8 +441,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getSupplierOrderSellAssets", method = RequestMethod.POST)
-    public JsonResult getSupplierOrderSellAssets() {
-        return accountService.getSupplierOrderSellAssets(getUid());
+    public JsonResult getSupplierOrderSellAssets(Long uid) {
+        return accountService.getSupplierOrderSellAssets(uid);
     }
 
     /**
@@ -459,8 +455,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listSupplierOrderSell", method = RequestMethod.POST)
-    public JsonResult listSupplierOrderSell(Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listSupplierOrderSell(getUid(), currentPage, pageSize, orderStatus);
+    public JsonResult listSupplierOrderSell(Long uid,Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listSupplierOrderSell(uid, currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -479,8 +475,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getHirerAssetAccount", method = RequestMethod.POST)
-    public JsonResult getHirerAssetAccount() {
-        return accountService.getHirerAssetAccount(getUid());
+    public JsonResult getHirerAssetAccount(Long uid) {
+        return accountService.getHirerAssetAccount(uid);
     }
 
     /**
@@ -496,8 +492,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getHirerOrderMaterialAssets", method = RequestMethod.POST)
-    public JsonResult getHirerOrderMaterialAssets() {
-        return accountService.getHirerOrderMaterialAssets(getUid());
+    public JsonResult getHirerOrderMaterialAssets(Long uid) {
+        return accountService.getHirerOrderMaterialAssets(uid);
     }
 
     /**
@@ -510,8 +506,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listHirerOrderMaterial", method = RequestMethod.POST)
-    public JsonResult listHirerOrderMaterial(Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listHirerOrderMaterial(getUid(), currentPage, pageSize, orderStatus);
+    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listHirerOrderMaterial(uid, currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -521,8 +517,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getHirerOrderMaterialDetail", method = RequestMethod.POST)
-    public JsonResult getHirerOrderMaterialDetail(Long orderId) {
-        return accountService.getHirerOrderMaterialDetail(getUid(), orderId);
+    public JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId) {
+        return accountService.getHirerOrderMaterialDetail(uid, orderId);
     }
 
     /**
@@ -535,8 +531,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getHirerOrderOverdueAssets", method = RequestMethod.POST)
-    public JsonResult getHirerOrderOverdueAssets() {
-        return accountService.getHirerOrderOverdueAssets(getUid());
+    public JsonResult getHirerOrderOverdueAssets(Long uid) {
+        return accountService.getHirerOrderOverdueAssets(uid);
     }
 
     /**
@@ -549,8 +545,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listHirerOrderOverdue", method = RequestMethod.POST)
-    public JsonResult listHirerOrderOverdue(Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listHirerOrderOverdue(getUid(), currentPage, pageSize, orderStatus);
+    public JsonResult listHirerOrderOverdue(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
+        return accountService.listHirerOrderOverdue(uid, currentPage, pageSize, orderStatus);
     }
 
     /**
@@ -560,8 +556,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "getHirerOrderOverdueDetail", method = RequestMethod.POST)
-    public JsonResult getHirerOrderOverdueDetail(Long orderId) {
-        return accountService.getHirerOrderOverdueDetail(getUid(), orderId);
+    public JsonResult getHirerOrderOverdueDetail(Long uid, Long orderId) {
+        return accountService.getHirerOrderOverdueDetail(uid, orderId);
     }
 
     /**
