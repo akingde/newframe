@@ -394,7 +394,6 @@ public interface AccountService {
      * @return
      */
     Account updateAccount(Account acc);
-    OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset);
 
     /**
      * 保存AccountRenterFinancing
