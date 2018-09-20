@@ -158,7 +158,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getFunderAssetAccount(Long uid) {
         AccountFunding entity = accountFundingSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         //DueAmount 转化成 DueInAmount
         AccountFundingDTO dto = new AccountFundingDTO();
@@ -179,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getFunderOrderFinancialAssets(Long uid) {
         AccountFundingFinanceAsset entity = accountFundingFinanceAssetSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountFundingFinanceAssetDTO dto = new AccountFundingFinanceAssetDTO();
         BeanUtils.copyProperties(entity, dto);
@@ -261,7 +261,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getFunderOrderOverdueAssets(Long uid) {
         AccountFundingOverdueAsset entity = accountFundingOverdueAssetSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
         BeanUtils.copyProperties(entity, dto);
@@ -333,7 +333,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getSupplierAssetAccount(Long uid) {
         AccountSupplier entity = accountSupplierSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountSupplierDTO dto = new AccountSupplierDTO();
         BeanUtils.copyProperties(entity, dto);
@@ -356,7 +356,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getSupplierOrderSellAssets(Long uid) {
         AccountSupplierSell entity = accountSupplierSellSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountSupplierSellDTO dto = new AccountSupplierSellDTO();
         BeanUtils.copyProperties(entity, dto);
@@ -416,7 +416,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getHirerAssetAccount(Long uid) {
         AccountLessor entity = accountLessorSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountLessorDTO dto = new AccountLessorDTO();
         BeanUtils.copyProperties(entity, dto);
@@ -439,7 +439,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getHirerOrderMaterialAssets(Long uid) {
         AccountLessorMatterAssetView entity = accountLessorMatterAssetViewSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountLessorMatterAssetViewDTO dto = new AccountLessorMatterAssetViewDTO();
         BeanUtils.copyProperties(entity, dto);
@@ -520,7 +520,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getHirerOrderOverdueAssets(Long uid) {
         AccountLessorOverdueAsset entity = accountLessorOverdueAssetSlave.findOne(uid);
         if (null == entity) {
-            return new JsonResult(SystemCode.SUCCESS404, null);
+            return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountLessorOverdueAssetDTO dto = new AccountLessorOverdueAssetDTO();
         BeanUtils.copyProperties(entity, dto);

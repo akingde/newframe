@@ -10,7 +10,6 @@ public enum SystemCode implements CodeStatus {
 
     SUCC("000", "成功"),
     SUCCESS("200", "成功"),
-    SUCCESS404("404", "查询结果为空"),
     NEED_LOGIN("201", "未登录"),
     BAD_REQUEST("202", "参数非法"),
     NOT_IN_WHITELIST("203", "不在白名单内"),
