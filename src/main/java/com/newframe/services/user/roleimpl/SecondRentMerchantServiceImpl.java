@@ -353,7 +353,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     /**
      * 生成角色记录
      *
-     * @param roleId
+     * @param uid
      * @return
      */
     @Override

@@ -1,7 +1,6 @@
 package com.newframe.user;
 
 import com.newframe.NewFrameApplicationTests;
-import com.newframe.blockchain.BlockChain;
 import com.newframe.enums.user.UserSMSEnum;
 import com.newframe.services.after.AfterService;
 import com.newframe.services.user.SessionService;

@@ -150,16 +150,6 @@ public class UserRentMerchantServiceImpl implements UserRentMerchantService {
     }
 
     /**
-     * 删除用户租赁商
-     *
-     * @param uid
-     */
-    @Override
-    public void delete(Long uid) {
-        userRentMerchantMaster.deleteById(uid);
-    }
-
-    /**
      * 根据手机号查找
      *
      * @param phoneNumber
