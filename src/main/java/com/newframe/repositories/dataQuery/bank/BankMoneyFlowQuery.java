@@ -15,7 +15,4 @@ import java.util.List;
 public class BankMoneyFlowQuery extends BaseQuery {
     @QBindAttrField(fieldName = "bankTransactionNo", where = Where.in)
     private List<String> bankTransactionNos = new ArrayList<>();
-
-    @QBindAttrField(fieldName = "status", where = Where.equal)
-    private Integer status;
 }

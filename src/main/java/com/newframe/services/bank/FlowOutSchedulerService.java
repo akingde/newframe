@@ -3,13 +3,13 @@ package com.newframe.services.bank;
 import com.newframe.entity.bank.BankMoneyFlow;
 import com.newframe.enums.bank.BankMoneyFlowStatus;
 import com.newframe.repositories.dataMaster.bank.BankMoneyFlowMaster;
-import com.newframe.repositories.dataQuery.bank.BankMoneyFlowQuery;
 import com.newframe.repositories.dataSlave.bank.BankMoneyFlowSlave;
 import com.newframe.services.user.UserService;
 import com.newframe.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -37,13 +37,14 @@ public class FlowOutSchedulerService {
         if (isFlowOutDoing.compareAndSet(false, true)) {
             return;
         }
-        logger.info("执行提现定时任务（完成银行出帐）查询.....");
+        logger.info("执行提现定时任务(银行处理中).....");
         try {
-            BankMoneyFlowQuery bankMoneyFlowQuery = new BankMoneyFlowQuery();
+            BankMoneyFlow bankMoneyFlowQuery = new BankMoneyFlow();
             bankMoneyFlowQuery.setStatus(BankMoneyFlowStatus.OUT_AUDIT_SUCCESS.getIntValue());
-            List<BankMoneyFlow> list = bankMoneyFlowSlave.findAll(bankMoneyFlowQuery);
+            Example<BankMoneyFlow> example = Example.of(bankMoneyFlowQuery);
+            List<BankMoneyFlow> list = bankMoneyFlowSlave.findAll(example);
             long time1 = System.currentTimeMillis();
-            logger.info("执行定时任务（完成银行出帐）开始.....共{}条需要处理", list.size());
+            logger.info("共{}条提现记录,(银行处理中).....", list.size());
             int count = 0;
             for (BankMoneyFlow bankMoneyFlow : list) {
                 Boolean bool = BankSupport.dealTransferQuery(bankMoneyFlow);
@@ -60,10 +61,10 @@ public class FlowOutSchedulerService {
                 }
             }
             long time2 = System.currentTimeMillis();
-            logger.info("执行提现定时任务（完成银行出帐）结束.....完成{}条,耗时{}毫秒", count, time2 - time1);
+            logger.info("执行提现定时任务(银行处理中).....完成{}条,耗时{}毫秒", count, time2 - time1);
 
         } catch (Exception e) {
-            logger.error("执行提现定时任务（完成银行出帐）出错:{}", e.getMessage());
+            logger.error("执行提现定时任务(银行处理中):{}", e.getMessage());
         } finally {
             isFlowOutDoing.set(false);
         }

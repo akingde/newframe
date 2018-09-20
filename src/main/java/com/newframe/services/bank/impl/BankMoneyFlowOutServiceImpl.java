@@ -6,6 +6,7 @@ import com.newframe.repositories.dataMaster.bank.BankMoneyFlowMaster;
 import com.newframe.repositories.dataSlave.bank.BankMoneyFlowSlave;
 import com.newframe.services.bank.BankMoneyFlowOutService;
 import com.newframe.services.bank.BankSupport;
+import com.newframe.services.bank.data.BankQueryType;
 import com.newframe.services.user.UserService;
 import com.newframe.utils.DateUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
@@ -45,6 +46,7 @@ public class BankMoneyFlowOutServiceImpl implements BankMoneyFlowOutService {
     @Override
     public BankMoneyFlow withdraw(BankMoneyFlow bankMoneyFlow) {
         bankMoneyFlow.setId(idGlobalGenerator.getSeqId(BankMoneyFlow.class));
+        bankMoneyFlow.setType(BankQueryType.FLOW_OUT);
         bankMoneyFlow.setStatus(BankMoneyFlowStatus.OUT_AUDIT_READY.getIntValue());
         bankMoneyFlowMaster.save(bankMoneyFlow);
         return agreeAuditBankMoneyFlowOut(bankMoneyFlow);

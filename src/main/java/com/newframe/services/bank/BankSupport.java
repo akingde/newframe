@@ -128,7 +128,7 @@ public class BankSupport {
      * @return
      */
     public static Boolean dealTransferQuery(BankMoneyFlow bankMoneyFlow) {
-        logger.debug("查询银行出账情况:{}", bankMoneyFlow);
+        logger.debug("查询银行提现流水:{}", bankMoneyFlow);
         Environment env = SpringContextHolder.getBean(Environment.class);
         String queryUrl = env.getProperty("bank.deal.query");
         BankDealQueryBean queryBean = BankDealQueryBean.builder()
@@ -137,14 +137,14 @@ public class BankSupport {
                 .build();
         String code = BankRestUtils.bankDealQuery(queryUrl, queryBean);
         if (BankDealResultBean.okSet.contains(code)) {
-            logger.info("银行出账成功:{}", queryBean);
+            logger.info("银行返回提现成功:{}", queryBean);
             return true;
         }
         if (BankDealResultBean.noSet.contains(code)) {
-            logger.info("银行出账失败:{}", queryBean);
+            logger.info("银行返回提现失败:{}", queryBean);
             return false;
         }
-        logger.info("银行出账中:{}", queryBean);
+        logger.info("银行返回提现处理中:{}", queryBean);
         return null;
     }
 
