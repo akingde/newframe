@@ -27,7 +27,6 @@ public class KeyUtil {
      */
     public static String privateKey(){
         String message = UUID.randomUUID().toString() + System.currentTimeMillis();
-        System.out.println(message);
         Keccak keccak = new Keccak();
         String hexKey = HexUtil.bytesToHex(message.getBytes());
         byte[] hash = keccak.getHash(hexKey.getBytes(), Parameters.KECCAK_256);

@@ -2,7 +2,9 @@ package com.newframe.user;
 
 import com.newframe.NewFrameApplicationTests;
 import com.newframe.blockchain.BlockChain;
+import com.newframe.enums.user.UserSMSEnum;
 import com.newframe.services.after.AfterService;
+import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ public class UserTest extends NewFrameApplicationTests {
     private AfterService afterService;
     @Autowired
     private BlockChain blockChain;
+    @Autowired
+    private SessionService sessionService;
 
     @Test
     public void addRechargeRecord(){
@@ -51,11 +55,20 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void failDrawAssetCheck(){
-        afterService.failDrawAssetCheck(-1L, 1537167000850148L);
+        afterService.failDrawAssetCheck(-1L, 1537167000850144L, "");
     }
 
     @Test
     public void blockTest(){
         blockChain.funderCheckPass(1234L, "test");
+    }
+
+    @Test
+    public void redistest(){
+        String mobile = "18939166685";
+        Integer type = UserSMSEnum.REGISTER.getCodeType();
+        String code = "1234";
+        sessionService.saveCode(mobile, type, code);
+        sessionService.checkCode(mobile, type, code);
     }
 }

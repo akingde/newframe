@@ -3,6 +3,7 @@ package com.newframe.services.user.userimpl;
 import com.google.common.collect.Lists;
 import com.newframe.blockchain.util.KeyUtil;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.SmsResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
 import com.newframe.entity.account.Account;
@@ -12,6 +13,7 @@ import com.newframe.enums.bank.BankEnum;
 import com.newframe.enums.user.*;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
+import com.newframe.services.http.OkHttpService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
@@ -20,6 +22,7 @@ import com.newframe.utils.BankCardUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 
 import static com.newframe.enums.account.DealTypeEnum.*;
 import static com.newframe.enums.account.AccountTypeEnum.*;
+import static com.newframe.enums.sms.AliSmsVarEnum.REGISTER_SUCCESS;
 
 /**
  * @author WangBin
@@ -64,6 +68,8 @@ public class UserServiceImpl implements UserService {
     private AccountService accountService;
     @Autowired
     private UserContractService userContractService;
+    @Autowired
+    private OkHttpService okHttpService;
 
     /**
      * @param mobile
@@ -77,13 +83,25 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public OperationResult<String> sendVerificationCode(String mobile, Integer codeType) {
+        if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
+            return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
+        }
+        UserSMSEnum userSMSEnum = UserSMSEnum.checkType(codeType);
+        if(userSMSEnum == null){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR);
+        }
         String str = "0123456789";
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < 4; i ++){
             char ch=str.charAt(new Random().nextInt(str.length()));
             result.append(ch);
         }
-        return new OperationResult<String>(result.toString());
+//        SmsResult smsResult = okHttpService.sendVerificationCode(mobile, userSMSEnum.getTemplateCode(), result.toString());
+//        if(!smsResult.getData().getStatus()){
+//            return new OperationResult<>(RequestResultEnum.SEND_MESSAGE_ERROR, smsResult.getData().getMsg());
+//        }
+        sessionService.saveCode(mobile, codeType, result.toString());
+        return new OperationResult<>(result.toString());
     }
 
     /**
@@ -99,8 +117,11 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
-        if(mCode == null){
+        if(StringUtils.isEmpty(mCode)){
             return new OperationResult<>(RequestResultEnum.VERIFICATION_CODE_INVALID);
+        }
+        if(!sessionService.checkCode(mobile, UserSMSEnum.REGISTER.getCodeType(), mCode)){
+            return new OperationResult<>(RequestResultEnum.CHECK_CODE_ERROR);
         }
         if(checkExistsMobileAndPassword(mobile).getEntity().getMobile()){
             return new OperationResult<>(RequestResultEnum.MOBILE_EXISTS);
@@ -117,6 +138,7 @@ public class UserServiceImpl implements UserService {
 //        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
 //        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
 //        String token = isWeb ? webToken : appToken;
+        okHttpService.sendSmallMessage(mobile, REGISTER_SUCCESS.getTemplateCode());
         return new OperationResult(new UserBaseInfoDTO(baseInfo.getUid(), UUID.randomUUID().toString(), mobile));
     }
 
@@ -190,9 +212,15 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(mobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID);
         }
+        if(StringUtils.isEmpty(mCode)){
+            return new OperationResult<>(RequestResultEnum.VERIFICATION_CODE_INVALID);
+        }
         UserBaseInfo userBaseInfo = userBaseInfoService.findOne(mobile);
         if(userBaseInfo == null){
             return register(mobile, mCode);
+        }
+        if(!sessionService.checkCode(mobile, UserSMSEnum.LOGIN.getCodeType(), mCode)){
+            return new OperationResult<>(RequestResultEnum.CHECK_CODE_ERROR);
         }
 //        String token = modifyToken(userBaseInfo.getUid(), isWeb);
         String token = UUID.randomUUID().toString();
@@ -245,6 +273,9 @@ public class UserServiceImpl implements UserService {
         }
         if(registerDTO.getPassword()){
             return new OperationResult(RequestResultEnum.PASSWORD_EXISTS, false);
+        }
+        if(!sessionService.checkCode(mobile, UserSMSEnum.SET_PASSWORD.getCodeType(), mCode)){
+            return new OperationResult<>(RequestResultEnum.CHECK_CODE_ERROR);
         }
         return new OperationResult(modifyPasswordByMobile(mobile, password));
     }
@@ -346,6 +377,9 @@ public class UserServiceImpl implements UserService {
         if(userBaseInfo == null){
             return new OperationResult(RequestResultEnum.USER_NOT_EXISTS, false);
         }
+        if(!sessionService.checkCode(mobile, UserSMSEnum.FORGET_PASSWORD.getCodeType(), mCode)){
+            return new OperationResult<>(RequestResultEnum.CHECK_CODE_ERROR);
+        }
         return new OperationResult(modifyPasswordByMobile(mobile, password));
     }
 
@@ -365,29 +399,21 @@ public class UserServiceImpl implements UserService {
         if(!PatternEnum.checkPattern(newMobile, PatternEnum.mobile)){
             return new OperationResult<>(RequestResultEnum.MOBILE_INVALID, false);
         }
+        if(StringUtils.isEmpty(mobileCode)){
+            return new OperationResult(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
+        }
+        UserBaseInfo info = userBaseInfoService.findOne(uid);
+        if(info == null){
+            return new OperationResult(RequestResultEnum.USER_NOT_EXISTS, false);
+        }
+        if(!sessionService.checkCode(info.getPhoneNumber(), UserSMSEnum.MODIFY_MOBILE.getCodeType(), mobileCode)){
+            return new OperationResult<>(RequestResultEnum.CHECK_CODE_ERROR);
+        }
         OperationResult<Boolean> result = modifyPhoneNumber(uid, newMobile);
         if (!result.getEntity()){
             return result;
         }
         roleBaseService.modifyMobile(uid, newMobile);
-        return new OperationResult(true);
-    }
-
-    /**
-     * @param uid
-     * @param mobileCode
-     * @Description 注销手机号
-     * @Author WangBin
-     * @Param mobileCode 验证码
-     * @Return
-     * @Date 2018/8/9 16:19
-     */
-    @Override
-    public OperationResult<Boolean> removeMobile(Long uid, String mobileCode) {
-        if(mobileCode == null){
-            return new OperationResult(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
-        }
-        userBaseInfoService.removeByUid(uid);
         return new OperationResult(true);
     }
 
@@ -480,7 +506,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO) {
+    public OperationResult<Boolean> saveBankNumber(Long uid, BankDTO bankDTO, String mCode) {
 
         if(BankEnum.isEmpty(bankDTO.getBankName())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
@@ -490,6 +516,9 @@ public class UserServiceImpl implements UserService {
         }
         if(StringUtils.isEmpty(bankDTO.getBankNumber())){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(StringUtils.isEmpty(mCode)){
+            return new OperationResult<>(RequestResultEnum.VERIFICATION_CODE_INVALID, false);
         }
         UserBaseInfo baseInfo = userBaseInfoService.findOne(uid);
         if(baseInfo == null){
@@ -503,6 +532,9 @@ public class UserServiceImpl implements UserService {
         OperationResult<UserRoleDTO> roleInfo = roleBaseService.getUserRoleInfo(userRole.getUid(), userRole.getRoleId());
         if(userBankService.findOne(bankDTO.getBankNumber()) != null){
             return new OperationResult(RequestResultEnum.BANK_EXISTS, false);
+        }
+        if(!sessionService.checkCode(baseInfo.getPhoneNumber(), UserSMSEnum.ADD_BANKCARD.getCodeType(), mCode)){
+            return new OperationResult<>(RequestResultEnum.CHECK_CODE_ERROR);
         }
         userBankService.insert(new UserBank(uid, bankDTO, baseInfo.getPhoneNumber()));
         return new OperationResult(true);

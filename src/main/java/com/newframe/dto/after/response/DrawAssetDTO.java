@@ -28,6 +28,7 @@ public class DrawAssetDTO {
     private Integer orderStatus;
     private Long checkUid;
     private String checkName;
+    private String remarks;
     private Integer ctime;
 
     public DrawAssetDTO(CapitalFlow capitalFlow) {
@@ -48,6 +49,7 @@ public class DrawAssetDTO {
         this.orderStatus = capitalFlow.getOrderStatus();
         this.checkUid = capitalFlow.getCheckUid();
         this.checkName = capitalFlow.getCheckName();
+        this.remarks = capitalFlow.getRemarks();
         this.ctime = capitalFlow.getCtime();
     }
 }
