@@ -9,7 +9,7 @@ public class FlowInSchedulerService {
     @Autowired
     BankMoneyFlowInService bankMoneyFlowInService;
 
-//    @Scheduled(cron = "${schedule.moneyFlowInTask}")
+    @Scheduled(cron = "${schedule.moneyFlowInTask}")
     public void statusCheckTask() {
         BankSupport.syncRealTimeInSchedule();
     }

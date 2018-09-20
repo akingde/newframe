@@ -10,6 +10,7 @@ import com.newframe.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class FlowOutSchedulerService {
     @Autowired
     UserService userService;
 
-//    @Scheduled(cron = "${schedule.moneyFlowOutTask}")
+    @Scheduled(cron = "${schedule.moneyFlowOutTask}")
     public void statusCheckTask() {
         if (isFlowOutDoing.compareAndSet(false, true)) {
             return;
