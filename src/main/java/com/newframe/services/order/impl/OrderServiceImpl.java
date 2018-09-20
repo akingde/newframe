@@ -74,11 +74,6 @@ public class OrderServiceImpl implements OrderService {
     OrderHirerSlave orderHirerSlave;
 
     @Autowired
-    FinancingBuyMachineMaster financingBuyMachineMaster;
-    @Autowired
-    FinancingBuyMachineSlave financingBuyMachineSlave;
-
-    @Autowired
     OrderFunderEvidenceMaster orderFunderEvidenceMaster;
     @Autowired
     OrderFunderEvidenceSlave orderFunderEvidenceSlave;
@@ -380,8 +375,8 @@ public class OrderServiceImpl implements OrderService {
                     orderHirer.setMonthlyPayment(productPrice.getMonthPayment());
                 }else{
                     // 全款支付的首付、月租金等都为0
-                    orderHirer.setDownPayment(new BigDecimal("0"));
-                    orderHirer.setMonthlyPayment(new BigDecimal("0"));
+                    orderHirer.setDownPayment(productPrice.getRentPrice().add(accidentBenefit));
+                    orderHirer.setMonthlyPayment(productPrice.getRentPrice());
                 }
             }
 
@@ -473,6 +468,7 @@ public class OrderServiceImpl implements OrderService {
         query.setProductName(productInfo.getProductName());
         List<ProductSupplier> products = productSupplierSlave.findAll(query);
         List<SupplierInfoDTO> dtos = new ArrayList<>();
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
         for (ProductSupplier product : products) {
             UserSupplier userSupplier = userSupplierService.findOne(product.getSupplierId());
             if (userSupplier != null) {
@@ -480,6 +476,14 @@ public class OrderServiceImpl implements OrderService {
                 dto.setSupplierId(product.getSupplierId());
                 dto.setSupplierName(userSupplier.getMerchantName());
                 dto.setFinancingAmount(getFinancingAmount(orderId));
+                if(orderRenterOptional.isPresent()){
+                    OrderRenter orderRenter = orderRenterOptional.get();
+                    dto.setAccidentBenefit(orderRenter.getAccidentBenefit());
+                    dto.setDownPayment(orderRenter.getDownPayment());
+                    dto.setMonthPayment(orderRenter.getMonthlyPayment());
+                }
+
+
                 dtos.add(dto);
             }
         }
@@ -1429,6 +1433,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setOrderStatus(supplierOrderStatus);
         orderSupplier.setCtime(null);
         orderSupplier.setUtime(null);
+        orderSupplier.setPlatformCreditScore(orderRenter.getPlatformCreditScore());
         // 查询供应商商品的供应价格
         OrderProductSupplierQuery query = new OrderProductSupplierQuery();
         query.setProductBrand(orderRenter.getProductBrand());
