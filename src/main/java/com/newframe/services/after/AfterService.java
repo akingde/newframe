@@ -106,5 +106,5 @@ public interface AfterService {
      * @param orderId
      * @return
      */
-    OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId);
+    OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId, String remarks);
 }

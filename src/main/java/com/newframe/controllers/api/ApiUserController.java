@@ -244,26 +244,6 @@ public class ApiUserController extends BaseController {
     }
 
     /**
-     * @param mCode 注销手机号
-     * @return
-     * @description 注销手机号
-     * @author WangBin
-     * @date 2018/8/9 16:19
-     */
-    @PostMapping("removeMobile")
-    public JsonResult removeMobile(Long uid, String mCode) {
-//      Long uid = RequestUser.getCurrentUid();
-        if (uid == null){
-            return error(SystemCode.NEED_LOGIN);
-        }
-        OperationResult<Boolean> result = userService.removeMobile(uid, mCode);
-        if (!result.getEntity()) {
-            return error(result.getErrorCode());
-        }
-        return success(result.getEntity());
-    }
-
-    /**
      * 获取平台银行信息
      * @return
      */
@@ -296,11 +276,11 @@ public class ApiUserController extends BaseController {
      * @return
      */
     @PostMapping("saveBankNumber")
-    public JsonResult saveBankNumber(Long uid, BankDTO bankDTO){
+    public JsonResult saveBankNumber(Long uid, BankDTO bankDTO, String mCode){
         if (uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<Boolean> result = userService.saveBankNumber(uid, bankDTO);
+        OperationResult<Boolean> result = userService.saveBankNumber(uid, bankDTO, mCode);
         if(!result.getEntity()){
             return error(result.getErrorCode());
         }

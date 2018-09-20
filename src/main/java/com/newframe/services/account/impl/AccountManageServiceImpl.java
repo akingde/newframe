@@ -563,7 +563,12 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
         AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
-
+        if (null == accountRenterFinancing){
+            return new OperationResult<>(BizErrorCode.ACCOUNT_NOTEXIST);
+        }
+        if (null == accountFundingFinanceAsset){
+            return new OperationResult<>(BizErrorCode.ACCOUNT_NOTEXIST);
+        }
         Long renterUid = accountRenterFinancing.getUid();
         Long funderUid = accountFundingFinanceAsset.getUid();
         //操作租赁商的账户

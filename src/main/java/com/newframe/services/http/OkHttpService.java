@@ -2,6 +2,7 @@ package com.newframe.services.http;
 
 import com.newframe.blockchain.entity.ResponseBean;
 import com.newframe.blockchain.entity.TransactionResultBean;
+import com.newframe.dto.SmsResult;
 import com.newframe.resp.block.BlockAddress;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
@@ -115,4 +116,19 @@ public interface OkHttpService {
      * @return
      */
     ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json);
+
+    /**
+     * 发送验证码
+     * @param mobile
+     * @param code
+     * @return
+     */
+    SmsResult sendVerificationCode(String mobile, String templateCode, String code);
+
+    /**
+     * 发送通知短信
+     * @param mobile
+     * @param templateCode
+     */
+    void sendSmallMessage(String mobile,  String templateCode);
 }

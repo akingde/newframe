@@ -20,6 +20,7 @@ public enum RequestResultEnum implements CodeStatus {
     CHECK_CODE_ERROR("11009", "验证码认证失败"),
     LOGIN_ERROR("11010", "登录失败"),
     NOT_FINISH_ORDER_EXISTS("11011", "存在未完成的订单"),
+    SEND_MESSAGE_ERROR("11012", "发送短信失败"),
 
     ADDRESS_NOT_EXISTS("20000", "地址不存在"),
     ADDRESS_ERROR("20001", "地址错误"),

@@ -66,4 +66,22 @@ public interface SessionService {
      * @return
      */
     LoginInfo validateLoginInfo(String token, String uid, boolean isWeb);
+
+    /**
+     * 保存验证码
+     * @param mobile
+     * @param type
+     * @param code
+     * @return
+     */
+    void saveCode(String mobile, Integer type, String code);
+
+    /**
+     * 校验验证码
+     * @param mobile
+     * @param type
+     * @param code
+     * @return
+     */
+    boolean checkCode(String mobile, Integer type, String code);
 }

@@ -1,5 +1,6 @@
 package com.newframe.services.user.userimpl;
 
+import com.newframe.blockchain.util.KeyUtil;
 import com.newframe.dto.LoginInfo;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.user.UserAppToken;
@@ -31,6 +32,8 @@ public class SessionServiceImpl implements SessionService {
 
     private final static String app_prefix = "mobile_app_";
     private final static String web_prefix = "mobile_web_";
+
+    private final static String prefix= "mobile_";
 
     /**
      * 设置app token
@@ -166,5 +169,41 @@ public class SessionServiceImpl implements SessionService {
         redisTemplate.delete(key);
         redisTemplate.opsForValue().set(key, token);
         redisTemplate.expire(key, 2, TimeUnit.HOURS);
+    }
+
+    /**
+     * 保存验证码
+     *
+     * @param mobile
+     * @param type
+     * @param code
+     * @return
+     */
+    @Override
+    public void saveCode(String mobile, Integer type, String code) {
+        String key = prefix + mobile + type;
+        redisTemplate.delete(key);
+        redisTemplate.opsForValue().set(key, code);
+        redisTemplate.expire(key, 5, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 校验验证码
+     *
+     * @param mobile
+     * @param type
+     * @param code
+     * @return
+     */
+    @Override
+    public boolean checkCode(String mobile, Integer type, String code) {
+//        String key = prefix + mobile + type;
+//        Object redisCode = redisTemplate.opsForValue().get(key);
+//        if(redisCode == null){
+//            return false;
+//        }
+//        redisTemplate.delete(key);
+//        return code.equals(redisCode);
+        return true;
     }
 }

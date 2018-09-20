@@ -194,11 +194,11 @@ public class ApiAfterController extends BaseController {
      * @return
      */
     @PostMapping("failDrawAssetCheck")
-    public  JsonResult failDrawAssetCheck(Long uid, Long orderId){
+    public  JsonResult failDrawAssetCheck(Long uid, Long orderId, String remarks){
         if(uid == null){
             error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<Boolean> result = afterService.failDrawAssetCheck(uid, orderId);
+        OperationResult<Boolean> result = afterService.failDrawAssetCheck(uid, orderId, remarks);
         if(!result.getEntity()){
             error(result.getErrorCode());
         }
