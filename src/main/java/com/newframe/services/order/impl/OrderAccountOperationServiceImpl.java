@@ -59,6 +59,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                         orderFunder.getDeposit(),
                         new BigDecimal("0"));
                 // 冻结金额增加
+                // 将融资首付扣除到冻结金额，融资被拒绝解冻，融资成功直接支付融资购机还款首付
                 accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                         DealTypeEnum.ACCOUNTTRANSFER,
                         AccountTypeEnum.FROZENASSETS,
