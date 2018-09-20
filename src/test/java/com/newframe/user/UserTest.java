@@ -71,4 +71,7 @@ public class UserTest extends NewFrameApplicationTests {
         sessionService.saveCode(mobile, type, code);
         sessionService.checkCode(mobile, type, code);
     }
+
+//    @Test
+//    public
 }

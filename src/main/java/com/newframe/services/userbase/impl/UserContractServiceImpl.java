@@ -53,6 +53,7 @@ public class UserContractServiceImpl implements UserContractService {
         UserContract userContract = new UserContract();
         String privateKey = KeyUtil.privateKey();
         String publicKey = KeyUtil.publicKey(privateKey);
+        userContract.setUid(uid);
         userContract.setPrivatekey(privateKey);
         userContract.setPublickey(publicKey);
         return userContractMaster.save(userContract);
