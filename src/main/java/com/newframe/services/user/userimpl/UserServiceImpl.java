@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
         userPwd.setUid(baseInfo.getUid());
         userPwdService.insert(userPwd);
         accountManageService.saveAccount(userBaseInfo.getUid());
-//        userContractService.insert(baseInfo.getUid());
+        userContractService.insert(baseInfo.getUid());
 //        String appToken = sessionService.setAppUserToken(baseInfo.getUid());
 //        String webToken = sessionService.setWebUserToken(baseInfo.getUid());
 //        String token = isWeb ? webToken : appToken;
