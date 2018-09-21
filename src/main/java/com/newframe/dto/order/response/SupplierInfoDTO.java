@@ -13,4 +13,7 @@ public class SupplierInfoDTO {
     private Long supplierId;
     private String supplierName;
     private BigDecimal financingAmount;
+    private BigDecimal monthPayment;
+    private BigDecimal accidentBenefit;
+    private BigDecimal downPayment;
 }
