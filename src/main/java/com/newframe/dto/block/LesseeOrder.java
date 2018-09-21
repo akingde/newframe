@@ -6,7 +6,7 @@ import lombok.Data;
  * @author WangBin
  */
 @Data
-public class EzLesseeOrder extends EzProdDetail{
+public class LesseeOrder extends ProdDetail {
     private String orderId;
     private Integer orderTime;
     private String phoneNum;

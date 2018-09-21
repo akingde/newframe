@@ -3,6 +3,7 @@ package com.newframe.user;
 import com.newframe.NewFrameApplicationTests;
 import com.newframe.enums.user.UserSMSEnum;
 import com.newframe.services.after.AfterService;
+import com.newframe.services.block.BlockChain;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void blockTest(){
-        blockChain.funderCheckPass(1234L, "test");
+        blockChain.funderApply(1234L, "", "test");
     }
 
     @Test

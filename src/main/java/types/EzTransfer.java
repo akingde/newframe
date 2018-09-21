@@ -52,6 +52,10 @@ public final class EzTransfer {
      */
     AT_FINANCE_REFUSE(7),
     /**
+     * <pre>
+     *    AT_FUND = 8;
+     * </pre>
+     *
      * <code>AT_FUND_SUPPLIER = 8;</code>
      */
     AT_FUND_SUPPLIER(8),
@@ -139,6 +143,10 @@ public final class EzTransfer {
      */
     public static final int AT_FINANCE_REFUSE_VALUE = 7;
     /**
+     * <pre>
+     *    AT_FUND = 8;
+     * </pre>
+     *
      * <code>AT_FUND_SUPPLIER = 8;</code>
      */
     public static final int AT_FUND_SUPPLIER_VALUE = 8;
@@ -691,12 +699,28 @@ public final class EzTransfer {
     FM_ASSIGNMENT_OF_DEBT(4),
     /**
      * <pre>
+     *贷款+保理
+     * </pre>
+     *
+     * <code>FM_LOAN_FACTORING = 5;</code>
+     */
+    FM_LOAN_FACTORING(5),
+    /**
+     * <pre>
+     *贷款+债权转让
+     * </pre>
+     *
+     * <code>FM_LOAN_ASSIGNMENT_OF_DEBT = 6;</code>
+     */
+    FM_LOAN_ASSIGNMENT_OF_DEBT(6),
+    /**
+     * <pre>
      *线下
      * </pre>
      *
-     * <code>FM_OFFLINE = 5;</code>
+     * <code>FM_OFFLINE = 7;</code>
      */
-    FM_OFFLINE(5),
+    FM_OFFLINE(7),
     UNRECOGNIZED(-1),
     ;
 
@@ -738,12 +762,28 @@ public final class EzTransfer {
     public static final int FM_ASSIGNMENT_OF_DEBT_VALUE = 4;
     /**
      * <pre>
+     *贷款+保理
+     * </pre>
+     *
+     * <code>FM_LOAN_FACTORING = 5;</code>
+     */
+    public static final int FM_LOAN_FACTORING_VALUE = 5;
+    /**
+     * <pre>
+     *贷款+债权转让
+     * </pre>
+     *
+     * <code>FM_LOAN_ASSIGNMENT_OF_DEBT = 6;</code>
+     */
+    public static final int FM_LOAN_ASSIGNMENT_OF_DEBT_VALUE = 6;
+    /**
+     * <pre>
      *线下
      * </pre>
      *
-     * <code>FM_OFFLINE = 5;</code>
+     * <code>FM_OFFLINE = 7;</code>
      */
-    public static final int FM_OFFLINE_VALUE = 5;
+    public static final int FM_OFFLINE_VALUE = 7;
 
 
     public final int getNumber() {
@@ -769,7 +809,9 @@ public final class EzTransfer {
         case 2: return FM_FACTORING;
         case 3: return FM_FINANCIAL;
         case 4: return FM_ASSIGNMENT_OF_DEBT;
-        case 5: return FM_OFFLINE;
+        case 5: return FM_LOAN_FACTORING;
+        case 6: return FM_LOAN_ASSIGNMENT_OF_DEBT;
+        case 7: return FM_OFFLINE;
         default: return null;
       }
     }
@@ -849,7 +891,7 @@ public final class EzTransfer {
     FOS_AUDIT_FAILED(2),
     /**
      * <pre>
-     *待发货
+     *    FOS_TO_BE_PAY = 3;//待支付
      * </pre>
      *
      * <code>FOS_TO_BE_SHIPPED = 3;</code>
@@ -896,7 +938,7 @@ public final class EzTransfer {
     public static final int FOS_AUDIT_FAILED_VALUE = 2;
     /**
      * <pre>
-     *待发货
+     *    FOS_TO_BE_PAY = 3;//待支付
      * </pre>
      *
      * <code>FOS_TO_BE_SHIPPED = 3;</code>
@@ -1023,7 +1065,7 @@ public final class EzTransfer {
     ROS_AUDIT_FAILED(2),
     /**
      * <pre>
-     *待发货
+     *    ROS_TO_BE_PAY = 3;//待支付
      * </pre>
      *
      * <code>ROS_TO_BE_SHIPPED = 3;</code>
@@ -1070,7 +1112,7 @@ public final class EzTransfer {
     public static final int ROS_AUDIT_FAILED_VALUE = 2;
     /**
      * <pre>
-     *待发货
+     *    ROS_TO_BE_PAY = 3;//待支付
      * </pre>
      *
      * <code>ROS_TO_BE_SHIPPED = 3;</code>
@@ -1558,7 +1600,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *资金方打款给供应商
+     *        EzFund fund = 8;//资金方放款
      * </pre>
      *
      * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -1566,7 +1608,7 @@ public final class EzTransfer {
     types.EzTransfer.EzFundSupplier getFundSupplier();
     /**
      * <pre>
-     *资金方打款给供应商
+     *        EzFund fund = 8;//资金方放款
      * </pre>
      *
      * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -2446,7 +2488,7 @@ public final class EzTransfer {
     public static final int FUNDSUPPLIER_FIELD_NUMBER = 8;
     /**
      * <pre>
-     *资金方打款给供应商
+     *        EzFund fund = 8;//资金方放款
      * </pre>
      *
      * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -2459,7 +2501,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *资金方打款给供应商
+     *        EzFund fund = 8;//资金方放款
      * </pre>
      *
      * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -4976,7 +5018,7 @@ public final class EzTransfer {
               types.EzTransfer.EzFundSupplier, types.EzTransfer.EzFundSupplier.Builder, types.EzTransfer.EzFundSupplierOrBuilder> fundSupplierBuilder_;
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -4996,7 +5038,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -5016,7 +5058,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -5034,7 +5076,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -5060,7 +5102,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -5083,7 +5125,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -5093,7 +5135,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -5110,7 +5152,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *资金方打款给供应商
+       *        EzFund fund = 8;//资金方放款
        * </pre>
        *
        * <code>optional .types.EzFundSupplier fundSupplier = 8;</code>
@@ -7108,7 +7150,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -7116,7 +7158,7 @@ public final class EzTransfer {
     java.lang.String getPubKey();
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -7241,7 +7283,7 @@ public final class EzTransfer {
     private volatile java.lang.Object pubKey_;
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -7260,7 +7302,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -7658,7 +7700,7 @@ public final class EzTransfer {
       private java.lang.Object pubKey_ = "";
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -7677,7 +7719,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -7697,7 +7739,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -7714,7 +7756,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -7727,7 +7769,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -7892,7 +7934,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -7900,7 +7942,7 @@ public final class EzTransfer {
     java.lang.String getPubKey();
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -8025,7 +8067,7 @@ public final class EzTransfer {
     private volatile java.lang.Object pubKey_;
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -8044,7 +8086,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -8442,7 +8484,7 @@ public final class EzTransfer {
       private java.lang.Object pubKey_ = "";
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -8461,7 +8503,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -8481,7 +8523,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -8498,7 +8540,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -8511,7 +8553,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -8676,7 +8718,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -8684,7 +8726,7 @@ public final class EzTransfer {
     java.lang.String getPubKey();
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -8809,7 +8851,7 @@ public final class EzTransfer {
     private volatile java.lang.Object pubKey_;
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -8828,7 +8870,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -9226,7 +9268,7 @@ public final class EzTransfer {
       private java.lang.Object pubKey_ = "";
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -9245,7 +9287,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -9265,7 +9307,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -9282,7 +9324,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -9295,7 +9337,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -9460,7 +9502,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -9468,7 +9510,7 @@ public final class EzTransfer {
     java.lang.String getPubKey();
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -9593,7 +9635,7 @@ public final class EzTransfer {
     private volatile java.lang.Object pubKey_;
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -9612,7 +9654,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -10010,7 +10052,7 @@ public final class EzTransfer {
       private java.lang.Object pubKey_ = "";
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10029,7 +10071,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10049,7 +10091,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10066,7 +10108,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10079,7 +10121,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10244,7 +10286,7 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -10252,7 +10294,7 @@ public final class EzTransfer {
     java.lang.String getPubKey();
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -10280,7 +10322,10 @@ public final class EzTransfer {
 
     /**
      * <pre>
-     *属于哪个一级租赁商
+     *    int64 phoneNum = 4;
+     *    string realName = 5;
+     *    int64 idNum = 6;
+     *    string addr = 7;
      * </pre>
      *
      * <code>optional int64 belongTo = 8;</code>
@@ -10392,7 +10437,7 @@ public final class EzTransfer {
     private volatile java.lang.Object pubKey_;
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -10411,7 +10456,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *公钥
+     *    int64 businessLicenseNum = 2;
      * </pre>
      *
      * <code>optional string pubKey = 2;</code>
@@ -10476,7 +10521,10 @@ public final class EzTransfer {
     private long belongTo_;
     /**
      * <pre>
-     *属于哪个一级租赁商
+     *    int64 phoneNum = 4;
+     *    string realName = 5;
+     *    int64 idNum = 6;
+     *    string addr = 7;
      * </pre>
      *
      * <code>optional int64 belongTo = 8;</code>
@@ -10840,7 +10888,7 @@ public final class EzTransfer {
       private java.lang.Object pubKey_ = "";
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10859,7 +10907,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10879,7 +10927,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10896,7 +10944,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -10909,7 +10957,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *公钥
+       *    int64 businessLicenseNum = 2;
        * </pre>
        *
        * <code>optional string pubKey = 2;</code>
@@ -11018,7 +11066,10 @@ public final class EzTransfer {
       private long belongTo_ ;
       /**
        * <pre>
-       *属于哪个一级租赁商
+       *    int64 phoneNum = 4;
+       *    string realName = 5;
+       *    int64 idNum = 6;
+       *    string addr = 7;
        * </pre>
        *
        * <code>optional int64 belongTo = 8;</code>
@@ -11028,7 +11079,10 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *属于哪个一级租赁商
+       *    int64 phoneNum = 4;
+       *    string realName = 5;
+       *    int64 idNum = 6;
+       *    string addr = 7;
        * </pre>
        *
        * <code>optional int64 belongTo = 8;</code>
@@ -11041,7 +11095,10 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *属于哪个一级租赁商
+       *    int64 phoneNum = 4;
+       *    string realName = 5;
+       *    int64 idNum = 6;
+       *    string addr = 7;
        * </pre>
        *
        * <code>optional int64 belongTo = 8;</code>
@@ -11652,9 +11709,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -11751,7 +11817,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzFinanceApply() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       merchantUid_ = 0L;
       financingAmount_ = 0F;
       financingTerm_ = 0;
@@ -11785,9 +11851,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -11857,16 +11924,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int MERCHANTUID_FIELD_NUMBER = 2;
@@ -11992,8 +12088,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (merchantUid_ != 0L) {
         output.writeInt64(2, merchantUid_);
@@ -12023,9 +12119,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (merchantUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -12071,8 +12166,8 @@ public final class EzTransfer {
       types.EzTransfer.EzFinanceApply other = (types.EzTransfer.EzFinanceApply) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getMerchantUid()
               == other.getMerchantUid());
       result = result && (
@@ -12103,8 +12198,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + MERCHANTUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getMerchantUid());
@@ -12247,7 +12341,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         merchantUid_ = 0L;
 
@@ -12342,8 +12436,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzFinanceApply other) {
         if (other == types.EzTransfer.EzFinanceApply.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getMerchantUid() != 0L) {
           setMerchantUid(other.getMerchantUid());
@@ -12392,25 +12487,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -12421,11 +12549,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -12868,9 +13014,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -12897,7 +13052,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzFinanceRefuse() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       funderUid_ = 0L;
     }
 
@@ -12926,9 +13081,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -12960,16 +13116,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int FUNDERUID_FIELD_NUMBER = 2;
@@ -12997,8 +13182,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (funderUid_ != 0L) {
         output.writeInt64(2, funderUid_);
@@ -13010,9 +13195,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (funderUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -13034,8 +13218,8 @@ public final class EzTransfer {
       types.EzTransfer.EzFinanceRefuse other = (types.EzTransfer.EzFinanceRefuse) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getFunderUid()
               == other.getFunderUid());
       return result;
@@ -13049,8 +13233,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + FUNDERUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getFunderUid());
@@ -13176,7 +13359,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         funderUid_ = 0L;
 
@@ -13245,8 +13428,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzFinanceRefuse other) {
         if (other == types.EzTransfer.EzFinanceRefuse.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getFunderUid() != 0L) {
           setFunderUid(other.getFunderUid());
@@ -13277,25 +13461,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -13306,11 +13523,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -13410,9 +13645,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -13492,7 +13736,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzFundSupplier() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       funderUid_ = 0L;
       method_ = 0;
       supplierUid_ = 0L;
@@ -13525,9 +13769,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -13581,16 +13826,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int FUNDERUID_FIELD_NUMBER = 2;
@@ -13710,8 +13984,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (funderUid_ != 0L) {
         output.writeInt64(2, funderUid_);
@@ -13735,9 +14009,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (funderUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -13774,8 +14047,8 @@ public final class EzTransfer {
       types.EzTransfer.EzFundSupplier other = (types.EzTransfer.EzFundSupplier) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getFunderUid()
               == other.getFunderUid());
       result = result && method_ == other.method_;
@@ -13796,8 +14069,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + FUNDERUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getFunderUid());
@@ -13932,7 +14204,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         funderUid_ = 0L;
 
@@ -14013,8 +14285,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzFundSupplier other) {
         if (other == types.EzTransfer.EzFundSupplier.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getFunderUid() != 0L) {
           setFunderUid(other.getFunderUid());
@@ -14058,25 +14331,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -14087,11 +14393,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -14420,9 +14744,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -14460,6 +14793,13 @@ public final class EzTransfer {
   }
   /**
    * <pre>
+   *租赁商打款给供应商
+   *message EzPaySupplier {
+   *    string orderNum = 1;//订单号
+   *    int64 merchantUid = 2;//租赁商uid
+   *    int64 supplierUid = 3;//资金方uid
+   *    int32 loanTime = 4;//放款时间
+   *}
    *供应商发货
    * </pre>
    *
@@ -14474,7 +14814,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzSupplierDeliver() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       supplierUid_ = 0L;
     }
 
@@ -14503,9 +14843,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -14550,16 +14891,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int SUPPLIERUID_FIELD_NUMBER = 2;
@@ -14620,8 +14990,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (supplierUid_ != 0L) {
         output.writeInt64(2, supplierUid_);
@@ -14636,9 +15006,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (supplierUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -14664,8 +15033,8 @@ public final class EzTransfer {
       types.EzTransfer.EzSupplierDeliver other = (types.EzTransfer.EzSupplierDeliver) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getSupplierUid()
               == other.getSupplierUid());
       result = result && (hasExpressInfo() == other.hasExpressInfo());
@@ -14684,8 +15053,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + SUPPLIERUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getSupplierUid());
@@ -14777,6 +15145,13 @@ public final class EzTransfer {
     }
     /**
      * <pre>
+     *租赁商打款给供应商
+     *message EzPaySupplier {
+     *    string orderNum = 1;//订单号
+     *    int64 merchantUid = 2;//租赁商uid
+     *    int64 supplierUid = 3;//资金方uid
+     *    int32 loanTime = 4;//放款时间
+     *}
      *供应商发货
      * </pre>
      *
@@ -14815,7 +15190,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         supplierUid_ = 0L;
 
@@ -14895,8 +15270,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzSupplierDeliver other) {
         if (other == types.EzTransfer.EzSupplierDeliver.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getSupplierUid() != 0L) {
           setSupplierUid(other.getSupplierUid());
@@ -14930,25 +15306,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -14959,11 +15368,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -15216,18 +15643,36 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
      *物流编号
      * </pre>
      *
-     * <code>optional int64 trackingNum = 2;</code>
+     * <code>optional string trackingNum = 2;</code>
      */
-    long getTrackingNum();
+    java.lang.String getTrackingNum();
+    /**
+     * <pre>
+     *物流编号
+     * </pre>
+     *
+     * <code>optional string trackingNum = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getTrackingNumBytes();
 
     /**
      * <pre>
@@ -15254,8 +15699,8 @@ public final class EzTransfer {
       super(builder);
     }
     private EzConfirmForFinance() {
-      orderNum_ = 0L;
-      trackingNum_ = 0L;
+      orderNum_ = "";
+      trackingNum_ = "";
       confirmTime_ = 0;
     }
 
@@ -15284,14 +15729,16 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
-            case 16: {
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              trackingNum_ = input.readInt64();
+              trackingNum_ = s;
               break;
             }
             case 24: {
@@ -15323,29 +15770,87 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int TRACKINGNUM_FIELD_NUMBER = 2;
-    private long trackingNum_;
+    private volatile java.lang.Object trackingNum_;
     /**
      * <pre>
      *物流编号
      * </pre>
      *
-     * <code>optional int64 trackingNum = 2;</code>
+     * <code>optional string trackingNum = 2;</code>
      */
-    public long getTrackingNum() {
-      return trackingNum_;
+    public java.lang.String getTrackingNum() {
+      java.lang.Object ref = trackingNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        trackingNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *物流编号
+     * </pre>
+     *
+     * <code>optional string trackingNum = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTrackingNumBytes() {
+      java.lang.Object ref = trackingNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        trackingNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CONFIRMTIME_FIELD_NUMBER = 3;
@@ -15373,11 +15878,11 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
-      if (trackingNum_ != 0L) {
-        output.writeInt64(2, trackingNum_);
+      if (!getTrackingNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, trackingNum_);
       }
       if (confirmTime_ != 0) {
         output.writeInt32(3, confirmTime_);
@@ -15389,13 +15894,11 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
-      if (trackingNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(2, trackingNum_);
+      if (!getTrackingNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, trackingNum_);
       }
       if (confirmTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -15417,10 +15920,10 @@ public final class EzTransfer {
       types.EzTransfer.EzConfirmForFinance other = (types.EzTransfer.EzConfirmForFinance) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
-      result = result && (getTrackingNum()
-              == other.getTrackingNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
+      result = result && getTrackingNum()
+              .equals(other.getTrackingNum());
       result = result && (getConfirmTime()
               == other.getConfirmTime());
       return result;
@@ -15434,11 +15937,9 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + TRACKINGNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getTrackingNum());
+      hash = (53 * hash) + getTrackingNum().hashCode();
       hash = (37 * hash) + CONFIRMTIME_FIELD_NUMBER;
       hash = (53 * hash) + getConfirmTime();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -15563,9 +16064,9 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
-        trackingNum_ = 0L;
+        trackingNum_ = "";
 
         confirmTime_ = 0;
 
@@ -15635,11 +16136,13 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzConfirmForFinance other) {
         if (other == types.EzTransfer.EzConfirmForFinance.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
-        if (other.getTrackingNum() != 0L) {
-          setTrackingNum(other.getTrackingNum());
+        if (!other.getTrackingNum().isEmpty()) {
+          trackingNum_ = other.trackingNum_;
+          onChanged();
         }
         if (other.getConfirmTime() != 0) {
           setConfirmTime(other.getConfirmTime());
@@ -15670,25 +16173,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -15699,34 +16235,85 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
 
-      private long trackingNum_ ;
+      private java.lang.Object trackingNum_ = "";
       /**
        * <pre>
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 2;</code>
+       * <code>optional string trackingNum = 2;</code>
        */
-      public long getTrackingNum() {
-        return trackingNum_;
+      public java.lang.String getTrackingNum() {
+        java.lang.Object ref = trackingNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          trackingNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 2;</code>
+       * <code>optional string trackingNum = 2;</code>
        */
-      public Builder setTrackingNum(long value) {
+      public com.google.protobuf.ByteString
+      getTrackingNumBytes() {
+        java.lang.Object ref = trackingNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          trackingNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *物流编号
+       * </pre>
+       *
+       * <code>optional string trackingNum = 2;</code>
+       */
+      public Builder setTrackingNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         trackingNum_ = value;
         onChanged();
@@ -15737,11 +16324,29 @@ public final class EzTransfer {
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 2;</code>
+       * <code>optional string trackingNum = 2;</code>
        */
       public Builder clearTrackingNum() {
 
-        trackingNum_ = 0L;
+        trackingNum_ = getDefaultInstance().getTrackingNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *物流编号
+       * </pre>
+       *
+       * <code>optional string trackingNum = 2;</code>
+       */
+      public Builder setTrackingNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        trackingNum_ = value;
         onChanged();
         return this;
       }
@@ -15841,9 +16446,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -15948,7 +16562,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzRentalApply() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       lessorUid_ = 0L;
       merchantUid_ = 0L;
       paymentMethod_ = 0;
@@ -15982,9 +16596,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -16055,16 +16670,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int LESSORUID_FIELD_NUMBER = 2;
@@ -16201,8 +16845,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         output.writeInt64(2, lessorUid_);
@@ -16232,9 +16876,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -16280,8 +16923,8 @@ public final class EzTransfer {
       types.EzTransfer.EzRentalApply other = (types.EzTransfer.EzRentalApply) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getLessorUid()
               == other.getLessorUid());
       result = result && (getMerchantUid()
@@ -16311,8 +16954,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + LESSORUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getLessorUid());
@@ -16454,7 +17096,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         lessorUid_ = 0L;
 
@@ -16549,8 +17191,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzRentalApply other) {
         if (other == types.EzTransfer.EzRentalApply.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getLessorUid() != 0L) {
           setLessorUid(other.getLessorUid());
@@ -16599,25 +17242,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -16628,11 +17304,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -17101,9 +17795,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -17130,7 +17833,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzRentalRefuse() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       lessorUid_ = 0L;
     }
 
@@ -17159,9 +17862,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -17193,16 +17897,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int LESSORUID_FIELD_NUMBER = 2;
@@ -17230,8 +17963,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         output.writeInt64(2, lessorUid_);
@@ -17243,9 +17976,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -17267,8 +17999,8 @@ public final class EzTransfer {
       types.EzTransfer.EzRentalRefuse other = (types.EzTransfer.EzRentalRefuse) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getLessorUid()
               == other.getLessorUid());
       return result;
@@ -17282,8 +18014,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + LESSORUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getLessorUid());
@@ -17409,7 +18140,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         lessorUid_ = 0L;
 
@@ -17478,8 +18209,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzRentalRefuse other) {
         if (other == types.EzTransfer.EzRentalRefuse.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getLessorUid() != 0L) {
           setLessorUid(other.getLessorUid());
@@ -17510,25 +18242,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -17539,11 +18304,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -17643,9 +18426,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -17690,7 +18482,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzPayLessor() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       lessorUid_ = 0L;
       merchantUid_ = 0L;
       payTime_ = 0;
@@ -17721,9 +18513,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -17765,16 +18558,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int LESSORUID_FIELD_NUMBER = 2;
@@ -17828,8 +18650,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         output.writeInt64(2, lessorUid_);
@@ -17847,9 +18669,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -17879,8 +18700,8 @@ public final class EzTransfer {
       types.EzTransfer.EzPayLessor other = (types.EzTransfer.EzPayLessor) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getLessorUid()
               == other.getLessorUid());
       result = result && (getMerchantUid()
@@ -17898,8 +18719,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + LESSORUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getLessorUid());
@@ -18030,7 +18850,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         lessorUid_ = 0L;
 
@@ -18105,8 +18925,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzPayLessor other) {
         if (other == types.EzTransfer.EzPayLessor.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getLessorUid() != 0L) {
           setLessorUid(other.getLessorUid());
@@ -18143,25 +18964,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -18172,11 +19026,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -18352,9 +19224,18 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
@@ -18406,7 +19287,7 @@ public final class EzTransfer {
       super(builder);
     }
     private EzLessorDeliver() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       lessorUid_ = 0L;
     }
 
@@ -18435,9 +19316,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 16: {
@@ -18482,16 +19364,45 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int LESSORUID_FIELD_NUMBER = 2;
@@ -18552,8 +19463,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         output.writeInt64(2, lessorUid_);
@@ -18568,9 +19479,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (lessorUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -18596,8 +19506,8 @@ public final class EzTransfer {
       types.EzTransfer.EzLessorDeliver other = (types.EzTransfer.EzLessorDeliver) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getLessorUid()
               == other.getLessorUid());
       result = result && (hasExpressInfo() == other.hasExpressInfo());
@@ -18616,8 +19526,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + LESSORUID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getLessorUid());
@@ -18747,7 +19656,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         lessorUid_ = 0L;
 
@@ -18827,8 +19736,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzLessorDeliver other) {
         if (other == types.EzTransfer.EzLessorDeliver.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getLessorUid() != 0L) {
           setLessorUid(other.getLessorUid());
@@ -18862,25 +19772,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -18891,11 +19834,29 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -19148,18 +20109,36 @@ public final class EzTransfer {
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
      *物流编号
      * </pre>
      *
-     * <code>optional int64 trackingNum = 2;</code>
+     * <code>optional string trackingNum = 2;</code>
      */
-    long getTrackingNum();
+    java.lang.String getTrackingNum();
+    /**
+     * <pre>
+     *物流编号
+     * </pre>
+     *
+     * <code>optional string trackingNum = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getTrackingNumBytes();
 
     /**
      * <pre>
@@ -19186,8 +20165,8 @@ public final class EzTransfer {
       super(builder);
     }
     private EzConfirmForRental() {
-      orderNum_ = 0L;
-      trackingNum_ = 0L;
+      orderNum_ = "";
+      trackingNum_ = "";
       confirmTime_ = 0;
     }
 
@@ -19216,14 +20195,16 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
-            case 16: {
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              trackingNum_ = input.readInt64();
+              trackingNum_ = s;
               break;
             }
             case 24: {
@@ -19255,29 +20236,87 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int TRACKINGNUM_FIELD_NUMBER = 2;
-    private long trackingNum_;
+    private volatile java.lang.Object trackingNum_;
     /**
      * <pre>
      *物流编号
      * </pre>
      *
-     * <code>optional int64 trackingNum = 2;</code>
+     * <code>optional string trackingNum = 2;</code>
      */
-    public long getTrackingNum() {
-      return trackingNum_;
+    public java.lang.String getTrackingNum() {
+      java.lang.Object ref = trackingNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        trackingNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *物流编号
+     * </pre>
+     *
+     * <code>optional string trackingNum = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTrackingNumBytes() {
+      java.lang.Object ref = trackingNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        trackingNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CONFIRMTIME_FIELD_NUMBER = 3;
@@ -19305,11 +20344,11 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
-      if (trackingNum_ != 0L) {
-        output.writeInt64(2, trackingNum_);
+      if (!getTrackingNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, trackingNum_);
       }
       if (confirmTime_ != 0) {
         output.writeInt32(3, confirmTime_);
@@ -19321,13 +20360,11 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
-      if (trackingNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(2, trackingNum_);
+      if (!getTrackingNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, trackingNum_);
       }
       if (confirmTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -19349,10 +20386,10 @@ public final class EzTransfer {
       types.EzTransfer.EzConfirmForRental other = (types.EzTransfer.EzConfirmForRental) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
-      result = result && (getTrackingNum()
-              == other.getTrackingNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
+      result = result && getTrackingNum()
+              .equals(other.getTrackingNum());
       result = result && (getConfirmTime()
               == other.getConfirmTime());
       return result;
@@ -19366,11 +20403,9 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + TRACKINGNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getTrackingNum());
+      hash = (53 * hash) + getTrackingNum().hashCode();
       hash = (37 * hash) + CONFIRMTIME_FIELD_NUMBER;
       hash = (53 * hash) + getConfirmTime();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -19495,9 +20530,9 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
-        trackingNum_ = 0L;
+        trackingNum_ = "";
 
         confirmTime_ = 0;
 
@@ -19567,11 +20602,13 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzConfirmForRental other) {
         if (other == types.EzTransfer.EzConfirmForRental.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
-        if (other.getTrackingNum() != 0L) {
-          setTrackingNum(other.getTrackingNum());
+        if (!other.getTrackingNum().isEmpty()) {
+          trackingNum_ = other.trackingNum_;
+          onChanged();
         }
         if (other.getConfirmTime() != 0) {
           setConfirmTime(other.getConfirmTime());
@@ -19602,25 +20639,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -19631,34 +20701,85 @@ public final class EzTransfer {
        *订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
 
-      private long trackingNum_ ;
+      private java.lang.Object trackingNum_ = "";
       /**
        * <pre>
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 2;</code>
+       * <code>optional string trackingNum = 2;</code>
        */
-      public long getTrackingNum() {
-        return trackingNum_;
+      public java.lang.String getTrackingNum() {
+        java.lang.Object ref = trackingNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          trackingNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 2;</code>
+       * <code>optional string trackingNum = 2;</code>
        */
-      public Builder setTrackingNum(long value) {
+      public com.google.protobuf.ByteString
+      getTrackingNumBytes() {
+        java.lang.Object ref = trackingNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          trackingNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *物流编号
+       * </pre>
+       *
+       * <code>optional string trackingNum = 2;</code>
+       */
+      public Builder setTrackingNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         trackingNum_ = value;
         onChanged();
@@ -19669,11 +20790,29 @@ public final class EzTransfer {
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 2;</code>
+       * <code>optional string trackingNum = 2;</code>
        */
       public Builder clearTrackingNum() {
 
-        trackingNum_ = 0L;
+        trackingNum_ = getDefaultInstance().getTrackingNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *物流编号
+       * </pre>
+       *
+       * <code>optional string trackingNum = 2;</code>
+       */
+      public Builder setTrackingNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        trackingNum_ = value;
         onChanged();
         return this;
       }
@@ -22292,13 +23431,22 @@ public final class EzTransfer {
      *租客租赁订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    long getOrderNum();
+    java.lang.String getOrderNum();
+    /**
+     * <pre>
+     *租客租赁订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getOrderNumBytes();
 
     /**
      * <pre>
-     *申请时间
+     *    int64 lesseeUid = 2;//租客uid
      * </pre>
      *
      * <code>optional int32 applyTime = 3;</code>
@@ -22335,31 +23483,58 @@ public final class EzTransfer {
      *手机号
      * </pre>
      *
-     * <code>optional int64 phoneNum = 5;</code>
+     * <code>optional string phoneNum = 5;</code>
      */
-    long getPhoneNum();
-
+    java.lang.String getPhoneNum();
     /**
      * <pre>
-     *姓名
+     *手机号
      * </pre>
      *
-     * <code>optional string realname = 6;</code>
-     */
-    java.lang.String getRealname();
-    /**
-     * <pre>
-     *姓名
-     * </pre>
-     *
-     * <code>optional string realname = 6;</code>
+     * <code>optional string phoneNum = 5;</code>
      */
     com.google.protobuf.ByteString
-    getRealnameBytes();
+    getPhoneNumBytes();
 
     /**
      * <pre>
-     *不需要传
+     *姓名
+     * </pre>
+     *
+     * <code>optional string realName = 6;</code>
+     */
+    java.lang.String getRealName();
+    /**
+     * <pre>
+     *姓名
+     * </pre>
+     *
+     * <code>optional string realName = 6;</code>
+     */
+    com.google.protobuf.ByteString
+    getRealNameBytes();
+
+    /**
+     * <pre>
+     *身份证号码
+     * </pre>
+     *
+     * <code>optional string idNum = 7;</code>
+     */
+    java.lang.String getIdNum();
+    /**
+     * <pre>
+     *身份证号码
+     * </pre>
+     *
+     * <code>optional string idNum = 7;</code>
+     */
+    com.google.protobuf.ByteString
+    getIdNumBytes();
+
+    /**
+     * <pre>
+     *    string addr = 8;
      * </pre>
      *
      * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -22367,7 +23542,7 @@ public final class EzTransfer {
     int getStateValue();
     /**
      * <pre>
-     *不需要传
+     *    string addr = 8;
      * </pre>
      *
      * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -22411,10 +23586,11 @@ public final class EzTransfer {
       super(builder);
     }
     private EzLesseeOrder() {
-      orderNum_ = 0L;
+      orderNum_ = "";
       applyTime_ = 0;
-      phoneNum_ = 0L;
-      realname_ = "";
+      phoneNum_ = "";
+      realName_ = "";
+      idNum_ = "";
       state_ = 0;
     }
 
@@ -22443,9 +23619,10 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              orderNum_ = input.readInt64();
+              orderNum_ = s;
               break;
             }
             case 24: {
@@ -22466,15 +23643,22 @@ public final class EzTransfer {
 
               break;
             }
-            case 40: {
+            case 42: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              phoneNum_ = input.readInt64();
+              phoneNum_ = s;
               break;
             }
             case 50: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              realname_ = s;
+              realName_ = s;
+              break;
+            }
+            case 58: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              idNum_ = s;
               break;
             }
             case 72: {
@@ -22520,23 +23704,52 @@ public final class EzTransfer {
     }
 
     public static final int ORDERNUM_FIELD_NUMBER = 1;
-    private long orderNum_;
+    private volatile java.lang.Object orderNum_;
     /**
      * <pre>
      *租客租赁订单号
      * </pre>
      *
-     * <code>optional int64 orderNum = 1;</code>
+     * <code>optional string orderNum = 1;</code>
      */
-    public long getOrderNum() {
-      return orderNum_;
+    public java.lang.String getOrderNum() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        orderNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *租客租赁订单号
+     * </pre>
+     *
+     * <code>optional string orderNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getOrderNumBytes() {
+      java.lang.Object ref = orderNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        orderNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int APPLYTIME_FIELD_NUMBER = 3;
     private int applyTime_;
     /**
      * <pre>
-     *申请时间
+     *    int64 lesseeUid = 2;//租客uid
      * </pre>
      *
      * <code>optional int32 applyTime = 3;</code>
@@ -22579,36 +23792,65 @@ public final class EzTransfer {
     }
 
     public static final int PHONENUM_FIELD_NUMBER = 5;
-    private long phoneNum_;
+    private volatile java.lang.Object phoneNum_;
     /**
      * <pre>
      *手机号
      * </pre>
      *
-     * <code>optional int64 phoneNum = 5;</code>
+     * <code>optional string phoneNum = 5;</code>
      */
-    public long getPhoneNum() {
-      return phoneNum_;
-    }
-
-    public static final int REALNAME_FIELD_NUMBER = 6;
-    private volatile java.lang.Object realname_;
-    /**
-     * <pre>
-     *姓名
-     * </pre>
-     *
-     * <code>optional string realname = 6;</code>
-     */
-    public java.lang.String getRealname() {
-      java.lang.Object ref = realname_;
+    public java.lang.String getPhoneNum() {
+      java.lang.Object ref = phoneNum_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        realname_ = s;
+        phoneNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *手机号
+     * </pre>
+     *
+     * <code>optional string phoneNum = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPhoneNumBytes() {
+      java.lang.Object ref = phoneNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        phoneNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REALNAME_FIELD_NUMBER = 6;
+    private volatile java.lang.Object realName_;
+    /**
+     * <pre>
+     *姓名
+     * </pre>
+     *
+     * <code>optional string realName = 6;</code>
+     */
+    public java.lang.String getRealName() {
+      java.lang.Object ref = realName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        realName_ = s;
         return s;
       }
     }
@@ -22617,16 +23859,58 @@ public final class EzTransfer {
      *姓名
      * </pre>
      *
-     * <code>optional string realname = 6;</code>
+     * <code>optional string realName = 6;</code>
      */
     public com.google.protobuf.ByteString
-    getRealnameBytes() {
-      java.lang.Object ref = realname_;
+    getRealNameBytes() {
+      java.lang.Object ref = realName_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b =
                 com.google.protobuf.ByteString.copyFromUtf8(
                         (java.lang.String) ref);
-        realname_ = b;
+        realName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int IDNUM_FIELD_NUMBER = 7;
+    private volatile java.lang.Object idNum_;
+    /**
+     * <pre>
+     *身份证号码
+     * </pre>
+     *
+     * <code>optional string idNum = 7;</code>
+     */
+    public java.lang.String getIdNum() {
+      java.lang.Object ref = idNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        idNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *身份证号码
+     * </pre>
+     *
+     * <code>optional string idNum = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+    getIdNumBytes() {
+      java.lang.Object ref = idNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        idNum_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -22637,7 +23921,7 @@ public final class EzTransfer {
     private int state_;
     /**
      * <pre>
-     *不需要传
+     *    string addr = 8;
      * </pre>
      *
      * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -22647,7 +23931,7 @@ public final class EzTransfer {
     }
     /**
      * <pre>
-     *不需要传
+     *    string addr = 8;
      * </pre>
      *
      * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -22702,8 +23986,8 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (orderNum_ != 0L) {
-        output.writeInt64(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, orderNum_);
       }
       if (applyTime_ != 0) {
         output.writeInt32(3, applyTime_);
@@ -22711,11 +23995,14 @@ public final class EzTransfer {
       if (prodDetail_ != null) {
         output.writeMessage(4, getProdDetail());
       }
-      if (phoneNum_ != 0L) {
-        output.writeInt64(5, phoneNum_);
+      if (!getPhoneNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, phoneNum_);
       }
-      if (!getRealnameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, realname_);
+      if (!getRealNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, realName_);
+      }
+      if (!getIdNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, idNum_);
       }
       if (state_ != types.EzTransfer.EzLesseeOrderState.LOS_UNKNOWN.getNumber()) {
         output.writeEnum(9, state_);
@@ -22730,9 +24017,8 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (orderNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, orderNum_);
+      if (!getOrderNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, orderNum_);
       }
       if (applyTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -22742,12 +24028,14 @@ public final class EzTransfer {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(4, getProdDetail());
       }
-      if (phoneNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(5, phoneNum_);
+      if (!getPhoneNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, phoneNum_);
       }
-      if (!getRealnameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, realname_);
+      if (!getRealNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, realName_);
+      }
+      if (!getIdNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, idNum_);
       }
       if (state_ != types.EzTransfer.EzLesseeOrderState.LOS_UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
@@ -22773,8 +24061,8 @@ public final class EzTransfer {
       types.EzTransfer.EzLesseeOrder other = (types.EzTransfer.EzLesseeOrder) obj;
 
       boolean result = true;
-      result = result && (getOrderNum()
-              == other.getOrderNum());
+      result = result && getOrderNum()
+              .equals(other.getOrderNum());
       result = result && (getApplyTime()
               == other.getApplyTime());
       result = result && (hasProdDetail() == other.hasProdDetail());
@@ -22782,10 +24070,12 @@ public final class EzTransfer {
         result = result && getProdDetail()
                 .equals(other.getProdDetail());
       }
-      result = result && (getPhoneNum()
-              == other.getPhoneNum());
-      result = result && getRealname()
-              .equals(other.getRealname());
+      result = result && getPhoneNum()
+              .equals(other.getPhoneNum());
+      result = result && getRealName()
+              .equals(other.getRealName());
+      result = result && getIdNum()
+              .equals(other.getIdNum());
       result = result && state_ == other.state_;
       result = result && (hasExpressInfo() == other.hasExpressInfo());
       if (hasExpressInfo()) {
@@ -22803,8 +24093,7 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + ORDERNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getOrderNum());
+      hash = (53 * hash) + getOrderNum().hashCode();
       hash = (37 * hash) + APPLYTIME_FIELD_NUMBER;
       hash = (53 * hash) + getApplyTime();
       if (hasProdDetail()) {
@@ -22812,10 +24101,11 @@ public final class EzTransfer {
         hash = (53 * hash) + getProdDetail().hashCode();
       }
       hash = (37 * hash) + PHONENUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getPhoneNum());
+      hash = (53 * hash) + getPhoneNum().hashCode();
       hash = (37 * hash) + REALNAME_FIELD_NUMBER;
-      hash = (53 * hash) + getRealname().hashCode();
+      hash = (53 * hash) + getRealName().hashCode();
+      hash = (37 * hash) + IDNUM_FIELD_NUMBER;
+      hash = (53 * hash) + getIdNum().hashCode();
       hash = (37 * hash) + STATE_FIELD_NUMBER;
       hash = (53 * hash) + state_;
       if (hasExpressInfo()) {
@@ -22940,7 +24230,7 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        orderNum_ = 0L;
+        orderNum_ = "";
 
         applyTime_ = 0;
 
@@ -22950,9 +24240,11 @@ public final class EzTransfer {
           prodDetail_ = null;
           prodDetailBuilder_ = null;
         }
-        phoneNum_ = 0L;
+        phoneNum_ = "";
 
-        realname_ = "";
+        realName_ = "";
+
+        idNum_ = "";
 
         state_ = 0;
 
@@ -22992,7 +24284,8 @@ public final class EzTransfer {
           result.prodDetail_ = prodDetailBuilder_.build();
         }
         result.phoneNum_ = phoneNum_;
-        result.realname_ = realname_;
+        result.realName_ = realName_;
+        result.idNum_ = idNum_;
         result.state_ = state_;
         if (expressInfoBuilder_ == null) {
           result.expressInfo_ = expressInfo_;
@@ -23040,8 +24333,9 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzLesseeOrder other) {
         if (other == types.EzTransfer.EzLesseeOrder.getDefaultInstance()) return this;
-        if (other.getOrderNum() != 0L) {
-          setOrderNum(other.getOrderNum());
+        if (!other.getOrderNum().isEmpty()) {
+          orderNum_ = other.orderNum_;
+          onChanged();
         }
         if (other.getApplyTime() != 0) {
           setApplyTime(other.getApplyTime());
@@ -23049,11 +24343,16 @@ public final class EzTransfer {
         if (other.hasProdDetail()) {
           mergeProdDetail(other.getProdDetail());
         }
-        if (other.getPhoneNum() != 0L) {
-          setPhoneNum(other.getPhoneNum());
+        if (!other.getPhoneNum().isEmpty()) {
+          phoneNum_ = other.phoneNum_;
+          onChanged();
         }
-        if (!other.getRealname().isEmpty()) {
-          realname_ = other.realname_;
+        if (!other.getRealName().isEmpty()) {
+          realName_ = other.realName_;
+          onChanged();
+        }
+        if (!other.getIdNum().isEmpty()) {
+          idNum_ = other.idNum_;
           onChanged();
         }
         if (other.state_ != 0) {
@@ -23088,25 +24387,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long orderNum_ ;
+      private java.lang.Object orderNum_ = "";
       /**
        * <pre>
        *租客租赁订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public long getOrderNum() {
-        return orderNum_;
+      public java.lang.String getOrderNum() {
+        java.lang.Object ref = orderNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          orderNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *租客租赁订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
-      public Builder setOrderNum(long value) {
+      public com.google.protobuf.ByteString
+      getOrderNumBytes() {
+        java.lang.Object ref = orderNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          orderNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *租客租赁订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         orderNum_ = value;
         onChanged();
@@ -23117,11 +24449,29 @@ public final class EzTransfer {
        *租客租赁订单号
        * </pre>
        *
-       * <code>optional int64 orderNum = 1;</code>
+       * <code>optional string orderNum = 1;</code>
        */
       public Builder clearOrderNum() {
 
-        orderNum_ = 0L;
+        orderNum_ = getDefaultInstance().getOrderNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *租客租赁订单号
+       * </pre>
+       *
+       * <code>optional string orderNum = 1;</code>
+       */
+      public Builder setOrderNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        orderNum_ = value;
         onChanged();
         return this;
       }
@@ -23129,7 +24479,7 @@ public final class EzTransfer {
       private int applyTime_ ;
       /**
        * <pre>
-       *申请时间
+       *    int64 lesseeUid = 2;//租客uid
        * </pre>
        *
        * <code>optional int32 applyTime = 3;</code>
@@ -23139,7 +24489,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *申请时间
+       *    int64 lesseeUid = 2;//租客uid
        * </pre>
        *
        * <code>optional int32 applyTime = 3;</code>
@@ -23152,7 +24502,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *申请时间
+       *    int64 lesseeUid = 2;//租客uid
        * </pre>
        *
        * <code>optional int32 applyTime = 3;</code>
@@ -23317,25 +24667,58 @@ public final class EzTransfer {
         return prodDetailBuilder_;
       }
 
-      private long phoneNum_ ;
+      private java.lang.Object phoneNum_ = "";
       /**
        * <pre>
        *手机号
        * </pre>
        *
-       * <code>optional int64 phoneNum = 5;</code>
+       * <code>optional string phoneNum = 5;</code>
        */
-      public long getPhoneNum() {
-        return phoneNum_;
+      public java.lang.String getPhoneNum() {
+        java.lang.Object ref = phoneNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          phoneNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *手机号
        * </pre>
        *
-       * <code>optional int64 phoneNum = 5;</code>
+       * <code>optional string phoneNum = 5;</code>
        */
-      public Builder setPhoneNum(long value) {
+      public com.google.protobuf.ByteString
+      getPhoneNumBytes() {
+        java.lang.Object ref = phoneNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          phoneNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *手机号
+       * </pre>
+       *
+       * <code>optional string phoneNum = 5;</code>
+       */
+      public Builder setPhoneNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         phoneNum_ = value;
         onChanged();
@@ -23346,30 +24729,48 @@ public final class EzTransfer {
        *手机号
        * </pre>
        *
-       * <code>optional int64 phoneNum = 5;</code>
+       * <code>optional string phoneNum = 5;</code>
        */
       public Builder clearPhoneNum() {
 
-        phoneNum_ = 0L;
+        phoneNum_ = getDefaultInstance().getPhoneNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *手机号
+       * </pre>
+       *
+       * <code>optional string phoneNum = 5;</code>
+       */
+      public Builder setPhoneNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        phoneNum_ = value;
         onChanged();
         return this;
       }
 
-      private java.lang.Object realname_ = "";
+      private java.lang.Object realName_ = "";
       /**
        * <pre>
        *姓名
        * </pre>
        *
-       * <code>optional string realname = 6;</code>
+       * <code>optional string realName = 6;</code>
        */
-      public java.lang.String getRealname() {
-        java.lang.Object ref = realname_;
+      public java.lang.String getRealName() {
+        java.lang.Object ref = realName_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
                   (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          realname_ = s;
+          realName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -23380,16 +24781,16 @@ public final class EzTransfer {
        *姓名
        * </pre>
        *
-       * <code>optional string realname = 6;</code>
+       * <code>optional string realName = 6;</code>
        */
       public com.google.protobuf.ByteString
-      getRealnameBytes() {
-        java.lang.Object ref = realname_;
+      getRealNameBytes() {
+        java.lang.Object ref = realName_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b =
                   com.google.protobuf.ByteString.copyFromUtf8(
                           (java.lang.String) ref);
-          realname_ = b;
+          realName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -23400,15 +24801,15 @@ public final class EzTransfer {
        *姓名
        * </pre>
        *
-       * <code>optional string realname = 6;</code>
+       * <code>optional string realName = 6;</code>
        */
-      public Builder setRealname(
+      public Builder setRealName(
               java.lang.String value) {
         if (value == null) {
           throw new NullPointerException();
         }
 
-        realname_ = value;
+        realName_ = value;
         onChanged();
         return this;
       }
@@ -23417,11 +24818,11 @@ public final class EzTransfer {
        *姓名
        * </pre>
        *
-       * <code>optional string realname = 6;</code>
+       * <code>optional string realName = 6;</code>
        */
-      public Builder clearRealname() {
+      public Builder clearRealName() {
 
-        realname_ = getDefaultInstance().getRealname();
+        realName_ = getDefaultInstance().getRealName();
         onChanged();
         return this;
       }
@@ -23430,16 +24831,105 @@ public final class EzTransfer {
        *姓名
        * </pre>
        *
-       * <code>optional string realname = 6;</code>
+       * <code>optional string realName = 6;</code>
        */
-      public Builder setRealnameBytes(
+      public Builder setRealNameBytes(
               com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
         checkByteStringIsUtf8(value);
 
-        realname_ = value;
+        realName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object idNum_ = "";
+      /**
+       * <pre>
+       *身份证号码
+       * </pre>
+       *
+       * <code>optional string idNum = 7;</code>
+       */
+      public java.lang.String getIdNum() {
+        java.lang.Object ref = idNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          idNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       *身份证号码
+       * </pre>
+       *
+       * <code>optional string idNum = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+      getIdNumBytes() {
+        java.lang.Object ref = idNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          idNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *身份证号码
+       * </pre>
+       *
+       * <code>optional string idNum = 7;</code>
+       */
+      public Builder setIdNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        idNum_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *身份证号码
+       * </pre>
+       *
+       * <code>optional string idNum = 7;</code>
+       */
+      public Builder clearIdNum() {
+
+        idNum_ = getDefaultInstance().getIdNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *身份证号码
+       * </pre>
+       *
+       * <code>optional string idNum = 7;</code>
+       */
+      public Builder setIdNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        idNum_ = value;
         onChanged();
         return this;
       }
@@ -23447,7 +24937,7 @@ public final class EzTransfer {
       private int state_ = 0;
       /**
        * <pre>
-       *不需要传
+       *    string addr = 8;
        * </pre>
        *
        * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -23457,7 +24947,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *不需要传
+       *    string addr = 8;
        * </pre>
        *
        * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -23469,7 +24959,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *不需要传
+       *    string addr = 8;
        * </pre>
        *
        * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -23480,7 +24970,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *不需要传
+       *    string addr = 8;
        * </pre>
        *
        * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -23496,7 +24986,7 @@ public final class EzTransfer {
       }
       /**
        * <pre>
-       *不需要传
+       *    string addr = 8;
        * </pre>
        *
        * <code>optional .types.EzLesseeOrderState state = 9;</code>
@@ -24942,18 +26432,36 @@ public final class EzTransfer {
      *物流编号
      * </pre>
      *
-     * <code>optional int64 trackingNum = 1;</code>
+     * <code>optional string trackingNum = 1;</code>
      */
-    long getTrackingNum();
+    java.lang.String getTrackingNum();
+    /**
+     * <pre>
+     *物流编号
+     * </pre>
+     *
+     * <code>optional string trackingNum = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getTrackingNumBytes();
 
     /**
      * <pre>
      *手机序列号
      * </pre>
      *
-     * <code>optional int64 IMEI = 2;</code>
+     * <code>optional string IMEI = 2;</code>
      */
-    long getIMEI();
+    java.lang.String getIMEI();
+    /**
+     * <pre>
+     *手机序列号
+     * </pre>
+     *
+     * <code>optional string IMEI = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getIMEIBytes();
 
     /**
      * <pre>
@@ -24999,8 +26507,8 @@ public final class EzTransfer {
       super(builder);
     }
     private EzExpressInfo() {
-      trackingNum_ = 0L;
-      iMEI_ = 0L;
+      trackingNum_ = "";
+      iMEI_ = "";
       expressCoName_ = "";
       deliveryTime_ = 0;
       confirmTime_ = 0;
@@ -25031,14 +26539,16 @@ public final class EzTransfer {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              trackingNum_ = input.readInt64();
+              trackingNum_ = s;
               break;
             }
-            case 16: {
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
 
-              iMEI_ = input.readInt64();
+              iMEI_ = s;
               break;
             }
             case 26: {
@@ -25081,29 +26591,87 @@ public final class EzTransfer {
     }
 
     public static final int TRACKINGNUM_FIELD_NUMBER = 1;
-    private long trackingNum_;
+    private volatile java.lang.Object trackingNum_;
     /**
      * <pre>
      *物流编号
      * </pre>
      *
-     * <code>optional int64 trackingNum = 1;</code>
+     * <code>optional string trackingNum = 1;</code>
      */
-    public long getTrackingNum() {
-      return trackingNum_;
+    public java.lang.String getTrackingNum() {
+      java.lang.Object ref = trackingNum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        trackingNum_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *物流编号
+     * </pre>
+     *
+     * <code>optional string trackingNum = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getTrackingNumBytes() {
+      java.lang.Object ref = trackingNum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        trackingNum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int IMEI_FIELD_NUMBER = 2;
-    private long iMEI_;
+    private volatile java.lang.Object iMEI_;
     /**
      * <pre>
      *手机序列号
      * </pre>
      *
-     * <code>optional int64 IMEI = 2;</code>
+     * <code>optional string IMEI = 2;</code>
      */
-    public long getIMEI() {
-      return iMEI_;
+    public java.lang.String getIMEI() {
+      java.lang.Object ref = iMEI_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        iMEI_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *手机序列号
+     * </pre>
+     *
+     * <code>optional string IMEI = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getIMEIBytes() {
+      java.lang.Object ref = iMEI_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        iMEI_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int EXPRESSCONAME_FIELD_NUMBER = 3;
@@ -25182,11 +26750,11 @@ public final class EzTransfer {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (trackingNum_ != 0L) {
-        output.writeInt64(1, trackingNum_);
+      if (!getTrackingNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, trackingNum_);
       }
-      if (iMEI_ != 0L) {
-        output.writeInt64(2, iMEI_);
+      if (!getIMEIBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, iMEI_);
       }
       if (!getExpressCoNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, expressCoName_);
@@ -25204,13 +26772,11 @@ public final class EzTransfer {
       if (size != -1) return size;
 
       size = 0;
-      if (trackingNum_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, trackingNum_);
+      if (!getTrackingNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, trackingNum_);
       }
-      if (iMEI_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(2, iMEI_);
+      if (!getIMEIBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, iMEI_);
       }
       if (!getExpressCoNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, expressCoName_);
@@ -25239,10 +26805,10 @@ public final class EzTransfer {
       types.EzTransfer.EzExpressInfo other = (types.EzTransfer.EzExpressInfo) obj;
 
       boolean result = true;
-      result = result && (getTrackingNum()
-              == other.getTrackingNum());
-      result = result && (getIMEI()
-              == other.getIMEI());
+      result = result && getTrackingNum()
+              .equals(other.getTrackingNum());
+      result = result && getIMEI()
+              .equals(other.getIMEI());
       result = result && getExpressCoName()
               .equals(other.getExpressCoName());
       result = result && (getDeliveryTime()
@@ -25260,11 +26826,9 @@ public final class EzTransfer {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + TRACKINGNUM_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getTrackingNum());
+      hash = (53 * hash) + getTrackingNum().hashCode();
       hash = (37 * hash) + IMEI_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getIMEI());
+      hash = (53 * hash) + getIMEI().hashCode();
       hash = (37 * hash) + EXPRESSCONAME_FIELD_NUMBER;
       hash = (53 * hash) + getExpressCoName().hashCode();
       hash = (37 * hash) + DELIVERYTIME_FIELD_NUMBER;
@@ -25389,9 +26953,9 @@ public final class EzTransfer {
       }
       public Builder clear() {
         super.clear();
-        trackingNum_ = 0L;
+        trackingNum_ = "";
 
-        iMEI_ = 0L;
+        iMEI_ = "";
 
         expressCoName_ = "";
 
@@ -25467,11 +27031,13 @@ public final class EzTransfer {
 
       public Builder mergeFrom(types.EzTransfer.EzExpressInfo other) {
         if (other == types.EzTransfer.EzExpressInfo.getDefaultInstance()) return this;
-        if (other.getTrackingNum() != 0L) {
-          setTrackingNum(other.getTrackingNum());
+        if (!other.getTrackingNum().isEmpty()) {
+          trackingNum_ = other.trackingNum_;
+          onChanged();
         }
-        if (other.getIMEI() != 0L) {
-          setIMEI(other.getIMEI());
+        if (!other.getIMEI().isEmpty()) {
+          iMEI_ = other.iMEI_;
+          onChanged();
         }
         if (!other.getExpressCoName().isEmpty()) {
           expressCoName_ = other.expressCoName_;
@@ -25509,25 +27075,58 @@ public final class EzTransfer {
         return this;
       }
 
-      private long trackingNum_ ;
+      private java.lang.Object trackingNum_ = "";
       /**
        * <pre>
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 1;</code>
+       * <code>optional string trackingNum = 1;</code>
        */
-      public long getTrackingNum() {
-        return trackingNum_;
+      public java.lang.String getTrackingNum() {
+        java.lang.Object ref = trackingNum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          trackingNum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 1;</code>
+       * <code>optional string trackingNum = 1;</code>
        */
-      public Builder setTrackingNum(long value) {
+      public com.google.protobuf.ByteString
+      getTrackingNumBytes() {
+        java.lang.Object ref = trackingNum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          trackingNum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *物流编号
+       * </pre>
+       *
+       * <code>optional string trackingNum = 1;</code>
+       */
+      public Builder setTrackingNum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         trackingNum_ = value;
         onChanged();
@@ -25538,34 +27137,85 @@ public final class EzTransfer {
        *物流编号
        * </pre>
        *
-       * <code>optional int64 trackingNum = 1;</code>
+       * <code>optional string trackingNum = 1;</code>
        */
       public Builder clearTrackingNum() {
 
-        trackingNum_ = 0L;
+        trackingNum_ = getDefaultInstance().getTrackingNum();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *物流编号
+       * </pre>
+       *
+       * <code>optional string trackingNum = 1;</code>
+       */
+      public Builder setTrackingNumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        trackingNum_ = value;
         onChanged();
         return this;
       }
 
-      private long iMEI_ ;
+      private java.lang.Object iMEI_ = "";
       /**
        * <pre>
        *手机序列号
        * </pre>
        *
-       * <code>optional int64 IMEI = 2;</code>
+       * <code>optional string IMEI = 2;</code>
        */
-      public long getIMEI() {
-        return iMEI_;
+      public java.lang.String getIMEI() {
+        java.lang.Object ref = iMEI_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          iMEI_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *手机序列号
        * </pre>
        *
-       * <code>optional int64 IMEI = 2;</code>
+       * <code>optional string IMEI = 2;</code>
        */
-      public Builder setIMEI(long value) {
+      public com.google.protobuf.ByteString
+      getIMEIBytes() {
+        java.lang.Object ref = iMEI_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          iMEI_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *手机序列号
+       * </pre>
+       *
+       * <code>optional string IMEI = 2;</code>
+       */
+      public Builder setIMEI(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
 
         iMEI_ = value;
         onChanged();
@@ -25576,11 +27226,29 @@ public final class EzTransfer {
        *手机序列号
        * </pre>
        *
-       * <code>optional int64 IMEI = 2;</code>
+       * <code>optional string IMEI = 2;</code>
        */
       public Builder clearIMEI() {
 
-        iMEI_ = 0L;
+        iMEI_ = getDefaultInstance().getIMEI();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *手机序列号
+       * </pre>
+       *
+       * <code>optional string IMEI = 2;</code>
+       */
+      public Builder setIMEIBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        iMEI_ = value;
         onChanged();
         return this;
       }
@@ -27842,35 +29510,35 @@ public final class EzTransfer {
                     "Key\030\002 \001(\t\022\024\n\014merchantName\030\003 \001(\t\022\020\n\010belon" +
                     "gTo\030\010 \001(\003\">\n\016EzRmT2Merchant\022\025\n\rt1Merchan" +
                     "tUid\030\001 \001(\003\022\025\n\rt2MerchantUid\030\002 \001(\003\"\315\001\n\016Ez" +
-                    "FinanceApply\022\020\n\010orderNum\030\001 \001(\003\022\023\n\013mercha" +
+                    "FinanceApply\022\020\n\010orderNum\030\001 \001(\t\022\023\n\013mercha" +
                     "ntUid\030\002 \001(\003\022\027\n\017financingAmount\030\003 \001(\002\022\025\n\r",
             "financingTerm\030\004 \001(\005\022\021\n\tfunderUid\030\005 \001(\003\022\023" +
                     "\n\013supplierUid\030\006 \001(\003\022\021\n\tapplyTime\030\007 \001(\005\022)" +
                     "\n\013lesseeOrder\030\010 \001(\0132\024.types.EzLesseeOrde" +
-                    "r\"6\n\017EzFinanceRefuse\022\020\n\010orderNum\030\001 \001(\003\022\021" +
+                    "r\"6\n\017EzFinanceRefuse\022\020\n\010orderNum\030\001 \001(\t\022\021" +
                     "\n\tfunderUid\030\002 \001(\003\"\233\001\n\016EzFundSupplier\022\020\n\010" +
-                    "orderNum\030\001 \001(\003\022\021\n\tfunderUid\030\002 \001(\003\022(\n\006met" +
+                    "orderNum\030\001 \001(\t\022\021\n\tfunderUid\030\002 \001(\003\022(\n\006met" +
                     "hod\030\003 \001(\0162\030.types.EzFinancingMethod\022\023\n\013s" +
                     "upplierUid\030\004 \001(\003\022\023\n\013fundVoucher\030\005 \001(\t\022\020\n" +
                     "\010loanTime\030\006 \001(\005\"e\n\021EzSupplierDeliver\022\020\n\010" +
-                    "orderNum\030\001 \001(\003\022\023\n\013supplierUid\030\002 \001(\003\022)\n\013e",
+                    "orderNum\030\001 \001(\t\022\023\n\013supplierUid\030\002 \001(\003\022)\n\013e",
             "xpressInfo\030\003 \001(\0132\024.types.EzExpressInfo\"Q" +
-                    "\n\023EzConfirmForFinance\022\020\n\010orderNum\030\001 \001(\003\022" +
-                    "\023\n\013trackingNum\030\002 \001(\003\022\023\n\013confirmTime\030\003 \001(" +
-                    "\005\"\340\001\n\rEzRentalApply\022\020\n\010orderNum\030\001 \001(\003\022\021\n" +
+                    "\n\023EzConfirmForFinance\022\020\n\010orderNum\030\001 \001(\t\022" +
+                    "\023\n\013trackingNum\030\002 \001(\t\022\023\n\013confirmTime\030\003 \001(" +
+                    "\005\"\340\001\n\rEzRentalApply\022\020\n\010orderNum\030\001 \001(\t\022\021\n" +
                     "\tlessorUid\030\002 \001(\003\022\023\n\013merchantUid\030\003 \001(\003\022-\n" +
                     "\rpaymentMethod\030\004 \001(\0162\026.types.EzPaymentMe" +
                     "thod\022\024\n\014rentalAmount\030\005 \001(\002\022\022\n\nrentalTerm" +
                     "\030\006 \001(\005\022\021\n\tapplyTime\030\007 \001(\005\022)\n\013lesseeOrder" +
                     "\030\010 \001(\0132\024.types.EzLesseeOrder\"5\n\016EzRental" +
-                    "Refuse\022\020\n\010orderNum\030\001 \001(\003\022\021\n\tLessorUid\030\002 ",
-            "\001(\003\"X\n\013EzPayLessor\022\020\n\010orderNum\030\001 \001(\003\022\021\n\t" +
+                    "Refuse\022\020\n\010orderNum\030\001 \001(\t\022\021\n\tLessorUid\030\002 ",
+            "\001(\003\"X\n\013EzPayLessor\022\020\n\010orderNum\030\001 \001(\t\022\021\n\t" +
                     "lessorUid\030\002 \001(\003\022\023\n\013merchantUid\030\003 \001(\003\022\017\n\007" +
                     "payTime\030\004 \001(\005\"a\n\017EzLessorDeliver\022\020\n\010orde" +
-                    "rNum\030\001 \001(\003\022\021\n\tlessorUid\030\002 \001(\003\022)\n\013express" +
+                    "rNum\030\001 \001(\t\022\021\n\tlessorUid\030\002 \001(\003\022)\n\013express" +
                     "Info\030\003 \001(\0132\024.types.EzExpressInfo\"P\n\022EzCo" +
-                    "nfirmForRental\022\020\n\010orderNum\030\001 \001(\003\022\023\n\013trac" +
-                    "kingNum\030\002 \001(\003\022\023\n\013confirmTime\030\003 \001(\005\"\233\001\n\024E" +
+                    "nfirmForRental\022\020\n\010orderNum\030\001 \001(\t\022\023\n\013trac" +
+                    "kingNum\030\002 \001(\t\022\023\n\013confirmTime\030\003 \001(\005\"\233\001\n\024E" +
                     "zAddDiscreditRecord\022\013\n\003uid\030\001 \001(\003\022#\n\010user" +
                     "Type\030\002 \001(\0162\021.types.EzUserType\0229\n\023discred" +
                     "itRecordType\030\003 \001(\0162\034.types.EzDiscreditRe",
@@ -27878,59 +29546,60 @@ public final class EzTransfer {
                     "dWhitelists\022\013\n\003uid\030\001 \003(\003\"\035\n\016EzRmWhitelis" +
                     "ts\022\013\n\003uid\030\001 \003(\003\"C\n\017EzAddBlacklists\022\013\n\003ui" +
                     "d\030\001 \003(\003\022#\n\010userType\030\002 \001(\0162\021.types.EzUser" +
-                    "Type\"\326\001\n\rEzLesseeOrder\022\020\n\010orderNum\030\001 \001(\003" +
+                    "Type\"\345\001\n\rEzLesseeOrder\022\020\n\010orderNum\030\001 \001(\t" +
                     "\022\021\n\tapplyTime\030\003 \001(\005\022\'\n\nprodDetail\030\004 \001(\0132" +
-                    "\023.types.EzProdDetail\022\020\n\010phoneNum\030\005 \001(\003\022\020" +
-                    "\n\010realname\030\006 \001(\t\022(\n\005state\030\t \001(\0162\031.types." +
-                    "EzLesseeOrderState\022)\n\013expressInfo\030\n \001(\0132" +
-                    "\024.types.EzExpressInfo\"\202\001\n\014EzProdDetail\022\021",
-            "\n\tprodBrand\030\001 \001(\t\022\020\n\010prodName\030\002 \001(\t\022\021\n\tp" +
-                    "rodColor\030\003 \001(\t\022\023\n\013prodStorage\030\004 \001(\t\022\021\n\tl" +
-                    "easeTerm\030\005 \001(\005\022\022\n\nprodAmount\030\006 \001(\005\"t\n\rEz" +
-                    "ExpressInfo\022\023\n\013trackingNum\030\001 \001(\003\022\014\n\004IMEI" +
-                    "\030\002 \001(\003\022\025\n\rexpressCoName\030\003 \001(\t\022\024\n\014deliver" +
-                    "yTime\030\004 \001(\005\022\023\n\013confirmTime\030\005 \001(\005\"\275\001\n\013Tra" +
-                    "nsaction\022\016\n\006execer\030\001 \001(\014\022\017\n\007payload\030\002 \001(" +
-                    "\014\022#\n\tsignature\030\003 \001(\0132\020.types.Signature\022\013" +
-                    "\n\003fee\030\004 \001(\003\022\016\n\006expire\030\005 \001(\003\022\r\n\005nonce\030\006 \001" +
-                    "(\003\022\n\n\002to\030\007 \001(\t\022\022\n\ngroupCount\030\010 \001(\005\022\016\n\006he",
-            "ader\030\t \001(\014\022\014\n\004next\030\n \001(\014\":\n\tSignature\022\n\n" +
-                    "\002ty\030\001 \001(\005\022\016\n\006pubkey\030\002 \001(\014\022\021\n\tsignature\030\003" +
-                    " \001(\014*\363\003\n\014EzActionType\022\016\n\nAT_UNKNOWN\020\000\022\023\n" +
-                    "\017AT_FUNDER_APPLY\020\001\022\023\n\017AT_LESSOR_APPLY\020\002\022" +
-                    "\025\n\021AT_SUPPLIER_APPLY\020\003\022\030\n\024AT_T1_MERCHANT" +
-                    "_APPLY\020\004\022\030\n\024AT_T2_MERCHANT_APPLY\020\005\022\024\n\020AT" +
-                    "_FINANCE_APPLY\020\006\022\025\n\021AT_FINANCE_REFUSE\020\007\022" +
-                    "\024\n\020AT_FUND_SUPPLIER\020\010\022\027\n\023AT_SUPPLIER_DEL" +
-                    "IVER\020\t\022\032\n\026AT_CONFIRM_FOR_FINANCE\020\n\022\023\n\017AT" +
-                    "_RENTAL_APPLY\020\013\022\024\n\020AT_RENTAL_REFUSE\020\014\022\021\n",
-            "\rAT_PAY_LESSOR\020\r\022\025\n\021AT_LESSOR_DELIVER\020\016\022" +
-                    "\031\n\025AT_CONFIRM_FOR_RENTAL\020\017\022\033\n\027AT_ADD_DIS" +
-                    "CREDIT_RECORD\020\020\022\025\n\021AT_ADD_WHITELISTS\020\021\022\024" +
-                    "\n\020AT_RM_WHITELISTS\020\022\022\025\n\021AT_ADD_BLACKLIST" +
-                    "S\020\023\022\025\n\021AT_RM_T2_MERCHANT\020\024*\202\001\n\nEzUserTyp" +
-                    "e\022\016\n\nUT_UNKNOWN\020\000\022\r\n\tUT_FUNDER\020\001\022\r\n\tUT_L" +
-                    "ESSOR\020\002\022\017\n\013UT_SUPPLIER\020\003\022\022\n\016UT_T1_MERCHA" +
-                    "NT\020\004\022\022\n\016UT_T2_MERCHANT\020\005\022\r\n\tUT_LESSEE\020\006*" +
-                    "\216\001\n\022EzLesseeOrderState\022\017\n\013LOS_UNKNOWN\020\000\022" +
-                    "\017\n\013LOS_PENDING\020\001\022\024\n\020LOS_AUDIT_FAILED\020\002\022\025",
-            "\n\021LOS_TO_BE_SHIPPED\020\003\022\026\n\022LOS_TO_BE_RECEI" +
-                    "VED\020\004\022\021\n\rLOS_CONFIRMED\020\005*\177\n\021EzFinancingM" +
-                    "ethod\022\016\n\nFM_UNKNOWN\020\000\022\013\n\007FM_LOAN\020\001\022\020\n\014FM" +
-                    "_FACTORING\020\002\022\020\n\014FM_FINANCIAL\020\003\022\031\n\025FM_ASS" +
-                    "IGNMENT_OF_DEBT\020\004\022\016\n\nFM_OFFLINE\020\005*\221\001\n\025Ez" +
-                    "FinancingOrderState\022\017\n\013FOS_UNKNOWN\020\000\022\017\n\013" +
-                    "FOS_PENDING\020\001\022\024\n\020FOS_AUDIT_FAILED\020\002\022\025\n\021F" +
-                    "OS_TO_BE_SHIPPED\020\003\022\026\n\022FOS_TO_BE_RECEIVED" +
-                    "\020\004\022\021\n\rFOS_CONFIRMED\020\005*\216\001\n\022EzRentalOrderS" +
-                    "tate\022\017\n\013ROS_UNKNOWN\020\000\022\017\n\013ROS_PENDING\020\001\022\024",
-            "\n\020ROS_AUDIT_FAILED\020\002\022\025\n\021ROS_TO_BE_SHIPPE" +
-                    "D\020\003\022\026\n\022ROS_TO_BE_RECEIVED\020\004\022\021\n\rROS_CONFI" +
-                    "RMED\020\005*F\n\017EzPaymentMethod\022\016\n\nPM_UNKNOWN\020" +
-                    "\000\022\017\n\013PM_LUMP_SUM\020\001\022\022\n\016PM_INSTALLMENT\020\002*L" +
-                    "\n\025EzDiscreditRecordType\022\017\n\013DRT_UNKNOWN\020\000" +
-                    "\022\017\n\013DRT_OVERDUE\020\001\022\021\n\rDRT_BAD_DEBTS\020\002b\006pr" +
-                    "oto3"
+                    "\023.types.EzProdDetail\022\020\n\010phoneNum\030\005 \001(\t\022\020" +
+                    "\n\010realName\030\006 \001(\t\022\r\n\005idNum\030\007 \001(\t\022(\n\005state" +
+                    "\030\t \001(\0162\031.types.EzLesseeOrderState\022)\n\013exp" +
+                    "ressInfo\030\n \001(\0132\024.types.EzExpressInfo\"\202\001\n",
+            "\014EzProdDetail\022\021\n\tprodBrand\030\001 \001(\t\022\020\n\010prod" +
+                    "Name\030\002 \001(\t\022\021\n\tprodColor\030\003 \001(\t\022\023\n\013prodSto" +
+                    "rage\030\004 \001(\t\022\021\n\tleaseTerm\030\005 \001(\005\022\022\n\nprodAmo" +
+                    "unt\030\006 \001(\005\"t\n\rEzExpressInfo\022\023\n\013trackingNu" +
+                    "m\030\001 \001(\t\022\014\n\004IMEI\030\002 \001(\t\022\025\n\rexpressCoName\030\003" +
+                    " \001(\t\022\024\n\014deliveryTime\030\004 \001(\005\022\023\n\013confirmTim" +
+                    "e\030\005 \001(\005\"\275\001\n\013Transaction\022\016\n\006execer\030\001 \001(\014\022" +
+                    "\017\n\007payload\030\002 \001(\014\022#\n\tsignature\030\003 \001(\0132\020.ty" +
+                    "pes.Signature\022\013\n\003fee\030\004 \001(\003\022\016\n\006expire\030\005 \001" +
+                    "(\003\022\r\n\005nonce\030\006 \001(\003\022\n\n\002to\030\007 \001(\t\022\022\n\ngroupCo",
+            "unt\030\010 \001(\005\022\016\n\006header\030\t \001(\014\022\014\n\004next\030\n \001(\014\"" +
+                    ":\n\tSignature\022\n\n\002ty\030\001 \001(\005\022\016\n\006pubkey\030\002 \001(\014" +
+                    "\022\021\n\tsignature\030\003 \001(\014*\363\003\n\014EzActionType\022\016\n\n" +
+                    "AT_UNKNOWN\020\000\022\023\n\017AT_FUNDER_APPLY\020\001\022\023\n\017AT_" +
+                    "LESSOR_APPLY\020\002\022\025\n\021AT_SUPPLIER_APPLY\020\003\022\030\n" +
+                    "\024AT_T1_MERCHANT_APPLY\020\004\022\030\n\024AT_T2_MERCHAN" +
+                    "T_APPLY\020\005\022\024\n\020AT_FINANCE_APPLY\020\006\022\025\n\021AT_FI" +
+                    "NANCE_REFUSE\020\007\022\024\n\020AT_FUND_SUPPLIER\020\010\022\027\n\023" +
+                    "AT_SUPPLIER_DELIVER\020\t\022\032\n\026AT_CONFIRM_FOR_" +
+                    "FINANCE\020\n\022\023\n\017AT_RENTAL_APPLY\020\013\022\024\n\020AT_REN",
+            "TAL_REFUSE\020\014\022\021\n\rAT_PAY_LESSOR\020\r\022\025\n\021AT_LE" +
+                    "SSOR_DELIVER\020\016\022\031\n\025AT_CONFIRM_FOR_RENTAL\020" +
+                    "\017\022\033\n\027AT_ADD_DISCREDIT_RECORD\020\020\022\025\n\021AT_ADD" +
+                    "_WHITELISTS\020\021\022\024\n\020AT_RM_WHITELISTS\020\022\022\025\n\021A" +
+                    "T_ADD_BLACKLISTS\020\023\022\025\n\021AT_RM_T2_MERCHANT\020" +
+                    "\024*\202\001\n\nEzUserType\022\016\n\nUT_UNKNOWN\020\000\022\r\n\tUT_F" +
+                    "UNDER\020\001\022\r\n\tUT_LESSOR\020\002\022\017\n\013UT_SUPPLIER\020\003\022" +
+                    "\022\n\016UT_T1_MERCHANT\020\004\022\022\n\016UT_T2_MERCHANT\020\005\022" +
+                    "\r\n\tUT_LESSEE\020\006*\216\001\n\022EzLesseeOrderState\022\017\n" +
+                    "\013LOS_UNKNOWN\020\000\022\017\n\013LOS_PENDING\020\001\022\024\n\020LOS_A",
+            "UDIT_FAILED\020\002\022\025\n\021LOS_TO_BE_SHIPPED\020\003\022\026\n\022" +
+                    "LOS_TO_BE_RECEIVED\020\004\022\021\n\rLOS_CONFIRMED\020\005*" +
+                    "\266\001\n\021EzFinancingMethod\022\016\n\nFM_UNKNOWN\020\000\022\013\n" +
+                    "\007FM_LOAN\020\001\022\020\n\014FM_FACTORING\020\002\022\020\n\014FM_FINAN" +
+                    "CIAL\020\003\022\031\n\025FM_ASSIGNMENT_OF_DEBT\020\004\022\025\n\021FM_" +
+                    "LOAN_FACTORING\020\005\022\036\n\032FM_LOAN_ASSIGNMENT_O" +
+                    "F_DEBT\020\006\022\016\n\nFM_OFFLINE\020\007*\221\001\n\025EzFinancing" +
+                    "OrderState\022\017\n\013FOS_UNKNOWN\020\000\022\017\n\013FOS_PENDI" +
+                    "NG\020\001\022\024\n\020FOS_AUDIT_FAILED\020\002\022\025\n\021FOS_TO_BE_" +
+                    "SHIPPED\020\003\022\026\n\022FOS_TO_BE_RECEIVED\020\004\022\021\n\rFOS",
+            "_CONFIRMED\020\005*\216\001\n\022EzRentalOrderState\022\017\n\013R" +
+                    "OS_UNKNOWN\020\000\022\017\n\013ROS_PENDING\020\001\022\024\n\020ROS_AUD" +
+                    "IT_FAILED\020\002\022\025\n\021ROS_TO_BE_SHIPPED\020\003\022\026\n\022RO" +
+                    "S_TO_BE_RECEIVED\020\004\022\021\n\rROS_CONFIRMED\020\005*F\n" +
+                    "\017EzPaymentMethod\022\016\n\nPM_UNKNOWN\020\000\022\017\n\013PM_L" +
+                    "UMP_SUM\020\001\022\022\n\016PM_INSTALLMENT\020\002*L\n\025EzDiscr" +
+                    "editRecordType\022\017\n\013DRT_UNKNOWN\020\000\022\017\n\013DRT_O" +
+                    "VERDUE\020\001\022\021\n\rDRT_BAD_DEBTS\020\002b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -28075,7 +29744,7 @@ public final class EzTransfer {
     internal_static_types_EzLesseeOrder_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_types_EzLesseeOrder_descriptor,
-            new java.lang.String[] { "OrderNum", "ApplyTime", "ProdDetail", "PhoneNum", "Realname", "State", "ExpressInfo", });
+            new java.lang.String[] { "OrderNum", "ApplyTime", "ProdDetail", "PhoneNum", "RealName", "IdNum", "State", "ExpressInfo", });
     internal_static_types_EzProdDetail_descriptor =
             getDescriptor().getMessageTypes().get(22);
     internal_static_types_EzProdDetail_fieldAccessorTable = new

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author WangBin
  */
 @Data
-public class EzFinanceApply extends EzLesseeOrder{
+public class FinanceApply extends LesseeOrder {
 
     private Long orderNum;
     private Long merchantUid;

@@ -6,7 +6,7 @@ import lombok.Data;
  * @author WangBin
  */
 @Data
-public class EzProdDetail {
+public class ProdDetail {
     private String prodBrand;
     private String prodName;
     private String prodColor;
