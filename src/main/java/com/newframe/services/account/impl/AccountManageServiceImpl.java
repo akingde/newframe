@@ -579,6 +579,13 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         Long renterUid = accountRenterFinancing.getUid();
         Long funderUid = accountFundingFinanceAsset.getUid();
+        //需要先校验余额是否充足
+        Account account = accountService.getAccount(renterUid);
+        BigDecimal useableAmount = account.getUseableAmount();
+        //a.compareTo(b),a>b 1,a<b -1
+        if (useableAmount.subtract(dealAmount).compareTo(new BigDecimal(0))==-1){
+            return new OperationResult<>(BizErrorCode.NOT_SUFFICIENT_FUNDS);
+        }
         //操作租赁商的账户
         OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
         //操作资金方的账户
@@ -652,6 +659,13 @@ public class AccountManageServiceImpl implements AccountManageService {
 
         Long renterUid = accountRenterFinancing.getUid();
         Long lessorUid = accountLessorMatterAsset.getUid();
+        //需要先校验余额是否充足
+        Account account = accountService.getAccount(renterUid);
+        BigDecimal useableAmount = account.getUseableAmount();
+        //a.compareTo(b),a>b 1,a<b -1
+        if (useableAmount.subtract(dealAmount).compareTo(new BigDecimal(0))==-1){
+            return new OperationResult<>(BizErrorCode.NOT_SUFFICIENT_FUNDS);
+        }
         //操作租赁商的账户
         OperationResult<Boolean> result = saveAccountStatement(renterUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount.multiply(new BigDecimal(-1)),extraAmount);
         OperationResult<Boolean> result1 = saveAccountStatement(lessorUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);

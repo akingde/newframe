@@ -14,7 +14,8 @@ public enum BizErrorCode implements CodeStatus {
     NOT_LOGIN("400103","未登录"),
     ACCOUNT_NOTEXIST("400104","账户不存在"),
     ACCOUNTTYPE_NOTEXIST("400105","账户类型不存在"),
-    ACCOUNTREPAY_NOTEXIST("400106","该笔还款计划不存在")
+    ACCOUNTREPAY_NOTEXIST("400106","该笔还款计划不存在"),
+    NOT_SUFFICIENT_FUNDS("400106","该笔还款计划不存在")
     ;
     private String code;
     private String message;

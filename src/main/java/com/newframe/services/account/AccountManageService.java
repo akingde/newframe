@@ -138,18 +138,18 @@ public interface AccountManageService {
      * 租赁商账户资产
      * 订单融资
      * 能传的字段，按照接口要求传，不能提供的请传一个0
-     * @param uid
-     * @param orderId
-     * @param associatedOrderId
-     * @param financingAmount
-     * @param financingMaturity
-     * @param financingPrincipalInterest
-     * @param financingInterest
-     * @param settlePrincipalInterest
-     * @param settleInterest
-     * @param unsettlePrincipalInterest
-     * @param unsettleInterest
-     * @param accidentInsurance
+     * @param uid 用户的uid
+     * @param orderId 订单的Id
+     * @param associatedOrderId 关联订单的id
+     * @param financingAmount 融资金额
+     * @param financingMaturity 融资期限
+     * @param financingPrincipalInterest 融资本金
+     * @param financingInterest 融资利息
+     * @param settlePrincipalInterest 已经偿还的本金
+     * @param settleInterest 已经偿还的利息
+     * @param unsettlePrincipalInterest 待偿还的本金
+     * @param unsettleInterest 待偿还的利息
+     * @param accidentInsurance 意外保险金
      * @return
      */
     OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance);
