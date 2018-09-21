@@ -6,6 +6,7 @@ import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.dto.after.request.RoleListSearchDTO;
 import com.newframe.dto.after.response.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -107,4 +108,17 @@ public interface AfterService {
      * @return
      */
     OperationResult<Boolean> failDrawAssetCheck(Long uid, Long orderId, String remarks);
+
+    /**
+     * 设置利率
+     * @param rate
+     * @return
+     */
+    OperationResult<Boolean> setRate(BigDecimal rate);
+
+    /**
+     * 获取利率
+     * @return
+     */
+    OperationResult<BigDecimal> getRate();
 }
