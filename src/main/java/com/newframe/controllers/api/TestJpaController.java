@@ -184,9 +184,9 @@ public class TestJpaController extends BaseController {
 
 
     @RequestMapping("saveAccountRenterRentDetail")
-    public JsonResult saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount) {
+    public JsonResult saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount,Integer residueTime, String collectMoney) {
 
-        OperationResult<Boolean> result = accountManageServicel.saveAccountRenterRentDetail(uid, orderId, associatedOrderId, productBrand, productModel, productColour, productStorage, productMemory, totalRentAccount, monthNumber, payedAccount, unpayedAccount);
+        OperationResult<Boolean> result = accountManageServicel.saveAccountRenterRentDetail(uid, orderId, associatedOrderId, productBrand, productModel, productColour, productStorage, productMemory, totalRentAccount, monthNumber, payedAccount, unpayedAccount,residueTime, collectMoney);
 
         if (result.getSucc()) {
             return success(result.getEntity());

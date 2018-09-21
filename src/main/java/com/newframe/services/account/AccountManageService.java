@@ -109,27 +109,29 @@ public interface AccountManageService {
      * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount);
+    OperationResult<Boolean> saveAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount, Integer residueTime, String collectMoney);
 
     /**
      * 租赁商账户资产
      * 租机账户
      * 由订单中心那边，调用，将相关信息插入到这张表AccountRenterRent
-     * @param uid
-     * @param orderId
-     * @param associatedOrderId
-     * @param productBrand
-     * @param productModel
-     * @param productColour
-     * @param productStorage
-     * @param productMemory
-     * @param totalRentAccount
-     * @param monthNumber
-     * @param payedAccount
-     * @param unpayedAccount
+     * @param uid 用户的uid
+     * @param orderId 订单的iD
+     * @param associatedOrderId 关联订单的id
+     * @param productBrand 手机品牌
+     * @param productModel 手机型号
+     * @param productColour 手机颜色
+     * @param productStorage 手机物理内存
+     * @param productMemory 手机的运行内存
+     * @param totalRentAccount 总的租金
+     * @param monthNumber 租期
+     * @param payedAccount 已付租金
+     * @param unpayedAccount 未付租金
+     * @param residueTime 剩余未还期数
+     * @param collectMoney 收款账户
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount);
+    OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount,Integer residueTime, String collectMoney);
 
     /**
      * 租赁商账户资产
