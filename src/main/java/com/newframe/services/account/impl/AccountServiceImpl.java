@@ -44,7 +44,8 @@ import java.util.Optional;
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    AccountFundingSlave accountFundingSlave;
+    AccountSlave accountSlave;
+
     @Autowired
     AccountFundingFinanceAssetSlave accountFundingFinanceAssetSlave;
     @Autowired
@@ -56,14 +57,9 @@ public class AccountServiceImpl implements AccountService {
     AccountLessorMatterAssetViewSlave accountLessorMatterAssetViewSlave;
     @Autowired
     AccountLessorOverdueAssetSlave accountLessorOverdueAssetSlave;
-    @Autowired
-    AccountLessorSlave accountLessorSlave;
 
-    @Autowired
-    AccountSupplierSlave accountSupplierSlave;
     @Autowired
     AccountSupplierSellSlave accountSupplierSellSlave;
-
 
     @Autowired
     OrderFunderSlave orderFunderSlave;
@@ -71,9 +67,6 @@ public class AccountServiceImpl implements AccountService {
     OrderHirerSlave orderHirerSlave;
     @Autowired
     OrderSupplierSlave orderSupplierSlave;
-
-    @Autowired
-    private AccountRenterSlave accountRenterSlave;
 
     @Autowired
     private AccountRenterRentSlave accountRenterRentSlave;
@@ -125,8 +118,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountLessorMatterAssetMaster accountLessorMatterAssetMaster;
     @Autowired
-    AccountSupplierMaster accountSupplierMaster;
-    @Autowired
     AccountManageService accountManageService;
     @Autowired
     private AccountRenterFinancingMaster accountRenterFinancingMaster;
@@ -156,7 +147,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getFunderAssetAccount(Long uid) {
-        AccountFunding entity = accountFundingSlave.findOne(uid);
+        Account entity = accountSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
@@ -331,15 +322,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getSupplierAssetAccount(Long uid) {
-        AccountSupplier entity = accountSupplierSlave.findOne(uid);
+        Account entity = accountSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountSupplierDTO dto = new AccountSupplierDTO();
         BeanUtils.copyProperties(entity, dto);
-        dto.setUseableAmount(entity.getUseableAmount());
-        dto.setFrozenAssets(entity.getFrozenAsset());
-        dto.setTotalAssets(entity.getTotalAsset());
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -414,7 +402,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getHirerAssetAccount(Long uid) {
-        AccountLessor entity = accountLessorSlave.findOne(uid);
+        Account entity = accountSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
@@ -588,7 +576,7 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
 
-        Optional<Account> result = accountRenterSlave.findById(uid);
+        Optional<Account> result = accountSlave.findById(uid);
         if (!result.isPresent()) {
             return null;
         }
@@ -938,23 +926,6 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
         //王栋已经调用了
 //        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);
-        return new OperationResult<>(true);
-    }
-
-    /**
-     * 供应商账户
-     * 由订单中心那边，调用，将相关信息插入到表account_supplier和order_supplier
-     * 在供应商钱到账的时候调用
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> saveAccountSupplierDetail(Long uid, BigDecimal usableAmount, BigDecimal totalAsset, BigDecimal frozenAsset) {
-        AccountSupplier accountSupplier = new AccountSupplier();
-        accountSupplier.setUid(uid);
-        accountSupplier.setUseableAmount(usableAmount);
-        accountSupplier.setTotalAsset(totalAsset);
-        accountSupplier.setFrozenAsset(frozenAsset);
-        accountSupplierMaster.save(accountSupplier);
         return new OperationResult<>(true);
     }
 

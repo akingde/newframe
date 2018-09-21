@@ -47,12 +47,6 @@ public interface UserRentMerchantService {
     int update(UserRentMerchant userRentMerchant);
 
     /**
-     * 删除用户租赁商
-     * @param uid
-     */
-    void delete(Long uid);
-
-    /**
      * 根据手机号查找
      * @param phoneNumber
      * @return

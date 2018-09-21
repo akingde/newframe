@@ -376,11 +376,27 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid) {
+        UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid);
+        if(rentMerchant == null || !rentMerchant.getRoleId().equals(RoleEnum.FIRST_RENT_MERCHANT.getRoleId())){
+            return new OperationResult<>(RequestResultEnum.ROLE_ERROR, false);
+        }
+        UserRentMerchant merchant = userRentMerchantService.findOne(uid);
+        if(merchant == null || !merchant.getParentId().equals(uid)){
+            return new OperationResult<>(RequestResultEnum.ROLE_ERROR, false);
+        }
+        if(merchant.getRoleStatus().equals(RoleStatusEnum.FREEZE.getRoleStatue())){
+            return new OperationResult(true);
+        }
         int count = orderService.getNotFininishRenterOrder(removeUid);
         if(count != 0) {
             return new OperationResult(RequestResultEnum.NOT_FINISH_ORDER_EXISTS, false);
         }
-        userRentMerchantService.delete(removeUid);
+        Integer status = merchant.getRoleStatus();
+        merchant.setRoleStatus(RoleStatusEnum.FREEZE.getRoleStatue());
+        userRentMerchantService.update(merchant);
+        UserRole userRole = userRoleService.findOne(removeUid, RoleEnum.SECOND_RENT_MERCHANT.getRoleId(),status );
+        userRoleService.deleteById(userRole);
+        userBaseInfoService.removeByUid(removeUid);
         return new OperationResult(true);
     }
 
