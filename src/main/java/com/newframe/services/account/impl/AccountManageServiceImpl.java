@@ -327,11 +327,11 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param uid
      * @param orderId
      * @param relevanceOrderId
-     * @param receivableAccount
-     * @param receivedAccount
-     * @param dueInAccount
-     * @param residueTime
-     * @param collectMoney
+     * @param receivableAccount 应收
+     * @param receivedAccount 已收
+     * @param dueInAccount 待收金额
+     * @param residueTime 剩余期数
+     * @param collectMoney 收款账户
      * @return
      */
     @Override
@@ -380,7 +380,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterRentDetail accountRenterRentDetail = new AccountRenterRentDetail();
         accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
-        OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0), residueTime, collectMoney);
+        OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, payedAccount, unpayedAccount, residueTime, collectMoney);
         OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,totalRentAccount,monthNumber,accidentInsurance);
         if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
             return new OperationResult<>(false);
