@@ -118,11 +118,6 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         return 0;
     }
 
-    public void generateRenterSchedule(Long renterId,Long payeeId,Integer orderType,Integer orderAmount ){
-
-    }
-
-
     @Override
     public void messagePush(Long receiverId, Long orderId, String associatedOrderId, MessagePushEnum info){
         pushService.sendMessToAllByUid(receiverId,info.getRoleId(), associatedOrderId,
@@ -137,18 +132,34 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         // 还款期限，如果是分期付款，则总租金/租期=月租金
         // 如果是全款付款，还款期限为1
         Integer paymentNumber = 1;
+        // 计算租机还款首付
+        BigDecimal downPayment = orderHirer.getAccidentBenefit().add(orderHirer.getMonthlyPayment());
         if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
             paymentNumber = orderHirer.getNumberOfPeriods();
         }
-        if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
+        // 如果是全款支付，租期为1，首付为订单总金额+意外保险
+        if(PatternPaymentEnum.FULL_PAYMENT.getValue().equals(orderHirer.getPatternPayment())){
             paymentNumber = 1;
+            downPayment = orderHirer.getOrderAmount().add(orderHirer.getAccidentBenefit());
         }
+
         // 操作租赁商账户表和租赁商租赁账户明细
         OperationResult<Boolean> operationResult = accountManageService.saveAccountRenterRentDetail(
-                orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
-                orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
-                String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),paymentNumber,
-                new BigDecimal("0"),orderHirer.getOrderAmount(),0,"hello",new BigDecimal(0)
+                orderRenter.getRenterId(),
+                orderRenter.getOrderId(),
+                orderRenter.getPartnerOrderId(),
+                orderRenter.getProductBrand(),
+                orderRenter.getProductName(),
+                orderRenter.getProductColor(),
+                String.valueOf(orderRenter.getProductStorage()),
+                String.valueOf(orderRenter.getProductRandomMemory()),
+                orderHirer.getOrderAmount(),
+                paymentNumber,
+                downPayment,
+                orderHirer.getOrderAmount().subtract(downPayment),
+                orderHirer.getNumberOfPeriods()-1,
+                orderRenter.getGatheringAccount(),
+                orderHirer.getAccidentBenefit()
         );
         // 操作出租方账户表和生成租赁商还款明细
         accountService.saveAccountLessorMatterAssetDetail(orderHirer.getLessorId(),orderHirer.getOrderId(),Long.valueOf(orderRenter.getCtime()),

@@ -482,8 +482,6 @@ public class OrderServiceImpl implements OrderService {
                     dto.setDownPayment(orderRenter.getDownPayment());
                     dto.setMonthPayment(orderRenter.getMonthlyPayment());
                 }
-
-
                 dtos.add(dto);
             }
         }
