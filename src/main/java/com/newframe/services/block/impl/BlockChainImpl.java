@@ -285,7 +285,7 @@ public class BlockChainImpl implements BlockChain {
      */
     @Override
     public ResponseChain confirmForFinance(Long orderNum, String trackingNum, Integer confirmTime) {
-        // TODO 暂无
+        // TODO 暂不调用
         EzTransfer.EzConfirmForFinance.Builder builder = EzTransfer.EzConfirmForFinance.newBuilder()
                 .setOrderNum(String.valueOf(orderNum))
                 .setTrackingNum(trackingNum)
@@ -406,6 +406,7 @@ public class BlockChainImpl implements BlockChain {
      */
     @Override
     public ResponseChain confirmForRental(Long orderNum, String trackingNum, Integer confirmTime) {
+        // TODO 暂不调用
         EzTransfer.EzConfirmForRental.Builder builder = EzTransfer.EzConfirmForRental.newBuilder()
                 .setOrderNum(String.valueOf(orderNum))
                 .setTrackingNum(trackingNum)
