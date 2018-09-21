@@ -49,6 +49,16 @@ public class AccountRenterRent {
     private BigDecimal dueInAccount;
 
     /**
+     * 剩余期数
+     */
+    private Integer residueTime;
+
+    /**
+     * 收款账户
+     */
+    private String collectMoney;
+
+    /**
      * 订单状态,1:正常,2:冻结
      */
     private Integer orderStatus;
@@ -62,13 +72,15 @@ public class AccountRenterRent {
      */
     private Integer utime;
 
-    public void setAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount){
+    public void setAccountRenterRent(Long uid, Long orderId, String relevanceOrderId, BigDecimal receivableAccount, BigDecimal receivedAccount, BigDecimal dueInAccount,Integer residueTime, String collectMoney){
         this.uid = uid;
         this.orderId = orderId;
         this.relevanceOrderId = relevanceOrderId;
         this.receivableAccount = receivableAccount;
         this.receivedAccount = receivedAccount;
         this.dueInAccount = dueInAccount;
+        this.residueTime=residueTime;
+        this.collectMoney=collectMoney;
         this.orderStatus=1;
     }
 }
