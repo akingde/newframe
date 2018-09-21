@@ -12,10 +12,9 @@ import com.newframe.enums.SystemCode;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.services.after.AfterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -163,7 +162,7 @@ public class ApiAfterController extends BaseController {
     @PostMapping("getDrawAssetList")
     public JsonResult getDrawAssetList(Long uid, DrawAssetSearchDTO drawAssetSearchDTO){
         if(uid == null){
-            error(SystemCode.NEED_LOGIN);
+            return error(SystemCode.NEED_LOGIN);
         }
         OperationResult<DrawAssetListDTO> result = afterService.getDrawAssetList(uid, drawAssetSearchDTO);
         return success(result.getEntity());
@@ -178,11 +177,11 @@ public class ApiAfterController extends BaseController {
     @PostMapping("passDrawAssetCheck")
     public  JsonResult passDrawAssetCheck(Long uid, Long orderId){
         if(uid == null){
-            error(SystemCode.NEED_LOGIN);
+            return error(SystemCode.NEED_LOGIN);
         }
         OperationResult<Boolean> result = afterService.passDrawAssetCheck(uid, orderId);
         if(!result.getEntity()){
-            error(result.getErrorCode());
+            return error(result.getErrorCode());
         }
         return success(result.getEntity());
     }
@@ -196,11 +195,25 @@ public class ApiAfterController extends BaseController {
     @PostMapping("failDrawAssetCheck")
     public  JsonResult failDrawAssetCheck(Long uid, Long orderId, String remarks){
         if(uid == null){
-            error(SystemCode.NEED_LOGIN);
+            return error(SystemCode.NEED_LOGIN);
         }
         OperationResult<Boolean> result = afterService.failDrawAssetCheck(uid, orderId, remarks);
         if(!result.getEntity()){
-            error(result.getErrorCode());
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
+     * 设置利率
+     * @param rate
+     * @return
+     */
+    @GetMapping("setRate")
+    public JsonResult setRate(BigDecimal rate){
+        OperationResult<Boolean> result = afterService.setRate(rate);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
         }
         return success(result.getEntity());
     }

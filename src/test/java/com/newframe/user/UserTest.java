@@ -6,6 +6,7 @@ import com.newframe.services.after.AfterService;
 import com.newframe.services.block.BlockChain;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
+import com.newframe.services.userbase.ConfigRateService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +25,8 @@ public class UserTest extends NewFrameApplicationTests {
     private BlockChain blockChain;
     @Autowired
     private SessionService sessionService;
+    @Autowired
+    private ConfigRateService configRateService;
 
     @Test
     public void addRechargeRecord(){
@@ -70,6 +73,11 @@ public class UserTest extends NewFrameApplicationTests {
         String code = "1234";
         sessionService.saveCode(mobile, type, code);
         sessionService.checkCode(mobile, type, code);
+    }
+
+    @Test
+    public void test1(){
+        System.out.println(configRateService.getRate());
     }
 
 //    @Test
