@@ -129,9 +129,10 @@ public interface AccountManageService {
      * @param unpayedAccount 未付租金
      * @param residueTime 剩余未还期数
      * @param collectMoney 收款账户
+     * @param accidentInsurance 意外保险金
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRentDetail(Long uid,Long orderId,String associatedOrderId,String productBrand,String productModel,String productColour,String productStorage,String productMemory,BigDecimal totalRentAccount,Integer monthNumber,BigDecimal payedAccount,BigDecimal unpayedAccount,Integer residueTime, String collectMoney);
+    OperationResult<Boolean> saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory, BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount, Integer residueTime, String collectMoney, BigDecimal accidentInsurance);
 
     /**
      * 租赁商账户资产
@@ -148,18 +149,20 @@ public interface AccountManageService {
      * @param settleInterest
      * @param unsettlePrincipalInterest
      * @param unsettleInterest
+     * @param accidentInsurance
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterFinancing(Long uid,Long orderId,String associatedOrderId,BigDecimal financingAmount,Integer financingMaturity,BigDecimal financingPrincipalInterest,BigDecimal financingInterest,BigDecimal settlePrincipalInterest,BigDecimal settleInterest,BigDecimal unsettlePrincipalInterest,BigDecimal unsettleInterest);
+    OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance);
 
     /**
      * 生成还款计划表
      * @param orderId 订单的ID
      * @param totalAccount 总金额
      * @param totalPeriods 一共几期
+     * @param accidentInsurance
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRepay(Long orderId,BigDecimal totalAccount,Integer totalPeriods);
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods, BigDecimal accidentInsurance);
 
     /**
      * 操作账户的接口

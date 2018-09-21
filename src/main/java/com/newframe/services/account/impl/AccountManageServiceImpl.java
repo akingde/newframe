@@ -366,11 +366,12 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param monthNumber
      * @param payedAccount
      * @param unpayedAccount
+     * @param accidentInsurance
      * @return
      */
     @Override
     public OperationResult<Boolean> saveAccountRenterRentDetail(Long uid, Long orderId, String associatedOrderId, String productBrand, String productModel, String productColour, String productStorage, String productMemory,
-                                                                BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount,Integer residueTime, String collectMoney) {
+                                                                BigDecimal totalRentAccount, Integer monthNumber, BigDecimal payedAccount, BigDecimal unpayedAccount, Integer residueTime, String collectMoney, BigDecimal accidentInsurance) {
         if (null == uid || null == orderId || null == associatedOrderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel)||
                 StringUtils.isEmpty(productColour) || StringUtils.isEmpty(productStorage) || StringUtils.isEmpty(productMemory) ||  null == totalRentAccount || null == monthNumber || null == payedAccount || null == unpayedAccount){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
@@ -380,7 +381,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
         OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0), residueTime, collectMoney);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,totalRentAccount,monthNumber);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,totalRentAccount,monthNumber,accidentInsurance);
         if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -403,10 +404,11 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param settleInterest
      * @param unsettlePrincipalInterest
      * @param unsettleInterest
+     * @param accidentInsurance
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest) {
+    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance) {
         if (null == uid || null == orderId || null == associatedOrderId || null == financingAmount || null == financingMaturity||
                 null == financingPrincipalInterest || null == financingInterest || null == settlePrincipalInterest ||  null == settleInterest || null == unsettlePrincipalInterest || null == unsettleInterest){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
@@ -415,7 +417,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterFinancing.setAccountRenterFinancing(uid,orderId,associatedOrderId,financingAmount,financingMaturity,
                 financingPrincipalInterest,financingInterest,settlePrincipalInterest,settleInterest,unsettlePrincipalInterest,unsettleInterest);
         AccountRenterFinancing result = accountService.saveAccountRenterFinancing(accountRenterFinancing);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,financingAmount,financingMaturity);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,financingAmount,financingMaturity,accidentInsurance);
         if (null == result || null == result || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -428,10 +430,11 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param orderId       订单的ID
      * @param totalAccount  总金额
      * @param totalPeriods 一共几期
+     * @param accidentInsurance
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods) {
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods, BigDecimal accidentInsurance) {
         if (null == orderId || null == totalAccount || null == totalPeriods){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
@@ -450,8 +453,10 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepays.add(accountRenterRepay);
         };
         //第一期是已扣款
-        if (null != accountRenterRepays.get(0)) {
-            accountRenterRepays.get(0).setWithhold(2);
+        AccountRenterRepay renterRepay = accountRenterRepays.get(0);
+        if (null != renterRepay) {
+            renterRepay.setWithhold(2);
+            renterRepay.setOrderAmount(renterRepay.getOrderAmount().add(accidentInsurance));
         }
         List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
         if (CollectionUtils.isEmpty(result)){

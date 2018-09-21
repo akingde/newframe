@@ -1,8 +1,6 @@
 package com.newframe.services.order.impl;
 
-import com.newframe.controllers.api.TestCommonController;
 import com.newframe.dto.OperationResult;
-import com.newframe.entity.order.FundingGatheringSchedule;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
@@ -27,12 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author kfm
@@ -156,7 +148,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 orderRenter.getRenterId(),orderRenter.getOrderId(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
                 orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
                 String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),paymentNumber,
-                new BigDecimal("0"),orderHirer.getOrderAmount()
+                new BigDecimal("0"),orderHirer.getOrderAmount(),0,"hello",new BigDecimal(0)
         );
         // 操作出租方账户表和生成租赁商还款明细
         accountService.saveAccountLessorMatterAssetDetail(orderHirer.getLessorId(),orderHirer.getOrderId(),Long.valueOf(orderRenter.getCtime()),
@@ -187,7 +179,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 monthPayment,
                 BigDecimal.ZERO,
                 orderFunder.getFinancingAmount().subtract(monthPayment),
-                interest);
+                interest, new BigDecimal(0));
 
         accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getFunderId(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
                 orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderFunder.getFinancingAmount(),
