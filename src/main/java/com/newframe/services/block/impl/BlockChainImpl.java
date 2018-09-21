@@ -514,7 +514,8 @@ public class BlockChainImpl implements BlockChain {
                 .setApplyTime(lesseeOrder.getOrderTime())
                 .setProdDetail(setEzProdDetail(lesseeOrder))
                 .setPhoneNum(lesseeOrder.getPhoneNum())
-                .setRealName(lesseeOrder.getRealName());
+                .setRealName(lesseeOrder.getRealName())
+                .setIdNum(lesseeOrder.getIdNum());
     }
 
     /**
