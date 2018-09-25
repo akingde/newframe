@@ -216,9 +216,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId,
-                                         BigDecimal financingAmount, Integer financingDeadline) throws AccountOperationException {
+                                         BigDecimal financingAmount, Integer financingDeadline, Integer residualScheme) throws AccountOperationException {
         // 参数校验
-        if (orderId == null || supplierId == null) {
+        if (orderId == null || supplierId == null || residualScheme == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
         String renterName = orderBaseService.getRenterName(uid);
@@ -226,14 +226,14 @@ public class OrderServiceImpl implements OrderService {
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
         List<UserFunder> funders = userFunderSlave.findAll();
-        Long funderId = null;
-        if(funders!= null && funders.size() > 0){
-            Integer size = funders.size();
-            Random random = new Random();
-            funderId = funders.get(random.nextInt(size)).getUid();
-        }else{
-            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
-        }
+        Long funderId = 1535433927623092L;
+//        if(funders!= null && funders.size() > 0){
+//            Integer size = funders.size();
+//            Random random = new Random();L
+//            funderId = funders.get(random.nextInt(size)).getUid();
+//        }else{
+//            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
+//        }
 
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
@@ -283,6 +283,7 @@ public class OrderServiceImpl implements OrderService {
                     .add(orderRenter.getMonthlyPayment()
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
             orderFunder.setDeposit(getDeposit(orderId));
+            orderFunder.setResidualScheme(residualScheme);
 
             // 修改租赁商订单状态和订单类型
             updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
@@ -978,7 +979,7 @@ public class OrderServiceImpl implements OrderService {
         }
         HirerDeliver hirerDeliver = hirerDeliverSlave.findOne(orderId);
         if (hirerDeliver == null) {
-            return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+            return new OperationResult<>(OrderResultEnum.NO_EXPRESS_INFO);
         }
         OperationResult<ExpressInfo> result = commonService.getExpressMessage(hirerDeliver.getExpressCode(),
                 hirerDeliver.getExpressNumber());
@@ -994,7 +995,7 @@ public class OrderServiceImpl implements OrderService {
             deliverDTO.setSerialNumber(hirerDeliver.getSerialNumber());
             return new OperationResult<>(OrderResultEnum.SUCCESS, deliverDTO);
         }
-        return new OperationResult<>(OrderResultEnum.PARAM_ERROR);
+        return new OperationResult<>(OrderResultEnum.NO_EXPRESS_INFO);
     }
 
     @Override
