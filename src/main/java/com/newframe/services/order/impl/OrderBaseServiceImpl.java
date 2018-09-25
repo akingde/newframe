@@ -162,10 +162,20 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 orderHirer.getAccidentBenefit()
         );
         // 操作出租方账户表和生成租赁商还款明细
-        accountService.saveAccountLessorMatterAssetDetail(orderHirer.getLessorId(),orderHirer.getOrderId(),Long.valueOf(orderRenter.getCtime()),
-                orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderRenter.getProductBrand(),
-                orderRenter.getProductName(),orderRenter.getProductColor(),String.valueOf(orderRenter.getProductStorage()),
-                String.valueOf(orderRenter.getProductRandomMemory()),orderHirer.getOrderAmount(),orderHirer.getNumberOfPeriods());
+        accountService.saveAccountLessorMatterAssetDetail(
+                orderHirer.getLessorId(),
+                orderHirer.getOrderId(),
+                Long.valueOf(orderRenter.getCtime()),
+                orderRenter.getRenterId(),
+                orderRenter.getRenterName(),
+                orderRenter.getPartnerOrderId(),
+                orderRenter.getProductBrand(),
+                orderRenter.getProductName(),
+                orderRenter.getProductColor(),
+                String.valueOf(orderRenter.getProductStorage()),
+                String.valueOf(orderRenter.getProductRandomMemory()),
+                orderHirer.getOrderAmount(),
+                orderHirer.getNumberOfPeriods());
         if(operationResult != null){
             return operationResult.getEntity();
         }
