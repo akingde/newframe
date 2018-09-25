@@ -113,5 +113,7 @@ public class OrderFunder implements Serializable {
     private Integer loanModel;
 
     private Integer platformCreditScore;
+    /**是否参加残值保障计划，0：不参加，1：参加*/
+    private Integer residualScheme;
 }
 
