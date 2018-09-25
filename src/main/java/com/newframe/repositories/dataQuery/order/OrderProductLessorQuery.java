@@ -17,9 +17,9 @@ import lombok.Data;
 public class OrderProductLessorQuery extends BaseQuery {
     @QBindAttrField(fieldName = "supplierId",where = Where.equal)
     private Long supplierId;
-    @QBindAttrField(fieldName = "brand",where = Where.like)
+    @QBindAttrField(fieldName = "brand",where = Where.equal)
     private String productBrand;
-    @QBindAttrField(fieldName = "model",where = Where.like)
+    @QBindAttrField(fieldName = "model",where = Where.equal)
     private String productName;
     @QBindAttrField(fieldName = "specification",where = Where.equal)
     private Integer productStorage;

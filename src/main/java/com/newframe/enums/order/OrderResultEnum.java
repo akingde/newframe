@@ -23,6 +23,8 @@ public enum OrderResultEnum implements CodeStatus {
     FUNDER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT("401011","资金方账户可用余额不足，扣款失败"),
     ACCOUNT_NO_EXIST("401012","账户不存在"),
     NO_HAVE_FUNDER("401013","资金方不存在"),
+    LESSOR_NOT_EXIST("401014","此型号的手机无出租方出租"),
+    LESSOR_PRICE_NOT_EXIST("401015","平台无此型号手机的出租价格"),
     ;
 
     String code;

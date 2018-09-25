@@ -496,6 +496,9 @@ public class OrderServiceImpl implements OrderService {
         query.setProductStorage(productInfo.getProductStorage());
         query.setProductName(productInfo.getProductName());
         List<ProductLessor> products = productLessorSlave.findAll(query);
+        if(products == null || products.size() == 0){
+            return new JsonResult(OrderResultEnum.LESSOR_NOT_EXIST,false);
+        }
         List<LessorInfoDTO> dtos = new ArrayList<>();
         for (ProductLessor product : products) {
             UserHirer userHirer = userHirerService.findOne(product.getSupplierId());
@@ -1162,8 +1165,10 @@ public class OrderServiceImpl implements OrderService {
         query.setPaymentNumber(paymentNumber);
         Sort sort = new Sort(Sort.Direction.ASC, LessorProductPrice.PAYMENT_NUMBER);
         List<LessorProductPrice> lessorProductPrices = lessorProductPriceSlave.findAll(query, sort);
+        if(lessorProductPrices == null || lessorProductPrices.size() == 0){
+            return new OperationResult(OrderResultEnum.LESSOR_PRICE_NOT_EXIST);
+        }
         List<LessorProductPriceDTO> dtos = new ArrayList<>();
-
         for (LessorProductPrice lessorProductPrice : lessorProductPrices) {
             LessorProductPriceDTO dto = new LessorProductPriceDTO();
             BeanUtils.copyProperties(lessorProductPrice, dto);
