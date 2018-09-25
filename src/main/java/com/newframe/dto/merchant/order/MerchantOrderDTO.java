@@ -73,4 +73,6 @@ public class MerchantOrderDTO {
     @NotNull(message = "意外保险金额不能为空")
     private BigDecimal accidentBenefit;
 
+    @NotNull(message = "收款账户不能为空")
+    private String gatheringAccount;
 }

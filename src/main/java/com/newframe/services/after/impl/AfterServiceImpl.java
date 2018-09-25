@@ -11,7 +11,6 @@ import com.newframe.entity.user.CapitalFlow;
 import com.newframe.entity.user.UserFunder;
 import com.newframe.entity.user.UserRoleApply;
 import com.newframe.enums.user.AssetStatusEnum;
-import com.newframe.enums.user.AssetTypeEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.account.AccountManageService;
@@ -19,6 +18,7 @@ import com.newframe.services.after.AfterService;
 import com.newframe.services.bank.BankMoneyFlowOutService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.userbase.CapitalFlowService;
+import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserFunderService;
 import com.newframe.services.userbase.UserRoleApplyService;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +51,8 @@ public class AfterServiceImpl implements AfterService {
     private AccountManageService accountManageService;
     @Autowired
     private BankMoneyFlowOutService bankMoneyFlowOutService;
+    @Autowired
+    private ConfigRateService configRateService;
 
     /**
      * 后台登陆
@@ -285,5 +287,30 @@ public class AfterServiceImpl implements AfterService {
         accountManageService.saveAccountStatement(capitalFlow.getUid(), WITHDRAW, USEABLEASSETS, amount, BigDecimal.ZERO);
         accountManageService.saveAccountStatement(capitalFlow.getUid(), WITHDRAW, FROZENASSETS, amount.negate(), BigDecimal.ZERO);
         return new OperationResult(true);
+    }
+
+    /**
+     * 设置利率
+     *
+     * @param rate
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> setRate(BigDecimal rate) {
+        if(rate == null || rate.compareTo(BigDecimal.ZERO) != 1 || rate.compareTo(BigDecimal.ONE) != -1){
+            return new OperationResult<>(RequestResultEnum.MODIFY_ERROR, false);
+        }
+        configRateService.insert(rate);
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 获取利率
+     *
+     * @return
+     */
+    @Override
+    public OperationResult<BigDecimal> getRate() {
+        return new OperationResult<>(configRateService.getRate());
     }
 }

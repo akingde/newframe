@@ -16,6 +16,7 @@ import com.newframe.services.account.AccountService;
 import com.newframe.services.order.OrderAccountOperationService;
 import jdk.dynalink.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,6 +34,9 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
 
     @Autowired
     AccountService accountService;
+
+    @Value("${residual.value.protection.scheme}")
+    private BigDecimal residualValue;
 
     /**
      * 融资购机
