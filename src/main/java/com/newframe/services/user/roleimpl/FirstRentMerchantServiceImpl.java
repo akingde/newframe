@@ -159,7 +159,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         UserContract contract = userContractService.findOne(userRoleApply.getUid());
         ResponseChain responseChain = blockChainService.t1MerchantApply(userRoleApply.getUid(), contract.getPublickey(),
                 userRoleApply.getMerchantName());
-        if(!responseChain.isSuccess()) {
+        if(responseChain == null || !responseChain.isSuccess()) {
             throw new MobileException(RequestResultEnum.MODIFY_ERROR);
         }
         return new OperationResult(true);
@@ -427,7 +427,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         userRoleService.deleteById(userRole);
         userBaseInfoService.removeByUid(removeUid);
         ResponseChain responseChain = blockChainService.rmT2Merchant(uid, removeUid);
-        if(!responseChain.isSuccess()) {
+        if(responseChain == null || !responseChain.isSuccess()) {
             throw new MobileException(RequestResultEnum.MODIFY_ERROR);
         }
         return new OperationResult(true);

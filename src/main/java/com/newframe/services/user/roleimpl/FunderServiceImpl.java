@@ -142,7 +142,7 @@ public class FunderServiceImpl implements RoleService {
         UserContract contract = userContractService.findOne(userRoleApply.getUid());
         ResponseChain responseChain = blockChainService.funderApply(userRoleApply.getUid(), contract.getPublickey(),
                 userRoleApply.getMerchantName());
-        if(!responseChain.isSuccess()) {
+        if(responseChain == null || !responseChain.isSuccess()) {
             throw new MobileException(RequestResultEnum.MODIFY_ERROR);
         }
         return new OperationResult(true);

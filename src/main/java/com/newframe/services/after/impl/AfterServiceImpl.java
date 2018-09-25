@@ -189,7 +189,7 @@ public class AfterServiceImpl implements AfterService {
         }
         userFunderService.update(true, funderUids);
         ResponseChain responseChain = blockChainService.addWhitelists(funderUids);
-        if(!responseChain.isSuccess()){
+        if(responseChain == null || !responseChain.isSuccess()){
             throw new MobileException(RequestResultEnum.MODIFY_ERROR);
         }
         return new OperationResult(true);
@@ -216,7 +216,7 @@ public class AfterServiceImpl implements AfterService {
         List<Long> ids = Lists.newArrayList();
         ids.add(funderUid);
         ResponseChain responseChain = blockChainService.rmWhitelists(ids);
-        if(!responseChain.isSuccess()){
+        if(responseChain == null || !responseChain.isSuccess()){
             throw new MobileException(RequestResultEnum.MODIFY_ERROR);
         }
         return new OperationResult(true);
@@ -241,7 +241,7 @@ public class AfterServiceImpl implements AfterService {
         if (CollectionUtils.isNotEmpty(inLists)) {
             userFunderService.update(true, inLists);
             ResponseChain responseChain = blockChainService.addWhitelists(inLists);
-            if(!responseChain.isSuccess()){
+            if(responseChain == null || !responseChain.isSuccess()){
                 throw new MobileException(RequestResultEnum.MODIFY_ERROR);
             }
         }
@@ -249,7 +249,7 @@ public class AfterServiceImpl implements AfterService {
         if (CollectionUtils.isNotEmpty(reLists)) {
             userFunderService.update(false, reLists);
             ResponseChain responseChain = blockChainService.rmWhitelists(reLists);
-            if(!responseChain.isSuccess()){
+            if(responseChain == null || !responseChain.isSuccess()){
                 throw new MobileException(RequestResultEnum.MODIFY_ERROR);
             }
         }

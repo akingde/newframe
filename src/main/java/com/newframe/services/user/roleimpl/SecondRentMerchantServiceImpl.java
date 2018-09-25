@@ -299,7 +299,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         UserRentMerchant merchant = userRentMerchantService.insert(rentMerchant);
         ResponseChain responseChain = blockChainService.t2MerchantApply(uid, baseInfo.getUid(),
                 userContract.getPublickey(), rentMerchant.getMerchantName());
-        if(!responseChain.isSuccess()) {
+        if(responseChain == null || !responseChain.isSuccess()) {
             throw new MobileException(RequestResultEnum.MODIFY_ERROR);
         }
         return new OperationResult(true);
