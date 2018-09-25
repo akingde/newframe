@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -449,7 +452,8 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepay.setOrderId(orderId);
             accountRenterRepay.setWithhold(1);
             accountRenterRepay.setOrderStatus(1);
-
+            Long uixTime = LocalDate.now().plus(i-1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
+            accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
             accountRenterRepays.add(accountRenterRepay);
         };
         //第一期是已扣款
