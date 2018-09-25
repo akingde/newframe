@@ -1,6 +1,8 @@
 package com.newframe.services.after.impl;
 
 import com.google.common.collect.Lists;
+import com.newframe.blockchain.entity.ResponseChain;
+import com.newframe.common.exception.MobileException;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.after.request.DrawAssetSearchDTO;
 import com.newframe.dto.after.request.FunderSearchDTO;
@@ -16,15 +18,18 @@ import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.after.AfterService;
 import com.newframe.services.bank.BankMoneyFlowOutService;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.userbase.CapitalFlowService;
 import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserFunderService;
 import com.newframe.services.userbase.UserRoleApplyService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,6 +37,7 @@ import java.util.List;
 import static com.newframe.enums.account.AccountTypeEnum.FROZENASSETS;
 import static com.newframe.enums.account.AccountTypeEnum.USEABLEASSETS;
 import static com.newframe.enums.account.DealTypeEnum.WITHDRAW;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author WangBin
@@ -53,6 +59,8 @@ public class AfterServiceImpl implements AfterService {
     private BankMoneyFlowOutService bankMoneyFlowOutService;
     @Autowired
     private ConfigRateService configRateService;
+    @Autowired
+    private BlockChainService blockChainService;
 
     /**
      * 后台登陆
@@ -154,7 +162,7 @@ public class AfterServiceImpl implements AfterService {
      */
     @Override
     public OperationResult<List<FunderDTO>> getBlackFunderList() {
-        List<UserFunder> funders = userFunderService.findAll();
+        List<UserFunder> funders = userFunderService.findAll(false);
         List<FunderDTO> list = Lists.newArrayList();
         for (UserFunder funder : funders) {
             list.add(new FunderDTO(funder));
@@ -170,8 +178,9 @@ public class AfterServiceImpl implements AfterService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OperationResult<Boolean> addFunder(Long uid, List<Long> funderUids) {
-        if(funderUids == null || funderUids.size() == 0){
+        if(CollectionUtils.isEmpty(funderUids)){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
         }
         List<UserFunder> funders = userFunderService.findAll(funderUids);
@@ -179,6 +188,10 @@ public class AfterServiceImpl implements AfterService {
             return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
         }
         userFunderService.update(true, funderUids);
+        ResponseChain responseChain = blockChainService.addWhitelists(funderUids);
+        if(!responseChain.isSuccess()){
+            throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+        }
         return new OperationResult(true);
     }
 
@@ -190,6 +203,7 @@ public class AfterServiceImpl implements AfterService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OperationResult<Boolean> removeFunder(Long uid, Long funderUid) {
         if(funderUid == null){
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
@@ -199,6 +213,46 @@ public class AfterServiceImpl implements AfterService {
             return new OperationResult(RequestResultEnum.INVALID_ACCESS , false);
         }
         userFunderService.update(false, funderUid);
+        List<Long> ids = Lists.newArrayList();
+        ids.add(funderUid);
+        ResponseChain responseChain = blockChainService.rmWhitelists(ids);
+        if(!responseChain.isSuccess()){
+            throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+        }
+        return new OperationResult(true);
+    }
+
+    /**
+     * 修改资金方
+     *
+     * @param uid
+     * @param funderUid
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> modifyFunder(Long uid, List<Long> funderUid) {
+        List<UserFunder> funders = userFunderService.findAll(true);
+        List<Long> id = funders.stream().map(UserFunder::getUid).collect(toList());
+        if(CollectionUtils.isEmpty(funderUid)){
+            userFunderService.update(false, funderUid);
+            return new OperationResult(true);
+        }
+        List<Long> inLists = funderUid.stream().filter(item -> !id.contains(item)).distinct().collect(toList());
+        if (CollectionUtils.isNotEmpty(inLists)) {
+            userFunderService.update(true, inLists);
+            ResponseChain responseChain = blockChainService.addWhitelists(inLists);
+            if(!responseChain.isSuccess()){
+                throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+            }
+        }
+        List<Long> reLists = id.stream().filter(item -> !funderUid.contains(item)).distinct().collect(toList());
+        if (CollectionUtils.isNotEmpty(reLists)) {
+            userFunderService.update(false, reLists);
+            ResponseChain responseChain = blockChainService.rmWhitelists(reLists);
+            if(!responseChain.isSuccess()){
+                throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+            }
+        }
         return new OperationResult(true);
     }
 

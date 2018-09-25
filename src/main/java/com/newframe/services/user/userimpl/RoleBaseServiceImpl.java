@@ -22,6 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
@@ -281,14 +282,15 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      */
     @Override
     public OperationResult<Boolean> modifyAppointSupplier(Long uid, Integer roleId, List<Long> supplierUid) {
-        if(CollectionUtils.isEmpty(supplierUid)){
-            return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
-        }
         UserRole userRole = userRoleService.findOne(uid, roleId, RoleStatusEnum.NORMAL.getRoleStatue());
         if (userRole == null){
             return new OperationResult(RequestResultEnum.ROLE_NOT_EXEISTS, false);
         }
         List<MerchantAppoint> merchantAppoints = merchantAppointService.findAll(uid);
+        if(CollectionUtils.isEmpty(supplierUid)){
+            roleServiceMap.get(roleId).removeAppointSupplier(merchantAppoints);
+            return new OperationResult(true);
+        }
         List<Long> appoints = merchantAppoints.stream().map(MerchantAppoint::getSupplierUid).collect(toList());
         List<Long> inLists = supplierUid.stream().filter(item -> !appoints.contains(item)).distinct().collect(toList());
         List<Long> reLists = appoints.stream().filter(item -> !supplierUid.contains(item)).distinct().collect(toList());
@@ -322,6 +324,7 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO) throws IOException{
         List<Area> areaList = userService.checkAddress(rentMerchantApplyDTO.getProvinceId(),
                 rentMerchantApplyDTO.getCityId(),
@@ -391,6 +394,7 @@ public class RoleBaseServiceImpl implements RoleBaseService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OperationResult<Boolean> passRoleApply(UserRoleApply userRoleApply) {
         userRoleApply.setApplyStatus(RoleStatusEnum.NORMAL.getRoleStatue());
         userRoleApply.setCheckUid(new UserDTO().getUid());
@@ -400,6 +404,7 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         for (Integer roleId : roleIds) {
             roleServiceMap.get(roleId).passCheck(userRoleApply);
         }
+        roleServiceMap.get(userRoleApply.getRoleId()).roleInBlock(userRoleApply);
         return new OperationResult(true);
     }
 
