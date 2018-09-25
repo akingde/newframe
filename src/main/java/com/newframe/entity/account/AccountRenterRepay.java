@@ -44,6 +44,11 @@ public class AccountRenterRepay {
     private Integer withhold;
 
     /**
+     * 还款时间
+     */
+    private Integer payTime;
+
+    /**
      * ctime
      */
     private Integer ctime;
