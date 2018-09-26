@@ -1,6 +1,8 @@
 package com.newframe.services.user.roleimpl;
 
 import com.google.common.collect.Lists;
+import com.newframe.blockchain.entity.ResponseChain;
+import com.newframe.common.exception.MobileException;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
@@ -9,6 +11,7 @@ import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.order.OrderService;
 import com.newframe.services.user.RoleBaseService;
@@ -21,6 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,6 +53,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
     private UserRoleService userRoleService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private BlockChainService blockChainService;
+    @Autowired
+    private UserContractService userContractService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -130,10 +139,29 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
         insertRole(userRoleApply.getUid());
         userRentMerchantService.insert(new UserRentMerchant(userRoleApply));
         addAccount(userRoleApply.getUid(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 角色上链
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public OperationResult<ResponseChain> roleInBlock(UserRoleApply userRoleApply) {
+        UserContract contract = userContractService.findOne(userRoleApply.getUid());
+        ResponseChain responseChain = blockChainService.t1MerchantApply(userRoleApply.getUid(), contract.getPublickey(),
+                userRoleApply.getMerchantName());
+        if(responseChain == null || !responseChain.isSuccess()) {
+            throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+        }
         return new OperationResult(true);
     }
 
@@ -375,6 +403,7 @@ public class FirstRentMerchantServiceImpl implements RoleService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OperationResult<Boolean> removeSmallRentMechant(Long uid, Long removeUid) {
         UserRentMerchant rentMerchant = userRentMerchantService.findOne(uid);
         if(rentMerchant == null || !rentMerchant.getRoleId().equals(RoleEnum.FIRST_RENT_MERCHANT.getRoleId())){
@@ -397,6 +426,10 @@ public class FirstRentMerchantServiceImpl implements RoleService {
         UserRole userRole = userRoleService.findOne(removeUid, RoleEnum.SECOND_RENT_MERCHANT.getRoleId(),status );
         userRoleService.deleteById(userRole);
         userBaseInfoService.removeByUid(removeUid);
+        ResponseChain responseChain = blockChainService.rmT2Merchant(uid, removeUid);
+        if(responseChain == null || !responseChain.isSuccess()) {
+            throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+        }
         return new OperationResult(true);
     }
 

@@ -23,6 +23,7 @@ public class FunderDTO {
     private String topContactsPhoneNumber;//紧急联系人手机号
     private Integer relationship;//关系
     private Integer ctime;
+    private Integer utime;
     private String businessLicenseNumber;
     private String[] businessLicense;
     private String[] letterOfAttorney;
@@ -45,6 +46,7 @@ public class FunderDTO {
         this.topContactsPhoneNumber = userFunder.getTopContactsPhoneNumber();
         this.relationship = userFunder.getRelationship();
         this.ctime = userFunder.getCtime();
+        this.utime = userFunder.getUtime();
         this.businessLicenseNumber = userFunder.getBusinessLicenseNumber();
         this.businessLicense = StringUtils.split(userFunder.getBusinessLicenseFile(),",");
         this.letterOfAttorney = StringUtils.split(userFunder.getLetterOfAttorneyFile(),",");

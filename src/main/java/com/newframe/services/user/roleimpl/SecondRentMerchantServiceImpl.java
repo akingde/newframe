@@ -1,6 +1,8 @@
 package com.newframe.services.user.roleimpl;
 
 import com.google.common.collect.Lists;
+import com.newframe.blockchain.entity.ResponseChain;
+import com.newframe.common.exception.MobileException;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
@@ -9,18 +11,16 @@ import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
-import com.newframe.enums.user.UserStatusEnum;
+import com.newframe.services.account.AccountManageService;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.user.SessionService;
-import com.newframe.services.user.UserService;
-import com.newframe.services.userbase.UserBaseInfoService;
-import com.newframe.services.userbase.UserPwdService;
-import com.newframe.services.userbase.UserRentMerchantService;
-import com.newframe.services.userbase.UserRoleService;
+import com.newframe.services.userbase.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -45,6 +45,12 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     private UserPwdService userPwdService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private BlockChainService blockChainService;
+    @Autowired
+    private UserContractService userContractService;
+    @Autowired
+    private AccountManageService accountManageService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -86,6 +92,17 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     @Override
     public OperationResult<Boolean> passCheck(UserRoleApply userRoleApply) {
         return new OperationResult(RequestResultEnum.PARAMETER_ERROR, false);
+    }
+
+    /**
+     * 角色上链
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<ResponseChain> roleInBlock(UserRoleApply userRoleApply) {
+        return null;
     }
 
     /**
@@ -218,6 +235,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
      * @param rentMerchantApplyDTO
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public OperationResult<Boolean> addSmallRentMechant(Long uid, RentMerchantApplyDTO rentMerchantApplyDTO,
                                                         List<Area> areaList) throws  IOException{
         if(!PatternEnum.checkPattern(rentMerchantApplyDTO.getMerchantPhone(), PatternEnum.mobile)){
@@ -233,8 +251,10 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         UserPwd userPwd = new UserPwd();
         userPwd.setUid(baseInfo.getUid());
         userPwdService.insert(userPwd);
+        UserContract userContract = userContractService.insert(baseInfo.getUid());
         sessionService.setAppUserToken(baseInfo.getUid());
         sessionService.setWebUserToken(baseInfo.getUid());
+        accountManageService.saveAccount(userBaseInfo.getUid());
         UserRole userRole = new UserRole();
         userRole.setUid(baseInfo.getUid());
         userRole.setRoleId(getRoleId());
@@ -280,7 +300,12 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         rentMerchant.setConsigneeAddress(rentMerchantApplyDTO.getConsigneeAddress());
         address.append(rentMerchantApplyDTO.getConsigneeAddress());
         rentMerchant.setRentMerchantAddress(address.toString());
-        userRentMerchantService.insert(rentMerchant);
+        UserRentMerchant merchant = userRentMerchantService.insert(rentMerchant);
+        ResponseChain responseChain = blockChainService.t2MerchantApply(uid, baseInfo.getUid(),
+                userContract.getPublickey(), rentMerchant.getMerchantName());
+        if(responseChain == null || !responseChain.isSuccess()) {
+            throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+        }
         return new OperationResult(true);
     }
 

@@ -17,4 +17,5 @@ public class FinancingInfo {
     private Long supplierId;
     private String supplierName;
     private Integer financingTime;
+    private Integer residualScheme;
 }

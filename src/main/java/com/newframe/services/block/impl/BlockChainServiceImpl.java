@@ -4,7 +4,7 @@ import com.newframe.blockchain.entity.ResponseChain;
 import com.newframe.blockchain.util.BlockChainRepository;
 import com.newframe.dto.block.*;
 import com.newframe.entity.user.UserContract;
-import com.newframe.services.block.BlockChain;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.userbase.UserContractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author WangBin
  */
 @Service
-public class BlockChainImpl implements BlockChain {
+public class BlockChainServiceImpl implements BlockChainService {
 
     @Autowired
     private BlockChainRepository blockChainRepository;

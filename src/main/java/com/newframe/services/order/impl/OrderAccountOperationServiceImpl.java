@@ -129,7 +129,16 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         Account funderAccount = accountService.getAccount(orderFunder.getFunderId());
         if(renterAccount != null && funderAccount != null){
-            if(renterAccount.getUseableAmount().compareTo(orderRenter.getDownPayment()) < 0){
+            // 计算融资首付
+            BigDecimal frozenAmount = orderFunder.getFinancingAmount()
+                    .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+            // 计算要从租赁商账户扣除的钱：用户租机首付（作为融资购机的一部分给供应商）+ 残值保障计划（直接扣除到平台）
+            BigDecimal renterUsableAmount = orderRenter.getDownPayment();
+            if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
+                renterUsableAmount = renterUsableAmount.add(residualValue);
+            }
+            // 租赁商融资时要扣除用户租机首付
+            if(renterAccount.getUseableAmount().compareTo(renterUsableAmount) < 0){
                 return new OperationResult<>(OrderResultEnum.RENTER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT,false);
             }
             if(funderAccount.getUseableAmount().compareTo(orderFunder.getFinancingAmount()) < 0){
@@ -142,9 +151,17 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                     AccountTypeEnum.USEABLEASSETS,
                     orderRenter.getDownPayment().multiply(new BigDecimal(-1)),
                     new BigDecimal(0));
+            // 扣除残值保障计划
+            if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
+                accountManageService.saveAccountStatement(orderRenter.getRenterId(),
+                        DealTypeEnum.FINANCING,
+                        AccountTypeEnum.USEABLEASSETS,
+                        residualValue.multiply(new BigDecimal(-1)),
+                        new BigDecimal(0));
+            }
+
             // 从租赁商账户冻结金额中扣除融资首付
-            BigDecimal frozenAmount = orderFunder.getFinancingAmount()
-                    .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+
             accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.FROZENASSETS,
@@ -187,7 +204,12 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         Account supplierAccount = accountService.getAccount(orderSupplier.getSupplierId());
         if(renterAccount != null && supplierAccount != null){
-            if(renterAccount.getUseableAmount().compareTo(orderRenter.getDownPayment()) < 0){
+            // 计算要从租赁商账户扣除的钱：用户租机首付（作为融资购机的一部分给供应商）+ 残值保障计划（直接扣除到平台）
+            BigDecimal renterUsableAmount = orderRenter.getDownPayment();
+            if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
+                renterUsableAmount = renterUsableAmount.add(residualValue);
+            }
+            if(renterAccount.getUseableAmount().compareTo(renterUsableAmount) < 0){
                 return new OperationResult<>(OrderResultEnum.RENTER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT,false);
             }
             accountManageService.saveAccountStatement(orderRenter.getRenterId(),
@@ -195,6 +217,13 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                     AccountTypeEnum.USEABLEASSETS,
                     orderRenter.getDownPayment().multiply(new BigDecimal(-1)),
                     new BigDecimal(0));
+            if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
+                accountManageService.saveAccountStatement(orderRenter.getRenterId(),
+                        DealTypeEnum.FINANCING,
+                        AccountTypeEnum.USEABLEASSETS,
+                        residualValue.multiply(new BigDecimal(-1)),
+                        new BigDecimal(0));
+            }
             accountManageService.saveAccountStatement(orderSupplier.getSupplierId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.USEABLEASSETS,

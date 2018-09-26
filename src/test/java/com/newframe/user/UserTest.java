@@ -3,10 +3,12 @@ package com.newframe.user;
 import com.newframe.NewFrameApplicationTests;
 import com.newframe.enums.user.UserSMSEnum;
 import com.newframe.services.after.AfterService;
-import com.newframe.services.block.BlockChain;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.ConfigRateService;
+import org.apache.poi.ss.formula.eval.ValueEval;
+import org.apache.poi.ss.formula.functions.PPMT;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +24,7 @@ public class UserTest extends NewFrameApplicationTests {
     @Autowired
     private AfterService afterService;
     @Autowired
-    private BlockChain blockChain;
+    private BlockChainService blockChainService;
     @Autowired
     private SessionService sessionService;
     @Autowired
@@ -63,7 +65,7 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void blockTest(){
-        blockChain.funderApply(1234L, "", "test");
+        blockChainService.funderApply(1234L, "", "test");
     }
 
     @Test

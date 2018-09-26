@@ -1,6 +1,7 @@
 package com.newframe.controllers;
 
 import com.newframe.common.exception.AccountOperationException;
+import com.newframe.common.exception.MobileException;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.user.MerchantAppoint;
 import com.newframe.enums.merchant.MerchantResult;
@@ -54,5 +55,11 @@ public class ExceptionHandle {
         log.error(e.getMessage());
         OperationResult result = e.getOperationResult();
         return new JsonResult(result.getErrorCode(),false);
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    public JsonResult handleMobileException(MobileException e){
+        return new JsonResult(e.getCodeStatus());
     }
 }

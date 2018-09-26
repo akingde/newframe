@@ -1,6 +1,8 @@
 package com.newframe.services.user.roleimpl;
 
 import com.google.common.collect.Lists;
+import com.newframe.blockchain.entity.ResponseChain;
+import com.newframe.common.exception.MobileException;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
@@ -10,6 +12,7 @@ import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RelationshipEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
@@ -40,6 +43,10 @@ public class HirerServiceImpl implements RoleService {
     private UserBaseInfoService userBaseInfoService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private BlockChainService blockChainService;
+    @Autowired
+    private UserContractService userContractService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -106,6 +113,23 @@ public class HirerServiceImpl implements RoleService {
         insertRole(userRoleApply.getUid());
         userHirerService.insert(new UserHirer(userRoleApply));
         addAccount(userRoleApply.getUid(), userRoleApply);
+        return new OperationResult(true);
+    }
+
+    /**
+     * 角色上链
+     *
+     * @param userRoleApply
+     * @return
+     */
+    @Override
+    public OperationResult<ResponseChain> roleInBlock(UserRoleApply userRoleApply) {
+        UserContract contract = userContractService.findOne(userRoleApply.getUid());
+        ResponseChain responseChain = blockChainService.lessorApply(userRoleApply.getUid(), contract.getPublickey(),
+                userRoleApply.getMerchantName());
+        if(responseChain == null || !responseChain.isSuccess()) {
+            throw new MobileException(RequestResultEnum.MODIFY_ERROR);
+        }
         return new OperationResult(true);
     }
 

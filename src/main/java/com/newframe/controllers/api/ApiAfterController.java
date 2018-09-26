@@ -154,6 +154,21 @@ public class ApiAfterController extends BaseController {
     }
 
     /**
+     * 修改资金方
+     * @param uid
+     * @param funderUid
+     * @return
+     */
+    @PostMapping("modifyFunder")
+    public JsonResult modifyFunder(Long uid, List<Long> funderUid){
+        OperationResult<Boolean> result = afterService.modifyFunder(uid, funderUid);
+        if(!result.getEntity()){
+            return error(result.getErrorCode());
+        }
+        return success(result.getEntity());
+    }
+
+    /**
      * 获取资金提取列表
      * @param uid
      * @param drawAssetSearchDTO
