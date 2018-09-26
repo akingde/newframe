@@ -1121,6 +1121,7 @@ public class OrderServiceImpl implements OrderService {
             info.setFinancingDeadline(orderFunder.getNumberOfPayments());
             info.setFinancingTime(orderFunder.getCtime());
             info.setSupplierId(orderFunder.getSupplierId());
+            info.setResidualScheme(orderFunder.getResidualScheme());
             UserSupplier userSupplier = userSupplierService.findOne(orderFunder.getSupplierId());
             if (userSupplier != null) {
                 info.setSupplierName(userSupplier.getMerchantName());

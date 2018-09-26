@@ -202,8 +202,14 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 orderFunder.getFinancingAmount().subtract(monthPayment),
                 interest, new BigDecimal(0));
 
-        accountService.saveAccountFundingFinanceAssetDetail(orderFunder.getFunderId(),orderFunder.getOrderId(),Long.valueOf(orderFunder.getCtime()),
-                orderRenter.getRenterId(),orderRenter.getRenterName(),orderRenter.getPartnerOrderId(),orderFunder.getFinancingAmount(),
+        accountService.saveAccountFundingFinanceAssetDetail(
+                orderFunder.getFunderId(),
+                orderFunder.getOrderId(),
+                Long.valueOf(orderFunder.getCtime()),
+                orderRenter.getRenterId(),
+                orderRenter.getRenterName(),
+                orderRenter.getPartnerOrderId(),
+                orderFunder.getFinancingAmount(),
                 orderFunder.getNumberOfPeriods());
         return true;
     }
