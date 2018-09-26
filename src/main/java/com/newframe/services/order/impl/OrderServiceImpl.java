@@ -1270,7 +1270,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private BigDecimal getDeposit(Long orderId, Long supplierId) {
         BigDecimal financingAmount = getFinancingAmount(orderId, supplierId);
-        BigDecimal benefit = new BigDecimal(0.15);
+        BigDecimal benefit = new BigDecimal("0.15");
         if (financingAmount != null) {
             return financingAmount.multiply(benefit);
         }
