@@ -440,7 +440,7 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
+    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, String associatedOrderStatus) {
         if (null == currentPage || currentPage <= 1) {
             currentPage = 1;
         }
@@ -450,7 +450,11 @@ public class AccountServiceImpl implements AccountService {
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         AccountLessorMatterAssetQuery query = new AccountLessorMatterAssetQuery();
-        query.setOrderStatus(orderStatus);
+        query.setUid(uid);
+        if (null != associatedOrderStatus) {
+            query.setAssociatedOrderStatus(associatedOrderStatus);
+        }
+
         Page<AccountLessorMatterAsset> page = accountLessorMatterAssetSlave.findAll(query, pageable);
 
         List<AccountLessorMatterAssetListDTO> dtoList = new ArrayList<>();
@@ -524,6 +528,7 @@ public class AccountServiceImpl implements AccountService {
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         AccountLessorOverdueAssetQuery query = new AccountLessorOverdueAssetQuery();
+        query.setUid(uid);
         query.setOrderStatus(orderStatus);
         Page<AccountLessorOverdueAsset> page = accountLessorOverdueAssetSlave.findAll(query, pageable);
 
@@ -576,21 +581,21 @@ public class AccountServiceImpl implements AccountService {
      * 获取租赁商账户资产下的租赁明细表
      *
      * @param uid
-     * @param orderStatus
+     * @param associatedOrderStatus
      * @param currentPage
      * @param pageSize
      * @return
      */
     @Override
-    public Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public Page<AccountRenterRent> getAccountRenterRent(Long uid, String associatedOrderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid || null == currentPage || null == pageSize) {
             return null;
         }
 
         AccountRenterRentQuery query = new AccountRenterRentQuery();
         query.setUid(uid);
-        if (null != orderStatus) {
-            query.setOrderStatus(orderStatus);
+        if (null != associatedOrderStatus) {
+            query.setAssociatedOrderStatus(associatedOrderStatus);
         }
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
@@ -642,7 +647,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterFinancingMachine saveAccountRenterFinancingMachine(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
 
@@ -663,30 +668,30 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterFinancingMachine updateAccountRenterFinancingMachine(AccountRenterFinancingMachine machine) {
-        if (null == machine || null == machine.getUid()){
+        if (null == machine || null == machine.getUid()) {
             return null;
         }
         List<String> updateFields = Lists.newArrayList();
-        if (null != machine.getMonthShouldRepay()){
+        if (null != machine.getMonthShouldRepay()) {
             updateFields.add("monthShouldRepay");
         }
 
-        if (null != machine.getOrderFinancing()){
+        if (null != machine.getOrderFinancing()) {
             updateFields.add("orderFinancing");
         }
 
-        if (null != machine.getSettleFinancing()){
+        if (null != machine.getSettleFinancing()) {
             updateFields.add("settleFinancing");
         }
 
-        if (null != machine.getUnsettledFinancing()){
+        if (null != machine.getUnsettledFinancing()) {
             updateFields.add("unsettledFinancing");
         }
 
-        String[] array =new String[updateFields.size()];
+        String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
 
-        accountRenterFinancingMachineMaster.updateById(machine,machine.getUid(),array);
+        accountRenterFinancingMachineMaster.updateById(machine, machine.getUid(), array);
         return machine;
     }
 
@@ -707,12 +712,8 @@ public class AccountServiceImpl implements AccountService {
 
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
         query.setUid(uid);
-        if (null != orderStatus) {
-            query.setOrderStatus(orderStatus);
-        }
-        if (null != repaymentStatus) {
-            query.setRepaymentStatus(repaymentStatus);
-        }
+        query.setOrderStatus(orderStatus);
+        query.setRepaymentStatus(repaymentStatus);
         Sort sort = new Sort(Sort.Direction.DESC, "ctime");
         PageRequest pageRequest = PageRequest.of(currentPage - 1, pageSize, sort);
 
@@ -1177,16 +1178,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public BigDecimal getorderFinancing(Long uid) {
 
-        if (null == uid){
+        if (null == uid) {
             return BigDecimal.ZERO;
         }
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
         query.setUid(uid);
         List<AccountRenterFinancing> financingList = accountRenterFinancingSlave.findAll(query);
-        if (CollectionUtils.isEmpty(financingList)){
+        if (CollectionUtils.isEmpty(financingList)) {
             return BigDecimal.ZERO;
         }
-        BigDecimal result = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal result = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return result;
     }
@@ -1201,7 +1202,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth) {
-        if (null == uid || null == firstDayOfMonth || null == lastDayOfMonth){
+        if (null == uid || null == firstDayOfMonth || null == lastDayOfMonth) {
             return Collections.EMPTY_LIST;
         }
         AccountRenterRepayQuery query = new AccountRenterRepayQuery();
@@ -1223,7 +1224,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRentMachine saveAccountRenterRentMachine(AccountRenterRentMachine machine) {
-        if (null == machine || null == machine.getUid()){
+        if (null == machine || null == machine.getUid()) {
             return null;
         }
 
@@ -1238,7 +1239,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRent getAccountRenterRent(Long orderId) {
-        if (null == orderId){
+        if (null == orderId) {
             return null;
         }
 

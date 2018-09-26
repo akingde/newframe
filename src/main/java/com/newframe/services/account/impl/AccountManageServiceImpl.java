@@ -134,13 +134,13 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     /**
      * @param uid
-     * @param orderStatus
+     * @param associatedOrderStatus
      * @param currentPage
      * @param pageSize
      * @return
      */
     @Override
-    public OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, String associatedOrderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
@@ -148,7 +148,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         AccountRenterRentInfo accountRenterRentInfo = new AccountRenterRentInfo();
-        Page<AccountRenterRent> accountRenterRentPage = accountService.getAccountRenterRent(uid, orderStatus, currentPage, pageSize);
+        Page<AccountRenterRent> accountRenterRentPage = accountService.getAccountRenterRent(uid, associatedOrderStatus, currentPage, pageSize);
         List<AccountRenterRent> accountRenterRents = accountRenterRentPage.getContent();
         accountRenterRentInfo.setList(accountRenterRents);
         accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalElements());

@@ -35,6 +35,10 @@ public class AccountRenterFinancing {
      */
     private String associatedOrderId;
     /**
+     * 关联订单的状态
+     */
+    private String associatedOrderStatus;
+    /**
      * 融资金额
      */
     private BigDecimal financingAmount;

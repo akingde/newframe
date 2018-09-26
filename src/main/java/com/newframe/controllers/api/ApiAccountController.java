@@ -109,9 +109,9 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping("listRenterOrderRent")
-    public JsonResult listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public JsonResult listRenterOrderRent(Long uid, String associatedOrderStatus, Integer currentPage, Integer pageSize) {
 
-        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRent(uid, orderStatus, currentPage, pageSize);
+        OperationResult<AccountRenterRentInfo> result = accountManageService.listRenterOrderRent(uid, associatedOrderStatus, currentPage, pageSize);
         if (result.getSucc()) {
             return success(result.getEntity());
         }
@@ -504,8 +504,8 @@ public class ApiAccountController extends BaseController {
      * @return
      */
     @RequestMapping(value = "listHirerOrderMaterial", method = RequestMethod.POST)
-    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus) {
-        return accountService.listHirerOrderMaterial(uid, currentPage, pageSize, orderStatus);
+    public JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, String associatedOrderStatus) {
+        return accountService.listHirerOrderMaterial(uid, currentPage, pageSize, associatedOrderStatus);
     }
 
     /**

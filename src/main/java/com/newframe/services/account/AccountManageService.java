@@ -32,12 +32,12 @@ public interface AccountManageService {
     /**
      *
      * @param uid
-     * @param orderStatus
+     * @param associatedOrderStatus
      * @param currentPage
      * @param pageSize
      * @return
      */
-    OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+    OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, String associatedOrderStatus, Integer currentPage, Integer pageSize);
 
     /**
      * 租赁商获取订单融资账户
