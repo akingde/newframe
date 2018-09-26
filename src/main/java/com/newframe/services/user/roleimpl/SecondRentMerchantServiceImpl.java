@@ -11,6 +11,7 @@ import com.newframe.enums.RoleEnum;
 import com.newframe.enums.user.PatternEnum;
 import com.newframe.enums.user.RequestResultEnum;
 import com.newframe.enums.user.RoleStatusEnum;
+import com.newframe.services.account.AccountManageService;
 import com.newframe.services.block.BlockChainService;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleService;
@@ -48,6 +49,8 @@ public class SecondRentMerchantServiceImpl implements RoleService {
     private BlockChainService blockChainService;
     @Autowired
     private UserContractService userContractService;
+    @Autowired
+    private AccountManageService accountManageService;
 
     private static final String bucket = "fzmsupplychain";
 
@@ -251,6 +254,7 @@ public class SecondRentMerchantServiceImpl implements RoleService {
         UserContract userContract = userContractService.insert(baseInfo.getUid());
         sessionService.setAppUserToken(baseInfo.getUid());
         sessionService.setWebUserToken(baseInfo.getUid());
+        accountManageService.saveAccount(userBaseInfo.getUid());
         UserRole userRole = new UserRole();
         userRole.setUid(baseInfo.getUid());
         userRole.setRoleId(getRoleId());

@@ -6,14 +6,11 @@ import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.*;
-import com.newframe.entity.order.OrderFunder;
-import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
 import com.newframe.repositories.dataMaster.account.*;
 import com.newframe.repositories.dataQuery.account.*;
-import com.newframe.repositories.dataQuery.order.OrderFunderQuery;
 import com.newframe.repositories.dataSlave.account.*;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
@@ -122,6 +119,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterFinancingMaster accountRenterFinancingMaster;
 
+    @Autowired
+    private AccountRenterFinancingMachineMaster accountRenterFinancingMachineMaster;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -195,7 +195,7 @@ public class AccountServiceImpl implements AccountService {
             pageSize = 1;
         }
         currentPage--;
-        Pageable pageable = new PageRequest(currentPage, pageSize);
+        Pageable pageable = new PageRequest(currentPage, pageSize, Sort.Direction.DESC, "ctime");
         AccountFundingFinanceAssetQuery query = new AccountFundingFinanceAssetQuery();
         query.setUid(uid);
         query.setOrderStatus(orderStatus);
@@ -213,30 +213,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 18.获取资金方金融资产下
-     * 获取资金方金融资产下
-     * 根据订单的Id,去查看详情
+     * 18.查看资金方分期收款计划
      *
      * @param orderId
      * @return
      */
     @Override
     public JsonResult getFunderOrderInvestmentDetail(Long uid, Long orderId) {
-        OrderFunderQuery query = new OrderFunderQuery();
-        query.setFunderId(uid);
+        if (null == orderId) {
+            return null;
+        }
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
         query.setOrderId(orderId);
-        query.setDeleteStatus(OrderFunder.NO_DELETE_STATUS);
-        List<OrderFunder> entitys = orderFunderSlave.findAll(query);
-        if (null == entitys) {
-            entitys = Collections.EMPTY_LIST;
-        }
-        List<AccountOrderFundingDTO> dtos = new ArrayList<>();
-        for (OrderFunder entity : entitys) {
-            AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
-            BeanUtils.copyProperties(entity, dto);
-            dtos.add(dto);
-        }
-        return new JsonResult(SystemCode.SUCCESS, dtos);
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+        return new JsonResult(SystemCode.SUCCESS, CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays);
     }
 
     /**
@@ -384,6 +374,7 @@ public class AccountServiceImpl implements AccountService {
             dto.setUserId(entity.getUid());
             dto.setUserName(entity.getReceiverName());
             dto.setDeliverTime(entity.getExpressTime());
+            dto.setAssociatedOrderId(entity.getPartnerOrderId());
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
@@ -402,6 +393,8 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getHirerAssetAccount(Long uid) {
+
+
         Account entity = accountSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
@@ -473,26 +466,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 28.获取出租方实物资产账户下
-     * 实物明细列表
+     * 28.查看出租方分期收款计划
      *
      * @return
      */
     @Override
     public JsonResult getHirerOrderMaterialDetail(Long uid, Long orderId) {
-        OrderFunderQuery query = new OrderFunderQuery();
+        if (null == orderId) {
+            return null;
+        }
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
         query.setOrderId(orderId);
-        List<OrderHirer> entitys = orderHirerSlave.findAll(query);
-        if (null == entitys) {
-            entitys = Collections.EMPTY_LIST;
-        }
-        List<AccountOrderFundingDTO> dtos = new ArrayList<>();
-        for (OrderHirer entity : entitys) {
-            AccountOrderFundingDTO dto = new AccountOrderFundingDTO();
-            BeanUtils.copyProperties(entity, dto);
-            dtos.add(dto);
-        }
-        return new JsonResult(SystemCode.SUCCESS, dtos);
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+        return new JsonResult(SystemCode.SUCCESS, CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays);
     }
 
     /**
@@ -643,6 +629,62 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
         return result.get();
+    }
+
+    /**
+     * 用户注册时，订单融资初始化
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine saveAccountRenterFinancingMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+
+        AccountRenterFinancingMachine machine = new AccountRenterFinancingMachine();
+        machine.setUid(uid);
+        machine.setMonthShouldRepay(BigDecimal.ZERO);
+        machine.setOrderFinancing(BigDecimal.ZERO);
+        machine.setUnsettledFinancing(BigDecimal.ZERO);
+        machine.setSettleFinancing(BigDecimal.ZERO);
+        return accountRenterFinancingMachineMaster.save(machine);
+    }
+
+    /**
+     * 更新订单融资的统计信息
+     *
+     * @param machine
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine updateAccountRenterFinancingMachine(AccountRenterFinancingMachine machine) {
+        if (null == machine || null == machine.getUid()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != machine.getMonthShouldRepay()){
+            updateFields.add("monthShouldRepay");
+        }
+
+        if (null != machine.getOrderFinancing()){
+            updateFields.add("orderFinancing");
+        }
+
+        if (null != machine.getSettleFinancing()){
+            updateFields.add("settleFinancing");
+        }
+
+        if (null != machine.getUnsettledFinancing()){
+            updateFields.add("unsettledFinancing");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterFinancingMachineMaster.updateById(machine,machine.getUid(),array);
+        return machine;
     }
 
     /**
@@ -865,6 +907,7 @@ public class AccountServiceImpl implements AccountService {
      * 出租方(租户)账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_lessor_matter_asset
      * 在出租方发货（审核通过）时调用，更新出租方账户、生成租赁商还款计划
+     *
      * @return
      */
     @Override
@@ -901,6 +944,7 @@ public class AccountServiceImpl implements AccountService {
      * 资金方账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset
      * 在资金方放款完成之后调用，操作资金方金融资产账户、生成租赁商还款计划
+     *
      * @return
      */
     @Override
@@ -954,12 +998,12 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRepay getAccountRenterRepay(Long id) {
-        if (null == id){
+        if (null == id) {
             return null;
         }
         Optional<AccountRenterRepay> accountRenterRepay = accountRenterRepaySlave.findById(id);
 
-        if (accountRenterRepay.isPresent()){
+        if (accountRenterRepay.isPresent()) {
             return accountRenterRepay.get();
         }
         return null;
@@ -974,7 +1018,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountRenterFinancing getAccountRenterFinancing(Long orderId) {
 
-        if (null == orderId){
+        if (null == orderId) {
             return null;
         }
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
@@ -991,7 +1035,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountFundingFinanceAsset getAccountFundingFinanceAsset(Long orderId) {
-        if (null == orderId){
+        if (null == orderId) {
             return null;
         }
 
@@ -1007,21 +1051,21 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterFinancing updateAccountRenterFinancing(AccountRenterFinancing accountRenterFinancing) {
-        if (null == accountRenterFinancing.getId()){
+        if (null == accountRenterFinancing.getId()) {
             return null;
         }
         List<String> updateFields = Lists.newArrayList();
-        if (null != accountRenterFinancing.getRepaymentStatus()){
+        if (null != accountRenterFinancing.getRepaymentStatus()) {
             updateFields.add("repaymentStatus");
         }
-        if (null != accountRenterFinancing.getOrderStatus()){
+        if (null != accountRenterFinancing.getOrderStatus()) {
             updateFields.add("orderStatus");
         }
 
-        String[] array =new String[updateFields.size()];
+        String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
 
-        accountRenterFinancingMaster.updateById(accountRenterFinancing,accountRenterFinancing.getId(),array);
+        accountRenterFinancingMaster.updateById(accountRenterFinancing, accountRenterFinancing.getId(), array);
         return accountRenterFinancing;
     }
 
@@ -1033,18 +1077,18 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountFundingFinanceAsset updateAccountFundingFinanceAsset(AccountFundingFinanceAsset accountFundingFinanceAsset) {
-        if (null == accountFundingFinanceAsset.getId()){
+        if (null == accountFundingFinanceAsset.getId()) {
             return null;
         }
         List<String> updateFields = Lists.newArrayList();
-        if (null != accountFundingFinanceAsset.getOrderStatus()){
+        if (null != accountFundingFinanceAsset.getOrderStatus()) {
             updateFields.add("orderStatus");
         }
 
-        String[] array =new String[updateFields.size()];
+        String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
 
-        accountFundingFinanceAssetMaster.updateById(accountFundingFinanceAsset,accountFundingFinanceAsset.getId(),array);
+        accountFundingFinanceAssetMaster.updateById(accountFundingFinanceAsset, accountFundingFinanceAsset.getId(), array);
         return accountFundingFinanceAsset;
     }
 
@@ -1057,22 +1101,22 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountRenterRepay updateAccountRenterRepay(AccountRenterRepay accountRenterRepay) {
 
-        if (null == accountRenterRepay.getId()){
+        if (null == accountRenterRepay.getId()) {
             return null;
         }
         List<String> updateFields = Lists.newArrayList();
-        if (null != accountRenterRepay.getOrderStatus()){
+        if (null != accountRenterRepay.getOrderStatus()) {
             updateFields.add("orderStatus");
         }
 
-        if (null != accountRenterRepay.getWithhold()){
+        if (null != accountRenterRepay.getWithhold()) {
             updateFields.add("withhold");
         }
 
-        String[] array =new String[updateFields.size()];
+        String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
 
-        accountRenterRepayMaster.updateById(accountRenterRepay,accountRenterRepay.getId(),array);
+        accountRenterRepayMaster.updateById(accountRenterRepay, accountRenterRepay.getId(), array);
         return accountRenterRepay;
     }
 
@@ -1085,7 +1129,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountLessorMatterAsset getAccountLessorMatterAsset(Long orderId) {
 
-        if (null == orderId){
+        if (null == orderId) {
             return null;
         }
 
@@ -1103,19 +1147,66 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset) {
-        if (null == accountLessorMatterAsset.getId()){
+        if (null == accountLessorMatterAsset.getId()) {
             return null;
         }
         List<String> updateFields = Lists.newArrayList();
-        if (null != accountLessorMatterAsset.getOrderStatus()){
+        if (null != accountLessorMatterAsset.getOrderStatus()) {
             updateFields.add("orderStatus");
         }
 
-        String[] array =new String[updateFields.size()];
+        String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
 
-        accountLessorMatterAssetMaster.updateById(accountLessorMatterAsset,accountLessorMatterAsset.getId(),array);
+        accountLessorMatterAssetMaster.updateById(accountLessorMatterAsset, accountLessorMatterAsset.getId(), array);
         return accountLessorMatterAsset;
+    }
+
+    /**
+     * 根据这个用户uid，计算出所有他的融资金额
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public BigDecimal getorderFinancing(Long uid) {
+
+        if (null == uid){
+            return BigDecimal.ZERO;
+        }
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setUid(uid);
+        List<AccountRenterFinancing> financingList = accountRenterFinancingSlave.findAll(query);
+        if (CollectionUtils.isEmpty(financingList)){
+            return BigDecimal.ZERO;
+        }
+        BigDecimal result = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+
+        return result;
+    }
+
+    /**
+     * 根据用户的Uid,查询本月应还的金额
+     *
+     * @param uid
+     * @param firstDayOfMonth
+     * @param lastDayOfMonth
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth) {
+        if (null == uid || null == firstDayOfMonth || null == lastDayOfMonth){
+            return Collections.EMPTY_LIST;
+        }
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setLastDayOfMonth(lastDayOfMonth);
+        query.setFirstDayOfMonth(firstDayOfMonth);
+        query.setUid(uid);
+        //查询未付款
+        query.setWithhold(1);
+        List<AccountRenterRepay> renterRepays = accountRenterRepayMaster.findAll(query);
+
+        return CollectionUtils.isEmpty(renterRepays) ? Collections.EMPTY_LIST : renterRepays;
     }
 
     /**
@@ -1126,7 +1217,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Account getAccount(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
 
@@ -1141,30 +1232,31 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Account updateAccount(Account acc) {
-        if (null == acc || null == acc.getUid()){
+        if (null == acc || null == acc.getUid()) {
             return null;
         }
 
         List<String> updateFields = Lists.newArrayList();
-        if (null != acc.getTotalAssets()){
+        if (null != acc.getTotalAssets()) {
             updateFields.add("totalAssets");
         }
-        if (null != acc.getUseableAmount()){
+        if (null != acc.getUseableAmount()) {
             updateFields.add("useableAmount");
         }
-        if (null != acc.getFrozenAssets()){
+        if (null != acc.getFrozenAssets()) {
             updateFields.add("frozenAssets");
         }
-        if (null != acc.getMarginBalance()){
+        if (null != acc.getMarginBalance()) {
             updateFields.add("marginBalance");
         }
 
-        String[] array =new String[updateFields.size()];
+        String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
 
-        accountMaster.updateById(acc,acc.getUid(),array);
+        accountMaster.updateById(acc, acc.getUid(), array);
 
         return acc;
     }
+
 
 }

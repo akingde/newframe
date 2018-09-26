@@ -157,12 +157,13 @@ public interface AccountManageService {
     /**
      * 生成还款计划表
      * @param orderId 订单的ID
-     * @param totalAccount 总金额
+     * @param uid
      * @param totalPeriods 一共几期
      * @param accidentInsurance
+     * @param totalAccount 总金额
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods, BigDecimal accidentInsurance);
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount);
 
     /**
      * 操作账户的接口

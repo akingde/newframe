@@ -79,9 +79,7 @@ public interface AccountService {
     JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
-     * 18.获取资金方金融资产下
-     * 获取资金方金融资产下
-     * 根据订单的Id,去查看详情
+     * 18.查看资金方分期收款计划
      *
      * @param orderId
      * @return
@@ -200,8 +198,7 @@ public interface AccountService {
     JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
-     * 28.获取出租方实物资产账户下
-     * 实物明细列表
+     * 28.查看出租方分期收款计划
      *
      * @return
      */
@@ -271,6 +268,19 @@ public interface AccountService {
      * @return
      */
     AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid);
+
+    /**
+     * 用户注册时，订单融资初始化
+     * @return
+     */
+    AccountRenterFinancingMachine saveAccountRenterFinancingMachine(Long uid);
+
+    /**
+     * 更新订单融资的统计信息
+     * @param machine
+     * @return
+     */
+    AccountRenterFinancingMachine updateAccountRenterFinancingMachine(AccountRenterFinancingMachine machine);
 
     /**
      * 我是租赁商订单融资账户订单融资列表
@@ -457,4 +467,20 @@ public interface AccountService {
      * @return
      */
     AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset);
+
+    /**
+     * 根据这个用户uid，计算出所有他的融资金额
+     * @param uid
+     * @return
+     */
+    BigDecimal getorderFinancing(Long uid);
+
+    /**
+     * 根据用户的Uid,查询本月应还的金额
+     * @param uid
+     * @param firstDayOfMonth
+     * @param lastDayOfMonth
+     * @return
+     */
+    List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth);
 }

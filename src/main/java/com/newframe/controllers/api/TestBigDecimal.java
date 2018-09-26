@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * @author:wangdong
@@ -46,5 +48,15 @@ public class TestBigDecimal {
 
         boolean result = a.compareTo(b) == -1;
         System.out.println();
+
+        LocalDate today2 = LocalDate.now();
+        LocalDate kssj = today2.with(TemporalAdjusters.firstDayOfMonth());
+        System.out.println(kssj);
+        Long firstDayOfMonth = kssj.atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
+        System.out.println(firstDayOfMonth);
+        LocalDate kssjd = today2.with(TemporalAdjusters.lastDayOfMonth());
+        System.out.println(kssjd);
+        Long lastDayofMonth = kssjd.atStartOfDay().toEpochSecond(ZoneOffset.of("+8"))+86399L;
+        System.out.println(lastDayofMonth);
     }
 }

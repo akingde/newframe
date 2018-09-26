@@ -17,6 +17,7 @@ import com.newframe.services.userbase.UserAddressService;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.services.userbase.UserPwdService;
 import com.newframe.services.userbase.UserRentMerchantService;
+import com.newframe.utils.TimeUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -165,10 +166,34 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
+        //在调用这个接口的时候，去查询一次，然后将查询的接口写入到数据库
+        //AccountRenterFinancing
+        //计算订单融资金额
+        BigDecimal orderFinancing = accountService.getorderFinancing(uid);
 
+        //获取本月初的时间戳
+        Integer firstDayOfMonth = TimeUtils.getFirstDayOfMonth();
+        Integer lastDayOfMonth = TimeUtils.getLastDayOfMonth();
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(uid,firstDayOfMonth,lastDayOfMonth);
+        //计算本月应还
+        BigDecimal monthShouldRepay = BigDecimal.ZERO;
+        if (CollectionUtils.isNotEmpty(accountRenterRepays)){
+            monthShouldRepay = accountRenterRepays.stream().map(AccountRenterRepay::getOrderAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        }
+        //先查询，没有的话，往数据库插入一条数据库
         AccountRenterFinancingMachine accountRenterFinancingMachine = accountService.getAccountRenterFinancingMachine(uid);
+        if (null == accountRenterFinancingMachine){
+            accountService.saveAccountRenterFinancingMachine(uid);
+        }
+        //更新最新的这条数据
+        AccountRenterFinancingMachine financingMachine = new AccountRenterFinancingMachine();
+        financingMachine.setAccountRenterFinancingMachine(uid,orderFinancing,BigDecimal.ZERO,BigDecimal.ZERO,monthShouldRepay);
+        AccountRenterFinancingMachine machine = accountService.updateAccountRenterFinancingMachine(financingMachine);
 
-        return new OperationResult<>(accountRenterFinancingMachine);
+        //查处最新的一条数据
+        AccountRenterFinancingMachine  renterFinancingMachine = accountService.getAccountRenterFinancingMachine(uid);
+
+        return new OperationResult<>(renterFinancingMachine);
     }
 
     /**
@@ -384,7 +409,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
         OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, payedAccount, unpayedAccount, residueTime, collectMoney);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,totalRentAccount,monthNumber,accidentInsurance);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber,accidentInsurance, totalRentAccount);
         if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -420,7 +445,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterFinancing.setAccountRenterFinancing(uid,orderId,associatedOrderId,financingAmount,financingMaturity,
                 financingPrincipalInterest,financingInterest,settlePrincipalInterest,settleInterest,unsettlePrincipalInterest,unsettleInterest);
         AccountRenterFinancing result = accountService.saveAccountRenterFinancing(accountRenterFinancing);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId,financingAmount,financingMaturity,accidentInsurance);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity,accidentInsurance, financingAmount);
         if (null == result || null == result || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -431,14 +456,15 @@ public class AccountManageServiceImpl implements AccountManageService {
      * 生成还款计划表
      *
      * @param orderId       订单的ID
-     * @param totalAccount  总金额
+     * @param uid
      * @param totalPeriods 一共几期
      * @param accidentInsurance
+     * @param totalAccount  总金额
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, BigDecimal totalAccount, Integer totalPeriods, BigDecimal accidentInsurance) {
-        if (null == orderId || null == totalAccount || null == totalPeriods){
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount) {
+        if (null == orderId || null == uid || null == totalAccount || null == totalPeriods){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         List<AccountRenterRepay> accountRenterRepays = new ArrayList<>(totalPeriods);
@@ -450,12 +476,13 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepay.setNumberPeriods(i);
             accountRenterRepay.setOrderAmount(orderAmount);
             accountRenterRepay.setOrderId(orderId);
+            accountRenterRepay.setUid(uid);
             accountRenterRepay.setWithhold(1);
             accountRenterRepay.setOrderStatus(1);
             Long uixTime = LocalDate.now().plus(i-1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
             accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
             accountRenterRepays.add(accountRenterRepay);
-        };
+        }
         //第一期是已扣款
         AccountRenterRepay renterRepay = accountRenterRepays.get(0);
         if (null != renterRepay) {

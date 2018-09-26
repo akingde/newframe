@@ -19,9 +19,13 @@ public class AccountLessorMatterAssetListDTO {
     private Integer ctime;
     private Integer utime;
     /**
-     * 关联订单的Id
+     * 订单id
      */
     private Long orderId;
+    /**
+     * 关联订单的Id
+     */
+    private String associatedOrderId;
     /**
      * 出租时间
      */
