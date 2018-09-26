@@ -1,5 +1,6 @@
 package com.newframe.services.userbase.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.entity.user.UserFunder;
 import com.newframe.enums.user.RoleStatusEnum;
@@ -7,6 +8,7 @@ import com.newframe.repositories.dataMaster.user.UserFunderMaster;
 import com.newframe.repositories.dataQuery.user.UserFunderQuery;
 import com.newframe.repositories.dataSlave.user.UserFunderSlave;
 import com.newframe.services.userbase.UserFunderService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,11 +71,12 @@ public class UserFunderServiceImpl implements UserFunderService {
      * @return
      */
     @Override
-    public List<UserFunder> findAll() {
+    public List<UserFunder> findAll(Boolean isWhite) {
         UserFunderQuery query = new UserFunderQuery();
         query.setStatus(RoleStatusEnum.NORMAL.getRoleStatue());
-        query.setIsWhite(false);
-        return userFunderSlave.findAll(query);
+        query.setIsWhite(isWhite);
+        List<UserFunder> funders = userFunderSlave.findAll(query);
+        return CollectionUtils.isEmpty(funders) ? Lists.newArrayList() : funders;
     }
 
     /**

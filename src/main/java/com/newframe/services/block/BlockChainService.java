@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author WangBin
  */
-public interface BlockChain {
+public interface BlockChainService {
 
     /**
      * 资金方申请上链

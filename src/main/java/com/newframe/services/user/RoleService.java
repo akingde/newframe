@@ -1,5 +1,6 @@
 package com.newframe.services.user;
 
+import com.newframe.blockchain.entity.ResponseChain;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.request.*;
 import com.newframe.dto.user.response.*;
@@ -39,6 +40,13 @@ public interface RoleService {
      * @return
      */
     OperationResult<Boolean> passCheck(UserRoleApply userRoleApply);
+
+    /**
+     * 角色上链
+     * @param userRoleApply
+     * @return
+     */
+    OperationResult<ResponseChain> roleInBlock(UserRoleApply userRoleApply);
 
     /**
      * 根据uid修改手机号

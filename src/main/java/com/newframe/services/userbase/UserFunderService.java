@@ -2,6 +2,7 @@ package com.newframe.services.userbase;
 
 import com.newframe.dto.after.request.FunderSearchDTO;
 import com.newframe.entity.user.UserFunder;
+import com.newframe.enums.user.RoleStatusEnum;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -25,10 +26,10 @@ public interface UserFunderService {
     UserFunder findOne(Long uid);
 
     /**
-     * 获取所有的非白名单资金方
+     * 获取资金方
      * @return
      */
-    List<UserFunder> findAll();
+    List<UserFunder> findAll(Boolean isWhite);
 
     /**
      * 根据uid获取在白名单中的资金方
@@ -38,7 +39,7 @@ public interface UserFunderService {
     List<UserFunder> findAll(List<Long> funderUid);
 
     /**
-     * 获取所有白名单的资金方
+     * 获取白名单的资金方
      * @param condition
      * @return
      */

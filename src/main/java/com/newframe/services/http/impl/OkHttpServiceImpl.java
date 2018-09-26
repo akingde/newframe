@@ -1,5 +1,8 @@
 package com.newframe.services.http.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.mzlion.core.json.TypeRef;
 import com.mzlion.easyokhttp.HttpClient;
 import com.mzlion.easyokhttp.request.PostRequest;
 import com.newframe.blockchain.entity.ResponseBean;
@@ -239,11 +242,10 @@ public class OkHttpServiceImpl implements OkHttpService {
      */
     @Override
     public ResponseBean<String> sendBlockChain(String blockUrl, String json) {
-        ResponseBean<String> result = HttpClient.textBody(blockUrl)
+        return HttpClient.textBody(blockUrl)
                 .json(json)
                 .charset("utf-8")
-                .asBean(new ResponseBean<String>().getClass());
-        return result;
+                .asBean(new TypeRef<ResponseBean<String>>() {});
     }
 
     /**
@@ -255,11 +257,10 @@ public class OkHttpServiceImpl implements OkHttpService {
      */
     @Override
     public ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json) {
-        ResponseBean<TransactionResultBean> result = HttpClient.textBody(blockUrl)
+        return HttpClient.textBody(blockUrl)
                 .json(json)
                 .charset("utf-8")
-                .asBean(new ResponseBean<TransactionResultBean>().getClass());
-        return result;
+                .asBean(new TypeRef<ResponseBean<TransactionResultBean>>() {});
     }
 
     /**

@@ -79,6 +79,14 @@ public interface AfterService {
     OperationResult<Boolean> removeFunder(Long uid, Long funderUid);
 
     /**
+     * 修改资金方
+     * @param uid
+     * @param funderUid
+     * @return
+     */
+    OperationResult<Boolean> modifyFunder(Long uid, List<Long> funderUid);
+
+    /**
      * 获取资金方信息
      * @param funderUid
      * @return
