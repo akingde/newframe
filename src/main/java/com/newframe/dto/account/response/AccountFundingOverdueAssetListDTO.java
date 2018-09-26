@@ -21,6 +21,10 @@ public class AccountFundingOverdueAssetListDTO {
      */
     private Long orderId;
     /**
+     * 关联订单的ID
+     */
+    private String associatedOrderId;
+    /**
      * 投资的方式。1:融资购机，2:租机
      */
     private Integer investType;

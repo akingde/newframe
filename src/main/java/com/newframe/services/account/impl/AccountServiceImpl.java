@@ -374,6 +374,7 @@ public class AccountServiceImpl implements AccountService {
             dto.setUserId(entity.getUid());
             dto.setUserName(entity.getReceiverName());
             dto.setDeliverTime(entity.getExpressTime());
+            dto.setAssociatedOrderId(entity.getPartnerOrderId());
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());
