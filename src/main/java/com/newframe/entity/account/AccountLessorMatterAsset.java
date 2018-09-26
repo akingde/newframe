@@ -42,6 +42,10 @@ public class AccountLessorMatterAsset implements Serializable {
      */
     private String associatedOrderId;
     /**
+     * 关联订单状态
+     */
+    private String associatedOrderStatus;
+    /**
      * 租赁产品信息
      */
     private String productInfo;

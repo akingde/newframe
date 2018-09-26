@@ -39,6 +39,10 @@ public class AccountFundingFinanceAsset {
      */
     private String associatedOrderId;
     /**
+     * 关联订单状态
+     */
+    private String associatedOrderStatus;
+    /**
      * 投资金额
      */
     private BigDecimal investAmount;
