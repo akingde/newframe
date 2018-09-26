@@ -929,6 +929,8 @@ public class AccountServiceImpl implements AccountService {
         accountLessorMatterAsset.setRentTime(orderTime);
         accountLessorMatterAsset.setRenterId(renterId);
         accountLessorMatterAsset.setRenterName(renterName);
+        accountLessorMatterAsset.setAssociatedOrderId(associatedOrderId);
+        accountLessorMatterAsset.setUid(uid);
 
         accountLessorMatterAsset.setProductBrand(productBrand);
         accountLessorMatterAsset.setProductModel(productModel);
@@ -966,6 +968,7 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setInvestWay(1);
         accountFundingFinanceAsset.setRenterId(renterId);
         accountFundingFinanceAsset.setRenterName(renterName);
+        accountFundingFinanceAsset.setAssociatedOrderId(relevanceOrderId);
         // todo 平均投资回报率填0
         accountFundingFinanceAsset.setAverageInvestReturnRate(new BigDecimal("0"));
         accountFundingFinanceAsset.setInvestReturnRate(new BigDecimal("0"));
