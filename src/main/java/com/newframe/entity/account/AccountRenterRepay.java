@@ -23,6 +23,8 @@ public class AccountRenterRepay {
     private Long id;
 
     private Long orderId;
+
+    private Long uid;
     /**
      * 第几期
      */

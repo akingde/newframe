@@ -47,4 +47,13 @@ public class AccountRenterFinancingMachine {
      * utime
      */
     private Integer utime;
+
+
+    public void setAccountRenterFinancingMachine(Long uid,BigDecimal orderFinancing, BigDecimal settleFinancing, BigDecimal unsettledFinancing,BigDecimal monthShouldRepay){
+        this.uid = uid;
+        this.orderFinancing = orderFinancing;
+        this.settleFinancing = settleFinancing;
+        this.unsettledFinancing = unsettledFinancing;
+        this.monthShouldRepay = monthShouldRepay;
+    }
 }

@@ -17,4 +17,20 @@ public class AccountRenterRepayQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderId",where = Where.equal)
     private Long orderId;
+
+    @QBindAttrField(fieldName = "uid",where = Where.equal)
+    private Long uid;
+
+    //查询比月底小的
+    @QBindAttrField(fieldName = "payTime",where = Where.lessThanOrEqualTo)
+    private Integer lastDayOfMonth;
+
+    //比月初大
+    @QBindAttrField(fieldName = "payTime",where = Where.greaterThanOrEqualTo)
+    private Integer firstDayOfMonth;
+
+
+    //比月初大
+    @QBindAttrField(fieldName = "withhold",where = Where.equal)
+    private Integer withhold;
 }

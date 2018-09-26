@@ -273,6 +273,19 @@ public interface AccountService {
     AccountRenterFinancingMachine getAccountRenterFinancingMachine(Long uid);
 
     /**
+     * 用户注册时，订单融资初始化
+     * @return
+     */
+    AccountRenterFinancingMachine saveAccountRenterFinancingMachine(Long uid);
+
+    /**
+     * 更新订单融资的统计信息
+     * @param machine
+     * @return
+     */
+    AccountRenterFinancingMachine updateAccountRenterFinancingMachine(AccountRenterFinancingMachine machine);
+
+    /**
      * 我是租赁商订单融资账户订单融资列表
      *
      * @param uid
@@ -457,4 +470,20 @@ public interface AccountService {
      * @return
      */
     AccountLessorMatterAsset updateAccountLessorMatterAsset(AccountLessorMatterAsset accountLessorMatterAsset);
+
+    /**
+     * 根据这个用户uid，计算出所有他的融资金额
+     * @param uid
+     * @return
+     */
+    BigDecimal getorderFinancing(Long uid);
+
+    /**
+     * 根据用户的Uid,查询本月应还的金额
+     * @param uid
+     * @param firstDayOfMonth
+     * @param lastDayOfMonth
+     * @return
+     */
+    List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth);
 }

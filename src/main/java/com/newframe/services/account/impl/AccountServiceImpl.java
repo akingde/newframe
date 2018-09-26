@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author:zww 31个接口
@@ -121,6 +123,9 @@ public class AccountServiceImpl implements AccountService {
     AccountManageService accountManageService;
     @Autowired
     private AccountRenterFinancingMaster accountRenterFinancingMaster;
+
+    @Autowired
+    private AccountRenterFinancingMachineMaster accountRenterFinancingMachineMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -646,6 +651,62 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 用户注册时，订单融资初始化
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine saveAccountRenterFinancingMachine(Long uid) {
+        if (null == uid){
+            return null;
+        }
+
+        AccountRenterFinancingMachine machine = new AccountRenterFinancingMachine();
+        machine.setUid(uid);
+        machine.setMonthShouldRepay(BigDecimal.ZERO);
+        machine.setOrderFinancing(BigDecimal.ZERO);
+        machine.setUnsettledFinancing(BigDecimal.ZERO);
+        machine.setSettleFinancing(BigDecimal.ZERO);
+        return accountRenterFinancingMachineMaster.save(machine);
+    }
+
+    /**
+     * 更新订单融资的统计信息
+     *
+     * @param machine
+     * @return
+     */
+    @Override
+    public AccountRenterFinancingMachine updateAccountRenterFinancingMachine(AccountRenterFinancingMachine machine) {
+        if (null == machine || null == machine.getUid()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != machine.getMonthShouldRepay()){
+            updateFields.add("monthShouldRepay");
+        }
+
+        if (null != machine.getOrderFinancing()){
+            updateFields.add("orderFinancing");
+        }
+
+        if (null != machine.getSettleFinancing()){
+            updateFields.add("settleFinancing");
+        }
+
+        if (null != machine.getUnsettledFinancing()){
+            updateFields.add("unsettledFinancing");
+        }
+
+        String[] array =new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterFinancingMachineMaster.updateById(machine,machine.getUid(),array);
+        return machine;
+    }
+
+    /**
      * 我是租赁商订单融资账户订单融资列表
      *
      * @param uid
@@ -1116,6 +1177,53 @@ public class AccountServiceImpl implements AccountService {
 
         accountLessorMatterAssetMaster.updateById(accountLessorMatterAsset,accountLessorMatterAsset.getId(),array);
         return accountLessorMatterAsset;
+    }
+
+    /**
+     * 根据这个用户uid，计算出所有他的融资金额
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public BigDecimal getorderFinancing(Long uid) {
+
+        if (null == uid){
+            return BigDecimal.ZERO;
+        }
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setUid(uid);
+        List<AccountRenterFinancing> financingList = accountRenterFinancingSlave.findAll(query);
+        if (CollectionUtils.isEmpty(financingList)){
+            return BigDecimal.ZERO;
+        }
+        BigDecimal result = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+
+        return result;
+    }
+
+    /**
+     * 根据用户的Uid,查询本月应还的金额
+     *
+     * @param uid
+     * @param firstDayOfMonth
+     * @param lastDayOfMonth
+     * @return
+     */
+    @Override
+    public List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth) {
+        if (null == uid || null == firstDayOfMonth || null == lastDayOfMonth){
+            return Collections.EMPTY_LIST;
+        }
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setLastDayOfMonth(lastDayOfMonth);
+        query.setFirstDayOfMonth(firstDayOfMonth);
+        query.setUid(uid);
+        //查询未付款
+        query.setWithhold(1);
+        List<AccountRenterRepay> renterRepays = accountRenterRepayMaster.findAll(query);
+
+        return CollectionUtils.isEmpty(renterRepays) ? Collections.EMPTY_LIST : renterRepays;
     }
 
     /**
