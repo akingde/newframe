@@ -22,4 +22,7 @@ public class AccountRenterRentQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "uid",where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "orderId",where = Where.equal)
+    private Long orderId;
 }

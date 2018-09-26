@@ -486,4 +486,18 @@ public interface AccountService {
      * @return
      */
     List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth);
+
+    /**
+     * 保存AccountRenterRentMachine操作
+     * @param machine
+     * @return
+     */
+    AccountRenterRentMachine saveAccountRenterRentMachine(AccountRenterRentMachine machine);
+
+    /**
+     * 根据订单的ID,获取租机订单
+     * @param orderId
+     * @return
+     */
+    AccountRenterRent getAccountRenterRent(Long orderId);
 }

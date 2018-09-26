@@ -127,6 +127,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterFinancingMachineMaster accountRenterFinancingMachineMaster;
 
+    @Autowired
+    private AccountRenterRentMachineMaster accountRenterRentMachineMaster;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -1224,6 +1227,39 @@ public class AccountServiceImpl implements AccountService {
         List<AccountRenterRepay> renterRepays = accountRenterRepayMaster.findAll(query);
 
         return CollectionUtils.isEmpty(renterRepays) ? Collections.EMPTY_LIST : renterRepays;
+    }
+
+    /**
+     * 保存AccountRenterRentMachine操作
+     *
+     * @param machine
+     * @return
+     */
+    @Override
+    public AccountRenterRentMachine saveAccountRenterRentMachine(AccountRenterRentMachine machine) {
+        if (null == machine || null == machine.getUid()){
+            return null;
+        }
+
+        return accountRenterRentMachineMaster.save(machine);
+    }
+
+    /**
+     * 根据订单的ID,获取租机订单
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountRenterRent getAccountRenterRent(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountRenterRentQuery query = new AccountRenterRentQuery();
+        query.setOrderId(orderId);
+
+        return accountRenterRentMaster.findOne(query);
     }
 
     /**
