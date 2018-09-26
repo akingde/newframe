@@ -8,8 +8,6 @@ import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
 import com.newframe.enums.order.PatternPaymentEnum;
-import com.newframe.repositories.dataMaster.order.FundingGatheringScheduleMaster;
-import com.newframe.repositories.dataSlave.order.FundingGatheringScheduleSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
@@ -18,7 +16,6 @@ import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
-import com.newframe.utils.cache.IdGlobalGenerator;
 import com.newframe.utils.log.GwsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,13 +44,6 @@ public class OrderBaseServiceImpl implements OrderBaseService {
 
     @Autowired
     private TestManageService pushService;
-    @Autowired
-    private IdGlobalGenerator idGen;
-    @Autowired
-    private FundingGatheringScheduleMaster fundingGatheringScheduleMaster;
-    @Autowired
-    private FundingGatheringScheduleSlave fundingGatheringScheduleSlave;
-
     @Autowired
     private AccountService accountService;
     @Autowired
