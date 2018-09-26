@@ -18,9 +18,13 @@ public class AccountSupplierSellListDTO {
     private Integer ctime;
     private Integer utime;
     /**
-     * 关联订单的Id
+     * 订单Id
      */
     private Long orderId;
+    /**
+     * 关联订单的Id
+     */
+    private String associatedOrderId;
     /**
      * 产品品牌
      */

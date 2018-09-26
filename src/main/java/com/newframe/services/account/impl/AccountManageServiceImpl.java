@@ -490,7 +490,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             Long uixTime = LocalDate.now().plus(i-1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
             accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
             accountRenterRepays.add(accountRenterRepay);
-        };
+        }
         //第一期是已扣款
         AccountRenterRepay renterRepay = accountRenterRepays.get(0);
         if (null != renterRepay) {

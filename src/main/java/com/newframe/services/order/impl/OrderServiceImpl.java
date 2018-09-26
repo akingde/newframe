@@ -20,6 +20,7 @@ import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
 import com.newframe.repositories.dataSlave.user.UserFunderSlave;
+import com.newframe.services.block.BlockChainService;
 import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
@@ -125,6 +126,9 @@ public class OrderServiceImpl implements OrderService {
     OrderAccountOperationServiceImpl accountOperation;
 
     @Autowired
+    BlockChainService blockChainService;
+
+    @Autowired
     UserFunderSlave userFunderSlave;
 
     @Value("${order.financing.max.times}")
@@ -137,6 +141,8 @@ public class OrderServiceImpl implements OrderService {
     private String baseUrl;
     @Value("${api.basetool.singleFileUpload}")
     private String fileUploadUrl;
+    @Value("${residual.value.protection.scheme}")
+    private BigDecimal residualValue;
 
     @Override
     public JsonResult getRenterOrder(QueryOrderDTO param, Long uid) {
@@ -274,7 +280,7 @@ public class OrderServiceImpl implements OrderService {
             orderFunder.setDispatchTimes(times + 1);
             orderFunder.setSupplierId(supplierId);
 
-            orderFunder.setDeposit(getDeposit(orderId));
+            orderFunder.setDeposit(getDeposit(orderId, supplierId));
             orderFunder.setFinancingAmount(financingAmount);
             orderFunder.setNumberOfPeriods(financingDeadline);
             short withhold = 2;
@@ -282,7 +288,7 @@ public class OrderServiceImpl implements OrderService {
             orderFunder.setOrderAmount(orderRenter.getAccidentBenefit()
                     .add(orderRenter.getMonthlyPayment()
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
-            orderFunder.setDeposit(getDeposit(orderId));
+            orderFunder.setDeposit(getDeposit(orderId, supplierId));
             orderFunder.setResidualScheme(residualScheme);
 
             // 修改租赁商订单状态和订单类型
@@ -297,6 +303,7 @@ public class OrderServiceImpl implements OrderService {
             }
             // 推送消息
             orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
+
         }
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
 
@@ -469,20 +476,26 @@ public class OrderServiceImpl implements OrderService {
         query.setProductName(productInfo.getProductName());
         List<ProductSupplier> products = productSupplierSlave.findAll(query);
         List<SupplierInfoDTO> dtos = new ArrayList<>();
-        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
         for (ProductSupplier product : products) {
             UserSupplier userSupplier = userSupplierService.findOne(product.getSupplierId());
             if (userSupplier != null) {
                 SupplierInfoDTO dto = new SupplierInfoDTO();
                 dto.setSupplierId(product.getSupplierId());
                 dto.setSupplierName(userSupplier.getMerchantName());
-                dto.setFinancingAmount(getFinancingAmount(orderId));
-                if(orderRenterOptional.isPresent()){
+                BigDecimal financingAmount = getFinancingAmount(orderId, userSupplier.getUid());
+                dto.setFinancingAmount(financingAmount);
+                dto.setAccidentBenefit(residualValue);
+                Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+                if(financingAmount != null && orderRenterOptional.isPresent()){
                     OrderRenter orderRenter = orderRenterOptional.get();
-                    dto.setAccidentBenefit(orderRenter.getAccidentBenefit());
-                    dto.setDownPayment(orderRenter.getDownPayment());
-                    dto.setMonthPayment(orderRenter.getMonthlyPayment());
+                    dto.setDownPayment(financingAmount
+                            .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP)
+                            .add(residualValue));
+                    dto.setMonthPayment(financingAmount
+                            .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
+                    dto.setDeposit(getDeposit(orderId,userSupplier.getUid() ));
                 }
+
                 dtos.add(dto);
             }
         }
@@ -1049,7 +1062,7 @@ public class OrderServiceImpl implements OrderService {
             // 获取账户余额
             BigDecimal amount = renterAccount.getUseableAmount();
             // 计算融资金额
-            BigDecimal financingAmount = getFinancingAmount(orderId);
+            BigDecimal financingAmount = getFinancingAmount(orderId, null);
             if (financingAmount != null) {
                 BigDecimal benefit = new BigDecimal(0.15);
                 // 要满足可用余额大于（保证金加融资还款首付）
@@ -1221,9 +1234,10 @@ public class OrderServiceImpl implements OrderService {
      * 融资金额 = 手机的供应价 - 用户租机首付
      *
      * @param orderId 订单id
+     * @param supplierId
      * @return 保证金金额
      */
-    private BigDecimal getFinancingAmount(Long orderId) {
+    private BigDecimal getFinancingAmount(Long orderId, Long supplierId) {
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
         if (!orderRenterOptional.isPresent()) {
             return null;
@@ -1234,6 +1248,7 @@ public class OrderServiceImpl implements OrderService {
         query.setProductColor(orderRenter.getProductColor());
         query.setProductStorage(orderRenter.getProductStorage());
         query.setProductName(orderRenter.getProductName());
+        query.setSupplierId(supplierId);
         List<ProductSupplier> products = productSupplierSlave.findAll(query);
         if (products == null || products.size() == 0) {
             return null;
@@ -1250,11 +1265,12 @@ public class OrderServiceImpl implements OrderService {
      * 融资金额 = 手机的供应价 - 用户租机首付 -（手机的供应价 - 用户租机首付）*15%
      *
      * @param orderId 订单id
+     * @param supplierId
      * @return 保证金金额
      */
-    private BigDecimal getDeposit(Long orderId) {
-        BigDecimal financingAmount = getFinancingAmount(orderId);
-        BigDecimal benefit = new BigDecimal(0.15);
+    private BigDecimal getDeposit(Long orderId, Long supplierId) {
+        BigDecimal financingAmount = getFinancingAmount(orderId, supplierId);
+        BigDecimal benefit = new BigDecimal("0.15");
         if (financingAmount != null) {
             return financingAmount.multiply(benefit);
         }

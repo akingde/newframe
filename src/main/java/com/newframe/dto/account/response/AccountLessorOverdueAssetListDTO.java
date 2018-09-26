@@ -18,6 +18,8 @@ public class AccountLessorOverdueAssetListDTO {
     private Integer ctime;
     private Integer utime;
     private Long orderId;
+
+    private String associatedOrderId;
     /**
      * 投资的方式。1:融资购机，2:租机
      */

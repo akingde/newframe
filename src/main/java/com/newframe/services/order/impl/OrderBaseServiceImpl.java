@@ -155,7 +155,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 String.valueOf(orderRenter.getProductRandomMemory()),
                 orderHirer.getOrderAmount(),
                 paymentNumber,
-                downPayment,
+                // 已付租金应该是首付 - 意外保险
+                downPayment.subtract(orderHirer.getAccidentBenefit()),
                 orderHirer.getOrderAmount().subtract(downPayment),
                 orderHirer.getNumberOfPeriods()-1,
                 orderRenter.getGatheringAccount(),

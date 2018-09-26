@@ -79,9 +79,7 @@ public interface AccountService {
     JsonResult listFunderOrderInvestment(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
-     * 18.获取资金方金融资产下
-     * 获取资金方金融资产下
-     * 根据订单的Id,去查看详情
+     * 18.查看资金方分期收款计划
      *
      * @param orderId
      * @return
@@ -200,8 +198,7 @@ public interface AccountService {
     JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
 
     /**
-     * 28.获取出租方实物资产账户下
-     * 实物明细列表
+     * 28.查看出租方分期收款计划
      *
      * @return
      */
