@@ -27,6 +27,10 @@ public class AccountLessorMatterAssetListDTO {
      */
     private String associatedOrderId;
     /**
+     * 关联订单状态
+     */
+    private String associatedOrderStatus;
+    /**
      * 出租时间
      */
     private Long rentTime;

@@ -21,6 +21,10 @@ public class AccountLessorOverdueAssetListDTO {
 
     private String associatedOrderId;
     /**
+     * 关联订单状态
+     */
+    private String associatedOrderStatus;
+    /**
      * 投资的方式。1:融资购机，2:租机
      */
     private Integer investType;
