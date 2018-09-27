@@ -25,6 +25,7 @@ import com.newframe.services.common.AliossService;
 import com.newframe.services.common.CommonService;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.order.OrderBaseService;
+import com.newframe.services.order.OrderBlockChainService;
 import com.newframe.services.order.OrderService;
 import com.newframe.services.userbase.UserHirerService;
 import com.newframe.services.userbase.UserRentMerchantService;
@@ -119,6 +120,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     AccountFundingFinanceAssetSlave accountFundingFinanceAssetSlave;
 
+    @Autowired
+    OrderBlockChainService orderBlockChainService;
     @Autowired
     OrderBaseService orderBaseService;
 
@@ -220,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId,
                                          BigDecimal financingAmount, Integer financingDeadline, Integer residualScheme) throws AccountOperationException {
         // 参数校验
@@ -301,6 +304,7 @@ public class OrderServiceImpl implements OrderService {
                 // 账户操作不成功抛出异常回滚
                 throw new AccountOperationException(accountOperationResult);
             }
+            orderBlockChainService.financeApply(orderRenter,orderFunder);
             // 推送消息
             orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
 
@@ -312,7 +316,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
                                  BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException {
         // 参数校验
@@ -404,7 +408,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
+    //@Transactional(rollbackFor = RuntimeException.class)
     public JsonResult cancelOrder(List<Long> orders, Long uid) {
         // 参数校验
         if (orders == null || orders.size() == 0) {
@@ -581,7 +585,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public JsonResult funderRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
@@ -657,7 +661,7 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException {
         if (orderId == null) {
@@ -897,7 +901,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
+    //@Transactional(rollbackFor = RuntimeException.class)
     public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
@@ -941,7 +945,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public JsonResult lessorRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
@@ -1193,7 +1197,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException {
         if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
             return new JsonResult(OrderResultEnum.PARAM_ERROR,false);

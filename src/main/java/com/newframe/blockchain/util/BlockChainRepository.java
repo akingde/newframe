@@ -1,6 +1,8 @@
 package com.newframe.blockchain.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.newframe.blockchain.constant.BlankChainUrlConst;
 import com.newframe.blockchain.entity.*;
 import com.google.protobuf.ByteString;
@@ -97,7 +99,8 @@ public class BlockChainRepository {
             RequestBean requestBean = new RequestBean<>(bean, BlankChainUrlConst.QUERY_TRANSACTION);
             String requestBeanStr = JSON.toJSONString(requestBean);
             // 发送区块链
-            ResponseBean<TransactionResultBean> queryTransaction = okHttpService.queryTransactionResult(blockChainUrl, requestBeanStr);
+            String result = okHttpService.queryTransactionResult(blockChainUrl, requestBeanStr);
+            ResponseBean<TransactionResultBean> queryTransaction = JSONObject.parseObject(result, new TypeReference<ResponseBean<TransactionResultBean>>(){});
             if(queryTransaction == null){
                 continue;
             }
