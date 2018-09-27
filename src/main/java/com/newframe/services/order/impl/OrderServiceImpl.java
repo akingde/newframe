@@ -398,6 +398,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBlockChainService.rentApply(orderRenter,orderHirer);
             orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
@@ -617,6 +618,7 @@ public class OrderServiceImpl implements OrderService {
                 if(!operationResult.getEntity()){
                     throw new AccountOperationException(operationResult);
                 }
+                orderBlockChainService.financeRefuse(orderId,uid);
                 return new JsonResult(SystemCode.SUCCESS, true);
             }
         }
@@ -718,6 +720,7 @@ public class OrderServiceImpl implements OrderService {
                     if(!operationResult.getEntity()){
                         throw new AccountOperationException(operationResult);
                     }
+                    orderBlockChainService.fundSupplier(orderFunder,orderSupplier,null);
                 }
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
@@ -797,6 +800,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenter.setOrderStatus(OrderRenterStatus.WAITING_SUPPLIER_RECEIVE.getCode());
             orderRenterMaser.save(orderRenter);
         }
+        orderBlockChainService.supplierDeliver(orderSupplier);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -941,6 +945,8 @@ public class OrderServiceImpl implements OrderService {
         if(!operationResult.getEntity()){
             throw new AccountOperationException(operationResult);
         }
+        orderBlockChainService.payLessor(orderRenter,orderHirer);
+        orderBlockChainService.lessorDeliver(orderHirer,hirerDeliver);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -972,6 +978,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBlockChainService.rentalRefuse(orderId,uid);
         }
         return new JsonResult(SystemCode.SUCCESS, true);
     }
@@ -1227,6 +1234,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBlockChainService.fundSupplier(orderFunder,orderSupplier,null);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
