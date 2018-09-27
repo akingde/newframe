@@ -474,9 +474,6 @@ public class RoleBaseServiceImpl implements RoleBaseService {
         if(condition.getSurplusStock() == null && condition.getSurplusStock() <= 0){
             return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
         }
-        if(!BigDecimalUtils.compareTo(condition.getBrokenScreenRisks())){
-            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
-        }
         return roleServiceMap.get(roleId).addProduct(uid, condition);
     }
 

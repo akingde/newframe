@@ -17,6 +17,7 @@ import com.newframe.services.common.AliossService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.RoleService;
 import com.newframe.services.userbase.*;
+import com.newframe.utils.BigDecimalUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -339,6 +340,9 @@ public class HirerServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> addProduct(Long uid, ProductModifyDTO condition) {
+        if(!BigDecimalUtils.compareTo(condition.getBrokenScreenRisks())){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
         ProductLessor productLessor = new ProductLessor(uid, condition);
         productLessorService.insert(productLessor);
         return new OperationResult(true);
