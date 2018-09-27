@@ -51,6 +51,13 @@ public class AccountRenterRepay {
     private Integer payTime;
 
     /**
+     * 生产订单的方式
+     * 1，融资购机
+     * 2，租机
+     */
+    private Integer orderType;
+
+    /**
      * ctime
      */
     private Integer ctime;

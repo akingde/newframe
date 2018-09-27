@@ -127,6 +127,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterRentMachineMaster accountRenterRentMachineMaster;
 
+    @Autowired
+    private AccountRenterOverdueAssetMaster accountRenterOverdueAssetMaster;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -1412,6 +1415,22 @@ public class AccountServiceImpl implements AccountService {
 
         accountRenterRentMachineMaster.updateById(accountRenterRentMachine, accountRenterRentMachine.getUid(), array);
         return accountRenterRentMachine;
+    }
+
+    /**
+     * 保存AccountRenterOverdueAsset
+     *
+     * @param accountRenterOverdueAsset
+     * @return
+     */
+    @Override
+    public AccountRenterOverdueAsset saveAccountRenterOverdueAsset(AccountRenterOverdueAsset accountRenterOverdueAsset) {
+        if (null == accountRenterOverdueAsset || null == accountRenterOverdueAsset.getUid()){
+            return null;
+        }
+
+
+        return accountRenterOverdueAssetMaster.save(accountRenterOverdueAsset);
     }
 
     /**

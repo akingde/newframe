@@ -46,4 +46,13 @@ public class AccountRenterOverdueAsset {
      * utime
      */
     private Integer utime;
+
+
+    public void setAccountRenterOverdueAsset(Long uid, BigDecimal totalOverdueAccount, Integer overdueNumber, BigDecimal overdueRate, BigDecimal monthReceivable) {
+        this.uid = uid;
+        this.totalOverdueAccount = totalOverdueAccount;
+        this.overdueNumber = overdueNumber;
+        this.overdueRate = overdueRate;
+        this.monthReceivable = monthReceivable;
+    }
 }

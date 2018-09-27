@@ -534,4 +534,11 @@ public interface AccountService {
      * @return
      */
     AccountRenterRentMachine updateAccountRenterRentMachine(AccountRenterRentMachine accountRenterRentMachine);
+
+    /**
+     * 保存AccountRenterOverdueAsset
+     * @param accountRenterOverdueAsset
+     * @return
+     */
+    AccountRenterOverdueAsset saveAccountRenterOverdueAsset(AccountRenterOverdueAsset accountRenterOverdueAsset);
 }

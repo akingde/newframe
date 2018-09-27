@@ -11,6 +11,7 @@ import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.account.AccountTypeEnum;
 import com.newframe.enums.account.DealTypeEnum;
+import com.newframe.enums.account.OrderTypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.userbase.UserAddressService;
@@ -313,6 +314,11 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
 
         AccountRenterOverdueAsset accountRenterOverdueAsset = accountService.getAccountRenterOverdueAsset(uid);
+        //如果没有，需要初始化一条数据
+        if (null == accountRenterOverdueAsset){
+            accountRenterOverdueAsset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
+            accountService.saveAccountRenterOverdueAsset(accountRenterOverdueAsset);
+        }
 
         return new OperationResult<>(accountRenterOverdueAsset);
     }
@@ -334,6 +340,8 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
+        //用uid和融资购机还是租机来查
+        //List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay()
         RenterOrderOverdueDetailInfo renterOrderRentDetailInfo = new RenterOrderOverdueDetailInfo();
         Page<AccountRenterOverdueDetail> accountRenterOverdueDetails = accountService.getAccountRenterOverdueDetail(uid,currentPage, pageSize);
         List<AccountRenterOverdueDetail> accountRenterOverdueDetailList = accountRenterOverdueDetails.getContent();
@@ -426,7 +434,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
         OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, payedAccount, unpayedAccount, residueTime, collectMoney);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber,accidentInsurance, totalRentAccount);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber,accidentInsurance, totalRentAccount, OrderTypeEnum.RENT);
         if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -462,7 +470,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterFinancing.setAccountRenterFinancing(uid,orderId,associatedOrderId,financingAmount,financingMaturity,
                 financingPrincipalInterest,financingInterest,settlePrincipalInterest,settleInterest,unsettlePrincipalInterest,unsettleInterest);
         AccountRenterFinancing result = accountService.saveAccountRenterFinancing(accountRenterFinancing);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity,accidentInsurance, financingAmount);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity,accidentInsurance, financingAmount, OrderTypeEnum.FINANCING);
         if (null == result || null == result || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -477,10 +485,11 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param totalPeriods 一共几期
      * @param accidentInsurance
      * @param totalAccount  总金额
+     * @param orderTypeEnum
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount) {
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum) {
         if (null == orderId || null == uid || null == totalAccount || null == totalPeriods){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
@@ -496,6 +505,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepay.setUid(uid);
             accountRenterRepay.setWithhold(1);
             accountRenterRepay.setOrderStatus(1);
+            accountRenterRepay.setOrderType(orderTypeEnum.getCode());
             Long uixTime = LocalDate.now().plus(i-1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
             accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
             accountRenterRepays.add(accountRenterRepay);
