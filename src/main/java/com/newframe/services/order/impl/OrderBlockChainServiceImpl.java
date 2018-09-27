@@ -33,7 +33,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         financeApply.setMerchantUid(orderRenter.getRenterId());
         financeApply.setOrderNum(orderRenter.getOrderId());
         financeApply.setSupplierUid(orderFunder.getSupplierId());
-        financeApply.setIdNum(orderRenter.getUserMobile());
+        financeApply.setIdNum(orderRenter.getUserIdNumber());
         financeApply.setLeaseTerm(orderRenter.getNumberOfPayments());
         financeApply.setProdAmount(1);
         financeApply.setOrderId(orderRenter.getPartnerOrderId());
@@ -111,7 +111,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         rentalApply.setOrderTime(orderRenter.getCtime());
         rentalApply.setPhoneNum(orderRenter.getUserMobile());
         rentalApply.setRealName(orderRenter.getUserRealname());
-        rentalApply.setIdNum(orderRenter.getUserMobile());
+        rentalApply.setIdNum(orderRenter.getUserIdNumber());
         rentalApply.setProdBrand(orderRenter.getProductBrand());
         rentalApply.setProdName(orderRenter.getProductName());
         rentalApply.setProdColor(orderRenter.getProductColor());
