@@ -1,5 +1,6 @@
 package com.newframe.entity.account;
 
+import com.newframe.dto.account.RentMachineStatistics;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -53,5 +54,13 @@ public class AccountRenterRentMachine {
         this.totalPayableAccount=totalPayableAccount;
         this.payedAccount=payedAccount;
         this.unpayAccount=unpayAccount;
+    }
+
+    public void setAccountRenterRentMachine(Long uid, RentMachineStatistics rentMachineStatistics){
+        this.uid = uid;
+        this.rentAccount=rentMachineStatistics.getRentAccount();
+        this.totalPayableAccount=rentMachineStatistics.getTotalPayableAccount();
+        this.payedAccount=rentMachineStatistics.getPayedAccount();
+        this.unpayAccount=rentMachineStatistics.getUnpayAccount();
     }
 }

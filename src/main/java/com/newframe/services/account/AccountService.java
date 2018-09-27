@@ -2,6 +2,7 @@ package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RentMachineStatistics;
 import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.entity.account.*;
 import org.springframework.data.domain.Page;
@@ -519,4 +520,25 @@ public interface AccountService {
      * @return
      */
     AccountRenterRentDetail updateAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail);
+
+    /**
+     * 统计租机订单下的数据
+     * @param uid
+     * @return
+     */
+    RentMachineStatistics getRentMachineStatistics(Long uid);
+
+    /**
+     * 更新AccountRenterRentMachine
+     * @param accountRenterRentMachine
+     * @return
+     */
+    AccountRenterRentMachine updateAccountRenterRentMachine(AccountRenterRentMachine accountRenterRentMachine);
+
+    /**
+     * 保存AccountRenterOverdueAsset
+     * @param accountRenterOverdueAsset
+     * @return
+     */
+    AccountRenterOverdueAsset saveAccountRenterOverdueAsset(AccountRenterOverdueAsset accountRenterOverdueAsset);
 }
