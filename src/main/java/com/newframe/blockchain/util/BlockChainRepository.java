@@ -99,8 +99,7 @@ public class BlockChainRepository {
             RequestBean requestBean = new RequestBean<>(bean, BlankChainUrlConst.QUERY_TRANSACTION);
             String requestBeanStr = JSON.toJSONString(requestBean);
             // 发送区块链
-            String result = okHttpService.queryTransactionResult(blockChainUrl, requestBeanStr);
-            ResponseBean<TransactionResultBean> queryTransaction = JSONObject.parseObject(result, new TypeReference<ResponseBean<TransactionResultBean>>(){});
+            ResponseBean<TransactionResultBean> queryTransaction = okHttpService.queryTransactionResult(blockChainUrl, requestBeanStr);
             if(queryTransaction == null){
                 continue;
             }

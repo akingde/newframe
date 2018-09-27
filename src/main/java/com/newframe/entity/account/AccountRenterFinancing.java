@@ -111,5 +111,6 @@ public class AccountRenterFinancing {
         this.unsettleInterest = unsettleInterest;
         this.repaymentStatus =1;
         this.orderStatus = 1;
+        this.associatedOrderStatus = "正常";
     }
 }

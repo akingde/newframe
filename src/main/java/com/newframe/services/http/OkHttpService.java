@@ -115,7 +115,7 @@ public interface OkHttpService {
      * @param json
      * @return
      */
-    String queryTransactionResult(String blockUrl, String json);
+    ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json);
 
     /**
      * 发送验证码

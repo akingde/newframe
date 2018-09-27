@@ -256,11 +256,13 @@ public class OkHttpServiceImpl implements OkHttpService {
      * @return
      */
     @Override
-    public String queryTransactionResult(String blockUrl, String json) {
-        return HttpClient.textBody(blockUrl)
+    public ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json) {
+        String result = new String(HttpClient.textBody(blockUrl)
                 .json(json)
                 .charset("utf-8")
-                .asBean(new TypeRef<String>() {});
+                .asByteData());
+        return JSONObject.parseObject(result, new TypeReference<ResponseBean<TransactionResultBean>>(){});
+
     }
 
     /**
