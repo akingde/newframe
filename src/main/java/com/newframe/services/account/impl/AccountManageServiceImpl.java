@@ -168,8 +168,9 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         //在调用这个接口的时候，去查询一次，然后将查询的接口写入到数据库
         //AccountRenterFinancing
-        //计算订单融资金额
-        BigDecimal orderFinancing = accountService.getorderFinancing(uid);
+        //计算订单融资金额、已经结清的融资本息、未结清的融资本息、本月应还
+        RenterFinanceStatistics renterFinanceStatistics = accountService.getorderFinancing(uid);
+        //BigDecimal orderFinancing = renterFinanceStatistic;
 
         //获取本月初的时间戳
         Integer firstDayOfMonth = TimeUtils.getFirstDayOfMonth();
@@ -187,7 +188,11 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         //更新最新的这条数据
         AccountRenterFinancingMachine financingMachine = new AccountRenterFinancingMachine();
-        financingMachine.setAccountRenterFinancingMachine(uid,orderFinancing,BigDecimal.ZERO,BigDecimal.ZERO,monthShouldRepay);
+        if (null == renterFinanceStatistics){
+            financingMachine.setAccountRenterFinancingMachine(uid,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,monthShouldRepay);
+        }else {
+            financingMachine.setAccountRenterFinancingMachine(uid,renterFinanceStatistics.getOrderFinancing(),renterFinanceStatistics.getSettleFinancing(),renterFinanceStatistics.getUnsettledFinancing(),monthShouldRepay);
+        }
         AccountRenterFinancingMachine machine = accountService.updateAccountRenterFinancingMachine(financingMachine);
 
         //查处最新的一条数据
@@ -738,7 +743,13 @@ public class AccountManageServiceImpl implements AccountManageService {
         //更新租赁商已清偿金额和待清偿金额，利息暂时不考虑
         accountRenterRent.setReceivedAccount(accountRenterRent.getReceivedAccount().add(dealAmount));
         accountRenterRent.setDueInAccount(accountRenterRent.getDueInAccount().subtract(dealAmount));
+        accountRenterRent.setResidueTime(accountRenterRent.getResidueTime()-1);
         accountService.updateAccountRenterRent(accountRenterRent);
+        //更新AccountRenterRentDetail租机明细
+        AccountRenterRentDetail accountRenterRentDetail = accountService.getAccountRenterRentDetail(orderId);
+        accountRenterRentDetail.setPayedAccount(accountRenterRentDetail.getPayedAccount().add(dealAmount));
+        accountRenterRentDetail.setUnpayedAccount(accountRenterRentDetail.getUnpayedAccount().subtract(dealAmount));
+        accountService.updateAccountRenterRentDetail(accountRenterRentDetail);
 
         if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);

@@ -2,6 +2,7 @@ package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.entity.account.*;
 import org.springframework.data.domain.Page;
 
@@ -473,7 +474,7 @@ public interface AccountService {
      * @param uid
      * @return
      */
-    BigDecimal getorderFinancing(Long uid);
+    RenterFinanceStatistics getorderFinancing(Long uid);
 
     /**
      * 根据用户的Uid,查询本月应还的金额
@@ -498,5 +499,24 @@ public interface AccountService {
      */
     AccountRenterRent getAccountRenterRent(Long orderId);
 
+    /**
+     * 租机还款更新订单金额
+     * @param accountRenterRent
+     * @return
+     */
     AccountRenterRent updateAccountRenterRent(AccountRenterRent accountRenterRent);
+
+    /**
+     * 根据订单的id查询租机的详情
+     * @param orderId
+     * @return
+     */
+    AccountRenterRentDetail getAccountRenterRentDetail(Long orderId);
+
+    /**
+     * 更新AccountRenterRentDetail
+     * @param accountRenterRentDetail
+     * @return
+     */
+    AccountRenterRentDetail updateAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail);
 }
