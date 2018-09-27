@@ -738,7 +738,13 @@ public class AccountManageServiceImpl implements AccountManageService {
         //更新租赁商已清偿金额和待清偿金额，利息暂时不考虑
         accountRenterRent.setReceivedAccount(accountRenterRent.getReceivedAccount().add(dealAmount));
         accountRenterRent.setDueInAccount(accountRenterRent.getDueInAccount().subtract(dealAmount));
+        accountRenterRent.setResidueTime(accountRenterRent.getResidueTime()-1);
         accountService.updateAccountRenterRent(accountRenterRent);
+        //更新AccountRenterRentDetail租机明细
+        AccountRenterRentDetail accountRenterRentDetail = accountService.getAccountRenterRentDetail(orderId);
+        accountRenterRentDetail.setPayedAccount(accountRenterRentDetail.getPayedAccount().add(dealAmount));
+        accountRenterRentDetail.setUnpayedAccount(accountRenterRentDetail.getUnpayedAccount().subtract(dealAmount));
+        accountService.updateAccountRenterRentDetail(accountRenterRentDetail);
 
         if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);

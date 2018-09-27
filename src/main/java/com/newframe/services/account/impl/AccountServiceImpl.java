@@ -1068,6 +1068,29 @@ public class AccountServiceImpl implements AccountService {
         if (null != accountRenterFinancing.getOrderStatus()) {
             updateFields.add("orderStatus");
         }
+        if (null != accountRenterFinancing.getFinancingAmount()) {
+            updateFields.add("financingAmount");
+        }
+        if (null != accountRenterFinancing.getFinancingPrincipalInterest()) {
+            updateFields.add("financingPrincipalInterest");
+        }
+
+        if (null != accountRenterFinancing.getFinancingInterest()) {
+            updateFields.add("financingInterest");
+        }
+
+        if (null != accountRenterFinancing.getSettlePrincipalInterest()) {
+            updateFields.add("settlePrincipalInterest");
+        }
+        if (null != accountRenterFinancing.getSettleInterest()) {
+            updateFields.add("settleInterest");
+        }
+        if (null != accountRenterFinancing.getUnsettlePrincipalInterest()) {
+            updateFields.add("unsettlePrincipalInterest");
+        }
+        if (null != accountRenterFinancing.getUnsettleInterest()) {
+            updateFields.add("unsettleInterest");
+        }
 
         String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
@@ -1268,6 +1291,50 @@ public class AccountServiceImpl implements AccountService {
 
         accountRenterRentMaster.updateById(accountRenterRent, accountRenterRent.getId(), array);
         return accountRenterRent;
+    }
+
+    /**
+     * 根据订单的id查询租机的详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail getAccountRenterRentDetail(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
+        query.setOrderId(orderId);
+
+        return accountRenterRentDetailSlave.findOne(query);
+    }
+
+    /**
+     * 更新AccountRenterRentDetail
+     *
+     * @param accountRenterRentDetail
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail updateAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
+        if (null == accountRenterRentDetail || null == accountRenterRentDetail.getId()) {
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRentDetail.getPayedAccount()) {
+            updateFields.add("payedAccount");
+        }
+        if (null != accountRenterRentDetail.getUnpayedAccount()){
+            updateFields.add("unpayedAccount");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRentDetailMaster.updateById(accountRenterRentDetail, accountRenterRentDetail.getId(), array);
+        return accountRenterRentDetail;
     }
 
     /**
