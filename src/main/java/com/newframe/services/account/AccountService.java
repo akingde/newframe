@@ -2,6 +2,7 @@ package com.newframe.services.account;
 
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.entity.account.*;
 import org.springframework.data.domain.Page;
 
@@ -473,7 +474,7 @@ public interface AccountService {
      * @param uid
      * @return
      */
-    BigDecimal getorderFinancing(Long uid);
+    RenterFinanceStatistics getorderFinancing(Long uid);
 
     /**
      * 根据用户的Uid,查询本月应还的金额
