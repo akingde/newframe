@@ -16,4 +16,5 @@ public class SupplierInfoDTO {
     private BigDecimal monthPayment;
     private BigDecimal accidentBenefit;
     private BigDecimal downPayment;
+    private BigDecimal deposit;
 }

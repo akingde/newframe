@@ -24,9 +24,18 @@ public class AccountFundingFinanceAssetListDTO {
     private Integer utime;
 
     /**
-     * 关联订单id
+     * 订单id
      */
     private Long orderId;
+
+    /**
+     * 关联订单的ID
+     */
+    private String associatedOrderId;
+    /**
+     * 关联订单状态
+     */
+    private String associatedOrderStatus;
 
     /**
      * 关联订单时间

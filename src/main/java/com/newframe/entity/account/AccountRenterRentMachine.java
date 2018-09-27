@@ -22,19 +22,19 @@ public class AccountRenterRentMachine {
     @Id
     private Long uid;
     /**
-     * 订单融资金额
+     * 租赁总额
      */
     private BigDecimal rentAccount;
     /**
-     * 已结清融资本息
+     * 累计应付租金
      */
     private BigDecimal totalPayableAccount;
     /**
-     * 未结清融资本息
+     * 已付租金
      */
     private BigDecimal payedAccount;
     /**
-     * 本月应还
+     * 代付租金
      */
     private BigDecimal unpayAccount;
 
@@ -46,4 +46,12 @@ public class AccountRenterRentMachine {
      * utime
      */
     private Integer utime;
+
+    public void setAccountRenterRentMachine(Long uid,BigDecimal rentAccount,BigDecimal totalPayableAccount,BigDecimal payedAccount,BigDecimal unpayAccount){
+        this.uid = uid;
+        this.rentAccount=rentAccount;
+        this.totalPayableAccount=totalPayableAccount;
+        this.payedAccount=payedAccount;
+        this.unpayAccount=unpayAccount;
+    }
 }

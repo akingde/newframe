@@ -134,13 +134,13 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     /**
      * @param uid
-     * @param orderStatus
+     * @param associatedOrderStatus
      * @param currentPage
      * @param pageSize
      * @return
      */
     @Override
-    public OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize) {
+    public OperationResult<AccountRenterRentInfo> listRenterOrderRent(Long uid, String associatedOrderStatus, Integer currentPage, Integer pageSize) {
         if (null == uid){
             return new OperationResult<>(BizErrorCode.NOT_LOGIN);
         }
@@ -148,7 +148,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         AccountRenterRentInfo accountRenterRentInfo = new AccountRenterRentInfo();
-        Page<AccountRenterRent> accountRenterRentPage = accountService.getAccountRenterRent(uid, orderStatus, currentPage, pageSize);
+        Page<AccountRenterRent> accountRenterRentPage = accountService.getAccountRenterRent(uid, associatedOrderStatus, currentPage, pageSize);
         List<AccountRenterRent> accountRenterRents = accountRenterRentPage.getContent();
         accountRenterRentInfo.setList(accountRenterRents);
         accountRenterRentInfo.setTotal(accountRenterRentPage.getTotalElements());
@@ -253,6 +253,14 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
 
         AccountRenterRentMachine accountRenterRentMachine = accountService.getAccountRenterRentMachine(uid);
+        //如果没有数据，就初始化一条数据
+        if (null == accountRenterRentMachine){
+            AccountRenterRentMachine machine = new AccountRenterRentMachine();
+            machine.setAccountRenterRentMachine(uid,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO);
+            accountService.saveAccountRenterRentMachine(machine);
+        }
+        //如果不为空，则执行更新的操作
+
 
         return new OperationResult<>(accountRenterRentMachine);
     }
@@ -685,10 +693,10 @@ public class AccountManageServiceImpl implements AccountManageService {
             extraAmount = dealAmount.multiply(overdueRate);
             dealAmount = dealAmount.add(extraAmount);
         }
-        AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
+        AccountRenterRent accountRenterRent = accountService.getAccountRenterRent(orderId);
         AccountLessorMatterAsset accountLessorMatterAsset = accountService.getAccountLessorMatterAsset(orderId);
 
-        Long renterUid = accountRenterFinancing.getUid();
+        Long renterUid = accountRenterRent.getUid();
         Long lessorUid = accountLessorMatterAsset.getUid();
         //需要先校验余额是否充足
         Account account = accountService.getAccount(renterUid);
@@ -702,7 +710,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         OperationResult<Boolean> result1 = saveAccountStatement(lessorUid,DealTypeEnum.FINANCING,AccountTypeEnum.USEABLEASSETS,dealAmount,extraAmount);
 
         if (finallyPeriod){
-            BigDecimal totalAmount = accountRenterFinancing.getFinancingAmount();
+            BigDecimal totalAmount = accountRenterRent.getReceivableAccount();
             BigDecimal cashDeposit = totalAmount.multiply(depositRate);
             //减保证金
             saveAccountStatement(renterUid,DealTypeEnum.ACCOUNTTRANSFER,AccountTypeEnum.MARGINASSETS,cashDeposit.multiply(new BigDecimal(-1)),extraAmount);
@@ -719,9 +727,6 @@ public class AccountManageServiceImpl implements AccountManageService {
         //该笔订单是否全部还清,初始值为false,只判断最后一期即可
         //逾期还款后去更改订单状态，这个还需要判断是否所有逾期的都已经还了，才能去更新
         if (acc.getWithhold().equals(2) || acc.getWithhold().equals(4)){
-            accountRenterFinancing.setRepaymentStatus(1);
-            accountRenterFinancing.setOrderStatus(1);
-            accountService.updateAccountRenterFinancing(accountRenterFinancing);
             accountLessorMatterAsset.setOrderStatus(1);
             accountService.updateAccountLessorMatterAsset(accountLessorMatterAsset);
         }
