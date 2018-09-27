@@ -497,4 +497,6 @@ public interface AccountService {
      * @return
      */
     AccountRenterRent getAccountRenterRent(Long orderId);
+
+    AccountRenterRent updateAccountRenterRent(AccountRenterRent accountRenterRent);
 }

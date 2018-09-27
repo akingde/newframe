@@ -654,6 +654,10 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountFundingFinanceAsset.setOrderStatus(1);
             accountService.updateAccountFundingFinanceAsset(accountFundingFinanceAsset);
         }
+        //更新租赁商已清偿金额和待清偿金额，利息暂时不考虑
+        accountRenterFinancing.setSettlePrincipalInterest(accountRenterFinancing.getSettlePrincipalInterest().add(dealAmount));
+        accountRenterFinancing.setUnsettlePrincipalInterest(accountRenterFinancing.getUnsettlePrincipalInterest().subtract(dealAmount));
+        accountService.updateAccountRenterFinancing(accountRenterFinancing);
 
         if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
@@ -730,6 +734,11 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountLessorMatterAsset.setOrderStatus(1);
             accountService.updateAccountLessorMatterAsset(accountLessorMatterAsset);
         }
+
+        //更新租赁商已清偿金额和待清偿金额，利息暂时不考虑
+        accountRenterRent.setReceivedAccount(accountRenterRent.getReceivedAccount().add(dealAmount));
+        accountRenterRent.setDueInAccount(accountRenterRent.getDueInAccount().subtract(dealAmount));
+        accountService.updateAccountRenterRent(accountRenterRent);
 
         if (!result.getSucc()|| !result.getEntity() || !result1.getSucc() || !result1.getEntity()){
             return new OperationResult<>(BizErrorCode.SAVE_INFO_ERROR);
