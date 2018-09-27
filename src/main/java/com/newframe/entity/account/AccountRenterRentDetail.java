@@ -35,6 +35,10 @@ public class AccountRenterRentDetail {
      */
     private String associatedOrderId;
     /**
+     * 关联订单的ID
+     */
+    private String associatedOrderStatus;
+    /**
      * 手机品牌
      */
     private String productBrand;

@@ -195,7 +195,7 @@ public interface AccountService {
      * @param pageSize
      * @return
      */
-    JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, Integer orderStatus);
+    JsonResult listHirerOrderMaterial(Long uid, Integer currentPage, Integer pageSize, String associatedOrderStatus);
 
     /**
      * 28.查看出租方分期收款计划
@@ -246,12 +246,12 @@ public interface AccountService {
      * 获取租赁商账户资产下的租赁明细表
      *
      * @param uid
-     * @param orderStatus
+     * @param associatedOrderStatus
      * @param currentPage
      * @param pageSize
      * @return
      */
-    Page<AccountRenterRent> getAccountRenterRent(Long uid, Integer orderStatus, Integer currentPage, Integer pageSize);
+    Page<AccountRenterRent> getAccountRenterRent(Long uid, String associatedOrderStatus, Integer currentPage, Integer pageSize);
 
     /**
      * 查询租赁商关联的供应商

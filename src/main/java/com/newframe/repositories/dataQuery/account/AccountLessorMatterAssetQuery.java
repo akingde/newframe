@@ -19,6 +19,9 @@ public class AccountLessorMatterAssetQuery extends BaseQuery {
     @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
     private Integer orderStatus;
 
+    @QBindAttrField(fieldName = "associatedOrderStatus", where = Where.equal)
+    private String associatedOrderStatus;
+
     @QBindAttrField(fieldName = "orderId", where = Where.equal)
     private Long orderId;
 }
