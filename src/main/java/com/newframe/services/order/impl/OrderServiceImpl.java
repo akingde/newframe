@@ -1268,8 +1268,8 @@ public class OrderServiceImpl implements OrderService {
         ProductSupplier product = products.get(0);
         // 拿到供应商的供应价格
         BigDecimal supplyPrice = product.getSupplyPrice();
-        BigDecimal downPayment = orderRenter.getDownPayment();
-        return supplyPrice.subtract(downPayment);
+        BigDecimal accidentBenefit = orderRenter.getAccidentBenefit();
+        return supplyPrice.subtract(accidentBenefit);
     }
 
     /**
@@ -1281,12 +1281,24 @@ public class OrderServiceImpl implements OrderService {
      * @return 保证金金额
      */
     private BigDecimal getDeposit(Long orderId, Long supplierId) {
-        BigDecimal financingAmount = getFinancingAmount(orderId, supplierId);
-        BigDecimal benefit = new BigDecimal("0.15");
-        if (financingAmount != null) {
-            return financingAmount.multiply(benefit);
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if (!orderRenterOptional.isPresent()) {
+            return null;
         }
-        return null;
+        OrderRenter orderRenter = orderRenterOptional.get();
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        query.setSupplierId(supplierId);
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if (products == null || products.size() == 0) {
+            return null;
+        }
+        ProductSupplier product = products.get(0);
+        BigDecimal benefit = new BigDecimal("0.15");
+        return product.getSupplyPrice().multiply(benefit);
     }
 
     /**
