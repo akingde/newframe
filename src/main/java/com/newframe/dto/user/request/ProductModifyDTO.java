@@ -14,7 +14,8 @@ public class ProductModifyDTO {
     private String brand;
     private String model;
     private String color;
-    private String specification;
+    private String ram;
+    private String rom;
     private BigDecimal guidePrice;
     private BigDecimal supplyPrice;
     private Integer surplusStock;

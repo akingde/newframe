@@ -3,6 +3,7 @@ package com.newframe.entity.user;
 import com.newframe.dto.user.request.ProductModifyDTO;
 import com.newframe.utils.BigDecimalUtils;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,11 +52,18 @@ public class ProductLessor {
     private String model;
 
     /**
-     * 规格，容量
-     * specification
+     * 内存
+     * ram
      */
-    @Column(name = "specification")
-    private String specification;
+    @Column(name = "ram")
+    private String ram;
+
+    /**
+     * 机身容量
+     * rom
+     */
+    @Column(name = "rom")
+    private String rom;
 
     /**
      * 颜色
@@ -128,7 +136,8 @@ public class ProductLessor {
         this.supplierId = uid;
         this.brand = condition.getBrand();
         this.model = condition.getModel();
-        this.specification = condition.getSpecification();
+        this.ram = StringUtils.upperCase(StringUtils.trim(condition.getRam()));
+        this.rom = StringUtils.upperCase(StringUtils.trim(condition.getRom()));
         this.color = condition.getColor();
         this.guidePrice = BigDecimalUtils.compareTo(condition.getGuidePrice()) ? condition.getGuidePrice() : BigDecimal.ZERO;
         this.supplyPrice = BigDecimalUtils.compareTo(condition.getSupplyPrice()) ? condition.getSupplyPrice() : BigDecimal.ZERO;

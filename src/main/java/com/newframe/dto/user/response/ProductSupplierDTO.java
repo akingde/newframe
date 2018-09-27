@@ -15,7 +15,8 @@ public class ProductSupplierDTO {
     private String brand;
     private String model;
     private String color;
-    private String specification;
+    private String ram;
+    private String rom;
     private BigDecimal guidePrice;
     private BigDecimal supplyPrice;
     private Integer surplusStock;
@@ -32,7 +33,8 @@ public class ProductSupplierDTO {
         this.brand = productSupplier.getBrand();
         this.model = productSupplier.getModel();
         this.color = productSupplier.getColor();
-        this.specification = productSupplier.getSpecification();
+        this.ram = productSupplier.getRam();
+        this.rom = productSupplier.getRom();
         this.guidePrice = productSupplier.getGuidePrice();
         this.supplyPrice = productSupplier.getSupplyPrice();
         this.surplusStock = productSupplier.getSurplusStock();
