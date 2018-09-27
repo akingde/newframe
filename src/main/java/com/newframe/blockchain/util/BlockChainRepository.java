@@ -1,6 +1,8 @@
 package com.newframe.blockchain.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.newframe.blockchain.constant.BlankChainUrlConst;
 import com.newframe.blockchain.entity.*;
 import com.google.protobuf.ByteString;

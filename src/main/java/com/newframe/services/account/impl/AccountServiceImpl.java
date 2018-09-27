@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RentMachineStatistics;
+import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderSupplier;
@@ -124,6 +126,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterRentMachineMaster accountRenterRentMachineMaster;
+
+    @Autowired
+    private AccountRenterOverdueAssetMaster accountRenterOverdueAssetMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -1068,6 +1073,29 @@ public class AccountServiceImpl implements AccountService {
         if (null != accountRenterFinancing.getOrderStatus()) {
             updateFields.add("orderStatus");
         }
+        if (null != accountRenterFinancing.getFinancingAmount()) {
+            updateFields.add("financingAmount");
+        }
+        if (null != accountRenterFinancing.getFinancingPrincipalInterest()) {
+            updateFields.add("financingPrincipalInterest");
+        }
+
+        if (null != accountRenterFinancing.getFinancingInterest()) {
+            updateFields.add("financingInterest");
+        }
+
+        if (null != accountRenterFinancing.getSettlePrincipalInterest()) {
+            updateFields.add("settlePrincipalInterest");
+        }
+        if (null != accountRenterFinancing.getSettleInterest()) {
+            updateFields.add("settleInterest");
+        }
+        if (null != accountRenterFinancing.getUnsettlePrincipalInterest()) {
+            updateFields.add("unsettlePrincipalInterest");
+        }
+        if (null != accountRenterFinancing.getUnsettleInterest()) {
+            updateFields.add("unsettleInterest");
+        }
 
         String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
@@ -1176,20 +1204,33 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public BigDecimal getorderFinancing(Long uid) {
+    public RenterFinanceStatistics getorderFinancing(Long uid) {
 
         if (null == uid) {
-            return BigDecimal.ZERO;
+            return null;
         }
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
         query.setUid(uid);
         List<AccountRenterFinancing> financingList = accountRenterFinancingSlave.findAll(query);
         if (CollectionUtils.isEmpty(financingList)) {
-            return BigDecimal.ZERO;
+            return null;
         }
-        BigDecimal result = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return result;
+        //订单融资金额
+        BigDecimal financingAmount = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        //已偿还本金
+        BigDecimal settlePrincipalInterests = financingList.stream().map(AccountRenterFinancing::getSettlePrincipalInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //已偿还利息
+        BigDecimal settleInterests = financingList.stream().map(AccountRenterFinancing::getSettleInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //已偿还本息
+        BigDecimal settleFinancing = settlePrincipalInterests.add(settleInterests);
+        //未偿还本金
+        BigDecimal unsettlePrincipalInterest = financingList.stream().map(AccountRenterFinancing::getUnsettlePrincipalInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //未偿还利息
+        BigDecimal unsettleInterest = financingList.stream().map(AccountRenterFinancing::getUnsettleInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal unsettledFinancing = unsettlePrincipalInterest.add(unsettleInterest);
+        RenterFinanceStatistics renterFinanceStatistics = new RenterFinanceStatistics();
+        renterFinanceStatistics.setRenterFinanceStatistics(financingAmount,settleFinancing,unsettledFinancing);
+        return renterFinanceStatistics;
     }
 
     /**
@@ -1268,6 +1309,128 @@ public class AccountServiceImpl implements AccountService {
 
         accountRenterRentMaster.updateById(accountRenterRent, accountRenterRent.getId(), array);
         return accountRenterRent;
+    }
+
+    /**
+     * 根据订单的id查询租机的详情
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail getAccountRenterRentDetail(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+
+        AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
+        query.setOrderId(orderId);
+
+        return accountRenterRentDetailSlave.findOne(query);
+    }
+
+    /**
+     * 更新AccountRenterRentDetail
+     *
+     * @param accountRenterRentDetail
+     * @return
+     */
+    @Override
+    public AccountRenterRentDetail updateAccountRenterRentDetail(AccountRenterRentDetail accountRenterRentDetail) {
+        if (null == accountRenterRentDetail || null == accountRenterRentDetail.getId()) {
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRentDetail.getPayedAccount()) {
+            updateFields.add("payedAccount");
+        }
+        if (null != accountRenterRentDetail.getUnpayedAccount()){
+            updateFields.add("unpayedAccount");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRentDetailMaster.updateById(accountRenterRentDetail, accountRenterRentDetail.getId(), array);
+        return accountRenterRentDetail;
+    }
+
+    /**
+     * 统计租机订单下的数据
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public RentMachineStatistics getRentMachineStatistics(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
+        query.setUid(uid);
+
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountRenterRentDetailSlave.findAll(query);
+        //BigDecimal financingAmount = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        //计算租赁总额
+        BigDecimal rentAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getTotalRentAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算已付的总额
+        BigDecimal payedAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getPayedAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算未付的总额
+        BigDecimal unpayAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getUnpayedAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算累计应付的总额
+        BigDecimal totalPayableAccount = payedAccount.add(unpayAccount);
+
+        RentMachineStatistics rentMachineStatistics = new RentMachineStatistics();
+        rentMachineStatistics.setRentMachineStatistics(rentAccount,totalPayableAccount,payedAccount,unpayAccount);
+        return rentMachineStatistics;
+    }
+
+    /**
+     * 更新AccountRenterRentMachine
+     *
+     * @param accountRenterRentMachine
+     * @return
+     */
+    @Override
+    public AccountRenterRentMachine updateAccountRenterRentMachine(AccountRenterRentMachine accountRenterRentMachine) {
+        if (null == accountRenterRentMachine || null == accountRenterRentMachine.getUid()){
+            return null;
+        }
+            List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRentMachine.getRentAccount()) {
+            updateFields.add("rentAccount");
+        }
+        if (null != accountRenterRentMachine.getTotalPayableAccount()){
+            updateFields.add("totalPayableAccount");
+        }
+        if (null != accountRenterRentMachine.getPayedAccount()){
+            updateFields.add("payedAccount");
+        }
+        if (null != accountRenterRentMachine.getUnpayAccount()){
+            updateFields.add("unpayAccount");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRentMachineMaster.updateById(accountRenterRentMachine, accountRenterRentMachine.getUid(), array);
+        return accountRenterRentMachine;
+    }
+
+    /**
+     * 保存AccountRenterOverdueAsset
+     *
+     * @param accountRenterOverdueAsset
+     * @return
+     */
+    @Override
+    public AccountRenterOverdueAsset saveAccountRenterOverdueAsset(AccountRenterOverdueAsset accountRenterOverdueAsset) {
+        if (null == accountRenterOverdueAsset || null == accountRenterOverdueAsset.getUid()){
+            return null;
+        }
+
+
+        return accountRenterOverdueAssetMaster.save(accountRenterOverdueAsset);
     }
 
     /**

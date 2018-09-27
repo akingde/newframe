@@ -200,6 +200,7 @@ public class BlockChainServiceImpl implements BlockChainService {
         try {
             return blockChainRepository.sendTransaction(contract.getPublickey(), contract.getPrivatekey(), action.build());
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

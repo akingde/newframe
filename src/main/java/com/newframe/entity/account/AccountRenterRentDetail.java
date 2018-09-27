@@ -35,7 +35,7 @@ public class AccountRenterRentDetail {
      */
     private String associatedOrderId;
     /**
-     * 关联订单的ID
+     * 关联订单的状态
      */
     private String associatedOrderStatus;
     /**

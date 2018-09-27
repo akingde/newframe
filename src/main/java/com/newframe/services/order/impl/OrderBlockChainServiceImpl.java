@@ -36,7 +36,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         financeApply.setIdNum(orderRenter.getUserIdNumber());
         financeApply.setLeaseTerm(orderRenter.getNumberOfPayments());
         financeApply.setProdAmount(1);
-        financeApply.setOrderId(orderRenter.getPartnerOrderId());
+        financeApply.setOrderId(String.valueOf(orderRenter.getOrderId()));
         financeApply.setOrderTime(orderRenter.getCtime());
         financeApply.setPhoneNum(orderRenter.getUserMobile());
         financeApply.setProdBrand(orderRenter.getProductBrand());

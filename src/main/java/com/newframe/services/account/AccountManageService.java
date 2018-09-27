@@ -5,6 +5,7 @@ import com.newframe.dto.account.*;
 import com.newframe.entity.account.*;
 import com.newframe.enums.account.AccountTypeEnum;
 import com.newframe.enums.account.DealTypeEnum;
+import com.newframe.enums.account.OrderTypeEnum;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -161,9 +162,10 @@ public interface AccountManageService {
      * @param totalPeriods 一共几期
      * @param accidentInsurance
      * @param totalAccount 总金额
+     * @param orderTypeEnum
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount);
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum);
 
     /**
      * 操作账户的接口
