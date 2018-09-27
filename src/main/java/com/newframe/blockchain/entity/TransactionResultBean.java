@@ -23,7 +23,7 @@ public class TransactionResultBean {
     @Data
     public class Tx {
         private String execer;
-        private Payload payload;
+//        private Payload payload;
         private String rawPayload;
         private Signature signature;
         private Long fee;
@@ -32,10 +32,10 @@ public class TransactionResultBean {
         private String from;
         private String to;
 
-        @Data
-        public class Payload {
-            private String rawlog;
-        }
+//        @Data
+//        public class Payload {
+//            private String rawlog;
+//        }
 
         @Data
         public class Signature {
