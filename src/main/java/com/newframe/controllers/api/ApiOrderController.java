@@ -77,11 +77,11 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/rent")
-    public JsonResult renterRent(Long uid,Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment,BigDecimal accidentBenefit,Integer patternPayment) throws AccountOperationException {
+    public JsonResult renterRent(Long uid,Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal monthlyPayment,BigDecimal accidentBenefit,Integer patternPayment,BigDecimal fullRepayAmount) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        return orderService.renterRent(uid,orderId,lessorId,tenancyTerm ,downPayment ,accidentBenefit ,patternPayment );
+        return orderService.renterRent(uid,orderId,lessorId,tenancyTerm ,monthlyPayment ,accidentBenefit ,patternPayment ,fullRepayAmount);
     }
 
     /**
@@ -445,7 +445,7 @@ public class ApiOrderController extends BaseController {
      * @return 查询结果
      */
     @Anonymous(true)
-    @RequestMapping("renter/getProductPrice")
+//    @RequestMapping("renter/getProductPrice")
     public JsonResult getProductPrice(ProductInfoDTO productInfoDTO,Integer paymentNumber){
         OperationResult result = orderService.getProductPrice(productInfoDTO, paymentNumber);
         if(result.getSucc()){

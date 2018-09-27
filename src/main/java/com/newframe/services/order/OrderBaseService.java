@@ -43,4 +43,13 @@ public interface OrderBaseService {
     boolean renterRentAccountOperation(OrderRenter orderRenter, OrderHirer orderHirer);
 
     boolean renterFunderAccountOperation(OrderRenter orderRenter, OrderFunder orderFunder);
+
+    /**
+     * 计算手机的租赁价格
+     * @param price 手机购买价
+     * @param rate 年化收益率
+     * @param numberOfPayment 租期
+     * @return 每个月的租金
+     */
+    BigDecimal getRentPrice(BigDecimal price, BigDecimal rate, Integer numberOfPayment);
 }

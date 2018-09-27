@@ -318,11 +318,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     //@Transactional(rollbackFor = Exception.class)
     public JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
-                                 BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException {
+                                 BigDecimal monthlyPayment, BigDecimal accidentBenefit, Integer patternPayment,
+                                 BigDecimal fullRepayAmount) throws AccountOperationException {
         // 参数校验
         if (orderId == null || lessorId == null
-                || tenancyTerm == null || downPayment == null
-                || accidentBenefit == null || !PatternPaymentEnum.isDefined(patternPayment)) {
+                || tenancyTerm == null || !PatternPaymentEnum.isDefined(patternPayment)) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
 
@@ -369,28 +369,20 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setPatternPayment(patternPayment);
             orderHirer.setLessorId(lessorId);
 
-            LessorProductPriceQuery query = new LessorProductPriceQuery();
-            query.setPaymentNumber(tenancyTerm);
-            query.setProductBrand(orderRenter.getProductBrand());
-            query.setProductColor(orderRenter.getProductColor());
-            query.setProductName(orderRenter.getProductName());
-            query.setProductRandomMemory(orderRenter.getProductRandomMemory());
-            query.setProductStorage(orderRenter.getProductStorage());
-            LessorProductPrice productPrice = lessorProductPriceSlave.findOne(query);
-            if (productPrice != null){
-                orderHirer.setOrderAmount(productPrice.getRentPrice());
-                orderHirer.setAccidentBenefit(accidentBenefit);
-                orderHirer.setNumberOfPeriods(tenancyTerm);
-                if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(patternPayment)) {
-                    // 出租方订单的租机价格，意外保险等由平台指定
-                    orderHirer.setDownPayment(downPayment);
-                    orderHirer.setMonthlyPayment(productPrice.getMonthPayment());
-                }else{
-                    // 全款支付的首付、月租金等都为0
-                    orderHirer.setDownPayment(productPrice.getRentPrice().add(accidentBenefit));
-                    orderHirer.setMonthlyPayment(productPrice.getRentPrice());
-                }
+            orderHirer.setAccidentBenefit(accidentBenefit);
+            orderHirer.setNumberOfPeriods(tenancyTerm);
+            if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(patternPayment)) {
+                // 出租方订单的租机价格，意外保险等由平台指定
+                orderHirer.setDownPayment(monthlyPayment.add(accidentBenefit));
+                orderHirer.setMonthlyPayment(monthlyPayment);
+                orderHirer.setOrderAmount(monthlyPayment.multiply(BigDecimal.valueOf(tenancyTerm)));
+            }else{
+                // 全款支付的首付、月租金等都为0
+                orderHirer.setDownPayment(BigDecimal.ZERO);
+                orderHirer.setMonthlyPayment(BigDecimal.ZERO);
+                orderHirer.setOrderAmount(fullRepayAmount);
             }
+
 
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
@@ -404,7 +396,7 @@ public class OrderServiceImpl implements OrderService {
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
 
-        GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方：" + lessorId);
+        GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给出租方：" + lessorId);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -514,6 +506,7 @@ public class OrderServiceImpl implements OrderService {
         query.setProductColor(productInfo.getProductColor());
         query.setProductStorage(productInfo.getProductStorage());
         query.setProductName(productInfo.getProductName());
+        query.setProductRandomMemory(productInfo.getProductRandomMemory());
         List<ProductLessor> products = productLessorSlave.findAll(query);
         if(products == null || products.size() == 0){
             return new JsonResult(OrderResultEnum.LESSOR_NOT_EXIST,false);
@@ -525,6 +518,10 @@ public class OrderServiceImpl implements OrderService {
                 LessorInfoDTO dto = new LessorInfoDTO();
                 dto.setLessorId(product.getSupplierId());
                 dto.setLessorName(userHirer.getMerchantName());
+                dto.setMonthlyPayment(orderBaseService.getRentPrice(product.getSupplyPrice(),new BigDecimal("0.15"),24));
+                dto.setNumberOfPeriods(24);
+                dto.setFullRepayAmount(product.getSupplyPrice());
+                dto.setAccidentBenefit(BigDecimal.ZERO);
                 dtos.add(dto);
             }
         }
