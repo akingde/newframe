@@ -540,7 +540,6 @@ public class BlockChainServiceImpl implements BlockChainService {
                 .setTrackingNum(expressInfo.getTrackingNum())
                 .setIMEI(expressInfo.getIMEI())
                 .setExpressCoName(expressInfo.getExpressCoName())
-                .setDeliveryTime(expressInfo.getDeliveryTime())
-                .setConfirmTime(expressInfo.getConfirmTime());
+                .setDeliveryTime(expressInfo.getDeliveryTime());
     }
 }

@@ -26,7 +26,7 @@ public class ExpressInfo {
      */
     private Integer deliveryTime;
     /**
-     * 确认时间
+     * 确认收货时间   暂不传递
      */
     private Integer confirmTime;
 }

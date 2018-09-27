@@ -26,7 +26,7 @@ public class LesseeOrder extends ProdDetail {
      */
     private String realName;
     /**
-     * 租客手机号
+     * 租客身份证号
      */
     private String idNum;
 }
