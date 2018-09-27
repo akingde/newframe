@@ -6,6 +6,7 @@ import com.newframe.dto.block.*;
 import com.newframe.entity.user.UserContract;
 import com.newframe.services.block.BlockChainService;
 import com.newframe.services.userbase.UserContractService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -240,14 +241,17 @@ public class BlockChainServiceImpl implements BlockChainService {
                 .setFunderUid(fundSupplier.getFunderUid())
                 .setMethod(EzTransfer.EzFinancingMethod.FM_ASSIGNMENT_OF_DEBT)
                 .setSupplierUid(fundSupplier.getSupplierUid())
-                .setFundVoucher(fundSupplier.getFundVoucher())
                 .setLoanTime(fundSupplier.getLoanTime());
+        if(StringUtils.isNotEmpty(fundSupplier.getFundVoucher())){
+            builder.setFundVoucher(fundSupplier.getFundVoucher());
+        }
         EzTransfer.EzAction.Builder action = EzTransfer.EzAction.newBuilder()
                 .setFundSupplier(builder)
                 .setTy(EzTransfer.EzActionType.AT_FUND_SUPPLIER);
         try {
             return blockChainRepository.sendTransaction(contract.getPublickey(), contract.getPrivatekey(), action.build());
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

@@ -9,8 +9,6 @@ import com.newframe.services.block.BlockChainService;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.ConfigRateService;
-import org.apache.poi.ss.formula.eval.ValueEval;
-import org.apache.poi.ss.formula.functions.PPMT;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -98,7 +96,7 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void passFunder(){
-        ResponseChain chain = blockChainService.funderApply(1537516469945230L,
+        ResponseChain chain = blockChainService.funderApply(1537516469945231L,
                 "fb824b3d1144e15999c717e4c3c7c651864c54d8b94f2453698dbcd108c0a687",
                 "易组资金方");
         System.out.println(chain.isSuccess());
@@ -106,17 +104,17 @@ public class UserTest extends NewFrameApplicationTests {
 
     @Test
     public void passLessot(){
-        ResponseChain chain = blockChainService.lessorApply(1535433927623105L,
-                "94d96e1c88cb891e31b198e0d28204309072e9c05548623dde94c574d7a4f108",
+        ResponseChain chain = blockChainService.lessorApply(3L,
+                "8a2022d2618453a9f0f6958111336575304623963328f8403bb1842fb0f5df68",
                 "易组出租方");
         System.out.println(chain.isSuccess());
     }
 
     @Test
     public void passSupplier(){
-        ResponseChain chain = blockChainService.supplierApply(1537516469945228L,
+        ResponseChain chain = blockChainService.supplierApply(11L,
                 "63bd01fdd70abd939469c523b6f288d987e0d4eaeffa7265a027f9b841d85b28",
-                "易组供应商");
+                "test111");
         System.out.println(chain.isSuccess());
     }
 
