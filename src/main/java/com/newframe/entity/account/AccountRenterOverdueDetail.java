@@ -37,7 +37,7 @@ public class AccountRenterOverdueDetail {
     /**
      * 关联订单的ID
      */
-    private Long associatedOrderStatus;
+    private String associatedOrderStatus;
 
     /**
      * 投资的方式。1:融资购机，2:租机

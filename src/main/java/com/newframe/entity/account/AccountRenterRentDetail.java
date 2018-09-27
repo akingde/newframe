@@ -116,6 +116,6 @@ public class AccountRenterRentDetail {
         this.unpayedAccount = unpayedAccount;
         this.orderStatus=1;
         this.payStatus=1;
-
+        this.associatedOrderStatus = "正常";
     }
 }

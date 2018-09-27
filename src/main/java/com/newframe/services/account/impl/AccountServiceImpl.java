@@ -1249,6 +1249,27 @@ public class AccountServiceImpl implements AccountService {
         return accountRenterRentMaster.findOne(query);
     }
 
+    @Override
+    public AccountRenterRent updateAccountRenterRent(AccountRenterRent accountRenterRent) {
+
+        if (null == accountRenterRent || null == accountRenterRent.getId()) {
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRent.getReceivedAccount()) {
+            updateFields.add("receivedAccount");
+        }
+        if (null != accountRenterRent.getDueInAccount()){
+            updateFields.add("dueInAccount");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRentMaster.updateById(accountRenterRent, accountRenterRent.getId(), array);
+        return accountRenterRent;
+    }
+
     /**
      * 根据UID查询到账户
      *

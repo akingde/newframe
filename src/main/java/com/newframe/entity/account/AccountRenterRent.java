@@ -86,5 +86,6 @@ public class AccountRenterRent {
         this.residueTime=residueTime;
         this.collectMoney=collectMoney;
         this.orderStatus=1;
+        this.associatedOrderStatus = "正常";
     }
 }
