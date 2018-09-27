@@ -57,14 +57,14 @@ public class ProductSupplier {
      * ram
      */
     @Column(name = "ram")
-    private String ram;
+    private Integer ram;
 
     /**
      * 机身容量
      * rom
      */
     @Column(name = "rom")
-    private String rom;
+    private Integer rom;
 
     /**
      * 颜色
@@ -130,8 +130,8 @@ public class ProductSupplier {
         this.supplierId = uid;
         this.brand = condition.getBrand();
         this.model = condition.getModel();
-        this.ram = StringUtils.upperCase(StringUtils.trim(condition.getRam()));
-        this.rom = StringUtils.upperCase(StringUtils.trim(condition.getRom()));
+        this.ram = condition.getRam();
+        this.rom = condition.getRom();
         this.color = condition.getColor();
         this.guidePrice = BigDecimalUtils.compareTo(condition.getGuidePrice()) ? condition.getGuidePrice() : BigDecimal.ZERO;
         this.supplyPrice = BigDecimalUtils.compareTo(condition.getSupplyPrice()) ? condition.getSupplyPrice() : BigDecimal.ZERO;

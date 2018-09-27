@@ -55,10 +55,10 @@ public class ProductLessorServiceImpl implements ProductLessorService {
         if(StringUtils.isNotEmpty(productLessor.getModel())){
             updateFields.add("model");
         }
-        if(StringUtils.isNotEmpty(productLessor.getRam())){
+        if(productLessor.getRam() != null){
             updateFields.add("ram");
         }
-        if(StringUtils.isNotEmpty(productLessor.getRom())){
+        if(productLessor.getRom() != null){
             updateFields.add("rom");
         }
         if(BigDecimalUtils.compareTo(productLessor.getGuidePrice())){
