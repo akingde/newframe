@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.newframe.controllers.JsonResult;
 import com.newframe.controllers.PageJsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.account.RentMachineStatistics;
 import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.dto.account.response.*;
 import com.newframe.entity.account.*;
@@ -1349,6 +1350,68 @@ public class AccountServiceImpl implements AccountService {
 
         accountRenterRentDetailMaster.updateById(accountRenterRentDetail, accountRenterRentDetail.getId(), array);
         return accountRenterRentDetail;
+    }
+
+    /**
+     * 统计租机订单下的数据
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public RentMachineStatistics getRentMachineStatistics(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
+        query.setUid(uid);
+
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountRenterRentDetailSlave.findAll(query);
+        //BigDecimal financingAmount = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        //计算租赁总额
+        BigDecimal rentAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getTotalRentAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算已付的总额
+        BigDecimal payedAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getPayedAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算未付的总额
+        BigDecimal unpayAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getUnpayedAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算累计应付的总额
+        BigDecimal totalPayableAccount = payedAccount.add(unpayAccount);
+
+        RentMachineStatistics rentMachineStatistics = new RentMachineStatistics();
+        rentMachineStatistics.setRentMachineStatistics(rentAccount,totalPayableAccount,payedAccount,unpayAccount);
+        return rentMachineStatistics;
+    }
+
+    /**
+     * 更新AccountRenterRentMachine
+     *
+     * @param accountRenterRentMachine
+     * @return
+     */
+    @Override
+    public AccountRenterRentMachine updateAccountRenterRentMachine(AccountRenterRentMachine accountRenterRentMachine) {
+        if (null == accountRenterRentMachine || null == accountRenterRentMachine.getUid()){
+            return null;
+        }
+            List<String> updateFields = Lists.newArrayList();
+        if (null != accountRenterRentMachine.getRentAccount()) {
+            updateFields.add("rentAccount");
+        }
+        if (null != accountRenterRentMachine.getTotalPayableAccount()){
+            updateFields.add("totalPayableAccount");
+        }
+        if (null != accountRenterRentMachine.getPayedAccount()){
+            updateFields.add("payedAccount");
+        }
+        if (null != accountRenterRentMachine.getUnpayAccount()){
+            updateFields.add("unpayAccount");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterRentMachineMaster.updateById(accountRenterRentMachine, accountRenterRentMachine.getUid(), array);
+        return accountRenterRentMachine;
     }
 
     /**

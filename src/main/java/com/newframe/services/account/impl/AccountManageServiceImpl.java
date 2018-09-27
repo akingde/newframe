@@ -264,8 +264,12 @@ public class AccountManageServiceImpl implements AccountManageService {
             machine.setAccountRenterRentMachine(uid,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO);
             accountService.saveAccountRenterRentMachine(machine);
         }
-        //如果不为空，则执行更新的操作
+        //如果不为空，则执行更新的操作，计算
+        RentMachineStatistics rentMachineStatistics = accountService.getRentMachineStatistics(uid);
+        accountRenterRentMachine.setAccountRenterRentMachine(uid,rentMachineStatistics);
 
+        //将最新的结果更新到数据库
+        accountService.updateAccountRenterRentMachine(accountRenterRentMachine);
 
         return new OperationResult<>(accountRenterRentMachine);
     }
