@@ -11,6 +11,7 @@ import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
+import com.newframe.enums.order.OrderStatusEnum;
 import com.newframe.repositories.dataMaster.account.*;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataSlave.account.*;
@@ -31,10 +32,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author:zww 31个接口
@@ -129,6 +128,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRenterOverdueAssetMaster accountRenterOverdueAssetMaster;
+
+    @Autowired
+    private AccountRenterOverdueDetailMaster accountRenterOverdueDetailMaster;
 
     @Override
     public JsonResult recharge(BigDecimal amount) {
@@ -1218,18 +1220,18 @@ public class AccountServiceImpl implements AccountService {
         //订单融资金额
         BigDecimal financingAmount = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         //已偿还本金
-        BigDecimal settlePrincipalInterests = financingList.stream().map(AccountRenterFinancing::getSettlePrincipalInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal settlePrincipalInterests = financingList.stream().map(AccountRenterFinancing::getSettlePrincipalInterest).reduce(BigDecimal.ZERO, BigDecimal::add);
         //已偿还利息
-        BigDecimal settleInterests = financingList.stream().map(AccountRenterFinancing::getSettleInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal settleInterests = financingList.stream().map(AccountRenterFinancing::getSettleInterest).reduce(BigDecimal.ZERO, BigDecimal::add);
         //已偿还本息
         BigDecimal settleFinancing = settlePrincipalInterests.add(settleInterests);
         //未偿还本金
-        BigDecimal unsettlePrincipalInterest = financingList.stream().map(AccountRenterFinancing::getUnsettlePrincipalInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal unsettlePrincipalInterest = financingList.stream().map(AccountRenterFinancing::getUnsettlePrincipalInterest).reduce(BigDecimal.ZERO, BigDecimal::add);
         //未偿还利息
-        BigDecimal unsettleInterest = financingList.stream().map(AccountRenterFinancing::getUnsettleInterest).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal unsettleInterest = financingList.stream().map(AccountRenterFinancing::getUnsettleInterest).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal unsettledFinancing = unsettlePrincipalInterest.add(unsettleInterest);
         RenterFinanceStatistics renterFinanceStatistics = new RenterFinanceStatistics();
-        renterFinanceStatistics.setRenterFinanceStatistics(financingAmount,settleFinancing,unsettledFinancing);
+        renterFinanceStatistics.setRenterFinanceStatistics(financingAmount, settleFinancing, unsettledFinancing);
         return renterFinanceStatistics;
     }
 
@@ -1300,7 +1302,7 @@ public class AccountServiceImpl implements AccountService {
         if (null != accountRenterRent.getReceivedAccount()) {
             updateFields.add("receivedAccount");
         }
-        if (null != accountRenterRent.getDueInAccount()){
+        if (null != accountRenterRent.getDueInAccount()) {
             updateFields.add("dueInAccount");
         }
 
@@ -1319,7 +1321,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRentDetail getAccountRenterRentDetail(Long orderId) {
-        if (null == orderId){
+        if (null == orderId) {
             return null;
         }
 
@@ -1344,7 +1346,7 @@ public class AccountServiceImpl implements AccountService {
         if (null != accountRenterRentDetail.getPayedAccount()) {
             updateFields.add("payedAccount");
         }
-        if (null != accountRenterRentDetail.getUnpayedAccount()){
+        if (null != accountRenterRentDetail.getUnpayedAccount()) {
             updateFields.add("unpayedAccount");
         }
 
@@ -1363,7 +1365,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public RentMachineStatistics getRentMachineStatistics(Long uid) {
-        if (null == uid){
+        if (null == uid) {
             return null;
         }
         AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
@@ -1372,16 +1374,16 @@ public class AccountServiceImpl implements AccountService {
         List<AccountRenterRentDetail> accountRenterRentDetailList = accountRenterRentDetailSlave.findAll(query);
         //BigDecimal financingAmount = financingList.stream().map(AccountRenterFinancing::getFinancingAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         //计算租赁总额
-        BigDecimal rentAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getTotalRentAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal rentAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getTotalRentAccount).reduce(BigDecimal.ZERO, BigDecimal::add);
         //计算已付的总额
-        BigDecimal payedAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getPayedAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal payedAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getPayedAccount).reduce(BigDecimal.ZERO, BigDecimal::add);
         //计算未付的总额
-        BigDecimal unpayAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getUnpayedAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        BigDecimal unpayAccount = accountRenterRentDetailList.stream().map(AccountRenterRentDetail::getUnpayedAccount).reduce(BigDecimal.ZERO, BigDecimal::add);
         //计算累计应付的总额
         BigDecimal totalPayableAccount = payedAccount.add(unpayAccount);
 
         RentMachineStatistics rentMachineStatistics = new RentMachineStatistics();
-        rentMachineStatistics.setRentMachineStatistics(rentAccount,totalPayableAccount,payedAccount,unpayAccount);
+        rentMachineStatistics.setRentMachineStatistics(rentAccount, totalPayableAccount, payedAccount, unpayAccount);
         return rentMachineStatistics;
     }
 
@@ -1393,20 +1395,20 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterRentMachine updateAccountRenterRentMachine(AccountRenterRentMachine accountRenterRentMachine) {
-        if (null == accountRenterRentMachine || null == accountRenterRentMachine.getUid()){
+        if (null == accountRenterRentMachine || null == accountRenterRentMachine.getUid()) {
             return null;
         }
-            List<String> updateFields = Lists.newArrayList();
+        List<String> updateFields = Lists.newArrayList();
         if (null != accountRenterRentMachine.getRentAccount()) {
             updateFields.add("rentAccount");
         }
-        if (null != accountRenterRentMachine.getTotalPayableAccount()){
+        if (null != accountRenterRentMachine.getTotalPayableAccount()) {
             updateFields.add("totalPayableAccount");
         }
-        if (null != accountRenterRentMachine.getPayedAccount()){
+        if (null != accountRenterRentMachine.getPayedAccount()) {
             updateFields.add("payedAccount");
         }
-        if (null != accountRenterRentMachine.getUnpayAccount()){
+        if (null != accountRenterRentMachine.getUnpayAccount()) {
             updateFields.add("unpayAccount");
         }
 
@@ -1425,12 +1427,96 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountRenterOverdueAsset saveAccountRenterOverdueAsset(AccountRenterOverdueAsset accountRenterOverdueAsset) {
-        if (null == accountRenterOverdueAsset || null == accountRenterOverdueAsset.getUid()){
+        if (null == accountRenterOverdueAsset || null == accountRenterOverdueAsset.getUid()) {
             return null;
         }
 
 
         return accountRenterOverdueAssetMaster.save(accountRenterOverdueAsset);
+    }
+
+    /**
+     * 根据用户的uid和订单的状态，去查询租赁商租机逾期的订单
+     *
+     * @param uid
+     * @param overdue
+     * @return
+     */
+    @Override
+    public List<AccountRenterRentDetail> listAccountRenterRentDetail(Long uid, OrderStatusEnum overdue) {
+        if (null == uid || null == overdue) {
+            return Collections.EMPTY_LIST;
+        }
+
+        AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
+        query.setUid(uid);
+        query.setOrderStatus(overdue.getCode());
+        List<AccountRenterRentDetail> list = accountRenterRentDetailSlave.findAll(query);
+        return CollectionUtils.isNotEmpty(list) ? list : Collections.EMPTY_LIST;
+    }
+
+    /**
+     * 根据用户的uid和订单的状态，去查询租赁商融资购机逾期的订单
+     *
+     * @param uid
+     * @param overdue
+     * @return
+     */
+    @Override
+    public List<AccountRenterFinancing> listAccountRenterFinancing(Long uid, OrderStatusEnum overdue) {
+        if (null == uid || null == overdue) {
+            return Collections.EMPTY_LIST;
+        }
+
+        AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
+        query.setUid(uid);
+        query.setOrderStatus(overdue.getCode());
+        List<AccountRenterFinancing> list = accountRenterFinancingSlave.findAll(query);
+        return CollectionUtils.isNotEmpty(list) ? list : Collections.EMPTY_LIST;
+    }
+
+    /**
+     * 批量保存逾期的订单
+     *
+     * @param accountRenterOverdueDetails
+     * @return
+     */
+    @Override
+    public List<AccountRenterOverdueDetail> saveAccountRenterOverdueDetails(List<AccountRenterOverdueDetail> accountRenterOverdueDetails) {
+        if (CollectionUtils.isEmpty(accountRenterOverdueDetails)) {
+            return Collections.EMPTY_LIST;
+        }
+        //新的订单Id集合
+        List<Long> newOrderIds = new ArrayList<>();
+        accountRenterOverdueDetails.forEach(accountRenterOverdueDetail -> {
+            newOrderIds.add(accountRenterOverdueDetail.getOrderId());
+        });
+        AccountRenterOverdueDetailQuery query = new AccountRenterOverdueDetailQuery();
+        query.setOrderIds(newOrderIds);
+        List<AccountRenterOverdueDetail> acounts = accountRenterOverdueDetailMaster.findAll(query);
+        //获取已经存在的订单Id的集合
+        List<Long> oldOrderIds = new ArrayList<>();
+        acounts.forEach(accountRenterOverdueDetail -> {
+            oldOrderIds.add(accountRenterOverdueDetail.getOrderId());
+        });
+        //需要去掉已经存在的数据
+
+        Iterator<AccountRenterOverdueDetail> iterator = accountRenterOverdueDetails.iterator();
+
+        while (iterator.hasNext()) {
+            AccountRenterOverdueDetail detail = iterator.next();
+            oldOrderIds.forEach(oldOrderId -> {
+                if (detail.getOrderId().equals(oldOrderId)) {
+                    iterator.remove();
+                }
+            });
+        }
+
+
+        if (CollectionUtils.isEmpty(accountRenterOverdueDetails)) {
+            return Collections.EMPTY_LIST;
+        }
+        return accountRenterOverdueDetailMaster.saveAll(accountRenterOverdueDetails);
     }
 
     /**
