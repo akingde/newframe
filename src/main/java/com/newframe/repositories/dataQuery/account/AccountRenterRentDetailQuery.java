@@ -23,4 +23,9 @@ public class AccountRenterRentDetailQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderId",where = Where.equal)
     private Long orderId;
+
+    @QBindAttrField(fieldName = "orderStatus", where = Where.equal)
+    private Integer orderStatus;
+
+
 }

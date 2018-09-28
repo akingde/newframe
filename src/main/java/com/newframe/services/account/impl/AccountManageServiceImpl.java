@@ -12,6 +12,7 @@ import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.account.AccountTypeEnum;
 import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.enums.account.OrderTypeEnum;
+import com.newframe.enums.order.PayStatusEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.userbase.UserAddressService;
@@ -316,11 +317,31 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterOverdueAsset accountRenterOverdueAsset = accountService.getAccountRenterOverdueAsset(uid);
         //如果没有，需要初始化一条数据
         if (null == accountRenterOverdueAsset){
-            accountRenterOverdueAsset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
-            accountService.saveAccountRenterOverdueAsset(accountRenterOverdueAsset);
+            AccountRenterOverdueAsset asset = new AccountRenterOverdueAsset();
+            asset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
+            accountService.saveAccountRenterOverdueAsset(asset);
         }
-
-        return new OperationResult<>(accountRenterOverdueAsset);
+        AccountRenterOverdueAsset overdueAsset = accountService.getAccountRenterOverdueAsset(uid);
+        //查询逾期的订单
+        List<AccountRenterOverdueDetail> renterOverdueDetails = accountService.listAccountRenterOverdueDetail(uid, 2);
+        if (CollectionUtils.isEmpty(renterOverdueDetails)){
+            overdueAsset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
+        }
+        //计算逾期金额合计
+        BigDecimal totalOverdueAccount = renterOverdueDetails.stream().map(AccountRenterOverdueDetail::getInvestAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算逾期笔数
+        Integer overdueNumber = renterOverdueDetails.size();
+        //计算逾期率
+        //获取融资列表总订单
+        List<AccountRenterFinancing> accountRenterFinancingList = accountService.listAccountRenterFinancing(uid,PayStatusEnum.NORMAL);
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountService.listAccountRenterRentDetail(uid,PayStatusEnum.NORMAL);
+        //正常订单的笔数
+        Integer normalNumber = accountRenterFinancingList.size()+accountRenterRentDetailList.size();
+        BigDecimal overdueRate = new BigDecimal(overdueNumber).divide(new BigDecimal(normalNumber),2,RoundingMode.HALF_UP);
+        overdueAsset.setAccountRenterOverdueAsset(uid,totalOverdueAccount,overdueNumber,overdueRate,BigDecimal.ZERO);
+        //更新一下
+        accountService.updateAccountRenterOverdueAsset(overdueAsset);
+        return new OperationResult<>(overdueAsset);
     }
 
     /**
@@ -340,8 +361,36 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (null == currentPage || null == pageSize){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
-        //用uid和融资购机还是租机来查
-        //List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay()
+        //用uid和逾期状态去查租机的订单
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountService.listAccountRenterRentDetail(uid, PayStatusEnum.OVERDUE);
+        //用uid和逾期状态去查融资订单的订单
+        List<AccountRenterFinancing> accountRenterFinancingList = accountService.listAccountRenterFinancing(uid, PayStatusEnum.OVERDUE);
+
+        //保存租机逾期的订单
+        if (CollectionUtils.isNotEmpty(accountRenterRentDetailList)){
+            List<AccountRenterOverdueDetail> rentMachins = Lists.newArrayList();
+            accountRenterRentDetailList.forEach(accountRenterRentDetail -> {
+                AccountRenterOverdueDetail detail = new AccountRenterOverdueDetail();
+                detail.setAccountRenterOverdueDetail(uid,accountRenterRentDetail);
+                detail.setId(idGlobal.getSeqId(AccountRenterOverdueDetail.class));
+                rentMachins.add(detail);
+            });
+            accountService.saveAccountRenterOverdueDetails(rentMachins);
+        }
+
+        //保存融资购机的逾期订单
+        if (CollectionUtils.isNotEmpty(accountRenterFinancingList)){
+            List<AccountRenterOverdueDetail> rentMachins = Lists.newArrayList();
+            accountRenterFinancingList.forEach(accountRenterFinancing -> {
+                AccountRenterOverdueDetail detail = new AccountRenterOverdueDetail();
+                detail.setAccountRenterFinancing(uid,accountRenterFinancing);
+                detail.setId(idGlobal.getSeqId(AccountRenterOverdueDetail.class));
+                rentMachins.add(detail);
+            });
+
+            accountService.saveAccountRenterOverdueDetails(rentMachins);
+        }
+
         RenterOrderOverdueDetailInfo renterOrderRentDetailInfo = new RenterOrderOverdueDetailInfo();
         Page<AccountRenterOverdueDetail> accountRenterOverdueDetails = accountService.getAccountRenterOverdueDetail(uid,currentPage, pageSize);
         List<AccountRenterOverdueDetail> accountRenterOverdueDetailList = accountRenterOverdueDetails.getContent();
@@ -624,8 +673,16 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
-            extraAmount = dealAmount.multiply(overdueRate);
+            //这个利息先不加
+            //extraAmount = dealAmount.multiply(overdueRate);
             dealAmount = dealAmount.add(extraAmount);
+            AccountRenterOverdueDetail detail = accountService.getAccountRenterOverdueDetail(orderId);
+            if (null != detail){
+                detail.setPayedAccount(detail.getPayedAccount().add(dealAmount));
+                detail.setUnpayedAccount(detail.getUnpayedAccount().subtract(dealAmount));
+                accountService.updateAccountRenterOverdueDetail(detail);
+
+            }
         }
         AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
         AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
@@ -713,8 +770,16 @@ public class AccountManageServiceImpl implements AccountManageService {
 
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
-            extraAmount = dealAmount.multiply(overdueRate);
+            //这个逾期利息暂时先不加
+            //extraAmount = dealAmount.multiply(overdueRate);
             dealAmount = dealAmount.add(extraAmount);
+            AccountRenterOverdueDetail detail = accountService.getAccountRenterOverdueDetail(orderId);
+            if (null != detail){
+                detail.setPayedAccount(detail.getPayedAccount().add(dealAmount));
+                detail.setUnpayedAccount(detail.getUnpayedAccount().subtract(dealAmount));
+                accountService.updateAccountRenterOverdueDetail(detail);
+
+            }
         }
         AccountRenterRent accountRenterRent = accountService.getAccountRenterRent(orderId);
         AccountLessorMatterAsset accountLessorMatterAsset = accountService.getAccountLessorMatterAsset(orderId);

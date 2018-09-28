@@ -83,7 +83,7 @@ public class AccountRenterRentDetail {
     private BigDecimal unpayedAccount;
 
     /**
-     * 关联订单的状态。1:正常，2:逾期，3:逾期未催收，4:催收中，5:催收已还机
+     * 订单的状态。1:正常，2、删除
      */
     private Integer orderStatus;
 

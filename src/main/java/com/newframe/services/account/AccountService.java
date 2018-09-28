@@ -5,6 +5,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.RentMachineStatistics;
 import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.entity.account.*;
+import com.newframe.enums.order.PayStatusEnum;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
@@ -541,4 +542,56 @@ public interface AccountService {
      * @return
      */
     AccountRenterOverdueAsset saveAccountRenterOverdueAsset(AccountRenterOverdueAsset accountRenterOverdueAsset);
+
+    /**
+     * 根据用户的uid和订单的状态，去查询租赁商租机逾期的订单
+     * @param uid
+     * @param overdue
+     * @return
+     */
+    List<AccountRenterRentDetail> listAccountRenterRentDetail(Long uid, PayStatusEnum overdue);
+
+    /**
+     * 根据用户的uid和订单的状态，去查询租赁商融资购机逾期的订单
+     * @param uid
+     * @param overdue
+     * @return
+     */
+    List<AccountRenterFinancing> listAccountRenterFinancing(Long uid, PayStatusEnum overdue);
+
+    /**
+     * 批量保存逾期的订单
+     * @param accountRenterOverdueDetails
+     * @return
+     */
+    List<AccountRenterOverdueDetail> saveAccountRenterOverdueDetails(List<AccountRenterOverdueDetail> accountRenterOverdueDetails);
+
+    /**
+     * 根据订单的ID去查询逾期的订单
+     * @param orderId
+     * @return
+     */
+    AccountRenterOverdueDetail getAccountRenterOverdueDetail(Long orderId);
+
+    /**
+     * 更新金额
+     * @param detail
+     * @return
+     */
+    AccountRenterOverdueDetail  updateAccountRenterOverdueDetail(AccountRenterOverdueDetail detail);
+
+    /**
+     * 根据Uid查询这个租赁商所有的逾期的订单
+     * @param uid
+     * @param orderStatus
+     * @return
+     */
+    List<AccountRenterOverdueDetail> listAccountRenterOverdueDetail(Long uid, Integer orderStatus);
+
+    /**
+     * 更新一下AccountRenterOverdueAsset
+     * @param overdueAsset
+     * @return
+     */
+    AccountRenterOverdueAsset updateAccountRenterOverdueAsset(AccountRenterOverdueAsset overdueAsset);
 }
