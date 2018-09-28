@@ -888,6 +888,20 @@ public class ApiUserController extends BaseController {
     }
 
     /**
+     * 检查ios版本
+     * @param version
+     * @return
+     */
+    @RequestMapping("checkIosVersion")
+    public JsonResult checkIosVersion(Integer version){
+        Integer serviceVersion = 10;
+        if(version == null || version < 10){
+            return success(false);
+        }
+        return success(true);
+    }
+
+    /**
      * @param files 文件
      * @return
      * @description 上传文件
