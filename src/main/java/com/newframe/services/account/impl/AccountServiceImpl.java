@@ -1519,6 +1519,69 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 根据订单的ID去查询逾期的订单
+     *
+     * @param orderId
+     * @return
+     */
+    @Override
+    public AccountRenterOverdueDetail getAccountRenterOverdueDetail(Long orderId) {
+        if (null == orderId){
+            return null;
+        }
+        AccountRenterOverdueDetailQuery query = new AccountRenterOverdueDetailQuery();
+        query.setOrderId(orderId);
+
+        return accountRenterOverdueDetailSlave.findOne(query);
+    }
+
+    /**
+     * 更新金额
+     *
+     * @param detail
+     * @return
+     */
+    @Override
+    public AccountRenterOverdueDetail updateAccountRenterOverdueDetail(AccountRenterOverdueDetail detail) {
+        if (null == detail || null == detail.getId()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != detail.getAssociatedOrderStatus()) {
+            updateFields.add("associatedOrderStatus");
+        }
+        if (null != detail.getInvestAccount()) {
+            updateFields.add("investAccount");
+        }
+        if (null != detail.getInvestMonth()) {
+            updateFields.add("investMonth");
+        }
+        if (null != detail.getCashDepositAccount()) {
+            updateFields.add("cashDepositAccount");
+        }
+
+        if (null != detail.getPayedAccount()) {
+            updateFields.add("payedAccount");
+        }
+        if (null != detail.getUnpayedAccount()) {
+            updateFields.add("unpayedAccount");
+        }
+
+        if (null != detail.getOverdueDays()) {
+            updateFields.add("overdueDays");
+        }
+        if (null != detail.getOrderStatus()) {
+            updateFields.add("orderStatus");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterOverdueDetailMaster.updateById(detail, detail.getId(), array);
+        return detail;
+    }
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid

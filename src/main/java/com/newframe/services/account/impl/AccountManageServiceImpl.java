@@ -653,8 +653,16 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
-            extraAmount = dealAmount.multiply(overdueRate);
+            //这个利息先不加
+            //extraAmount = dealAmount.multiply(overdueRate);
             dealAmount = dealAmount.add(extraAmount);
+            AccountRenterOverdueDetail detail = accountService.getAccountRenterOverdueDetail(orderId);
+            if (null != detail){
+                detail.setPayedAccount(detail.getPayedAccount().add(dealAmount));
+                detail.setUnpayedAccount(detail.getUnpayedAccount().subtract(dealAmount));
+                accountService.updateAccountRenterOverdueDetail(detail);
+
+            }
         }
         AccountRenterFinancing accountRenterFinancing = accountService.getAccountRenterFinancing(orderId);
         AccountFundingFinanceAsset accountFundingFinanceAsset = accountService.getAccountFundingFinanceAsset(orderId);
@@ -742,8 +750,16 @@ public class AccountManageServiceImpl implements AccountManageService {
 
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)){
-            extraAmount = dealAmount.multiply(overdueRate);
+            //这个逾期利息暂时先不加
+            //extraAmount = dealAmount.multiply(overdueRate);
             dealAmount = dealAmount.add(extraAmount);
+            AccountRenterOverdueDetail detail = accountService.getAccountRenterOverdueDetail(orderId);
+            if (null != detail){
+                detail.setPayedAccount(detail.getPayedAccount().add(dealAmount));
+                detail.setUnpayedAccount(detail.getUnpayedAccount().subtract(dealAmount));
+                accountService.updateAccountRenterOverdueDetail(detail);
+
+            }
         }
         AccountRenterRent accountRenterRent = accountService.getAccountRenterRent(orderId);
         AccountLessorMatterAsset accountLessorMatterAsset = accountService.getAccountLessorMatterAsset(orderId);

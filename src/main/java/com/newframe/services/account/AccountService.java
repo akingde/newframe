@@ -565,4 +565,18 @@ public interface AccountService {
      * @return
      */
     List<AccountRenterOverdueDetail> saveAccountRenterOverdueDetails(List<AccountRenterOverdueDetail> accountRenterOverdueDetails);
+
+    /**
+     * 根据订单的ID去查询逾期的订单
+     * @param orderId
+     * @return
+     */
+    AccountRenterOverdueDetail getAccountRenterOverdueDetail(Long orderId);
+
+    /**
+     * 更新金额
+     * @param detail
+     * @return
+     */
+    AccountRenterOverdueDetail  updateAccountRenterOverdueDetail(AccountRenterOverdueDetail detail);
 }
