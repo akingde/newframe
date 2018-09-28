@@ -44,4 +44,6 @@ public class OrderRenterDTO {
     private Integer orderRentTimes;
     private Integer consumerOrderTime;
     private Integer platformCreditScore;
+    private String receiverPhone;
+    private String receiverName;
 }

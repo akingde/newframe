@@ -110,4 +110,7 @@ public class OrderRenter {
 
     /**收款账户，不知道什么意思，产品让加的*/
     private String gatheringAccount;
+
+    private String receiverPhone;
+    private String receiverName;
 }

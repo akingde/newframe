@@ -1326,6 +1326,8 @@ public class OrderServiceImpl implements OrderService {
         OrderRenter orderRenter = orderRenterSlave.findOne(orderHirer.getOrderId());
         if(orderRenter != null){
             dto.setConsumerOrderTime(orderRenter.getCtime());
+            dto.setReceiverName(orderRenter.getReceiverName());
+            dto.setReceiverPhone(orderRenter.getReceiverPhone());
         }
         return dto;
     }
@@ -1358,11 +1360,14 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
         orderFunderDTO.setConsumerBedDebtTimes(0);
         orderFunderDTO.setUid(orderFunder.getFunderId());
+
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderFunder.getOrderId());
         if(orderRenterOptional.isPresent()){
             OrderRenter orderRenter = orderRenterOptional.get();
             orderFunderDTO.setConsumerAddress(orderRenter.getUserAddress());
             orderFunderDTO.setConsumerOrderTime(orderRenter.getCtime());
+            orderFunderDTO.setReceiverName(orderRenter.getReceiverName());
+            orderFunderDTO.setReceiverPhone(orderRenter.getReceiverPhone());
         }
         return orderFunderDTO;
     }
@@ -1397,6 +1402,8 @@ public class OrderServiceImpl implements OrderService {
             orderSupplierDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
             orderSupplierDTO.setConsumerUid(orderRenter.getUid());
             orderSupplierDTO.setConsumerOrderTime(orderRenter.getCtime());
+            orderSupplierDTO.setReceiverName(orderRenter.getReceiverName());
+            orderSupplierDTO.setReceiverPhone(orderRenter.getReceiverPhone());
         }
         // todo 查询用户坏账次数
         orderSupplierDTO.setConsumerBedDebtTimes(1);
