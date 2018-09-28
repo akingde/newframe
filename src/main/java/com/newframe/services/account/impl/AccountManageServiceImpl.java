@@ -317,11 +317,31 @@ public class AccountManageServiceImpl implements AccountManageService {
         AccountRenterOverdueAsset accountRenterOverdueAsset = accountService.getAccountRenterOverdueAsset(uid);
         //如果没有，需要初始化一条数据
         if (null == accountRenterOverdueAsset){
-            accountRenterOverdueAsset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
-            accountService.saveAccountRenterOverdueAsset(accountRenterOverdueAsset);
+            AccountRenterOverdueAsset asset = new AccountRenterOverdueAsset();
+            asset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
+            accountService.saveAccountRenterOverdueAsset(asset);
         }
-
-        return new OperationResult<>(accountRenterOverdueAsset);
+        AccountRenterOverdueAsset overdueAsset = accountService.getAccountRenterOverdueAsset(uid);
+        //查询逾期的订单
+        List<AccountRenterOverdueDetail> renterOverdueDetails = accountService.listAccountRenterOverdueDetail(uid, 2);
+        if (CollectionUtils.isEmpty(renterOverdueDetails)){
+            overdueAsset.setAccountRenterOverdueAsset(uid,BigDecimal.ZERO,0,BigDecimal.ZERO,BigDecimal.ZERO);
+        }
+        //计算逾期金额合计
+        BigDecimal totalOverdueAccount = renterOverdueDetails.stream().map(AccountRenterOverdueDetail::getInvestAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算逾期笔数
+        Integer overdueNumber = renterOverdueDetails.size();
+        //计算逾期率
+        //获取融资列表总订单
+        List<AccountRenterFinancing> accountRenterFinancingList = accountService.listAccountRenterFinancing(uid,PayStatusEnum.NORMAL);
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountService.listAccountRenterRentDetail(uid,PayStatusEnum.NORMAL);
+        //正常订单的笔数
+        Integer normalNumber = accountRenterFinancingList.size()+accountRenterRentDetailList.size();
+        BigDecimal overdueRate = new BigDecimal(overdueNumber).divide(new BigDecimal(normalNumber),2,RoundingMode.HALF_UP);
+        overdueAsset.setAccountRenterOverdueAsset(uid,totalOverdueAccount,overdueNumber,overdueRate,BigDecimal.ZERO);
+        //更新一下
+        accountService.updateAccountRenterOverdueAsset(overdueAsset);
+        return new OperationResult<>(overdueAsset);
     }
 
     /**

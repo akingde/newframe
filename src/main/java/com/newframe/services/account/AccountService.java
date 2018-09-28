@@ -579,4 +579,19 @@ public interface AccountService {
      * @return
      */
     AccountRenterOverdueDetail  updateAccountRenterOverdueDetail(AccountRenterOverdueDetail detail);
+
+    /**
+     * 根据Uid查询这个租赁商所有的逾期的订单
+     * @param uid
+     * @param orderStatus
+     * @return
+     */
+    List<AccountRenterOverdueDetail> listAccountRenterOverdueDetail(Long uid, Integer orderStatus);
+
+    /**
+     * 更新一下AccountRenterOverdueAsset
+     * @param overdueAsset
+     * @return
+     */
+    AccountRenterOverdueAsset updateAccountRenterOverdueAsset(AccountRenterOverdueAsset overdueAsset);
 }

@@ -1582,6 +1582,55 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 根据Uid查询这个租赁商所有的逾期的订单
+     *
+     * @param uid
+     * @param orderStatus
+     * @return
+     */
+    @Override
+    public List<AccountRenterOverdueDetail> listAccountRenterOverdueDetail(Long uid, Integer orderStatus) {
+        if (null == uid){
+            return Collections.EMPTY_LIST;
+        }
+        AccountRenterOverdueDetailQuery query = new AccountRenterOverdueDetailQuery();
+        query.setUid(uid);
+        List<AccountRenterOverdueDetail> list = accountRenterOverdueDetailSlave.findAll(query);
+
+        return CollectionUtils.isEmpty(list) ? Collections.EMPTY_LIST : list;
+    }
+
+    /**
+     * 更新一下AccountRenterOverdueAsset
+     *
+     * @param overdueAsset
+     * @return
+     */
+    @Override
+    public AccountRenterOverdueAsset updateAccountRenterOverdueAsset(AccountRenterOverdueAsset overdueAsset) {
+        if (null == overdueAsset || null == overdueAsset.getUid()){
+            return null;
+        }
+        List<String> updateFields = Lists.newArrayList();
+        if (null != overdueAsset.getTotalOverdueAccount()) {
+            updateFields.add("totalOverdueAccount");
+        }
+        if (null != overdueAsset.getOverdueNumber()) {
+            updateFields.add("overdueNumber");
+        }
+        if (null != overdueAsset.getOverdueRate()) {
+            updateFields.add("overdueRate");
+        }
+
+        String[] array = new String[updateFields.size()];
+        updateFields.toArray(array);
+
+        accountRenterOverdueAssetMaster.updateById(overdueAsset, overdueAsset.getUid(), array);
+        return overdueAsset;
+    }
+
+
+    /**
      * 根据UID查询到账户
      *
      * @param uid

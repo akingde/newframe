@@ -22,4 +22,7 @@ public class AccountRenterOverdueDetailQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderId",where = Where.in)
     private List<Long> orderIds;
+
+    @QBindAttrField(fieldName = "uid",where = Where.equal)
+    private Long uid;
 }
