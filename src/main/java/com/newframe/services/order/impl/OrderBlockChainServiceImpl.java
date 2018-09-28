@@ -98,7 +98,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         rentalApply.setApplyTime(orderHirer.getCtime());
         rentalApply.setLessorUid(orderHirer.getLessorId());
         rentalApply.setMerchantUid(orderRenter.getRenterId());
-        rentalApply.setOrderNum(orderRenter.getRenterId());
+        rentalApply.setOrderNum(orderRenter.getOrderId());
         if(orderHirer.getPatternPayment().equals(EzTransfer.EzPaymentMethod.PM_LUMP_SUM.getNumber())){
             rentalApply.setPaymentMethod(EzTransfer.EzPaymentMethod.PM_LUMP_SUM);
         }

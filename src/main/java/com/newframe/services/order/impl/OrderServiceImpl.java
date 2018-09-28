@@ -318,11 +318,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     //@Transactional(rollbackFor = Exception.class)
     public JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
-                                 BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException {
+                                 BigDecimal monthlyPayment, BigDecimal accidentBenefit, Integer patternPayment,
+                                 BigDecimal fullRepayAmount) throws AccountOperationException {
         // 参数校验
         if (orderId == null || lessorId == null
-                || tenancyTerm == null || downPayment == null
-                || accidentBenefit == null || !PatternPaymentEnum.isDefined(patternPayment)) {
+                || tenancyTerm == null || !PatternPaymentEnum.isDefined(patternPayment)) {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
 
@@ -369,28 +369,20 @@ public class OrderServiceImpl implements OrderService {
             orderHirer.setPatternPayment(patternPayment);
             orderHirer.setLessorId(lessorId);
 
-            LessorProductPriceQuery query = new LessorProductPriceQuery();
-            query.setPaymentNumber(tenancyTerm);
-            query.setProductBrand(orderRenter.getProductBrand());
-            query.setProductColor(orderRenter.getProductColor());
-            query.setProductName(orderRenter.getProductName());
-            query.setProductRandomMemory(orderRenter.getProductRandomMemory());
-            query.setProductStorage(orderRenter.getProductStorage());
-            LessorProductPrice productPrice = lessorProductPriceSlave.findOne(query);
-            if (productPrice != null){
-                orderHirer.setOrderAmount(productPrice.getRentPrice());
-                orderHirer.setAccidentBenefit(accidentBenefit);
-                orderHirer.setNumberOfPeriods(tenancyTerm);
-                if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(patternPayment)) {
-                    // 出租方订单的租机价格，意外保险等由平台指定
-                    orderHirer.setDownPayment(downPayment);
-                    orderHirer.setMonthlyPayment(productPrice.getMonthPayment());
-                }else{
-                    // 全款支付的首付、月租金等都为0
-                    orderHirer.setDownPayment(productPrice.getRentPrice().add(accidentBenefit));
-                    orderHirer.setMonthlyPayment(productPrice.getRentPrice());
-                }
+            orderHirer.setAccidentBenefit(accidentBenefit);
+            orderHirer.setNumberOfPeriods(tenancyTerm);
+            if(PatternPaymentEnum.INSTALMENT_PAYMENT.getValue().equals(patternPayment)) {
+                // 出租方订单的租机价格，意外保险等由平台指定
+                orderHirer.setDownPayment(monthlyPayment.add(accidentBenefit));
+                orderHirer.setMonthlyPayment(monthlyPayment);
+                orderHirer.setOrderAmount(monthlyPayment.multiply(BigDecimal.valueOf(tenancyTerm)));
+            }else{
+                // 全款支付的首付、月租金等都为0
+                orderHirer.setDownPayment(BigDecimal.ZERO);
+                orderHirer.setMonthlyPayment(BigDecimal.ZERO);
+                orderHirer.setOrderAmount(fullRepayAmount);
             }
+
 
             // 生成出租方订单
             orderHirerMaser.save(orderHirer);
@@ -398,12 +390,13 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBlockChainService.rentApply(orderRenter,orderHirer);
             orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
 
-        GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方：" + lessorId);
+        GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给出租方：" + lessorId);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -513,6 +506,7 @@ public class OrderServiceImpl implements OrderService {
         query.setProductColor(productInfo.getProductColor());
         query.setProductStorage(productInfo.getProductStorage());
         query.setProductName(productInfo.getProductName());
+        query.setProductRandomMemory(productInfo.getProductRandomMemory());
         List<ProductLessor> products = productLessorSlave.findAll(query);
         if(products == null || products.size() == 0){
             return new JsonResult(OrderResultEnum.LESSOR_NOT_EXIST,false);
@@ -524,6 +518,10 @@ public class OrderServiceImpl implements OrderService {
                 LessorInfoDTO dto = new LessorInfoDTO();
                 dto.setLessorId(product.getSupplierId());
                 dto.setLessorName(userHirer.getMerchantName());
+                dto.setMonthlyPayment(orderBaseService.getRentPrice(product.getSupplyPrice(),new BigDecimal("0.15"),24));
+                dto.setNumberOfPeriods(24);
+                dto.setFullRepayAmount(product.getSupplyPrice());
+                dto.setAccidentBenefit(BigDecimal.ZERO);
                 dtos.add(dto);
             }
         }
@@ -617,6 +615,7 @@ public class OrderServiceImpl implements OrderService {
                 if(!operationResult.getEntity()){
                     throw new AccountOperationException(operationResult);
                 }
+                orderBlockChainService.financeRefuse(orderId,uid);
                 return new JsonResult(SystemCode.SUCCESS, true);
             }
         }
@@ -718,6 +717,7 @@ public class OrderServiceImpl implements OrderService {
                     if(!operationResult.getEntity()){
                         throw new AccountOperationException(operationResult);
                     }
+                    orderBlockChainService.fundSupplier(orderFunder,orderSupplier,null);
                 }
                 return new JsonResult(SystemCode.GENERATE_SUPPLY_ORDER_SUCCESS, true);
             }
@@ -797,6 +797,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenter.setOrderStatus(OrderRenterStatus.WAITING_SUPPLIER_RECEIVE.getCode());
             orderRenterMaser.save(orderRenter);
         }
+        orderBlockChainService.supplierDeliver(orderSupplier);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -941,6 +942,8 @@ public class OrderServiceImpl implements OrderService {
         if(!operationResult.getEntity()){
             throw new AccountOperationException(operationResult);
         }
+        orderBlockChainService.payLessor(orderRenter,orderHirer);
+        orderBlockChainService.lessorDeliver(orderHirer,hirerDeliver);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
 
@@ -972,6 +975,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBlockChainService.rentalRefuse(orderId,uid);
         }
         return new JsonResult(SystemCode.SUCCESS, true);
     }
@@ -1227,6 +1231,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBlockChainService.fundSupplier(orderFunder,orderSupplier,null);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
             return new JsonResult(OrderResultEnum.ORDER_NO_EXIST,false);
@@ -1260,8 +1265,8 @@ public class OrderServiceImpl implements OrderService {
         ProductSupplier product = products.get(0);
         // 拿到供应商的供应价格
         BigDecimal supplyPrice = product.getSupplyPrice();
-        BigDecimal downPayment = orderRenter.getDownPayment();
-        return supplyPrice.subtract(downPayment);
+        BigDecimal accidentBenefit = orderRenter.getAccidentBenefit();
+        return supplyPrice.subtract(accidentBenefit);
     }
 
     /**
@@ -1273,12 +1278,24 @@ public class OrderServiceImpl implements OrderService {
      * @return 保证金金额
      */
     private BigDecimal getDeposit(Long orderId, Long supplierId) {
-        BigDecimal financingAmount = getFinancingAmount(orderId, supplierId);
-        BigDecimal benefit = new BigDecimal("0.15");
-        if (financingAmount != null) {
-            return financingAmount.multiply(benefit);
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if (!orderRenterOptional.isPresent()) {
+            return null;
         }
-        return null;
+        OrderRenter orderRenter = orderRenterOptional.get();
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        query.setSupplierId(supplierId);
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if (products == null || products.size() == 0) {
+            return null;
+        }
+        ProductSupplier product = products.get(0);
+        BigDecimal benefit = new BigDecimal("0.15");
+        return product.getSupplyPrice().multiply(benefit);
     }
 
     /**
@@ -1309,6 +1326,8 @@ public class OrderServiceImpl implements OrderService {
         OrderRenter orderRenter = orderRenterSlave.findOne(orderHirer.getOrderId());
         if(orderRenter != null){
             dto.setConsumerOrderTime(orderRenter.getCtime());
+            dto.setReceiverName(orderRenter.getReceiverName());
+            dto.setReceiverPhone(orderRenter.getReceiverPhone());
         }
         return dto;
     }
@@ -1341,11 +1360,14 @@ public class OrderServiceImpl implements OrderService {
         orderFunderDTO.setSupplierName(orderBaseService.getSupplierName(orderFunder.getSupplierId()));
         orderFunderDTO.setConsumerBedDebtTimes(0);
         orderFunderDTO.setUid(orderFunder.getFunderId());
+
         Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderFunder.getOrderId());
         if(orderRenterOptional.isPresent()){
             OrderRenter orderRenter = orderRenterOptional.get();
             orderFunderDTO.setConsumerAddress(orderRenter.getUserAddress());
             orderFunderDTO.setConsumerOrderTime(orderRenter.getCtime());
+            orderFunderDTO.setReceiverName(orderRenter.getReceiverName());
+            orderFunderDTO.setReceiverPhone(orderRenter.getReceiverPhone());
         }
         return orderFunderDTO;
     }
@@ -1380,6 +1402,8 @@ public class OrderServiceImpl implements OrderService {
             orderSupplierDTO.setRentDeadlineDay(orderRenter.getNumberOfPayments() * 30);
             orderSupplierDTO.setConsumerUid(orderRenter.getUid());
             orderSupplierDTO.setConsumerOrderTime(orderRenter.getCtime());
+            orderSupplierDTO.setReceiverName(orderRenter.getReceiverName());
+            orderSupplierDTO.setReceiverPhone(orderRenter.getReceiverPhone());
         }
         // todo 查询用户坏账次数
         orderSupplierDTO.setConsumerBedDebtTimes(1);

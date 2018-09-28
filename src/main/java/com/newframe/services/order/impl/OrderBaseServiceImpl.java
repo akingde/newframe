@@ -17,11 +17,13 @@ import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
+import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 /**
  * @author kfm
@@ -203,5 +205,14 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 orderFunder.getFinancingAmount(),
                 orderFunder.getNumberOfPeriods());
         return true;
+    }
+
+    @Override
+    public BigDecimal getRentPrice(BigDecimal price,BigDecimal rate, Integer numberOfPayment){
+        Double price1 = price.doubleValue();
+        Double rate1 = rate.doubleValue();
+        Double rentPrice = -Finance.pmt(rate1/12,numberOfPayment,price1);
+        DecimalFormat format = new DecimalFormat("#.##");
+        return BigDecimal.valueOf(Double.valueOf(format.format(rentPrice)));
     }
 }

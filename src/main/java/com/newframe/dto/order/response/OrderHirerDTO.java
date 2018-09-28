@@ -39,4 +39,6 @@ public class OrderHirerDTO {
     private Integer consumerOrderTime;
     private Integer consumerBedDebtTimes;
     private Integer platformCreditScore;
+    private String receiverPhone;
+    private String receiverName;
 }

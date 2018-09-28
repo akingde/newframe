@@ -46,5 +46,7 @@ public class OrderSupplierDTO {
     private Integer orderTime;
     private Integer consumerOrderTime;
     private Integer platformCreditScore;
+    private String receiverPhone;
+    private String receiverName;
 
 }
