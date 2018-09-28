@@ -5,7 +5,7 @@ package com.newframe.enums.order;
  * @date 2018.08.30 20:44
  */
 
-public enum OrderStatusEnum {
+public enum PayStatusEnum {
     NORMAL(1, "正常"),
     OVERDUE(2, "逾期")
     ;
@@ -13,7 +13,7 @@ public enum OrderStatusEnum {
     private Integer code;
     private String message;
 
-    private OrderStatusEnum(Integer code, String message){
+    private PayStatusEnum(Integer code, String message){
         this.code = code;
         this.message = message;
     }
@@ -47,8 +47,8 @@ public enum OrderStatusEnum {
     }
 
 
-    public static OrderStatusEnum getEnum(Integer vCodeType) {
-        for (OrderStatusEnum orderStatusEnum: OrderStatusEnum.values()) {
+    public static PayStatusEnum getEnum(Integer vCodeType) {
+        for (PayStatusEnum orderStatusEnum: PayStatusEnum.values()) {
             if (orderStatusEnum.getCode().equals(vCodeType)) {
                 return orderStatusEnum;
             }

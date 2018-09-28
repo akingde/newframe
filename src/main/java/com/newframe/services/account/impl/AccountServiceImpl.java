@@ -11,7 +11,7 @@ import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
-import com.newframe.enums.order.OrderStatusEnum;
+import com.newframe.enums.order.PayStatusEnum;
 import com.newframe.repositories.dataMaster.account.*;
 import com.newframe.repositories.dataQuery.account.*;
 import com.newframe.repositories.dataSlave.account.*;
@@ -33,7 +33,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author:zww 31个接口
@@ -1443,14 +1442,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public List<AccountRenterRentDetail> listAccountRenterRentDetail(Long uid, OrderStatusEnum overdue) {
+    public List<AccountRenterRentDetail> listAccountRenterRentDetail(Long uid, PayStatusEnum overdue) {
         if (null == uid || null == overdue) {
             return Collections.EMPTY_LIST;
         }
 
         AccountRenterRentDetailQuery query = new AccountRenterRentDetailQuery();
         query.setUid(uid);
-        query.setOrderStatus(overdue.getCode());
+        query.setPayStatus(overdue.getCode());
         List<AccountRenterRentDetail> list = accountRenterRentDetailSlave.findAll(query);
         return CollectionUtils.isNotEmpty(list) ? list : Collections.EMPTY_LIST;
     }
@@ -1463,14 +1462,14 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     @Override
-    public List<AccountRenterFinancing> listAccountRenterFinancing(Long uid, OrderStatusEnum overdue) {
+    public List<AccountRenterFinancing> listAccountRenterFinancing(Long uid, PayStatusEnum overdue) {
         if (null == uid || null == overdue) {
             return Collections.EMPTY_LIST;
         }
 
         AccountRenterFinancingQuery query = new AccountRenterFinancingQuery();
         query.setUid(uid);
-        query.setOrderStatus(overdue.getCode());
+        query.setRepaymentStatus(overdue.getCode());
         List<AccountRenterFinancing> list = accountRenterFinancingSlave.findAll(query);
         return CollectionUtils.isNotEmpty(list) ? list : Collections.EMPTY_LIST;
     }

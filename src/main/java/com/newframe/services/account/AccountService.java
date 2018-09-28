@@ -5,7 +5,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.RentMachineStatistics;
 import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.entity.account.*;
-import com.newframe.enums.order.OrderStatusEnum;
+import com.newframe.enums.order.PayStatusEnum;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
@@ -549,7 +549,7 @@ public interface AccountService {
      * @param overdue
      * @return
      */
-    List<AccountRenterRentDetail> listAccountRenterRentDetail(Long uid, OrderStatusEnum overdue);
+    List<AccountRenterRentDetail> listAccountRenterRentDetail(Long uid, PayStatusEnum overdue);
 
     /**
      * 根据用户的uid和订单的状态，去查询租赁商融资购机逾期的订单
@@ -557,7 +557,7 @@ public interface AccountService {
      * @param overdue
      * @return
      */
-    List<AccountRenterFinancing> listAccountRenterFinancing(Long uid, OrderStatusEnum overdue);
+    List<AccountRenterFinancing> listAccountRenterFinancing(Long uid, PayStatusEnum overdue);
 
     /**
      * 批量保存逾期的订单

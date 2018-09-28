@@ -12,8 +12,7 @@ import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.account.AccountTypeEnum;
 import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.enums.account.OrderTypeEnum;
-import com.newframe.enums.order.OrderStatusEnum;
-import com.newframe.enums.order.OrderType;
+import com.newframe.enums.order.PayStatusEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.userbase.UserAddressService;
@@ -34,7 +33,6 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -344,9 +342,9 @@ public class AccountManageServiceImpl implements AccountManageService {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
         //用uid和逾期状态去查租机的订单
-        List<AccountRenterRentDetail> accountRenterRentDetailList = accountService.listAccountRenterRentDetail(uid, OrderStatusEnum.OVERDUE);
+        List<AccountRenterRentDetail> accountRenterRentDetailList = accountService.listAccountRenterRentDetail(uid, PayStatusEnum.OVERDUE);
         //用uid和逾期状态去查融资订单的订单
-        List<AccountRenterFinancing> accountRenterFinancingList = accountService.listAccountRenterFinancing(uid,OrderStatusEnum.OVERDUE);
+        List<AccountRenterFinancing> accountRenterFinancingList = accountService.listAccountRenterFinancing(uid, PayStatusEnum.OVERDUE);
 
         //保存租机逾期的订单
         if (CollectionUtils.isNotEmpty(accountRenterRentDetailList)){
