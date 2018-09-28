@@ -58,8 +58,11 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         if(StringUtils.isNotEmpty(productSupplier.getModel())){
             updateFields.add("model");
         }
-        if(StringUtils.isNotEmpty(productSupplier.getSpecification())){
-            updateFields.add("specification");
+        if(productSupplier.getRam() != null){
+            updateFields.add("ram");
+        }
+        if(productSupplier.getRom() != null){
+            updateFields.add("rom");
         }
         if(BigDecimalUtils.compareTo(productSupplier.getGuidePrice())){
             updateFields.add("guidePrice");

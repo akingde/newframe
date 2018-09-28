@@ -17,7 +17,8 @@ public class ProductHirerDTO {
     private String brand;
     private String model;
     private String color;
-    private String specification;
+    private Integer ram;
+    private Integer rom;
     private BigDecimal guidePrice;
     private BigDecimal supplyPrice;
     private BigDecimal brokenScreenRisks;
@@ -35,7 +36,8 @@ public class ProductHirerDTO {
         this.brand = productLessor.getBrand();
         this.model = productLessor.getModel();
         this.color = productLessor.getColor();
-        this.specification = productLessor.getSpecification();
+        this.ram = productLessor.getRam();
+        this.rom = productLessor.getRom();
         this.guidePrice = productLessor.getGuidePrice();
         this.supplyPrice = productLessor.getSupplyPrice();
         this.brokenScreenRisks = productLessor.getBrokenScreenRisks();

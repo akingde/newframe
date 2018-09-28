@@ -317,7 +317,8 @@ public class BlockChainServiceImpl implements BlockChainService {
                 .setPaymentMethod(rentalApply.getPaymentMethod())
                 .setRentalAmount(rentalApply.getRentalAmount().floatValue())
                 .setRentalTerm(rentalApply.getRentalTerm())
-                .setApplyTime(rentalApply.getApplyTime());
+                .setApplyTime(rentalApply.getApplyTime())
+                .setLesseeOrder(setLesseeOrder(rentalApply));
         EzTransfer.EzAction.Builder action = EzTransfer.EzAction.newBuilder()
                 .setRentalApply(builder)
                 .setTy(EzTransfer.EzActionType.AT_RENTAL_APPLY);

@@ -52,12 +52,15 @@ public interface OrderService {
      * @param orderId         订单id
      * @param lessorId        租赁商选择的出租方id
      * @param tenancyTerm     租机期限
-     * @param downPayment     首付租金
+     * @param monthlyPayment     首付租金
      * @param accidentBenefit 意外保险
      * @param patternPayment  支付方式
+     * @param fullRepayAmount 全款支付的金额
      * @return 处理结果
      */
-    JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm, BigDecimal downPayment, BigDecimal accidentBenefit, Integer patternPayment) throws AccountOperationException;
+    JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
+                          BigDecimal monthlyPayment, BigDecimal accidentBenefit, Integer patternPayment,
+                          BigDecimal fullRepayAmount) throws AccountOperationException;
 
     /**
      * 租赁商取消订单

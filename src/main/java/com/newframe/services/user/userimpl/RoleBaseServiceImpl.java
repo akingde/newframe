@@ -16,6 +16,7 @@ import com.newframe.services.user.RoleService;
 import com.newframe.services.user.RoleBaseService;
 import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.*;
+import com.newframe.utils.BigDecimalUtils;
 import com.newframe.utils.FileUtils;
 import com.newframe.utils.IdNumberUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -448,6 +449,30 @@ public class RoleBaseServiceImpl implements RoleBaseService {
     public OperationResult<Boolean> addProduct(Long uid, Integer roleId, ProductModifyDTO condition) {
         if (roleServiceMap.get(roleId) == null) {
             return new OperationResult(RequestResultEnum.PARAMETER_LOSS, false);
+        }
+        if(StringUtils.isEmpty(condition.getBrand())){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(StringUtils.isEmpty(condition.getModel())){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(StringUtils.isEmpty(condition.getColor())){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(condition.getRam() == null || condition.getRam() <= 0){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(condition.getRom() == null || condition.getRom() <= 0){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(!BigDecimalUtils.compareTo(condition.getGuidePrice())){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(!BigDecimalUtils.compareTo(condition.getSupplyPrice())){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+        }
+        if(condition.getSurplusStock() == null && condition.getSurplusStock() <= 0){
+            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
         }
         return roleServiceMap.get(roleId).addProduct(uid, condition);
     }

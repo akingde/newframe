@@ -53,11 +53,18 @@ public class ProductSupplier {
     private String model;
 
     /**
-     * 规格，容量
-     * specification
+     * 内存
+     * ram
      */
-    @Column(name = "specification")
-    private String specification;
+    @Column(name = "ram")
+    private Integer ram;
+
+    /**
+     * 机身容量
+     * rom
+     */
+    @Column(name = "rom")
+    private Integer rom;
 
     /**
      * 颜色
@@ -123,7 +130,8 @@ public class ProductSupplier {
         this.supplierId = uid;
         this.brand = condition.getBrand();
         this.model = condition.getModel();
-        this.specification = condition.getSpecification();
+        this.ram = condition.getRam();
+        this.rom = condition.getRom();
         this.color = condition.getColor();
         this.guidePrice = BigDecimalUtils.compareTo(condition.getGuidePrice()) ? condition.getGuidePrice() : BigDecimal.ZERO;
         this.supplyPrice = BigDecimalUtils.compareTo(condition.getSupplyPrice()) ? condition.getSupplyPrice() : BigDecimal.ZERO;

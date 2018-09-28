@@ -21,8 +21,11 @@ public class OrderProductLessorQuery extends BaseQuery {
     private String productBrand;
     @QBindAttrField(fieldName = "model",where = Where.equal)
     private String productName;
-    @QBindAttrField(fieldName = "specification",where = Where.equal)
+    @QBindAttrField(fieldName = "rom",where = Where.equal)
     private Integer productStorage;
+
+    @QBindAttrField(fieldName = "ram",where = Where.equal)
+    private Integer productRandomMemory;
 
     @QBindAttrField(fieldName = "color",where = Where.equal)
     private String productColor;

@@ -75,4 +75,10 @@ public class MerchantOrderDTO {
 
     @NotNull(message = "收款账户不能为空")
     private String gatheringAccount;
+
+    @NotNull(message = "收货人手机号不能为空")
+    private String receiverPhone;
+
+    @NotNull(message = "收货人姓名不能为空")
+    private String receiverName;
 }
