@@ -8,6 +8,7 @@ import com.newframe.blockchain.entity.*;
 import com.google.protobuf.ByteString;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.utils.SnowFlakeUtil;
+import com.newframe.utils.log.GwsLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,7 @@ public class BlockChainRepository {
         RequestBean requestBean = new RequestBean<>(bean, BlankChainUrlConst.SEND_TRANSACTION);
         String requestBeanStr = JSON.toJSONString(requestBean);
         ResponseBean<String> responseBean = okHttpService.sendBlockChain(blockChainUrl, requestBeanStr);
+        GwsLogger.getLogger().info("上链hash================="+responseBean);
         ResponseChain responseChain = new ResponseChain();
         if(responseBean == null){
             responseChain.setSuccess(false);
