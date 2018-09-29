@@ -5,6 +5,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.RentMachineStatistics;
 import com.newframe.dto.account.RenterFinanceStatistics;
 import com.newframe.entity.account.*;
+import com.newframe.enums.account.WithholdEnum;
 import com.newframe.enums.order.PayStatusEnum;
 import org.springframework.data.domain.Page;
 
@@ -487,6 +488,7 @@ public interface AccountService {
      */
     List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer firstDayOfMonth, Integer lastDayOfMonth);
 
+    List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer lastDayOfMonth, WithholdEnum withholdEnum);
     /**
      * 保存AccountRenterRentMachine操作
      * @param machine
@@ -594,4 +596,11 @@ public interface AccountService {
      * @return
      */
     AccountRenterOverdueAsset updateAccountRenterOverdueAsset(AccountRenterOverdueAsset overdueAsset);
+
+    /**
+     *
+     * @param uid
+     * @return
+     */
+    List<AccountRenterRent> listAccountRenterRent(Long uid);
 }
