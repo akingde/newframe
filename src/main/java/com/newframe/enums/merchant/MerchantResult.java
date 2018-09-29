@@ -11,6 +11,7 @@ public enum MerchantResult implements CodeStatus {
     RENTER_IS_NOT_EXIST("400102","租赁商不存在"),
     VALID_EXCEPTION("400101","参数校验错误"),
     MERCHANT_ORDER_EXIST("400103","订单已存在"),
+    MERCHANT_ORDER_NOT_EXIST("400104","订单不存在"),
     ;
     String code;
     String message;
