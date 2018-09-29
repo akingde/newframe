@@ -58,6 +58,11 @@ public class AccountRenterRepay {
     private Integer orderType;
 
     /**
+     * 每期保证金
+     */
+    private BigDecimal cashDeposit;
+
+    /**
      * ctime
      */
     private Integer ctime;

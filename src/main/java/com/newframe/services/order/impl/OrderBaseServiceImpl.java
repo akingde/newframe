@@ -193,7 +193,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 monthPayment,
                 BigDecimal.ZERO,
                 orderFunder.getFinancingAmount().subtract(monthPayment),
-                interest, new BigDecimal(0));
+                interest, new BigDecimal(0), );
 
         accountService.saveAccountFundingFinanceAssetDetail(
                 orderFunder.getFunderId(),
