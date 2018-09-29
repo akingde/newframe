@@ -211,7 +211,7 @@ public class TestJpaController extends BaseController {
                                                  BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest,BigDecimal accidentInsurance) {
 
         OperationResult<Boolean> result = accountManageServicel.saveAccountRenterFinancing(uid, orderId, associatedOrderId, financingAmount, financingMaturity,
-                financingPrincipalInterest, financingInterest, settlePrincipalInterest, settleInterest, unsettlePrincipalInterest, unsettleInterest, accidentInsurance, );
+                financingPrincipalInterest, financingInterest, settlePrincipalInterest, settleInterest, unsettlePrincipalInterest, unsettleInterest, accidentInsurance, BigDecimal.ZERO);
 
         if (result.getSucc()) {
             return success(result.getEntity());
