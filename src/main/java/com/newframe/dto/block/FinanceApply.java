@@ -14,7 +14,7 @@ public class FinanceApply extends LesseeOrder {
     /**
      * 订单id
      */
-    private String orderNum;
+    private Long orderNum;
     /**
      * 租赁商uid
      */

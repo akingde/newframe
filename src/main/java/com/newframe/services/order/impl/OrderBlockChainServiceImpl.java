@@ -31,12 +31,12 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         financeApply.setFinancingTerm(orderFunder.getNumberOfPeriods());
         financeApply.setFunderUid(orderFunder.getFunderId());
         financeApply.setMerchantUid(orderRenter.getRenterId());
-        financeApply.setOrderNum(orderRenter.getPartnerOrderId());
+        financeApply.setOrderNum(orderRenter.getOrderId());
         financeApply.setSupplierUid(orderFunder.getSupplierId());
         financeApply.setIdNum(orderRenter.getUserIdNumber());
         financeApply.setLeaseTerm(orderRenter.getNumberOfPayments());
         financeApply.setProdAmount(1);
-        financeApply.setOrderId(orderRenter.getOrderId());
+        financeApply.setOrderId(orderRenter.getPartnerOrderId());
         financeApply.setOrderTime(orderRenter.getCtime());
         financeApply.setPhoneNum(orderRenter.getUserMobile());
         financeApply.setProdBrand(orderRenter.getProductBrand());
@@ -99,7 +99,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         rentalApply.setApplyTime(orderHirer.getCtime());
         rentalApply.setLessorUid(orderHirer.getLessorId());
         rentalApply.setMerchantUid(orderRenter.getRenterId());
-        rentalApply.setOrderNum(orderRenter.getPartnerOrderId());
+        rentalApply.setOrderNum(orderRenter.getOrderId());
         if(orderHirer.getPatternPayment().equals(EzTransfer.EzPaymentMethod.PM_LUMP_SUM.getNumber())){
             rentalApply.setPaymentMethod(EzTransfer.EzPaymentMethod.PM_LUMP_SUM);
         }
@@ -108,7 +108,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         }
         rentalApply.setRentalAmount(orderHirer.getOrderAmount());
         rentalApply.setRentalTerm(orderHirer.getNumberOfPeriods());
-        rentalApply.setOrderId(orderHirer.getOrderId());
+        rentalApply.setOrderId(orderHirer.getPartnerOrderId());
         rentalApply.setOrderTime(orderRenter.getCtime());
         rentalApply.setPhoneNum(orderRenter.getUserMobile());
         rentalApply.setRealName(orderRenter.getUserRealname());
