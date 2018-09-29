@@ -151,9 +151,10 @@ public interface AccountManageService {
      * @param unsettlePrincipalInterest 待偿还的本金
      * @param unsettleInterest 待偿还的利息
      * @param accidentInsurance 意外保险金
+     * @param cashDeposit
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance);
+    OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance, BigDecimal cashDeposit);
 
     /**
      * 生成还款计划表
@@ -163,9 +164,10 @@ public interface AccountManageService {
      * @param accidentInsurance
      * @param totalAccount 总金额
      * @param orderTypeEnum
+     * @param cashDeposit
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum);
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum, BigDecimal cashDeposit);
 
     /**
      * 操作账户的接口

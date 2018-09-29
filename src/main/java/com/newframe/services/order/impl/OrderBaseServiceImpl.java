@@ -181,6 +181,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         BigDecimal interest = BigDecimal.ZERO;
         BigDecimal monthPayment = orderFunder.getFinancingAmount()
                 .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+        BigDecimal monthlyDeposit = orderFunder.getDeposit().divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
         // 首付已经还清，所以待还和已还要除去首付
         accountManageService.saveAccountRenterFinancing(
                 orderRenter.getRenterId(),
@@ -193,7 +194,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 monthPayment,
                 BigDecimal.ZERO,
                 orderFunder.getFinancingAmount().subtract(monthPayment),
-                interest, new BigDecimal(0));
+                interest, new BigDecimal(0), monthlyDeposit);
 
         accountService.saveAccountFundingFinanceAssetDetail(
                 orderFunder.getFunderId(),

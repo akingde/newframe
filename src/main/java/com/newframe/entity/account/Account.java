@@ -39,7 +39,7 @@ public class Account {
      */
     private BigDecimal marginBalance;
     /**
-     * 保证金垫付金额
+     * 本月保证金返还
      */
     private BigDecimal marginAdvances;
 
@@ -77,5 +77,11 @@ public class Account {
         this.dueAmount = BigDecimal.valueOf(0);
         this.accountStatus = 1;
         this.currentMonthPayment=BigDecimal.valueOf(0);
+    }
+
+    public void setAccount(BigDecimal dueAmount,BigDecimal currentMonthPayment,BigDecimal marginAdvances){
+        this.dueAmount=dueAmount;
+        this.marginAdvances=marginAdvances;
+        this.currentMonthPayment=currentMonthPayment;
     }
 }

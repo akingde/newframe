@@ -3,7 +3,7 @@ package com.newframe.controllers.api;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.merchant.order.MerchantOrderDTO;
+import com.newframe.dto.merchant.order.*;
 import com.newframe.services.merchant.order.MerchantOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +23,45 @@ import java.util.Optional;
 public class MerchantOrderController extends BaseController {
     @Autowired
     MerchantOrderService merchantOrderService;
-    @RequestMapping("pushOrder")
+    @RequestMapping("push")
     public JsonResult pushOrder(@Valid @RequestBody MerchantOrderDTO merchantOrder){
         OperationResult<Boolean> result = merchantOrderService.pushOrder(merchantOrder);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return new JsonResult(result.getErrorCode(),false);
+    }
+
+    @RequestMapping("/get")
+    public JsonResult getOrderInfo(@Valid @RequestBody MerchantInfoDTO merchantInfo){
+        OperationResult<OrderInfoDTO> result = merchantOrderService.getOrderInfo(merchantInfo);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return new JsonResult(result.getErrorCode(),false);
+    }
+
+    @RequestMapping("/relet")
+    public JsonResult relet(@Valid @RequestBody ReletDTO reletDTO){
+        OperationResult<Boolean> result = merchantOrderService.relet(reletDTO);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return new JsonResult(result.getErrorCode(),false);
+    }
+
+    @RequestMapping("/address")
+    public JsonResult getAddress(@Valid @RequestBody MerchantInfoDTO merchantInfo){
+        OperationResult<AddressDTO> result = merchantOrderService.getAddress(merchantInfo);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return new JsonResult(result.getErrorCode(),false);
+    }
+
+    @RequestMapping("/repayNotice")
+    public JsonResult repayNotice(@Valid @RequestBody RepayNoticeDTO repayNotice){
+        OperationResult<String> result = merchantOrderService.repayNotice(repayNotice);
         if(result.getSucc()){
             return success(result.getEntity());
         }

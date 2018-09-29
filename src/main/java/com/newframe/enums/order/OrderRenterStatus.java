@@ -57,9 +57,11 @@ public enum OrderRenterStatus {
     ;
     private Integer type;
     private Integer code;
-    private OrderRenterStatus(Integer code,Integer type){
+
+    OrderRenterStatus(Integer code,Integer type){
         this.code = code;
         this.type = type;
+
     }
 
     public Integer getCode() {
