@@ -282,16 +282,18 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
 
         AccountRenterRentMachine accountRenterRentMachine = accountService.getAccountRenterRentMachine(uid);
+        AccountRenterRentMachine machine = new AccountRenterRentMachine();
         //如果没有数据，就初始化一条数据
         if (null == accountRenterRentMachine) {
-            AccountRenterRentMachine machine = new AccountRenterRentMachine();
             machine.setAccountRenterRentMachine(uid, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
             accountService.saveAccountRenterRentMachine(machine);
         }
         //如果不为空，则执行更新的操作，计算
         RentMachineStatistics rentMachineStatistics = accountService.getRentMachineStatistics(uid);
+        if (null == rentMachineStatistics){
+            return new OperationResult<>(machine);
+        }
         accountRenterRentMachine.setAccountRenterRentMachine(uid, rentMachineStatistics);
-
         //将最新的结果更新到数据库
         accountService.updateAccountRenterRentMachine(accountRenterRentMachine);
 
