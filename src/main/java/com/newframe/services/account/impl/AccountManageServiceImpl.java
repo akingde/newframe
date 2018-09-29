@@ -483,7 +483,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterRentDetail.setAccountRenterRentDetail(uid,orderId,associatedOrderId,productBrand,productModel,productColour,productStorage,productMemory,totalRentAccount,monthNumber,payedAccount,unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
         OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, payedAccount, unpayedAccount, residueTime, collectMoney);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber,accidentInsurance, totalRentAccount, OrderTypeEnum.RENT);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber,accidentInsurance, totalRentAccount, OrderTypeEnum.RENT, BigDecimal.ZERO);
         if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -507,10 +507,13 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param unsettlePrincipalInterest
      * @param unsettleInterest
      * @param accidentInsurance
+     * @param cashDeposit
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance) {
+    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest,
+                                                               BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest,
+                                                               BigDecimal unsettleInterest, BigDecimal accidentInsurance, BigDecimal cashDeposit) {
         if (null == uid || null == orderId || null == associatedOrderId || null == financingAmount || null == financingMaturity||
                 null == financingPrincipalInterest || null == financingInterest || null == settlePrincipalInterest ||  null == settleInterest || null == unsettlePrincipalInterest || null == unsettleInterest){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
@@ -519,7 +522,7 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterFinancing.setAccountRenterFinancing(uid,orderId,associatedOrderId,financingAmount,financingMaturity,
                 financingPrincipalInterest,financingInterest,settlePrincipalInterest,settleInterest,unsettlePrincipalInterest,unsettleInterest);
         AccountRenterFinancing result = accountService.saveAccountRenterFinancing(accountRenterFinancing);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity,accidentInsurance, financingAmount, OrderTypeEnum.FINANCING);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity,accidentInsurance, financingAmount, OrderTypeEnum.FINANCING, cashDeposit);
         if (null == result || null == result || !renterRepay.getEntity()){
             return new OperationResult<>(false);
         }
@@ -535,10 +538,11 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @param accidentInsurance
      * @param totalAccount  总金额
      * @param orderTypeEnum
+     * @param cashDeposit
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum) {
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum, BigDecimal cashDeposit) {
         if (null == orderId || null == uid || null == totalAccount || null == totalPeriods){
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
@@ -555,6 +559,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepay.setWithhold(1);
             accountRenterRepay.setOrderStatus(1);
             accountRenterRepay.setOrderType(orderTypeEnum.getCode());
+            accountRenterRepay.setCashDeposit(cashDeposit);
             Long uixTime = LocalDate.now().plus(i-1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
             accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
             accountRenterRepays.add(accountRenterRepay);
