@@ -12,6 +12,7 @@ import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.account.AccountTypeEnum;
 import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.enums.account.OrderTypeEnum;
+import com.newframe.enums.account.WithholdEnum;
 import com.newframe.enums.order.PayStatusEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
@@ -131,6 +132,26 @@ public class AccountManageServiceImpl implements AccountManageService {
         }
 
         Account accountRenter = accountService.getAccountRenter(uid);
+
+        List<AccountRenterRent> accountRenterRents = accountService.listAccountRenterRent(uid);
+        if (CollectionUtils.isEmpty(accountRenterRents)){
+            return new OperationResult<>(accountRenter);
+        }
+        //计算待收金额
+        BigDecimal dueAmount = accountRenterRents.stream().map(AccountRenterRent::getDueInAccount).reduce(BigDecimal.ZERO,BigDecimal::add);
+
+        //获取本月最后一天的23：59：59
+        Integer lastDayOfMonth = TimeUtils.getLastDayOfMonth();
+        List<AccountRenterRepay> accountRenterRepays = accountService.listAccountRenterRepay(uid,lastDayOfMonth, WithholdEnum.NO);
+        if (CollectionUtils.isEmpty(accountRenterRepays)){
+            return new OperationResult<>(accountRenter);
+        }
+        //计算本月应收
+        BigDecimal currentMonthPayment = accountRenterRepays.stream().map(AccountRenterRepay::getOrderAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+        //计算本月保证金返还
+        BigDecimal marginAdvances = accountRenterRepays.stream().map(AccountRenterRepay::getCashDeposit).reduce(BigDecimal.ZERO,BigDecimal::add);
+        accountRenter.setAccount(dueAmount,currentMonthPayment,marginAdvances);
+        accountService.updateAccount(accountRenter);
 
         return new OperationResult<>(accountRenter);
     }

@@ -11,6 +11,7 @@ import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
+import com.newframe.enums.account.WithholdEnum;
 import com.newframe.enums.order.PayStatusEnum;
 import com.newframe.repositories.dataMaster.account.*;
 import com.newframe.repositories.dataQuery.account.*;
@@ -1258,6 +1259,22 @@ public class AccountServiceImpl implements AccountService {
         return CollectionUtils.isEmpty(renterRepays) ? Collections.EMPTY_LIST : renterRepays;
     }
 
+    @Override
+    public List<AccountRenterRepay> listAccountRenterRepay(Long uid, Integer lastDayOfMonth, WithholdEnum withholdEnum) {
+        if (null == uid || null == lastDayOfMonth || null == withholdEnum){
+            return Collections.EMPTY_LIST;
+        }
+
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setUid(uid);
+        query.setLastDayOfMonth(lastDayOfMonth);
+        query.setWithhold(withholdEnum.getCode());
+
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+
+        return CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays;
+    }
+
     /**
      * 保存AccountRenterRentMachine操作
      *
@@ -1629,6 +1646,22 @@ public class AccountServiceImpl implements AccountService {
         return overdueAsset;
     }
 
+    /**
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<AccountRenterRent> listAccountRenterRent(Long uid) {
+        if (null == uid){
+            return Collections.EMPTY_LIST;
+        }
+
+        AccountRenterRentQuery query = new AccountRenterRentQuery();
+        query.setUid(uid);
+        List<AccountRenterRent> renterRents = accountRenterRentSlave.findAll(query);
+        return CollectionUtils.isEmpty(renterRents) ? Collections.EMPTY_LIST : renterRents;
+    }
+
 
     /**
      * 根据UID查询到账户
@@ -1670,6 +1703,15 @@ public class AccountServiceImpl implements AccountService {
         if (null != acc.getMarginBalance()) {
             updateFields.add("marginBalance");
         }
+        if (null != acc.getDueAmount()){
+            updateFields.add("dueAmount");
+        };
+        if (null != acc.getMarginAdvances()){
+            updateFields.add("marginAdvances");
+        };
+        if (null != acc.getCurrentMonthPayment()){
+            updateFields.add("currentMonthPayment");
+        };
 
         String[] array = new String[updateFields.size()];
         updateFields.toArray(array);
