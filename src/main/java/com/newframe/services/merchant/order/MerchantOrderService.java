@@ -31,4 +31,11 @@ public interface MerchantOrderService {
      * @return 操作结果
      */
     OperationResult<Boolean> relet(ReletDTO reletDTO);
+
+    /**
+     * 续租
+     * @param merchantInfo 商家信息
+     * @return 操作结果
+     */
+    OperationResult<String> getAddress(MerchantInfoDTO merchantInfo);
 }
