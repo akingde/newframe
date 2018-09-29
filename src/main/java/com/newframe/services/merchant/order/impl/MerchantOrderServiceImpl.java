@@ -8,6 +8,7 @@ import com.newframe.dto.merchant.order.ReletDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
+import com.newframe.entity.user.UserAddress;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.merchant.MerchantResult;
@@ -20,6 +21,7 @@ import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderRenterSlave;
 import com.newframe.services.merchant.order.MerchantOrderBaseService;
 import com.newframe.services.merchant.order.MerchantOrderService;
+import com.newframe.services.userbase.UserAddressService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.springframework.beans.BeanUtils;
@@ -56,6 +58,8 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
 
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
+    @Autowired
+    private UserAddressService userAddressService;
 
     @Autowired
     IdGlobalGenerator idGlobalGenerator;
@@ -128,4 +132,26 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
     public OperationResult<Boolean> relet(ReletDTO reletDTO) {
         return null;
     }
+
+    @Override
+    public OperationResult<String> getAddress(MerchantInfoDTO merchantInfo) {
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setPartnerId(merchantInfo.getPartnerId());
+        query.setPartnerOrderId(merchantInfo.getPartnerOrderId());
+        OrderRenter orderRenter = orderRenterSlave.findOne(query);
+        if(orderRenter == null){
+            return new OperationResult<>(MerchantResult.MERCHANT_ORDER_NOT_EXIST);
+        }
+        UserAddress userAddress = userAddressService.findDefaultAddress(0L);
+        if(userAddress != null){
+            String address = (userAddress.getProvinceName() == null ? "":(userAddress.getProvinceName()+" "))
+                    + (userAddress.getCityName() == null ? "":(userAddress.getCityName() + " "))
+                    + (userAddress.getCountyName() == null ? "":(userAddress.getCountyName() +" "))
+                    + (userAddress.getCountyName() == null ? "":userAddress.getConsigneeName());
+            return new OperationResult<>(SystemCode.SUCCESS,address);
+        }
+        return null;
+    }
+
+
 }

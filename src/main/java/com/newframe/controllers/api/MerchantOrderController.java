@@ -52,4 +52,12 @@ public class MerchantOrderController extends BaseController {
         }
         return new JsonResult(result.getErrorCode(),false);
     }
+
+    public JsonResult getAddress(@Valid @RequestBody MerchantInfoDTO merchantInfo){
+        OperationResult<String> result = merchantOrderService.getAddress(merchantInfo);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return new JsonResult(result.getErrorCode(),false);
+    }
 }
