@@ -350,7 +350,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             overdueAsset.setAccountRenterOverdueAsset(uid, BigDecimal.ZERO, 0, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         //计算逾期金额合计
-        BigDecimal totalOverdueAccount = renterOverdueDetails.stream().map(AccountRenterOverdueDetail::getInvestAccount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalOverdueAccount = renterOverdueDetails.stream().map(AccountRenterOverdueDetail::getUnpayedAccount).reduce(BigDecimal.ZERO, BigDecimal::add);
         //计算逾期笔数
         Integer overdueNumber = renterOverdueDetails.size();
         //计算逾期率
