@@ -758,7 +758,7 @@ public class ApiUserController extends BaseController {
      * @author WangBin
      * @date 2018/8/9 17:34
      */
-    @PostMapping("modiyAddress")
+    @PostMapping("modifyAddress")
     public JsonResult modifyAddress(Long uid, AddressDTO addressDTO) {
 //        Long uid = RequestUser.getCurrentUid();
         if (uid == null){

@@ -6,6 +6,7 @@ import com.newframe.blockchain.util.KeyUtil;
 import com.newframe.enums.user.UserSMSEnum;
 import com.newframe.services.after.AfterService;
 import com.newframe.services.block.BlockChainService;
+import com.newframe.services.test.TestService;
 import com.newframe.services.user.SessionService;
 import com.newframe.services.user.UserService;
 import com.newframe.services.userbase.ConfigRateService;
@@ -13,6 +14,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * @author WangBin
@@ -27,8 +31,6 @@ public class UserTest extends NewFrameApplicationTests {
     private BlockChainService blockChainService;
     @Autowired
     private SessionService sessionService;
-    @Autowired
-    private ConfigRateService configRateService;
 
     @Test
     public void addRechargeRecord(){
@@ -122,5 +124,15 @@ public class UserTest extends NewFrameApplicationTests {
         String prikey = KeyUtil.privateKey();
         System.out.println(prikey);
         System.out.println(KeyUtil.publicKey(prikey));
+        // 获取获取下个月1号的时间 时间戳
+        Long now = LocalDateTime.now()
+                .withSecond(0)
+                .withMinute(0)
+                .withHour(0)
+                .plusMonths(1)
+                .with(TemporalAdjusters.firstDayOfMonth())
+                .toInstant(ZoneOffset.of("+8"))
+                .getEpochSecond();
+        System.out.println(now);
     }
 }
