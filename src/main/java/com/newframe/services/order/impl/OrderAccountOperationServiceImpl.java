@@ -186,6 +186,22 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                     AccountTypeEnum.USEABLEASSETS,
                     productPrice,
                     orderRenter.getDownPayment());
+            // 按月返还用户保证金
+            BigDecimal monthlyDeposit = orderFunder.getDeposit().divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+            accountManageService.saveAccountStatement(
+                    orderRenter.getRenterId(),
+                    DealTypeEnum.NORMALPAY,
+                    AccountTypeEnum.MARGINASSETS,
+                    monthlyDeposit.multiply(new BigDecimal("-1")),
+                    BigDecimal.ZERO
+                    );
+            accountManageService.saveAccountStatement(
+                    orderRenter.getRenterId(),
+                    DealTypeEnum.NORMALPAY,
+                    AccountTypeEnum.USEABLEASSETS,
+                    monthlyDeposit,
+                    BigDecimal.ZERO
+            );
             return new OperationResult<>(OrderResultEnum.SUCCESS,true);
         }
 
@@ -243,6 +259,22 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                     AccountTypeEnum.USEABLEASSETS,
                     frozenAmount,
                     BigDecimal.ZERO);
+            // 按月返还用户保证金
+            BigDecimal monthlyDeposit = orderFunder.getDeposit().divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+            accountManageService.saveAccountStatement(
+                    orderRenter.getRenterId(),
+                    DealTypeEnum.NORMALPAY,
+                    AccountTypeEnum.MARGINASSETS,
+                    monthlyDeposit.multiply(new BigDecimal("-1")),
+                    BigDecimal.ZERO
+            );
+            accountManageService.saveAccountStatement(
+                    orderRenter.getRenterId(),
+                    DealTypeEnum.NORMALPAY,
+                    AccountTypeEnum.USEABLEASSETS,
+                    monthlyDeposit,
+                    BigDecimal.ZERO
+            );
             return new OperationResult<>(true);
         }
         return new OperationResult<>(OrderResultEnum.ACCOUNT_NO_EXIST,false);
