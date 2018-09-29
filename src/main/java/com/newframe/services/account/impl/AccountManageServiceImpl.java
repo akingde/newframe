@@ -359,6 +359,10 @@ public class AccountManageServiceImpl implements AccountManageService {
         List<AccountRenterRentDetail> accountRenterRentDetailList = accountService.listAccountRenterRentDetail(uid, PayStatusEnum.NORMAL);
         //正常订单的笔数
         Integer normalNumber = accountRenterFinancingList.size() + accountRenterRentDetailList.size();
+        //除数不能为0
+        if (normalNumber.equals(0)){
+            return new OperationResult<>(overdueAsset);
+        }
         BigDecimal overdueRate = new BigDecimal(overdueNumber).divide(new BigDecimal(normalNumber), 2, RoundingMode.HALF_UP);
         overdueAsset.setAccountRenterOverdueAsset(uid, totalOverdueAccount, overdueNumber, overdueRate, BigDecimal.ZERO);
         //更新一下
