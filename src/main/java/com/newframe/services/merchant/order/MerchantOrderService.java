@@ -1,10 +1,7 @@
 package com.newframe.services.merchant.order;
 
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.merchant.order.MerchantInfoDTO;
-import com.newframe.dto.merchant.order.MerchantOrderDTO;
-import com.newframe.dto.merchant.order.OrderInfoDTO;
-import com.newframe.dto.merchant.order.ReletDTO;
+import com.newframe.dto.merchant.order.*;
 
 /**
  * @author kfm
@@ -37,5 +34,12 @@ public interface MerchantOrderService {
      * @param merchantInfo 商家信息
      * @return 操作结果
      */
-    OperationResult<String> getAddress(MerchantInfoDTO merchantInfo);
+    OperationResult<AddressDTO> getAddress(MerchantInfoDTO merchantInfo);
+
+    /**
+     * 租客还款通知
+     * @param repayNotice 还款通知
+     * @return 操作结果
+     */
+    OperationResult<String> repayNotice(RepayNoticeDTO repayNotice);
 }

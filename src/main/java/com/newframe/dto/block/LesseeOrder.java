@@ -12,7 +12,7 @@ public class LesseeOrder extends ProdDetail {
     /**
      * 第三方订单id
      */
-    private String orderId;
+    private Long orderId;
     /**
      * 第三方订单推过来的时间
      */

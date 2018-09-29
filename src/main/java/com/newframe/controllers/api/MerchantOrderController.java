@@ -3,10 +3,7 @@ package com.newframe.controllers.api;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.merchant.order.MerchantInfoDTO;
-import com.newframe.dto.merchant.order.MerchantOrderDTO;
-import com.newframe.dto.merchant.order.OrderInfoDTO;
-import com.newframe.dto.merchant.order.ReletDTO;
+import com.newframe.dto.merchant.order.*;
 import com.newframe.services.merchant.order.MerchantOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,8 +50,18 @@ public class MerchantOrderController extends BaseController {
         return new JsonResult(result.getErrorCode(),false);
     }
 
+    @RequestMapping("/address")
     public JsonResult getAddress(@Valid @RequestBody MerchantInfoDTO merchantInfo){
-        OperationResult<String> result = merchantOrderService.getAddress(merchantInfo);
+        OperationResult<AddressDTO> result = merchantOrderService.getAddress(merchantInfo);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return new JsonResult(result.getErrorCode(),false);
+    }
+
+    @RequestMapping("/repayNotice")
+    public JsonResult repayNotice(@Valid @RequestBody RepayNoticeDTO repayNotice){
+        OperationResult<String> result = merchantOrderService.repayNotice(repayNotice);
         if(result.getSucc()){
             return success(result.getEntity());
         }

@@ -31,12 +31,12 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         financeApply.setFinancingTerm(orderFunder.getNumberOfPeriods());
         financeApply.setFunderUid(orderFunder.getFunderId());
         financeApply.setMerchantUid(orderRenter.getRenterId());
-        financeApply.setOrderNum(orderRenter.getOrderId());
+        financeApply.setOrderNum(orderRenter.getPartnerOrderId());
         financeApply.setSupplierUid(orderFunder.getSupplierId());
         financeApply.setIdNum(orderRenter.getUserIdNumber());
         financeApply.setLeaseTerm(orderRenter.getNumberOfPayments());
         financeApply.setProdAmount(1);
-        financeApply.setOrderId(String.valueOf(orderRenter.getOrderId()));
+        financeApply.setOrderId(orderRenter.getOrderId());
         financeApply.setOrderTime(orderRenter.getCtime());
         financeApply.setPhoneNum(orderRenter.getUserMobile());
         financeApply.setProdBrand(orderRenter.getProductBrand());
@@ -81,8 +81,9 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         deliver.setOrderNum(orderSupplier.getOrderId());
         deliver.setSupplierUid(orderSupplier.getSupplierId());
         Long applyTime = (System.currentTimeMillis()/1000);
-        deliver.setConfirmTime(applyTime.intValue());
-        deliver.setDeliveryTime(orderSupplier.getExpressTime().intValue());
+//        deliver.setConfirmTime(applyTime.intValue());
+        Integer expressTime = orderSupplier.getExpressTime().intValue() + 86399;
+        deliver.setDeliveryTime(expressTime);
         deliver.setExpressCoName(orderSupplier.getExpressCompany());
         deliver.setIMEI(orderSupplier.getSerialNumber());
         deliver.setTrackingNum(orderSupplier.getExpressNumber());
@@ -98,7 +99,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         rentalApply.setApplyTime(orderHirer.getCtime());
         rentalApply.setLessorUid(orderHirer.getLessorId());
         rentalApply.setMerchantUid(orderRenter.getRenterId());
-        rentalApply.setOrderNum(orderRenter.getOrderId());
+        rentalApply.setOrderNum(orderRenter.getPartnerOrderId());
         if(orderHirer.getPatternPayment().equals(EzTransfer.EzPaymentMethod.PM_LUMP_SUM.getNumber())){
             rentalApply.setPaymentMethod(EzTransfer.EzPaymentMethod.PM_LUMP_SUM);
         }
@@ -107,7 +108,7 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         }
         rentalApply.setRentalAmount(orderHirer.getOrderAmount());
         rentalApply.setRentalTerm(orderHirer.getNumberOfPeriods());
-        rentalApply.setOrderId(orderHirer.getPartnerOrderId());
+        rentalApply.setOrderId(orderHirer.getOrderId());
         rentalApply.setOrderTime(orderRenter.getCtime());
         rentalApply.setPhoneNum(orderRenter.getUserMobile());
         rentalApply.setRealName(orderRenter.getUserRealname());
@@ -148,8 +149,9 @@ public class OrderBlockChainServiceImpl implements OrderBlockChainService {
         lessorDeliver.setLessorUid(hirerDeliver.getLessorId());
         lessorDeliver.setOrderNum(orderHirer.getOrderId());
         Long applyTime = (System.currentTimeMillis()/1000);
-        lessorDeliver.setConfirmTime(applyTime.intValue());
-        lessorDeliver.setDeliveryTime(hirerDeliver.getExpressTime().intValue());
+//        lessorDeliver.setConfirmTime(applyTime.intValue());
+        Integer expressTime = hirerDeliver.getExpressTime().intValue() + 86399;
+        lessorDeliver.setDeliveryTime(expressTime);
         lessorDeliver.setExpressCoName(hirerDeliver.getExpressName());
         lessorDeliver.setIMEI(hirerDeliver.getSerialNumber());
         lessorDeliver.setTrackingNum(hirerDeliver.getExpressNumber());

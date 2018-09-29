@@ -186,7 +186,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     public ResponseChain financeApply(FinanceApply financeApplyDTO) {
         UserContract contract = userContractService.findOne(financeApplyDTO.getMerchantUid());
         EzTransfer.EzFinanceApply.Builder builder = EzTransfer.EzFinanceApply.newBuilder()
-                .setOrderNum(financeApplyDTO.getOrderId())
+                .setOrderNum(financeApplyDTO.getOrderId()+"")
                 .setMerchantUid(financeApplyDTO.getMerchantUid())
                 .setFinancingAmount(financeApplyDTO.getFinancingAmount().floatValue())
                 .setFinancingTerm(financeApplyDTO.getFinancingTerm())
@@ -516,7 +516,7 @@ public class BlockChainServiceImpl implements BlockChainService {
      */
     private EzTransfer.EzLesseeOrder.Builder setLesseeOrder(LesseeOrder lesseeOrder) {
         return EzTransfer.EzLesseeOrder.newBuilder()
-                .setOrderNum(lesseeOrder.getOrderId())
+                .setOrderNum(lesseeOrder.getOrderId()+"")
                 .setApplyTime(lesseeOrder.getOrderTime())
                 .setProdDetail(setEzProdDetail(lesseeOrder))
                 .setPhoneNum(lesseeOrder.getPhoneNum())

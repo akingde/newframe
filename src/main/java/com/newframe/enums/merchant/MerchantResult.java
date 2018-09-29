@@ -12,6 +12,7 @@ public enum MerchantResult implements CodeStatus {
     VALID_EXCEPTION("400101","参数校验错误"),
     MERCHANT_ORDER_EXIST("400103","订单已存在"),
     MERCHANT_ORDER_NOT_EXIST("400104","订单不存在"),
+    RETURN_ADDRESS_NO_SETTING("400105","收货地址未设置，请联系91易租平台客服"),
     ;
     String code;
     String message;

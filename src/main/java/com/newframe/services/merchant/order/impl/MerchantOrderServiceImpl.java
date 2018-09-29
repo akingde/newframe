@@ -1,10 +1,7 @@
 package com.newframe.services.merchant.order.impl;
 
 import com.newframe.dto.OperationResult;
-import com.newframe.dto.merchant.order.MerchantInfoDTO;
-import com.newframe.dto.merchant.order.MerchantOrderDTO;
-import com.newframe.dto.merchant.order.OrderInfoDTO;
-import com.newframe.dto.merchant.order.ReletDTO;
+import com.newframe.dto.merchant.order.*;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
@@ -134,7 +131,7 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
     }
 
     @Override
-    public OperationResult<String> getAddress(MerchantInfoDTO merchantInfo) {
+    public OperationResult<AddressDTO> getAddress(MerchantInfoDTO merchantInfo) {
         OrderRenterQuery query = new OrderRenterQuery();
         query.setPartnerId(merchantInfo.getPartnerId());
         query.setPartnerOrderId(merchantInfo.getPartnerOrderId());
@@ -144,12 +141,22 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
         }
         UserAddress userAddress = userAddressService.findDefaultAddress(0L);
         if(userAddress != null){
-            String address = (userAddress.getProvinceName() == null ? "":(userAddress.getProvinceName()+" "))
-                    + (userAddress.getCityName() == null ? "":(userAddress.getCityName() + " "))
-                    + (userAddress.getCountyName() == null ? "":(userAddress.getCountyName() +" "))
-                    + (userAddress.getCountyName() == null ? "":userAddress.getConsigneeName());
-            return new OperationResult<>(SystemCode.SUCCESS,address);
+            String address = (userAddress.getProvinceName() == null ? "":(userAddress.getProvinceName()))
+                    + (userAddress.getCityName() == null ? "":(userAddress.getCityName()))
+                    + (userAddress.getCountyName() == null ? "":(userAddress.getCountyName()))
+                    + (userAddress.getCountyName() == null ? "":userAddress.getConsigneeAddress());
+            AddressDTO dto = new AddressDTO();
+            dto.setAddress(address);
+            dto.setAddressType(4);
+            dto.setReceiverName(userAddress.getConsigneeName());
+            dto.setReceiverPhone(userAddress.getMobile());
+            return new OperationResult<>(SystemCode.SUCCESS,dto);
         }
+        return new OperationResult<>(MerchantResult.RETURN_ADDRESS_NO_SETTING);
+    }
+
+    @Override
+    public OperationResult<String> repayNotice(RepayNoticeDTO repayNotice) {
         return null;
     }
 

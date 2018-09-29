@@ -14,7 +14,7 @@ public class RentalApply extends LesseeOrder{
     /**
      * 订单id
      */
-    private Long orderNum;
+    private String orderNum;
     /**
      * 出租方uid
      */
