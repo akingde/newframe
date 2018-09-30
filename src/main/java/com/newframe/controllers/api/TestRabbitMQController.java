@@ -1,5 +1,6 @@
 package com.newframe.controllers.api;
 
+import com.newframe.configuration.rabbitmq.QueueConstants;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
@@ -34,7 +35,7 @@ public class TestRabbitMQController extends BaseController {
     private JsonResult getTestUser(MessageEntity messageEntity){
 
         // 将实体实例写入消息队列
-        messageProvider.sendMessage(messageEntity);
+        messageProvider.sendMessage(messageEntity,QueueConstants.MESSAGE_EXCHANGE,QueueConstants.MESSAGE_ROUTE_KEY);
 
         return success(true);
     }
@@ -43,7 +44,7 @@ public class TestRabbitMQController extends BaseController {
     private JsonResult sendTestUser(User user){
 
         //将实体信息写入消息队列
-        messageProvider.sendMessage(user);
+        messageProvider.sendMessage(user,QueueConstants.MESSAGE_EXCHANGE,QueueConstants.MESSAGE_ROUTE_KEY);
 
         return success(true);
     }
@@ -51,8 +52,9 @@ public class TestRabbitMQController extends BaseController {
     @RequestMapping("sendAliCode")
     private JsonResult sendAliCode(AliVcode aliVcode){
 
-        messageProvider.sendMessage(aliVcode);
-
+        //messageProvider.sendVcodeMessage(aliVcode);
+        //将实体信息写入消息队列
+        messageProvider.sendMessage(aliVcode, QueueConstants.MESSAGE_ALIEXCHANGE,QueueConstants.MESSAGE_ROUTE_SENDCODE);
         return success(true);
     }
 }

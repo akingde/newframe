@@ -22,6 +22,13 @@ public class MessageRabbitMqConfiguration {
                 .build();
     }
 
+    @Bean
+    public DirectExchange messageAliExchange() {
+        return (DirectExchange) ExchangeBuilder.directExchange(QueueConstants.MESSAGE_ALIEXCHANGE)
+                .durable(true)
+                .build();
+    }
+
     /**
      * 消息队列声明
      *
@@ -44,4 +51,29 @@ public class MessageRabbitMqConfiguration {
                 .to(messageDirectExchange())
                 .with(QueueConstants.MESSAGE_ROUTE_KEY);
     }
+
+    /**
+     * 消息队列声明(发送验证码)
+     *
+     * @return
+     */
+    @Bean
+    public Queue sendVcodeMessageQueue() {
+        return QueueBuilder.durable(QueueConstants.MESSAGE_QUEUE_SENDCODE)
+                .build();
+    }
+
+    /**
+     * 消息绑定
+     *
+     * @return
+     */
+    @Bean
+    public Binding sendVcodeMessageBinding() {
+        return BindingBuilder.bind(sendVcodeMessageQueue())
+                .to(messageAliExchange())
+                .with(QueueConstants.MESSAGE_ROUTE_SENDCODE);
+    }
+
+
 }

@@ -24,8 +24,9 @@ public class MessageProvider {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
-    public void sendMessage(Object object) {
+    public void sendMessage(Object object,String exchange,String queueConstants) {
         logger.info("写入消息队列内容：{}", JSON.toJSONString(object));
-        amqpTemplate.convertAndSend(QueueConstants.MESSAGE_EXCHANGE, QueueConstants.MESSAGE_ROUTE_KEY, object);
+        amqpTemplate.convertAndSend(exchange, queueConstants, object);
     }
+
 }
