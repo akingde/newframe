@@ -228,10 +228,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     }
 
     @Override
-    public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods){
+    public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods,BigDecimal monthPayment){
         double rate = afterService.getRate().getEntity().doubleValue();
-        BigDecimal monthPayment = BigDecimal.valueOf(200);
-        supplierInfoDTO.setDeposit(BigDecimal.valueOf(6500*0.15));
         supplierInfoDTO.setMonthPayment(monthPayment);
         supplierInfoDTO.setDownPayment(monthPayment);
         supplierInfoDTO.setAccidentBenefit(residualValue);

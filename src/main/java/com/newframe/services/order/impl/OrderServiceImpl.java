@@ -378,7 +378,7 @@ public class OrderServiceImpl implements OrderService {
                 orderHirer.setOrderAmount(monthlyPayment.multiply(BigDecimal.valueOf(tenancyTerm)));
             }else{
                 // 全款支付的首付、月租金等都为0
-                orderHirer.setDownPayment(BigDecimal.ZERO);
+                orderHirer.setDownPayment(fullRepayAmount.add(accidentBenefit));
                 orderHirer.setMonthlyPayment(BigDecimal.ZERO);
                 orderHirer.setOrderAmount(fullRepayAmount);
             }
@@ -491,7 +491,7 @@ public class OrderServiceImpl implements OrderService {
                     dto.setMonthPayment(financingAmount
                             .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
                     dto.setDeposit(getDeposit(orderId,userSupplier.getUid() ));
-                    orderBaseService.getSupplierInfo(dto,product.getSupplyPrice(),orderRenter.getNumberOfPayments());
+                    orderBaseService.getSupplierInfo(dto,product.getSupplyPrice(),orderRenter.getNumberOfPayments(),orderRenter.getMonthlyPayment());
                 }
                 dtos.add(dto);
             }
@@ -1174,9 +1174,7 @@ public class OrderServiceImpl implements OrderService {
             info.setMonthPayment(orderHirer.getMonthlyPayment());
             info.setRentDeadline(orderHirer.getNumberOfPeriods());
             info.setPatternPayment(orderHirer.getPatternPayment());
-            info.setPaymentAmount(orderHirer.getMonthlyPayment()
-                    .multiply(new BigDecimal(orderHirer.getNumberOfPayments()))
-                    .add(orderHirer.getAccidentBenefit()));
+            info.setPaymentAmount(orderHirer.getOrderAmount());
             info.setRentTime(orderHirer.getCtime());
             return new OperationResult<>(OrderResultEnum.SUCCESS, info);
         }
