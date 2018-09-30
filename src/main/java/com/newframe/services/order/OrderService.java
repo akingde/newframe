@@ -36,14 +36,11 @@ public interface OrderService {
 
     /**
      * 租赁商融资购机
-     *
      * @param uid        租赁商uid
-     * @param orderId    订单id
-     * @param supplierId 供应商id
-     * @param residualScheme 是否参加残值保障计划，1：参加，0：不参加
+     * @param financeApply 融资申请数据封装
      * @return 处理结果
      */
-    JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId, BigDecimal financingAmount, Integer financingDeadline, Integer residualScheme) throws AccountOperationException;
+    JsonResult renterFinancingBuy(FinanceApplyDTO financeApply,Long uid) throws AccountOperationException;
 
     /**
      * 租赁商租机

@@ -224,10 +224,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     //@Transactional(rollbackFor = Exception.class)
-    public JsonResult renterFinancingBuy(Long uid, Long orderId, Long supplierId,
-                                         BigDecimal financingAmount, Integer financingDeadline, Integer residualScheme) throws AccountOperationException {
+    public JsonResult renterFinancingBuy(FinanceApplyDTO financeApply,Long uid) throws AccountOperationException {
         // 参数校验
-        if (orderId == null || supplierId == null || residualScheme == null) {
+        if (financeApply.getOrderId() == null || financeApply.getSupplierId() == null
+                || financeApply.getResidualScheme() == null || financeApply.getAveragePrincipal() == null
+                || financeApply.getFinancingAmount() == null || financeApply.getFinancingDeadline() == null
+                || financeApply.getOnePrincipal() == null || financeApply.getSumAmount() == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
         String renterName = orderBaseService.getRenterName(uid);
@@ -247,18 +249,18 @@ public class OrderServiceImpl implements OrderService {
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
         //查询订单融资是否超过3次
-        Integer times = orderFunderSlave.getOrderFinancingTimes(orderId);
+        Integer times = orderFunderSlave.getOrderFinancingTimes(financeApply.getOrderId());
         // 如果查出来融资次数是0次，则是首次融资
         if (times == null) {
             times = 0;
         }
         if (times >= maxOrderFinancingTimes) {
             // 将租赁商状态改为不允许融资状态
-            orderRenterMaser.updateOrderStatus(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode(), orderId);
+            orderRenterMaser.updateOrderStatus(OrderRenterStatus.ORDER_FINANCING_OVER_THREE.getCode(), financeApply.getOrderId());
             return new JsonResult(SystemCode.ORDER_FINANCING_FAIL, false);
         }
         // 查询租赁商订单信息，生成资金方订单数据
-        Optional<OrderRenter> optional = orderRenterSlave.findById(orderId);
+        Optional<OrderRenter> optional = orderRenterSlave.findById(financeApply.getOrderId());
         if (optional.isPresent()) {
             OrderRenter orderRenter = optional.get();
             // 判断订单是否在审核中
@@ -281,21 +283,22 @@ public class OrderServiceImpl implements OrderService {
             orderFunder.setFunderId(funderId);
             orderFunder.setOrderStatus(OrderFunderStatus.WAITING_AUDIT.getCode());
             orderFunder.setDispatchTimes(times + 1);
-            orderFunder.setSupplierId(supplierId);
-
-            orderFunder.setDeposit(getDeposit(orderId, supplierId));
-            orderFunder.setFinancingAmount(financingAmount);
-            orderFunder.setNumberOfPeriods(financingDeadline);
+            orderFunder.setSupplierId(financeApply.getSupplierId());
+            orderFunder.setNumberOfPeriods(financeApply.getFinancingDeadline());
             short withhold = 2;
             orderFunder.setWithhold(withhold);
             orderFunder.setOrderAmount(orderRenter.getAccidentBenefit()
                     .add(orderRenter.getMonthlyPayment()
                             .multiply(new BigDecimal(orderRenter.getNumberOfPayments()))));
-            orderFunder.setDeposit(getDeposit(orderId, supplierId));
-            orderFunder.setResidualScheme(residualScheme);
-
+            orderFunder.setDeposit(getDeposit(financeApply.getOrderId(), financeApply.getSupplierId()));
+            orderFunder.setResidualScheme(financeApply.getResidualScheme());
+            orderFunder.setDeposit(getDeposit(financeApply.getOrderId(), financeApply.getSupplierId()));
+            orderFunder.setFinancingAmount(financeApply.getFinancingAmount());
+            orderFunder.setAveragePrincipal(financeApply.getAveragePrincipal());
+            orderFunder.setOnePrincipal(financeApply.getOnePrincipal());
+            orderFunder.setSumAmount(financeApply.getSumAmount());
             // 修改租赁商订单状态和订单类型
-            updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, orderId);
+            updateOrderRenterStatusType(OrderRenterStatus.WATIING_FUNDER_AUDIT,OrderType.FUNDER_ORDER, financeApply.getOrderId());
             // 生成资金方订单
             orderFunderMaser.save(orderFunder);
             // 账户操作，冻结保证金
@@ -306,10 +309,10 @@ public class OrderServiceImpl implements OrderService {
             }
             orderBlockChainService.financeApply(orderRenter,orderFunder);
             // 推送消息
-            orderBaseService.messagePush(funderId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
+            orderBaseService.messagePush(funderId,financeApply.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
 
         }
-        GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给资金方" + funderId);
+        GwsLogger.getLogger().info("租赁商" + uid + "的订单" + financeApply.getOrderId() + "已派发给资金方" + funderId);
 
         // 返回订单融资成功
         return new JsonResult(SystemCode.SUCCESS, true);
