@@ -69,7 +69,6 @@ public class ApiOrderController extends BaseController {
      * @param orderId 订单id
      * @param  lessorId 出租方id
      * @param tenancyTerm 租期
-     * @param downPayment 首付
      * @param patternPayment 支付方式，1：全款支付，2：分期支付
      * @return 处理结果
      */
