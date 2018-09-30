@@ -3,6 +3,7 @@ package com.newframe.controllers.api;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.mq.AliVcode;
 import com.newframe.dto.user.User;
 import com.newframe.entity.rabbitmq.MessageEntity;
 import com.newframe.entity.test.TestUser;
@@ -43,6 +44,14 @@ public class TestRabbitMQController extends BaseController {
 
         //将实体信息写入消息队列
         messageProvider.sendMessage(user);
+
+        return success(true);
+    }
+
+    @RequestMapping("sendAliCode")
+    private JsonResult sendAliCode(AliVcode aliVcode){
+
+        messageProvider.sendMessage(aliVcode);
 
         return success(true);
     }
