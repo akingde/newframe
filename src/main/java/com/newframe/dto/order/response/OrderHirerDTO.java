@@ -41,4 +41,6 @@ public class OrderHirerDTO {
     private Integer platformCreditScore;
     private String receiverPhone;
     private String receiverName;
+    private Integer patternPayment;
+    private BigDecimal orderAmount;
 }

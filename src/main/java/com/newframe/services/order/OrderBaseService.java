@@ -1,5 +1,6 @@
 package com.newframe.services.order;
 
+import com.newframe.dto.order.response.SupplierInfoDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
@@ -52,4 +53,6 @@ public interface OrderBaseService {
      * @return 每个月的租金
      */
     BigDecimal getRentPrice(BigDecimal price, BigDecimal rate, Integer numberOfPayment);
+
+    void getSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods);
 }

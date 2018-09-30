@@ -1,6 +1,7 @@
 package com.newframe.services.order.impl;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.order.response.SupplierInfoDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
@@ -12,6 +13,8 @@ import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
+import com.newframe.services.after.AfterService;
+import com.newframe.services.order.FormulaService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.UserRentMerchantService;
@@ -19,6 +22,7 @@ import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -50,6 +54,12 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     private AccountService accountService;
     @Autowired
     private AccountManageService accountManageService;
+    @Autowired
+    private FormulaService formulaService;
+    @Value("${residual.value.protection.scheme}")
+    private BigDecimal residualValue;
+    @Autowired
+    private AfterService afterService;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -215,5 +225,18 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         Double rentPrice = -Finance.pmt(rate1/12,numberOfPayment,price1);
         DecimalFormat format = new DecimalFormat("#.##");
         return BigDecimal.valueOf(Double.valueOf(format.format(rentPrice)));
+    }
+
+    @Override
+    public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods){
+        double rate = afterService.getRate().getEntity().doubleValue();
+        BigDecimal monthPayment = BigDecimal.valueOf(200);
+        supplierInfoDTO.setDeposit(BigDecimal.valueOf(6500*0.15));
+        supplierInfoDTO.setMonthPayment(monthPayment);
+        supplierInfoDTO.setDownPayment(monthPayment);
+        supplierInfoDTO.setAccidentBenefit(residualValue);
+        supplierInfoDTO.setAveragePrincipal(formulaService.getAveragePrincipal(rate,periods,monthPayment));
+        supplierInfoDTO.setOnePrincipal(formulaService.getOnePrincipal(supplierInfoDTO.getFinancingAmount(),supplierInfoDTO.getAveragePrincipal()));
+        supplierInfoDTO.setSumAmount(formulaService.getSumAmount(supplierInfoDTO.getFinancingAmount(),supplierInfoDTO.getAveragePrincipal(),rate,periods));
     }
 }

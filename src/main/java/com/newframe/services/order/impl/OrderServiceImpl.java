@@ -491,8 +491,8 @@ public class OrderServiceImpl implements OrderService {
                     dto.setMonthPayment(financingAmount
                             .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
                     dto.setDeposit(getDeposit(orderId,userSupplier.getUid() ));
+                    orderBaseService.getSupplierInfo(dto,product.getSupplyPrice(),orderRenter.getNumberOfPayments());
                 }
-
                 dtos.add(dto);
             }
         }
@@ -660,7 +660,7 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
 
-    //@Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException {
         if (orderId == null) {
@@ -707,10 +707,12 @@ public class OrderServiceImpl implements OrderService {
                 orderRenter.setOrderStatus(OrderRenterStatus.FUNDER_OFFLINE_LOAN_SUCCESS.getCode());
                 orderRenterMaser.save(orderRenter);
                 orderFunderMaser.save(orderFunder);
+                // 判断是否存在供应商订单
+                Boolean isHave = orderSupplierSlave.findById(orderRenter.getOrderId()).isPresent();
                 OrderSupplier orderSupplier = generateSupplyOrder(orderRenter, orderFunder,OrderSupplierStatus.WAITING_DELIVER.getCode());
                 // 如果此线下放款订单还未上传凭证，则是确认已放款操作，去操作资金方账户和生成租赁商还款计划
                 // 这一步操作要判断此操作是确认已放款还是上传凭证，通过orderSupplier是否存在判断
-                if(!orderSupplierSlave.findById(orderRenter.getOrderId()).isPresent()){
+                if(!isHave){
                     orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
                     // 第一次操作供应商订单，操作账户线下放款
                     OperationResult<Boolean> operationResult = accountOperation.offlineLoan(orderRenter,orderSupplier,orderFunder);
@@ -948,7 +950,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult lessorRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
