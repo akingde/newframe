@@ -491,8 +491,8 @@ public class OrderServiceImpl implements OrderService {
                     dto.setMonthPayment(financingAmount
                             .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
                     dto.setDeposit(getDeposit(orderId,userSupplier.getUid() ));
+                    orderBaseService.getSupplierInfo(dto,product.getSupplyPrice(),orderRenter.getNumberOfPayments());
                 }
-
                 dtos.add(dto);
             }
         }
