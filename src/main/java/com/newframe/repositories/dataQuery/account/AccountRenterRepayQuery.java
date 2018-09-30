@@ -33,4 +33,7 @@ public class AccountRenterRepayQuery extends BaseQuery {
     //比月初大
     @QBindAttrField(fieldName = "withhold",where = Where.equal)
     private Integer withhold;
+
+    @QBindAttrField(fieldName = "withhold",where = Where.notEqual)
+    private Integer notWithHold;
 }

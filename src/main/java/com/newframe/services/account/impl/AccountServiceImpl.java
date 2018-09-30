@@ -11,6 +11,7 @@ import com.newframe.entity.account.*;
 import com.newframe.entity.order.OrderSupplier;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.SystemCode;
+import com.newframe.enums.account.OrderTypeEnum;
 import com.newframe.enums.account.WithholdEnum;
 import com.newframe.enums.order.PayStatusEnum;
 import com.newframe.repositories.dataMaster.account.*;
@@ -33,6 +34,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 /**
@@ -1273,6 +1277,47 @@ public class AccountServiceImpl implements AccountService {
         List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
 
         return CollectionUtils.isEmpty(accountRenterRepays) ? Collections.EMPTY_LIST : accountRenterRepays;
+    }
+
+    public void test(Long uid){
+        if (null == uid){
+            return;
+        }
+        Long now = LocalDateTime.now()
+                .withSecond(0)
+                .withMinute(0)
+                .withHour(0)
+                .plusMonths(1)
+                .with(TemporalAdjusters.firstDayOfMonth())
+                .toInstant(ZoneOffset.of("+8"))
+                .getEpochSecond();
+        AccountRenterRepayQuery query = new AccountRenterRepayQuery();
+        query.setUid(uid);
+        query.setNotWithHold(WithholdEnum.YES.getCode());
+        List<AccountRenterRepay> accountRenterRepays = accountRenterRepaySlave.findAll(query);
+        if (CollectionUtils.isEmpty(accountRenterRepays)){
+            return;
+        }
+        // 待还
+        accountRenterRepays.parallelStream()
+                .map(AccountRenterRepay :: getOrderAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //本月待还
+        accountRenterRepays.parallelStream()
+                .filter(account -> account.getPayTime() < now.intValue())
+                .map(AccountRenterRepay :: getOrderAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //本月保证金返还
+        accountRenterRepays.parallelStream()
+                .filter(account -> account.getOrderType().equals(OrderTypeEnum.FINANCING.getCode()))
+                .filter(account -> account.getPayTime() < now.intValue())
+                .map(AccountRenterRepay :: getOrderAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //保证金余额
+        accountRenterRepays.parallelStream()
+                .filter(account -> account.getOrderType().equals(OrderTypeEnum.FINANCING.getCode()))
+                .map(AccountRenterRepay :: getOrderAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
