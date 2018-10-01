@@ -331,7 +331,6 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
 
-        // todo 根据lessorId查询出租方是否存在
 
         String renterName = orderBaseService.getRenterName(uid);
         String renterMobile = orderBaseService.getRenterPhone(uid);
