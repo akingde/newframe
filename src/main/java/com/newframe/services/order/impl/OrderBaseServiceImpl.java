@@ -18,6 +18,7 @@ import com.newframe.services.after.AfterService;
 import com.newframe.services.order.FormulaService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
+import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
@@ -61,8 +62,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
     @Autowired
-    @Lazy
-    private AfterService afterService;
+    private ConfigRateService configRateService;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -200,7 +200,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         financingInfo.setAveragePrincipal(orderFunder.getAveragePrincipal());
         financingInfo.setMonthPayment(orderFunder.getMonthlyPayment());
         financingInfo.setOnePrincipal(orderFunder.getOnePrincipal());
-        financingInfo.setRate(afterService.getRate().getEntity());
+        financingInfo.setRate(configRateService.getRate());
         financingInfo.setSumAmount(orderFunder.getSumAmount());
         // 首付已经还清，所以待还和已还要除去首付
         accountManageService.saveAccountRenterFinancing(
@@ -239,7 +239,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
 
     @Override
     public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods,BigDecimal monthPayment){
-        double rate = afterService.getRate().getEntity().doubleValue();
+        double rate = configRateService.getRate().doubleValue();
         supplierInfoDTO.setMonthPayment(monthPayment);
         supplierInfoDTO.setDownPayment(monthPayment);
         supplierInfoDTO.setAccidentBenefit(residualValue);
