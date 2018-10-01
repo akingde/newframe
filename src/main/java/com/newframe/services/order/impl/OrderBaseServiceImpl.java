@@ -1,6 +1,7 @@
 package com.newframe.services.order.impl;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.dto.order.response.SupplierInfoDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
@@ -17,12 +18,14 @@ import com.newframe.services.after.AfterService;
 import com.newframe.services.order.FormulaService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
+import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -59,7 +62,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
     @Autowired
-    private AfterService afterService;
+    private ConfigRateService configRateService;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -192,6 +195,13 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         BigDecimal monthPayment = orderFunder.getFinancingAmount()
                 .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
         BigDecimal monthlyDeposit = orderFunder.getDeposit().divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+        // 融资信息封装
+        FinancingInfo financingInfo = new FinancingInfo();
+        financingInfo.setAveragePrincipal(orderFunder.getAveragePrincipal());
+        financingInfo.setMonthPayment(orderFunder.getMonthlyPayment());
+        financingInfo.setOnePrincipal(orderFunder.getOnePrincipal());
+        financingInfo.setRate(configRateService.getRate());
+        financingInfo.setSumAmount(orderFunder.getSumAmount());
         // 首付已经还清，所以待还和已还要除去首付
         accountManageService.saveAccountRenterFinancing(
                 orderRenter.getRenterId(),
@@ -204,7 +214,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 monthPayment,
                 BigDecimal.ZERO,
                 orderFunder.getFinancingAmount().subtract(monthPayment),
-                interest, new BigDecimal(0), monthlyDeposit);
+                interest, new BigDecimal(0), monthlyDeposit,financingInfo);
 
         accountService.saveAccountFundingFinanceAssetDetail(
                 orderFunder.getFunderId(),
@@ -228,10 +238,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     }
 
     @Override
-    public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods){
-        double rate = afterService.getRate().getEntity().doubleValue();
-        BigDecimal monthPayment = BigDecimal.valueOf(200);
-        supplierInfoDTO.setDeposit(BigDecimal.valueOf(6500*0.15));
+    public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods,BigDecimal monthPayment){
+        double rate = configRateService.getRate().doubleValue();
         supplierInfoDTO.setMonthPayment(monthPayment);
         supplierInfoDTO.setDownPayment(monthPayment);
         supplierInfoDTO.setAccidentBenefit(residualValue);

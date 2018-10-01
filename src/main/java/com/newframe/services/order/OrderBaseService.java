@@ -54,5 +54,5 @@ public interface OrderBaseService {
      */
     BigDecimal getRentPrice(BigDecimal price, BigDecimal rate, Integer numberOfPayment);
 
-    void getSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods);
+    void getSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods,BigDecimal monthPayment);
 }

@@ -115,5 +115,11 @@ public class OrderFunder implements Serializable {
     private Integer platformCreditScore;
     /**是否参加残值保障计划，0：不参加，1：参加*/
     private Integer residualScheme;
+    /**等额本息支付方式本金*/
+    private BigDecimal averagePrincipal;
+    /**一次性支付本金*/
+    private BigDecimal onePrincipal;
+    /**一次性支付本息之和*/
+    private BigDecimal sumAmount;
 }
 

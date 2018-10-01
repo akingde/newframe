@@ -7,7 +7,7 @@ import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
-import com.newframe.entity.order.FinancingInfo;
+import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.enums.SystemCode;
 import com.newframe.services.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +55,11 @@ public class ApiOrderController extends BaseController {
      */
     @Anonymous(true)
     @RequestMapping("renter/financing/buy")
-    public JsonResult renterFinancingBuy(Long orderId,Long supplierId,
-                                         Long uid,BigDecimal financingAmount,
-                                         Integer financingDeadline, Integer residualScheme) throws AccountOperationException {
+    public JsonResult renterFinancingBuy(FinanceApplyDTO financeApply,Long uid) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        return orderService.renterFinancingBuy(uid,orderId,supplierId,financingAmount,financingDeadline,residualScheme );
+        return orderService.renterFinancingBuy(financeApply,uid);
     }
 
     /**
@@ -71,7 +69,6 @@ public class ApiOrderController extends BaseController {
      * @param orderId 订单id
      * @param  lessorId 出租方id
      * @param tenancyTerm 租期
-     * @param downPayment 首付
      * @param patternPayment 支付方式，1：全款支付，2：分期支付
      * @return 处理结果
      */
