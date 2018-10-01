@@ -34,6 +34,20 @@ public class AccountSupplier implements Serializable {
      * 冻结资产
      */
     private BigDecimal frozenAsset;
+
+    /**
+     * 累计营收
+     */
+    private BigDecimal totalEarning;
+    /**
+     * 累计销售数量
+     */
+    private Integer saleNumber;
+    /**
+     * 待发货数量
+     */
+    private Integer deliverNumber;
+
     /**
      * ctime
      */

@@ -15,6 +15,7 @@ import com.newframe.enums.account.DealTypeEnum;
 import com.newframe.enums.account.OrderTypeEnum;
 import com.newframe.enums.account.WithholdEnum;
 import com.newframe.enums.order.PayStatusEnum;
+import com.newframe.repositories.dataMaster.account.AccountRenterRepayMaster;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
 import com.newframe.services.userbase.UserAddressService;
@@ -47,6 +48,10 @@ public class AccountManageServiceImpl implements AccountManageService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AccountRenterRepayMaster accountRenterRepayMaster;
+
 
     @Autowired
     private UserBaseInfoService userBaseInfoService;
@@ -767,6 +772,8 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (id.equals(acc.getId())) {
             finallyPeriod = true;
         }
+
+
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)) {
             //这个利息先不加
@@ -865,6 +872,18 @@ public class AccountManageServiceImpl implements AccountManageService {
         if (id.equals(acc.getId())) {
             finallyPeriod = true;
         }
+
+
+
+
+        List<AccountRenterRepay> list = new ArrayList<>();
+        list.add(accountRenterRepay);
+        accountService.saveAccountRenterRepay(list);
+        accountService.updateAccountRenterRepay(accountRenterRepay);
+
+
+
+
 
         //如果逾期
         if (accountRenterRepay.getOrderStatus().equals(2)) {

@@ -19,4 +19,7 @@ public class OrderSupplierQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "uid",where = Where.equal)
     private Long uid;
+
+    @QBindAttrField(fieldName = "supplierId", where = Where.equal)
+    private Long supplierId;
 }

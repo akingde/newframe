@@ -8,9 +8,9 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
+import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.order.*;
-import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
@@ -50,7 +50,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -82,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     OrderFunderEvidenceSlave orderFunderEvidenceSlave;
 
     @Autowired
-    OrderSuppMaster orderSuppMaster;
+    OrderSupplierMaster orderSupplierMaster;
     @Autowired
     OrderSupplierSlave orderSupplierSlave;
 
@@ -790,7 +792,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setExpressCode(deliverInfo.getDeliverCode());
         // 待收货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.WAITING_RECEIVE.getCode());
-        orderSuppMaster.save(orderSupplier);
+        orderSupplierMaster.save(orderSupplier);
         // 修改资金方订单为待收货状态
         Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(deliverInfo.getOrderId());
         if (orderFunderOptional.isPresent()) {
@@ -1503,7 +1505,7 @@ public class OrderServiceImpl implements OrderService {
             // 拿到供应商的供应价格
             orderSupplier.setTotalAccount(product.getSupplyPrice());
         }
-        orderSuppMaster.save(orderSupplier);
+        orderSupplierMaster.save(orderSupplier);
         orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
         return orderSupplier;
     }

@@ -63,5 +63,28 @@ public class AccountLessor implements Serializable {
      */
     private Integer utime;
 
-
+    /**
+     * '逾期金额合计'
+     */
+    private BigDecimal overdueAmount;
+    /**
+     * '逾期笔数'
+     */
+    private Integer overdueCount;
+    /**
+     * '逾期率'
+     */
+    private Double overdueRate;
+    /**
+     * '累计租金收入'
+     */
+    private BigDecimal matterRentAmount;
+    /**
+     * '已收租金'
+     */
+    private BigDecimal matterRentPayed;
+    /**
+     * '待收租金'
+     */
+    private BigDecimal matterRentUnpayed;
 }

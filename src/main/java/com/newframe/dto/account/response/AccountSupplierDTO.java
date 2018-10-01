@@ -27,5 +27,17 @@ public class AccountSupplierDTO {
      * 冻结资产
      */
     private BigDecimal frozenAssets;
+    /**
+     * 累计营收
+     */
+    private BigDecimal totalEarning;
+    /**
+     * 累计销售数量
+     */
+    private Integer saleNumber;
+    /**
+     * 待发货数量
+     */
+    private Integer deliverNumber;
     private Long uid;
 }

@@ -23,6 +23,8 @@ public class AccountLessorOverdueAsset {
      */
     @Id
     private Long id;
+
+    private Long uid;
     /**
      * 投资时间
      */
