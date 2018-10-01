@@ -641,7 +641,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepay.setCashDeposit(cashDeposit);
             Long uixTime = LocalDate.now().plus(i - 1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
             accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
-            double interest = ExcelUtils.ipmt(financingInfo.getRate().doubleValue()/12,i+1,totalPeriods,financingInfo.getAveragePrincipal().doubleValue());
+            double interest = ExcelUtils.ipmt(financingInfo.getRate().doubleValue()/12,i,totalPeriods,financingInfo.getAveragePrincipal().doubleValue());
             accountRenterRepay.setInterest(BigDecimal.valueOf(interest));
             accountRenterRepays.add(accountRenterRepay);
         }
