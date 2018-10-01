@@ -50,8 +50,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         Account account = accountService.getAccount(orderRenter.getRenterId());
         if (account != null) {
             // 判断租赁商账户余额是否大于保证金金额
-            BigDecimal frozenAmount = orderFunder.getFinancingAmount()
-                    .divide(new BigDecimal(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+            BigDecimal frozenAmount = orderFunder.getMonthlyPayment();
             // 保证金 + （融资金额/融资期限）+ 意外保障金额
             BigDecimal usableAmount = orderFunder.getDeposit().add(frozenAmount);
             if (account.getUseableAmount().compareTo(usableAmount) >= 0) {
@@ -91,8 +90,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
     public OperationResult<Boolean> releaseMarginBalance(OrderRenter orderRenter, OrderFunder orderFunder) {
 
         // 账户间操作，将账户余额划转到保证金
-        BigDecimal frozenAmount = orderFunder.getFinancingAmount()
-                .divide(new BigDecimal(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+        BigDecimal frozenAmount = orderFunder.getMonthlyPayment();
         BigDecimal usableAmount = frozenAmount.add(orderFunder.getDeposit());
         // 保证金减少
         accountManageService.saveAccountStatement(orderRenter.getRenterId(),
@@ -130,8 +128,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         Account funderAccount = accountService.getAccount(orderFunder.getFunderId());
         if(renterAccount != null && funderAccount != null){
             // 计算融资首付
-            BigDecimal frozenAmount = orderFunder.getFinancingAmount()
-                    .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+            BigDecimal frozenAmount = orderFunder.getMonthlyPayment();
             // 计算要从租赁商账户扣除的钱：用户租机首付（作为融资购机的一部分给供应商）+ 残值保障计划（直接扣除到平台）
             BigDecimal renterUsableAmount = orderRenter.getDownPayment();
             if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
@@ -145,13 +142,13 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                 return new OperationResult<>(OrderResultEnum.FUNDER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT,false);
             }
             // 不同账户间操作金额
-            // 从租赁商账户余额扣除用户租机首付
+            // 从租赁商账户余额扣除用户租机意外保险，给供应商，作为购买价款的一部分，剩下的由出租方出
             accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.USEABLEASSETS,
-                    orderRenter.getDownPayment().multiply(new BigDecimal(-1)),
+                    orderRenter.getAccidentBenefit().multiply(new BigDecimal(-1)),
                     new BigDecimal(0));
-            // 扣除残值保障计划
+            // 扣除残值保障计划，直接扣除，给平台
             if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
                 accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                         DealTypeEnum.FINANCING,
@@ -160,8 +157,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                         new BigDecimal(0));
             }
 
-            // 从租赁商账户冻结金额中扣除融资首付
-
+            // 从租赁商账户冻结金额中扣除融资还款首付
             accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.FROZENASSETS,
@@ -173,19 +169,19 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                     AccountTypeEnum.USEABLEASSETS,
                     orderFunder.getFinancingAmount().multiply(new BigDecimal(-1)),
                     new BigDecimal(0));
-            BigDecimal productPrice = orderRenter.getDownPayment().add(orderFunder.getFinancingAmount());
+            BigDecimal productPrice = orderRenter.getAccidentBenefit().add(orderFunder.getFinancingAmount());
             // 用户还首付
             accountManageService.saveAccountStatement(orderFunder.getFunderId(),
                     DealTypeEnum.NORMALPAY,
                     AccountTypeEnum.USEABLEASSETS,
                     frozenAmount,
                     BigDecimal.ZERO);
-            // 将机器购买金额转入供应商商账户，用户租机首付作为 额外金额
+            // 将机器购买金额转入供应商商账户，用户租机意外保险作为 额外金额
             accountManageService.saveAccountStatement(orderSupplier.getSupplierId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.USEABLEASSETS,
                     productPrice,
-                    orderRenter.getDownPayment());
+                    orderRenter.getAccidentBenefit());
             // 按月返还用户保证金
             BigDecimal monthlyDeposit = orderFunder.getDeposit().divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
             accountManageService.saveAccountStatement(
@@ -220,19 +216,21 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         Account supplierAccount = accountService.getAccount(orderSupplier.getSupplierId());
         if(renterAccount != null && supplierAccount != null){
-            // 计算要从租赁商账户扣除的钱：用户租机首付（作为融资购机的一部分给供应商）+ 残值保障计划（直接扣除到平台）
-            BigDecimal renterUsableAmount = orderRenter.getDownPayment();
+            // 计算要从租赁商账户扣除的钱：用户租机意外保险（作为融资购机的一部分给供应商）+ 残值保障计划（直接扣除到平台）
+            BigDecimal renterUsableAmount = orderRenter.getAccidentBenefit();
             if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
                 renterUsableAmount = renterUsableAmount.add(residualValue);
             }
             if(renterAccount.getUseableAmount().compareTo(renterUsableAmount) < 0){
                 return new OperationResult<>(OrderResultEnum.RENTER_ACCOUNT_USABLE_AMOUNT_INSUFFICIENT,false);
             }
+            // 从租赁商账户扣除用户租机意外保险
             accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.USEABLEASSETS,
-                    orderRenter.getDownPayment().multiply(new BigDecimal(-1)),
+                    orderRenter.getAccidentBenefit().multiply(new BigDecimal(-1)),
                     new BigDecimal(0));
+            // 扣除残值保障金额
             if(Integer.valueOf(1).equals(orderFunder.getResidualScheme())){
                 accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                         DealTypeEnum.FINANCING,
@@ -240,14 +238,14 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
                         residualValue.multiply(new BigDecimal(-1)),
                         new BigDecimal(0));
             }
+            // 将租赁商意外保险金额打入供应商账户
             accountManageService.saveAccountStatement(orderSupplier.getSupplierId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.USEABLEASSETS,
-                    orderRenter.getDownPayment(),
+                    orderRenter.getAccidentBenefit(),
                     new BigDecimal(0));
             // 从租赁商账户冻结金额中扣除融资首付
-            BigDecimal frozenAmount = orderFunder.getFinancingAmount()
-                    .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+            BigDecimal frozenAmount = orderFunder.getMonthlyPayment();
             accountManageService.saveAccountStatement(orderRenter.getRenterId(),
                     DealTypeEnum.FINANCING,
                     AccountTypeEnum.FROZENASSETS,
@@ -286,6 +284,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
      * @param orderHirer
      * @return
      */
+    @Override
     public OperationResult<Boolean> frozenRentDownPayment(OrderRenter orderRenter, OrderHirer orderHirer){
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         if(renterAccount == null){
@@ -341,7 +340,8 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
      * @param orderHirer 出租方订单
      * @return 操作结果
      */
-    public OperationResult<Boolean> unfrozenRentDownPayment(OrderRenter orderRenter,OrderHirer orderHirer){
+    @Override
+    public OperationResult<Boolean> unfrozenRentDownPayment(OrderRenter orderRenter, OrderHirer orderHirer){
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         if(renterAccount == null){
             return new OperationResult<>(OrderResultEnum.ACCOUNT_NO_EXIST,false);
@@ -389,6 +389,7 @@ public class OrderAccountOperationServiceImpl implements OrderAccountOperationSe
         return new OperationResult<>(OrderResultEnum.ACCOUNT_NO_EXIST,false);
     }
 
+    @Override
     public OperationResult<Boolean> payDownPayment(OrderRenter orderRenter,OrderHirer orderHirer){
         Account renterAccount = accountService.getAccount(orderRenter.getRenterId());
         Account hirerAmount = accountService.getAccount(orderHirer.getLessorId());
