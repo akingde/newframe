@@ -5,12 +5,10 @@ import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.enums.order.OrderAssignStatusEnum;
 import com.newframe.enums.order.OrderType;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * @author kfm
@@ -57,5 +55,7 @@ public interface OrderBaseService {
 
     void getSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods,BigDecimal monthPayment);
 
-    void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType);
+    void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus);
+
+    void updateOrderAssignStatus(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus);
 }

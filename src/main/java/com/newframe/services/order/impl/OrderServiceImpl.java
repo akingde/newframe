@@ -308,7 +308,7 @@ public class OrderServiceImpl implements OrderService {
                 // 账户操作不成功抛出异常回滚
                 throw new AccountOperationException(accountOperationResult);
             }
-            orderBaseService.saveOrderAssign(orderRenter.getOrderId(),orderRenter.getRenterId(),funderId,OrderType.FUNDER_ORDER);
+            orderBaseService.saveOrderAssign(orderRenter.getOrderId(),orderRenter.getRenterId(),funderId,OrderType.FUNDER_ORDER, OrderAssignStatusEnum.AUDIT);
             orderBlockChainService.financeApply(orderRenter,orderFunder);
             // 推送消息
             orderBaseService.messagePush(funderId,financeApply.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
@@ -395,7 +395,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
-            orderBaseService.saveOrderAssign(orderId,uid,lessorId,OrderType.LESSOR_ORDER);
+            orderBaseService.saveOrderAssign(orderId,uid,lessorId,OrderType.LESSOR_ORDER, OrderAssignStatusEnum.AUDIT);
             orderBlockChainService.rentApply(orderRenter,orderHirer);
             orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
@@ -620,6 +620,7 @@ public class OrderServiceImpl implements OrderService {
                 if(!operationResult.getEntity()){
                     throw new AccountOperationException(operationResult);
                 }
+                orderBaseService.updateOrderAssignStatus(orderId,orderRenter.getRenterId(),uid,OrderType.FUNDER_ORDER,OrderAssignStatusEnum.NO_PASS);
                 orderBlockChainService.financeRefuse(orderId,uid);
                 return new JsonResult(SystemCode.SUCCESS, true);
             }
@@ -652,7 +653,7 @@ public class OrderServiceImpl implements OrderService {
                     // 线下付款
                     success = offlineLoan(loanDTO, orderFunder);
                     if (success) {
-                        orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
+                        orderBaseService.updateOrderAssignStatus(loanDTO.getOrderId(),orderRenter.getRenterId(),uid,OrderType.FUNDER_ORDER,OrderAssignStatusEnum.PASS);
                         return new JsonResult(SystemCode.SUCCESS);
                     }
                     return new JsonResult(SystemCode.LOAN_FAIL);
@@ -942,7 +943,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenter = optionalOrderRenter.get();
             orderRenter.setOrderStatus(OrderRenterStatus.WAITING_LESSOR_RECEIVE.getCode());
             orderRenterMaser.save(orderRenter);
-
+            orderBaseService.updateOrderAssignStatus(deliverInfo.getOrderId(),orderRenter.getRenterId(),uid,OrderType.LESSOR_ORDER,OrderAssignStatusEnum.PASS);
         }
         // 操作租赁商账户
         orderBaseService.renterRentAccountOperation(orderRenter,orderHirer);
@@ -974,6 +975,7 @@ public class OrderServiceImpl implements OrderService {
                     OrderRenter orderRenter = orderRenterOptional.get();
                     orderRenter.setOrderStatus(OrderRenterStatus.ORDER_RENT_OVER_THREE.getCode());
                     orderRenterMaser.updateById(orderRenter,orderId,OrderRenter.ORDER_STATUS);
+                    orderBaseService.updateOrderAssignStatus(orderId,orderRenter.getRenterId(),uid,OrderType.LESSOR_ORDER,OrderAssignStatusEnum.NO_PASS);
                 }
             }else{
                 // 修改租赁商订单为出租方拒绝
@@ -1237,6 +1239,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBaseService.updateOrderAssignStatus(loanDTO.getOrderId(),orderRenter.getRenterId(),uid,OrderType.LESSOR_ORDER,OrderAssignStatusEnum.PASS);
             orderBlockChainService.fundSupplier(orderFunder,orderSupplier,null);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{

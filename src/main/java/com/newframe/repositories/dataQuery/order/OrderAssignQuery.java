@@ -16,4 +16,13 @@ public class OrderAssignQuery extends BaseQuery {
 
     @QBindAttrField(fieldName = "orderId", where = Where.equal)
     private Long orderId;
+
+    @QBindAttrField(fieldName = "rentUid", where = Where.equal)
+    private Long rentUid;
+
+    @QBindAttrField(fieldName = "examineUid", where = Where.equal)
+    private Long examineUid;
+
+    @QBindAttrField(fieldName = "orderType", where = Where.equal)
+    private Integer orderType;
 }

@@ -10,14 +10,15 @@ import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.enums.order.OrderAssignStatusEnum;
 import com.newframe.enums.order.OrderType;
 import com.newframe.enums.order.PatternPaymentEnum;
 import com.newframe.repositories.dataMaster.order.OrderAssignMaster;
+import com.newframe.repositories.dataQuery.order.OrderAssignQuery;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
-import com.newframe.services.after.AfterService;
 import com.newframe.services.order.FormulaService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
@@ -29,7 +30,6 @@ import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -257,13 +257,26 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     }
 
     @Override
-    public void saveOrderAssign(Long orderId,Long renterId,Long examineId,OrderType orderType){
+    public void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus){
         OrderAssign orderAssign = new OrderAssign();
         orderAssign.setId(idGen.getSeqId(OrderAssign.class));
         orderAssign.setExamineUid(examineId);
         orderAssign.setOrderId(orderId);
         orderAssign.setRentUid(renterId);
         orderAssign.setOrderType(orderType.getCode());
+        orderAssign.setOrderStatus(orderAssignStatus.getCode());
         orderAssignMaster.save(orderAssign);
+    }
+
+    @Override
+    public void updateOrderAssignStatus(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus){
+        OrderAssign orderAssign = new OrderAssign();
+        orderAssign.setOrderStatus(orderAssignStatus.getCode());
+        OrderAssignQuery query = new OrderAssignQuery();
+        query.setExamineUid(examineId);
+        query.setOrderId(orderId);
+        query.setRentUid(renterId);
+        query.setOrderType(orderType.getCode());
+        orderAssignMaster.update(orderAssign,query,OrderAssign.ORDER_STATUS);
     }
 }
