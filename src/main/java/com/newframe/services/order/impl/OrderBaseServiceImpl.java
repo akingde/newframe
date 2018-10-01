@@ -24,6 +24,7 @@ import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -60,6 +61,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
     @Autowired
+    @Lazy
     private AfterService afterService;
     @Override
     public String getSupplierName(Long supplierId){
