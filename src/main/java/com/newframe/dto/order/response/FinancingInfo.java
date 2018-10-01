@@ -1,4 +1,4 @@
-package com.newframe.entity.order;
+package com.newframe.dto.order.response;
 
 import lombok.Data;
 

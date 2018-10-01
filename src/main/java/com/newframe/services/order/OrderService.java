@@ -5,7 +5,7 @@ import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
-import com.newframe.entity.order.FinancingInfo;
+import com.newframe.dto.order.response.FinancingInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;

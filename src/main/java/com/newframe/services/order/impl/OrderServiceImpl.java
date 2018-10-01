@@ -10,6 +10,7 @@ import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.order.*;
+import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
@@ -650,6 +651,7 @@ public class OrderServiceImpl implements OrderService {
                     // 线下付款
                     success = offlineLoan(loanDTO, orderFunder);
                     if (success) {
+                        orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
                         return new JsonResult(SystemCode.SUCCESS);
                     }
                     return new JsonResult(SystemCode.LOAN_FAIL);

@@ -2,6 +2,7 @@ package com.newframe.services.account;
 
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
+import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.entity.account.*;
 import com.newframe.enums.account.AccountTypeEnum;
 import com.newframe.enums.account.DealTypeEnum;
@@ -154,7 +155,7 @@ public interface AccountManageService {
      * @param cashDeposit
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance, BigDecimal cashDeposit);
+    OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest, BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest, BigDecimal unsettleInterest, BigDecimal accidentInsurance, BigDecimal cashDeposit,FinancingInfo financingInfo);
 
     /**
      * 生成还款计划表
@@ -165,9 +166,10 @@ public interface AccountManageService {
      * @param totalAccount 总金额
      * @param orderTypeEnum
      * @param cashDeposit
+     * @param financingInfo 融资信息封装，租机订单为空
      * @return
      */
-    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum, BigDecimal cashDeposit);
+    OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum, BigDecimal cashDeposit, FinancingInfo financingInfo);
 
     /**
      * 操作账户的接口

@@ -1,6 +1,7 @@
 package com.newframe.services.order.impl;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.dto.order.response.SupplierInfoDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
@@ -192,6 +193,13 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         BigDecimal monthPayment = orderFunder.getFinancingAmount()
                 .divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
         BigDecimal monthlyDeposit = orderFunder.getDeposit().divide(BigDecimal.valueOf(orderFunder.getNumberOfPeriods()),2,RoundingMode.HALF_UP);
+        // 融资信息封装
+        FinancingInfo financingInfo = new FinancingInfo();
+        financingInfo.setAveragePrincipal(orderFunder.getAveragePrincipal());
+        financingInfo.setMonthPayment(orderFunder.getMonthlyPayment());
+        financingInfo.setOnePrincipal(orderFunder.getOnePrincipal());
+        financingInfo.setRate(afterService.getRate().getEntity());
+        financingInfo.setSumAmount(orderFunder.getSumAmount());
         // 首付已经还清，所以待还和已还要除去首付
         accountManageService.saveAccountRenterFinancing(
                 orderRenter.getRenterId(),
@@ -204,7 +212,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 monthPayment,
                 BigDecimal.ZERO,
                 orderFunder.getFinancingAmount().subtract(monthPayment),
-                interest, new BigDecimal(0), monthlyDeposit);
+                interest, new BigDecimal(0), monthlyDeposit,financingInfo);
 
         accountService.saveAccountFundingFinanceAssetDetail(
                 orderFunder.getFunderId(),

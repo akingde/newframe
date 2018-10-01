@@ -34,6 +34,9 @@ public class AccountRenterRepay {
      */
     private BigDecimal orderAmount;
 
+    /**融资利息*/
+    private BigDecimal interest;
+
 
     /**
      * 订单的状态。1:正常，2:逾期

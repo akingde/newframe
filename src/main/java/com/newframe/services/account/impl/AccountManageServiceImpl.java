@@ -3,6 +3,7 @@ package com.newframe.services.account.impl;
 import com.google.common.collect.Lists;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.account.*;
+import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.entity.account.*;
 import com.newframe.entity.user.UserAddress;
 import com.newframe.entity.user.UserBaseInfo;
@@ -20,6 +21,7 @@ import com.newframe.services.userbase.UserAddressService;
 import com.newframe.services.userbase.UserBaseInfoService;
 import com.newframe.services.userbase.UserPwdService;
 import com.newframe.services.userbase.UserRentMerchantService;
+import com.newframe.utils.ExcelUtils;
 import com.newframe.utils.TimeUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
@@ -511,7 +513,8 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterRentDetail.setAccountRenterRentDetail(uid, orderId, associatedOrderId, productBrand, productModel, productColour, productStorage, productMemory, totalRentAccount, monthNumber, payedAccount, unpayedAccount);
         AccountRenterRentDetail result = accountService.saveAccountRenterRentDetail(accountRenterRentDetail);
         OperationResult<Boolean> renterRent = saveAccountRenterRent(uid, orderId, associatedOrderId, totalRentAccount, payedAccount, unpayedAccount, residueTime, collectMoney);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber, accidentInsurance, totalRentAccount, OrderTypeEnum.RENT, BigDecimal.ZERO);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, monthNumber, accidentInsurance, totalRentAccount,
+                OrderTypeEnum.RENT, BigDecimal.ZERO,null);
         if (null == result || !renterRent.getEntity() || !renterRepay.getEntity()) {
             return new OperationResult<>(false);
         }
@@ -539,9 +542,12 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount, Integer financingMaturity, BigDecimal financingPrincipalInterest,
-                                                               BigDecimal financingInterest, BigDecimal settlePrincipalInterest, BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest,
-                                                               BigDecimal unsettleInterest, BigDecimal accidentInsurance, BigDecimal cashDeposit) {
+    public OperationResult<Boolean> saveAccountRenterFinancing(Long uid, Long orderId, String associatedOrderId, BigDecimal financingAmount,
+                                                               Integer financingMaturity, BigDecimal financingPrincipalInterest,
+                                                               BigDecimal financingInterest, BigDecimal settlePrincipalInterest,
+                                                               BigDecimal settleInterest, BigDecimal unsettlePrincipalInterest,
+                                                               BigDecimal unsettleInterest, BigDecimal accidentInsurance,
+                                                               BigDecimal cashDeposit,FinancingInfo financingInfo) {
         if (null == uid || null == orderId || null == associatedOrderId || null == financingAmount || null == financingMaturity ||
                 null == financingPrincipalInterest || null == financingInterest || null == settlePrincipalInterest || null == settleInterest || null == unsettlePrincipalInterest || null == unsettleInterest) {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
@@ -550,7 +556,8 @@ public class AccountManageServiceImpl implements AccountManageService {
         accountRenterFinancing.setAccountRenterFinancing(uid, orderId, associatedOrderId, financingAmount, financingMaturity,
                 financingPrincipalInterest, financingInterest, settlePrincipalInterest, settleInterest, unsettlePrincipalInterest, unsettleInterest);
         AccountRenterFinancing result = accountService.saveAccountRenterFinancing(accountRenterFinancing);
-        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity, accidentInsurance, financingAmount, OrderTypeEnum.FINANCING, cashDeposit);
+        OperationResult<Boolean> renterRepay = saveAccountRenterRepay(orderId, uid, financingMaturity, accidentInsurance,
+                financingAmount, OrderTypeEnum.FINANCING, cashDeposit,financingInfo);
         if (null == result || null == result || !renterRepay.getEntity()) {
             return new OperationResult<>(false);
         }
@@ -570,10 +577,23 @@ public class AccountManageServiceImpl implements AccountManageService {
      * @return
      */
     @Override
-    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance, BigDecimal totalAccount, OrderTypeEnum orderTypeEnum, BigDecimal cashDeposit) {
+    public OperationResult<Boolean> saveAccountRenterRepay(Long orderId, Long uid, Integer totalPeriods, BigDecimal accidentInsurance,
+                                                           BigDecimal totalAccount, OrderTypeEnum orderTypeEnum, BigDecimal cashDeposit,
+                                                           FinancingInfo financingInfo) {
         if (null == orderId || null == uid || null == totalAccount || null == totalPeriods) {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
         }
+        if(OrderTypeEnum.FINANCING.equals(orderTypeEnum)){
+            return saveAccountRenterFinancingRepay(orderId,uid,totalPeriods,accidentInsurance,totalAccount,cashDeposit,financingInfo);
+        }
+        if(OrderTypeEnum.RENT.equals(orderTypeEnum)){
+            return saveAccountRenterRentRepay(orderId,uid,totalPeriods,accidentInsurance,totalAccount,cashDeposit);
+        }
+        return new OperationResult<>(false);
+    }
+
+    private OperationResult<Boolean> saveAccountRenterRentRepay(Long orderId, Long uid, Integer totalPeriods,BigDecimal accidentInsurance,
+                                                            BigDecimal totalAccount, BigDecimal cashDeposit){
         List<AccountRenterRepay> accountRenterRepays = new ArrayList<>(totalPeriods);
         BigDecimal orderAmount = totalAccount.divide(BigDecimal.valueOf(totalPeriods), 2, RoundingMode.HALF_UP);
 
@@ -586,7 +606,7 @@ public class AccountManageServiceImpl implements AccountManageService {
             accountRenterRepay.setUid(uid);
             accountRenterRepay.setWithhold(1);
             accountRenterRepay.setOrderStatus(1);
-            accountRenterRepay.setOrderType(orderTypeEnum.getCode());
+            accountRenterRepay.setOrderType(OrderTypeEnum.RENT.getCode());
             accountRenterRepay.setCashDeposit(cashDeposit);
             Long uixTime = LocalDate.now().plus(i - 1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
             accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
@@ -598,6 +618,49 @@ public class AccountManageServiceImpl implements AccountManageService {
             renterRepay.setWithhold(2);
             renterRepay.setOrderAmount(renterRepay.getOrderAmount().add(accidentInsurance));
         }
+        List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
+        if (CollectionUtils.isEmpty(result)) {
+            return new OperationResult<>(false);
+        }
+        return new OperationResult<>(true);
+    }
+
+    private OperationResult<Boolean> saveAccountRenterFinancingRepay(Long orderId, Long uid, Integer totalPeriods,BigDecimal accidentInsurance,
+                                                            BigDecimal totalAccount, BigDecimal cashDeposit,FinancingInfo financingInfo){
+        List<AccountRenterRepay> accountRenterRepays = new ArrayList<>(totalPeriods);
+        for (int i = 1; i <= totalPeriods; i++) {
+            AccountRenterRepay accountRenterRepay = new AccountRenterRepay();
+            accountRenterRepay.setId(idGlobal.getSeqId(AccountRenterRepay.class));
+            accountRenterRepay.setNumberPeriods(i);
+            accountRenterRepay.setOrderAmount(financingInfo.getMonthPayment());
+            accountRenterRepay.setOrderId(orderId);
+            accountRenterRepay.setUid(uid);
+            accountRenterRepay.setWithhold(1);
+            accountRenterRepay.setOrderStatus(1);
+            accountRenterRepay.setOrderType(OrderTypeEnum.FINANCING.getCode());
+            accountRenterRepay.setCashDeposit(cashDeposit);
+            Long uixTime = LocalDate.now().plus(i - 1, ChronoUnit.MONTHS).atStartOfDay().toEpochSecond(ZoneOffset.of("+8"));
+            accountRenterRepay.setPayTime(Math.toIntExact(uixTime));
+            double interest = ExcelUtils.ipmt(financingInfo.getRate().doubleValue(),i+1,totalPeriods,financingInfo.getAveragePrincipal().doubleValue());
+            accountRenterRepay.setInterest(BigDecimal.valueOf(interest));
+            accountRenterRepays.add(accountRenterRepay);
+        }
+        //第一期是已扣款
+        AccountRenterRepay renterRepay = accountRenterRepays.get(0);
+        if (null != renterRepay) {
+            renterRepay.setWithhold(2);
+            renterRepay.setOrderAmount(renterRepay.getOrderAmount().add(accidentInsurance));
+        }
+        // 最后一期 = 月还款金额加到期一次性支付本息和
+        BigDecimal lastRepay = financingInfo.getMonthPayment().add(financingInfo.getSumAmount());
+        AccountRenterRepay accountRenterRepay = accountRenterRepays.get(accountRenterRepays.size()-1);
+        // 最后一期利息 = 月还款利息 + （到期一次性支付本息之和 - 到期一次性支付本金）
+        BigDecimal lastRepayInterest = financingInfo.getSumAmount()
+                .subtract(financingInfo.getOnePrincipal())
+                .add(accountRenterRepay.getInterest());
+
+        accountRenterRepay.setOrderAmount(lastRepay);
+        accountRenterRepay.setInterest(lastRepayInterest);
         List<AccountRenterRepay> result = accountService.saveAccountRenterRepay(accountRenterRepays);
         if (CollectionUtils.isEmpty(result)) {
             return new OperationResult<>(false);
