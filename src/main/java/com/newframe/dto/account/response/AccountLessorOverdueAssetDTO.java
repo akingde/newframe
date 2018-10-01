@@ -5,6 +5,8 @@ package com.newframe.dto.account.response;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Auto-generated: 2018-08-31 13:52:41
  *
@@ -16,7 +18,7 @@ public class AccountLessorOverdueAssetDTO {
     /**
      * 逾期资产合计
      */
-    private Double totalOverdueAmount;
+    private BigDecimal totalOverdueAmount;
     /**
      * 逾期笔数
      */
@@ -26,8 +28,4 @@ public class AccountLessorOverdueAssetDTO {
      */
     private Double overdueRate;
 
-    /**
-     * 本月应收总额
-     */
-    private Double monthPayableAmount;
 }

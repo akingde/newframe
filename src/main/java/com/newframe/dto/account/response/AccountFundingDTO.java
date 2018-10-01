@@ -50,4 +50,19 @@ public class AccountFundingDTO {
      * utime
      */
     private Integer utime;
+
+
+    /**
+     * '逾期金额合计(元)'
+     */
+    private BigDecimal overdueAmount;
+
+    /**
+     * '逾期笔数'
+     */
+    private Integer overdueCount;
+    /**
+     * '逾期率'
+     */
+    private Double overdueRate;
 }

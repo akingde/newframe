@@ -48,10 +48,14 @@ public class AccountFundingFinanceAssetListDTO {
     private Integer investWay;
 
     /**
+     * 融资利率
+     */
+    private Double investInterestRate;
+
+    /**
      * 投资金额
      */
     private BigDecimal investAmount;
-
 
     /**
      * 投资期限

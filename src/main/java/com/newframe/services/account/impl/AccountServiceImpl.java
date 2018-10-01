@@ -22,6 +22,7 @@ import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderSupplierSlave;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
+import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +48,10 @@ import java.util.*;
 public class AccountServiceImpl implements AccountService {
     @Autowired
     AccountSlave accountSlave;
+    @Autowired
+    AccountFundingSlave accountFundingSlave;
+    @Autowired
+    AccountLessorSlave accountLessorSlave;
 
     @Autowired
     AccountFundingFinanceAssetSlave accountFundingFinanceAssetSlave;
@@ -61,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
     AccountLessorOverdueAssetSlave accountLessorOverdueAssetSlave;
 
     @Autowired
-    AccountSupplierSellSlave accountSupplierSellSlave;
+    AccountSupplierSlave accountSupplierSlave;
 
     @Autowired
     OrderFunderSlave orderFunderSlave;
@@ -136,6 +141,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRenterOverdueDetailMaster accountRenterOverdueDetailMaster;
 
+    @Autowired
+    private ConfigRateService configRateService;
+
     @Override
     public JsonResult recharge(BigDecimal amount) {
         return null;
@@ -161,7 +169,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getFunderAssetAccount(Long uid) {
-        Account entity = accountSlave.findOne(uid);
+        AccountFunding entity = accountFundingSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
@@ -254,12 +262,14 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getFunderOrderOverdueAssets(Long uid) {
-        AccountFundingOverdueAsset entity = accountFundingOverdueAssetSlave.findOne(uid);
+        AccountFunding entity = accountFundingSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountFundingOverdueAssetDTO dto = new AccountFundingOverdueAssetDTO();
-        BeanUtils.copyProperties(entity, dto);
+        dto.setOverdueNumber(entity.getOverdueCount());
+        dto.setOverdueRate(entity.getOverdueRate());
+        dto.setTotalOverdueAmount(entity.getOverdueAmount());
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -346,11 +356,11 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getSupplierOrderSellAssets(Long uid) {
-        AccountSupplierSell entity = accountSupplierSellSlave.findOne(uid);
+        AccountSupplier entity = accountSupplierSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
-        AccountSupplierSellDTO dto = new AccountSupplierSellDTO();
+        AccountSupplierDTO dto = new AccountSupplierDTO();
         BeanUtils.copyProperties(entity, dto);
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
@@ -375,12 +385,13 @@ public class AccountServiceImpl implements AccountService {
         currentPage--;
         Pageable pageable = new PageRequest(currentPage, pageSize);
         OrderSupplierQuery query = new OrderSupplierQuery();
+        query.setSupplierId(uid);
         query.setOrderStatus(orderStatus);
         Page<OrderSupplier> page = orderSupplierSlave.findAll(query, pageable);
 
-        List<AccountSupplierSellListDTO> dtoList = new ArrayList<>();
+        List<AccountSupplierListDTO> dtoList = new ArrayList<>();
         for (OrderSupplier entity : page.getContent()) {
-            AccountSupplierSellListDTO dto = new AccountSupplierSellListDTO();
+            AccountSupplierListDTO dto = new AccountSupplierListDTO();
             BeanUtils.copyProperties(entity, dto);
             dto.setProductMemory(entity.getProductRandomMemory());
             dto.setRenterId(entity.getMerchantId());
@@ -409,7 +420,7 @@ public class AccountServiceImpl implements AccountService {
     public JsonResult getHirerAssetAccount(Long uid) {
 
 
-        Account entity = accountSlave.findOne(uid);
+        AccountLessor entity = accountLessorSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
@@ -432,12 +443,14 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getHirerOrderMaterialAssets(Long uid) {
-        AccountLessorMatterAssetView entity = accountLessorMatterAssetViewSlave.findOne(uid);
+        AccountLessor entity = accountLessorSlave.findOne(uid);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountLessorMatterAssetViewDTO dto = new AccountLessorMatterAssetViewDTO();
-        BeanUtils.copyProperties(entity, dto);
+        dto.setTotalPayableAmount(entity.getMatterRentAmount());
+        dto.setPayedAmount(entity.getMatterRentPayed());
+        dto.setUnpayAmount(entity.getMatterRentUnpayed());
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -510,12 +523,16 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public JsonResult getHirerOrderOverdueAssets(Long uid) {
-        AccountLessorOverdueAsset entity = accountLessorOverdueAssetSlave.findOne(uid);
+        AccountLessorOverdueAssetQuery accountLessorOverdueAssetQuery = new AccountLessorOverdueAssetQuery();
+        accountLessorOverdueAssetQuery.setUid(uid);
+        AccountLessor entity = accountLessorSlave.findOne(accountLessorOverdueAssetQuery);
         if (null == entity) {
             return new JsonResult(SystemCode.SUCCESS, null);
         }
         AccountLessorOverdueAssetDTO dto = new AccountLessorOverdueAssetDTO();
-        BeanUtils.copyProperties(entity, dto);
+        dto.setTotalOverdueAmount(entity.getOverdueAmount());
+        dto.setOverdueRate(entity.getOverdueRate());
+        dto.setOverdueNumber(entity.getOverdueCount());
         return new JsonResult(SystemCode.SUCCESS, dto);
     }
 
@@ -985,6 +1002,7 @@ public class AccountServiceImpl implements AccountService {
         accountFundingFinanceAsset.setAverageInvestReturnRate(new BigDecimal("0"));
         accountFundingFinanceAsset.setInvestReturnRate(new BigDecimal("0"));
         accountFundingFinanceAsset.setYieldRate(new BigDecimal("0"));
+        accountFundingFinanceAsset.setInvestInterestRate(configRateService.getRate().doubleValue());
         accountFundingFinanceAssetMaster.save(accountFundingFinanceAsset);
         //王栋已经调用了
 //        accountManageService.saveAccountRenterRepay(orderId, totalRentAccount, monthNumber);

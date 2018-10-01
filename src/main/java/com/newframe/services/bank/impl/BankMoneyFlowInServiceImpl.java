@@ -9,7 +9,6 @@ import com.newframe.services.bank.BankMoneyFlowInService;
 import com.newframe.services.bank.data.BankQueryType;
 import com.newframe.services.bank.data.BankRealTimeResultBean;
 import com.newframe.services.user.UserService;
-import com.newframe.utils.DateUtils;
 import com.newframe.utils.MathUtils;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.slf4j.Logger;
@@ -115,9 +114,6 @@ public class BankMoneyFlowInServiceImpl implements BankMoneyFlowInService {
             logger.error("日期时间处理出错:{}", bankFlowDataBean.getCreattime());
             logger.error(e.getMessage());
         }
-        bankMoneyFlow.setCtime(DateUtils.getTimeOfEastEight());
-        bankMoneyFlow.setUtime(DateUtils.getTimeOfEastEight());
-
         return bankMoneyFlow;
     }
 
