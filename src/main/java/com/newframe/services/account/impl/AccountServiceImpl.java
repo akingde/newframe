@@ -945,7 +945,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public OperationResult<Boolean> saveAccountLessorMatterAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String associatedOrderId,
                                                                        String productBrand, String productModel, String productColour, String productStorage, String productMemory,
-                                                                       BigDecimal totalRentAccount, Integer monthNumber) {
+                                                                       BigDecimal totalRentAccount, Integer monthNumber,BigDecimal matterPrice) {
         if (null == uid || null == orderId || null == associatedOrderId || StringUtils.isEmpty(productBrand) || StringUtils.isEmpty(productModel) ||
                 StringUtils.isEmpty(productColour) || StringUtils.isEmpty(productStorage) || StringUtils.isEmpty(productMemory) || null == totalRentAccount || null == monthNumber) {
             return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
@@ -967,6 +967,7 @@ public class AccountServiceImpl implements AccountService {
         accountLessorMatterAsset.setProductStorage(productStorage);
         accountLessorMatterAsset.setProductMemory(productMemory);
         accountLessorMatterAsset.setOrderStatus(1);
+        accountLessorMatterAsset.setMatterPrice(matterPrice);
 
         accountLessorMatterAssetMaster.save(accountLessorMatterAsset);
         // 王栋调用过了

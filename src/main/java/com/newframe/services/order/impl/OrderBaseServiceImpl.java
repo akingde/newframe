@@ -189,7 +189,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 String.valueOf(orderRenter.getProductStorage()),
                 String.valueOf(orderRenter.getProductRandomMemory()),
                 orderHirer.getOrderAmount(),
-                orderHirer.getNumberOfPeriods());
+                orderHirer.getNumberOfPeriods(),orderHirer.getOrderAmount());
         if(operationResult != null){
             return operationResult.getEntity();
         }
