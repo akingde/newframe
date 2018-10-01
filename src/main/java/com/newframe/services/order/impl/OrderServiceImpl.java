@@ -532,6 +532,24 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.SUCCESS, dtos);
     }
 
+    /**
+     * 按产品信息查询有此机型的出租方列表
+     *
+     * @param productInfo 产品信息
+     * @return 查询结果
+     */
+    @Override
+    public List<ProductLessor> getLessorProductList(ProductInfoDTO productInfo) {
+        OrderProductLessorQuery query = new OrderProductLessorQuery();
+        query.setProductBrand(productInfo.getProductBrand());
+        query.setProductColor(productInfo.getProductColor());
+        query.setProductStorage(productInfo.getProductStorage());
+        query.setProductName(productInfo.getProductName());
+        query.setProductRandomMemory(productInfo.getProductRandomMemory());
+        List<ProductLessor> products = productLessorSlave.findAll(query);
+        return CollectionUtils.isEmpty(products) ? Lists.newArrayList() : products;
+    }
+
     @Override
     public JsonResult getFunderOrder(FunderQueryOrderDTO param, Long uid) {
         if (null == param.getPageSize() || null == param.getCurrentPage()) {
