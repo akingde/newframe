@@ -386,7 +386,7 @@ public interface AccountService {
      */
     OperationResult<Boolean> saveAccountLessorMatterAssetDetail(Long uid, Long orderId, Long orderTime, Long renterId, String renterName, String associatedOrderId,
                                                                 String productBrand, String productModel, String productColour, String productStorage, String productMemory,
-                                                                BigDecimal totalRentAccount, Integer monthNumber);
+                                                                BigDecimal totalRentAccount, Integer monthNumber,BigDecimal matterPrice);
     /**
      * 资金方账户
      * 由订单中心那边，调用，将相关信息插入到表account_renter_rent和account_funding_finance_asset

@@ -8,9 +8,9 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
+import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.order.*;
-import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
 import com.newframe.enums.order.*;
@@ -50,7 +50,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -82,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     OrderFunderEvidenceSlave orderFunderEvidenceSlave;
 
     @Autowired
-    OrderSuppMaster orderSuppMaster;
+    OrderSupplierMaster orderSupplierMaster;
     @Autowired
     OrderSupplierSlave orderSupplierSlave;
 
@@ -308,6 +310,7 @@ public class OrderServiceImpl implements OrderService {
                 // 账户操作不成功抛出异常回滚
                 throw new AccountOperationException(accountOperationResult);
             }
+            orderBaseService.saveOrderAssign(orderRenter.getOrderId(),orderRenter.getRenterId(),funderId,OrderType.FUNDER_ORDER, OrderAssignStatusEnum.AUDIT);
             orderBlockChainService.financeApply(orderRenter,orderFunder);
             // 推送消息
             orderBaseService.messagePush(funderId,financeApply.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
@@ -330,7 +333,6 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.BAD_REQUEST);
         }
 
-        // todo 根据lessorId查询出租方是否存在
 
         String renterName = orderBaseService.getRenterName(uid);
         String renterMobile = orderBaseService.getRenterPhone(uid);
@@ -394,12 +396,12 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBaseService.saveOrderAssign(orderId,uid,lessorId,OrderType.LESSOR_ORDER, OrderAssignStatusEnum.AUDIT);
             orderBlockChainService.rentApply(orderRenter,orderHirer);
             orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
-
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给出租方：" + lessorId);
         return new JsonResult(SystemCode.SUCCESS, true);
     }
@@ -637,6 +639,7 @@ public class OrderServiceImpl implements OrderService {
                 if(!operationResult.getEntity()){
                     throw new AccountOperationException(operationResult);
                 }
+                orderBaseService.updateOrderAssignStatus(orderId,orderRenter.getRenterId(),uid,OrderType.FUNDER_ORDER,OrderAssignStatusEnum.NO_PASS);
                 orderBlockChainService.financeRefuse(orderId,uid);
                 return new JsonResult(SystemCode.SUCCESS, true);
             }
@@ -669,7 +672,7 @@ public class OrderServiceImpl implements OrderService {
                     // 线下付款
                     success = offlineLoan(loanDTO, orderFunder);
                     if (success) {
-                        orderBaseService.renterFunderAccountOperation(orderRenter,orderFunder);
+                        orderBaseService.updateOrderAssignStatus(loanDTO.getOrderId(),orderRenter.getRenterId(),uid,OrderType.FUNDER_ORDER,OrderAssignStatusEnum.PASS);
                         return new JsonResult(SystemCode.SUCCESS);
                     }
                     return new JsonResult(SystemCode.LOAN_FAIL);
@@ -807,7 +810,7 @@ public class OrderServiceImpl implements OrderService {
         orderSupplier.setExpressCode(deliverInfo.getDeliverCode());
         // 待收货状态
         orderSupplier.setOrderStatus(OrderSupplierStatus.WAITING_RECEIVE.getCode());
-        orderSuppMaster.save(orderSupplier);
+        orderSupplierMaster.save(orderSupplier);
         // 修改资金方订单为待收货状态
         Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(deliverInfo.getOrderId());
         if (orderFunderOptional.isPresent()) {
@@ -959,7 +962,7 @@ public class OrderServiceImpl implements OrderService {
             orderRenter = optionalOrderRenter.get();
             orderRenter.setOrderStatus(OrderRenterStatus.WAITING_LESSOR_RECEIVE.getCode());
             orderRenterMaser.save(orderRenter);
-
+            orderBaseService.updateOrderAssignStatus(deliverInfo.getOrderId(),orderRenter.getRenterId(),uid,OrderType.LESSOR_ORDER,OrderAssignStatusEnum.PASS);
         }
         // 操作租赁商账户
         orderBaseService.renterRentAccountOperation(orderRenter,orderHirer);
@@ -991,6 +994,7 @@ public class OrderServiceImpl implements OrderService {
                     OrderRenter orderRenter = orderRenterOptional.get();
                     orderRenter.setOrderStatus(OrderRenterStatus.ORDER_RENT_OVER_THREE.getCode());
                     orderRenterMaser.updateById(orderRenter,orderId,OrderRenter.ORDER_STATUS);
+                    orderBaseService.updateOrderAssignStatus(orderId,orderRenter.getRenterId(),uid,OrderType.LESSOR_ORDER,OrderAssignStatusEnum.NO_PASS);
                 }
             }else{
                 // 修改租赁商订单为出租方拒绝
@@ -1254,6 +1258,7 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBaseService.updateOrderAssignStatus(loanDTO.getOrderId(),orderRenter.getRenterId(),uid,OrderType.LESSOR_ORDER,OrderAssignStatusEnum.PASS);
             orderBlockChainService.fundSupplier(orderFunder,orderSupplier,null);
             return new JsonResult(OrderResultEnum.SUCCESS,true);
         }else{
@@ -1518,7 +1523,7 @@ public class OrderServiceImpl implements OrderService {
             // 拿到供应商的供应价格
             orderSupplier.setTotalAccount(product.getSupplyPrice());
         }
-        orderSuppMaster.save(orderSupplier);
+        orderSupplierMaster.save(orderSupplier);
         orderBaseService.messagePush(orderSupplier.getSupplierId(),orderSupplier.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.DELIVER_APPLY);
         return orderSupplier;
     }

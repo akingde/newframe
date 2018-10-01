@@ -107,11 +107,11 @@ public class BankMoneyFlow implements Serializable {
     /**
      * 创建时间
      */
-    private Long ctime;
+    private Integer ctime;
     /**
      * 更新时间
      */
-    private Long utime;
+    private Integer utime;
     /**
      * 版本控制（乐观锁）
      */

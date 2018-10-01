@@ -3,6 +3,7 @@ package com.newframe.services.order;
 import com.newframe.dto.OperationResult;
 import com.newframe.entity.account.Account;
 import com.newframe.entity.order.OrderFunder;
+import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.order.OrderSupplier;
 
@@ -41,6 +42,12 @@ public interface OrderAccountOperationService {
      * @return
      */
     OperationResult<Boolean> offlineLoan(OrderRenter orderRenter, OrderSupplier orderSupplier,OrderFunder orderFunder);
+
+    OperationResult<Boolean> frozenRentDownPayment(OrderRenter orderRenter, OrderHirer orderHirer);
+
+    OperationResult<Boolean> unfrozenRentDownPayment(OrderRenter orderRenter, OrderHirer orderHirer);
+
+    OperationResult<Boolean> payDownPayment(OrderRenter orderRenter, OrderHirer orderHirer);
 
     /**
      * 获取用户账户

@@ -55,6 +55,10 @@ public class AccountFundingFinanceAsset {
      */
     private Integer investWay;
     /**
+     * 融资利率
+     */
+    private Double investInterestRate;
+    /**
      * 收益率
      */
     private BigDecimal yieldRate;

@@ -15,6 +15,9 @@ import javax.persistence.Id;
 @Entity
 @Data
 public class OrderAssign {
+
+    public static final String ORDER_STATUS="orderStatus";
+
     /**
      * 指派id
      * id
@@ -55,4 +58,9 @@ public class OrderAssign {
      * utime
      */
     private Integer utime;
+
+    /**
+     * 订单状态  是否通过  0审核中 1.通过  2.未通过
+     */
+    private Integer orderStatus;
 }

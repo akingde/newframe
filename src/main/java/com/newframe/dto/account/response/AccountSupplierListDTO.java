@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * @website http://www.bejson.com/java2pojo/
  */
 @Data
-public class AccountSupplierSellListDTO {
+public class AccountSupplierListDTO {
     private Integer ctime;
     private Integer utime;
     /**

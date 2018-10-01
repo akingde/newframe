@@ -1,7 +1,6 @@
 package com.newframe.repositories.dataMaster.account;
 
 
-import com.newframe.entity.account.AccountRenterRentDetail;
 import com.newframe.entity.account.AccountRenterRepay;
 import com.newframe.utils.query.BaseRepository;
 

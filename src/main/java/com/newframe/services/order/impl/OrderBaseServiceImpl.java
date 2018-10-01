@@ -3,29 +3,33 @@ package com.newframe.services.order.impl;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.dto.order.response.SupplierInfoDTO;
+import com.newframe.entity.order.OrderAssign;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.enums.order.OrderAssignStatusEnum;
+import com.newframe.enums.order.OrderType;
 import com.newframe.enums.order.PatternPaymentEnum;
+import com.newframe.repositories.dataMaster.order.OrderAssignMaster;
+import com.newframe.repositories.dataQuery.order.OrderAssignQuery;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
-import com.newframe.services.after.AfterService;
 import com.newframe.services.order.FormulaService;
 import com.newframe.services.order.OrderBaseService;
 import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -63,6 +67,10 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     private BigDecimal residualValue;
     @Autowired
     private ConfigRateService configRateService;
+    @Autowired
+    private OrderAssignMaster orderAssignMaster;
+    @Autowired
+    private IdGlobalGenerator idGen;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -181,7 +189,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
                 String.valueOf(orderRenter.getProductStorage()),
                 String.valueOf(orderRenter.getProductRandomMemory()),
                 orderHirer.getOrderAmount(),
-                orderHirer.getNumberOfPeriods());
+                orderHirer.getNumberOfPeriods(),orderHirer.getOrderAmount());
         if(operationResult != null){
             return operationResult.getEntity();
         }
@@ -246,5 +254,29 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         supplierInfoDTO.setAveragePrincipal(formulaService.getAveragePrincipal(rate,periods,monthPayment));
         supplierInfoDTO.setOnePrincipal(formulaService.getOnePrincipal(supplierInfoDTO.getFinancingAmount(),supplierInfoDTO.getAveragePrincipal()));
         supplierInfoDTO.setSumAmount(formulaService.getSumAmount(supplierInfoDTO.getFinancingAmount(),supplierInfoDTO.getAveragePrincipal(),rate,periods));
+    }
+
+    @Override
+    public void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus){
+        OrderAssign orderAssign = new OrderAssign();
+        orderAssign.setId(idGen.getSeqId(OrderAssign.class));
+        orderAssign.setExamineUid(examineId);
+        orderAssign.setOrderId(orderId);
+        orderAssign.setRentUid(renterId);
+        orderAssign.setOrderType(orderType.getCode());
+        orderAssign.setOrderStatus(orderAssignStatus.getCode());
+        orderAssignMaster.save(orderAssign);
+    }
+
+    @Override
+    public void updateOrderAssignStatus(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus){
+        OrderAssign orderAssign = new OrderAssign();
+        orderAssign.setOrderStatus(orderAssignStatus.getCode());
+        OrderAssignQuery query = new OrderAssignQuery();
+        query.setExamineUid(examineId);
+        query.setOrderId(orderId);
+        query.setRentUid(renterId);
+        query.setOrderType(orderType.getCode());
+        orderAssignMaster.update(orderAssign,query,OrderAssign.ORDER_STATUS);
     }
 }
