@@ -3,13 +3,16 @@ package com.newframe.services.order.impl;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.dto.order.response.SupplierInfoDTO;
+import com.newframe.entity.order.OrderAssign;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.enums.order.OrderType;
 import com.newframe.enums.order.PatternPaymentEnum;
+import com.newframe.repositories.dataMaster.order.OrderAssignMaster;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
@@ -21,6 +24,7 @@ import com.newframe.services.test.TestManageService;
 import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
+import com.newframe.utils.cache.IdGlobalGenerator;
 import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,10 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     private BigDecimal residualValue;
     @Autowired
     private ConfigRateService configRateService;
+    @Autowired
+    private OrderAssignMaster orderAssignMaster;
+    @Autowired
+    private IdGlobalGenerator idGen;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -246,5 +254,16 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         supplierInfoDTO.setAveragePrincipal(formulaService.getAveragePrincipal(rate,periods,monthPayment));
         supplierInfoDTO.setOnePrincipal(formulaService.getOnePrincipal(supplierInfoDTO.getFinancingAmount(),supplierInfoDTO.getAveragePrincipal()));
         supplierInfoDTO.setSumAmount(formulaService.getSumAmount(supplierInfoDTO.getFinancingAmount(),supplierInfoDTO.getAveragePrincipal(),rate,periods));
+    }
+
+    @Override
+    public void saveOrderAssign(Long orderId,Long renterId,Long examineId,OrderType orderType){
+        OrderAssign orderAssign = new OrderAssign();
+        orderAssign.setId(idGen.getSeqId(OrderAssign.class));
+        orderAssign.setExamineUid(examineId);
+        orderAssign.setOrderId(orderId);
+        orderAssign.setRentUid(renterId);
+        orderAssign.setOrderType(orderType.getCode());
+        orderAssignMaster.save(orderAssign);
     }
 }

@@ -308,6 +308,7 @@ public class OrderServiceImpl implements OrderService {
                 // 账户操作不成功抛出异常回滚
                 throw new AccountOperationException(accountOperationResult);
             }
+            orderBaseService.saveOrderAssign(orderRenter.getOrderId(),orderRenter.getRenterId(),funderId,OrderType.FUNDER_ORDER);
             orderBlockChainService.financeApply(orderRenter,orderFunder);
             // 推送消息
             orderBaseService.messagePush(funderId,financeApply.getOrderId(),orderRenter.getPartnerOrderId(),MessagePushEnum.FINANCING_APPLY);
@@ -394,12 +395,12 @@ public class OrderServiceImpl implements OrderService {
             if(!operationResult.getEntity()){
                 throw new AccountOperationException(operationResult);
             }
+            orderBaseService.saveOrderAssign(orderId,uid,lessorId,OrderType.LESSOR_ORDER);
             orderBlockChainService.rentApply(orderRenter,orderHirer);
             orderBaseService.messagePush(lessorId,orderId,orderRenter.getPartnerOrderId(),MessagePushEnum.RENT_APPLY);
             // 修改租赁商订单状态
             updateOrderRenterStatusType(OrderRenterStatus.WAITING_LESSOR_AUDIT,OrderType.LESSOR_ORDER, orderId);
         }
-
         GwsLogger.getLogger().info("租赁商" + uid + "的订单" + orderId + "已派发给出租方：" + lessorId);
         return new JsonResult(SystemCode.SUCCESS, true);
     }

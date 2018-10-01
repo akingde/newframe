@@ -5,6 +5,7 @@ import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
 import com.newframe.enums.order.MessagePushEnum;
+import com.newframe.enums.order.OrderType;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -55,4 +56,6 @@ public interface OrderBaseService {
     BigDecimal getRentPrice(BigDecimal price, BigDecimal rate, Integer numberOfPayment);
 
     void getSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods,BigDecimal monthPayment);
+
+    void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType);
 }
