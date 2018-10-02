@@ -340,9 +340,9 @@ public class HirerServiceImpl implements RoleService {
      */
     @Override
     public OperationResult<Boolean> addProduct(Long uid, ProductModifyDTO condition) {
-        if(!BigDecimalUtils.compareTo(condition.getBrokenScreenRisks())){
-            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
-        }
+//        if(!BigDecimalUtils.compareTo(condition.getBrokenScreenRisks())){
+//            return new OperationResult<>(RequestResultEnum.PARAMETER_ERROR, false);
+//        }
         ProductLessor productLessor = new ProductLessor(uid, condition);
         productLessorService.insert(productLessor);
         return new OperationResult(true);
