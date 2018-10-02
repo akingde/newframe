@@ -19,6 +19,12 @@ import java.util.List;
 public interface UserFunderService {
 
     /**
+     * 获取所有的资金方
+     * @return
+     */
+    List<UserFunder> findAll();
+
+    /**
      * 查询
      * @param uid
      * @return

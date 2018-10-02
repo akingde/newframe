@@ -6,6 +6,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.dto.order.response.FinancingInfo;
+import com.newframe.entity.user.ProductLessor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -93,6 +94,14 @@ public interface OrderService {
      * @return 查询结果
      */
     JsonResult getLessorList(ProductInfoDTO productInfo);
+
+    /**
+     * 按产品信息查询有此机型的出租方列表
+     *
+     * @param productInfo 产品信息
+     * @return 查询结果
+     */
+    List<ProductLessor> getLessorProductList(ProductInfoDTO productInfo);
 
     /**
      * 查询资金方订单

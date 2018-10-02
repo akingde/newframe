@@ -2,6 +2,8 @@ package com.newframe.services.userbase;
 
 import com.newframe.entity.user.UserHirer;
 
+import java.util.List;
+
 /**
  *
  *  出租方
@@ -12,6 +14,12 @@ import com.newframe.entity.user.UserHirer;
  * @mbggenerated do_not_delete_during_merge
  */
 public interface UserHirerService {
+
+    /**
+     * 获取所有的出租方
+     * @return
+     */
+    List<UserHirer> findAll();
 
     /**
      * 查找出租方信息

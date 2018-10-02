@@ -1,10 +1,13 @@
 package com.newframe.services.userbase.impl;
 
+import com.google.common.collect.Lists;
 import com.newframe.entity.user.UserHirer;
+import com.newframe.enums.user.RoleStatusEnum;
 import com.newframe.repositories.dataMaster.user.UserHirerMaster;
 import com.newframe.repositories.dataQuery.user.UserHirerQuery;
 import com.newframe.repositories.dataSlave.user.UserHirerSlave;
 import com.newframe.services.userbase.UserHirerService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,19 @@ public class UserHirerServiceImpl implements UserHirerService {
     private UserHirerMaster userHirerMaster;
     @Autowired
     private UserHirerSlave userHirerSlave;
+
+    /**
+     * 获取所有的出租方
+     *
+     * @return
+     */
+    @Override
+    public List<UserHirer> findAll() {
+        UserHirerQuery query = new UserHirerQuery();
+        query.setRoleStatus(RoleStatusEnum.NORMAL.getRoleStatue());
+        List<UserHirer> hirers = userHirerSlave.findAll(query);
+        return CollectionUtils.isEmpty(hirers) ? Lists.newArrayList() : hirers;
+    }
 
     /**
      * 查找出租方信息

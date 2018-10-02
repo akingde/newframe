@@ -38,6 +38,19 @@ public class UserFunderServiceImpl implements UserFunderService {
     private UserFunderSlave userFunderSlave;
 
     /**
+     * 获取所有的资金方
+     *
+     * @return
+     */
+    @Override
+    public List<UserFunder> findAll() {
+        UserFunderQuery query = new UserFunderQuery();
+        query.setStatus(RoleStatusEnum.NORMAL.getRoleStatue());
+        List<UserFunder> funders = userFunderSlave.findAll(query);
+        return CollectionUtils.isEmpty(funders) ? Lists.newArrayList() : funders;
+    }
+
+    /**
      * 查询
      *
      * @param uid
