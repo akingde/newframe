@@ -53,6 +53,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -226,7 +227,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult renterFinancingBuy(FinanceApplyDTO financeApply,Long uid) throws AccountOperationException {
         // 参数校验
         if (financeApply.getOrderId() == null || financeApply.getSupplierId() == null
@@ -240,14 +241,14 @@ public class OrderServiceImpl implements OrderService {
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
         List<UserFunder> funders = userFunderSlave.findAll();
-        Long funderId = 1535433927623092L;
-//        if(funders!= null && funders.size() > 0){
-//            Integer size = funders.size();
-//            Random random = new Random();L
-//            funderId = funders.get(random.nextInt(size)).getUid();
-//        }else{
-//            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
-//        }
+        Long funderId = null;
+        if(funders!= null && funders.size() > 0){
+            Integer size = funders.size();
+            Random random = new Random();
+            funderId = funders.get(random.nextInt(size)).getUid();
+        }else{
+            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
+        }
 
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
@@ -323,7 +324,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
                                  BigDecimal monthlyPayment, BigDecimal accidentBenefit, Integer patternPayment,
                                  BigDecimal fullRepayAmount) throws AccountOperationException {
@@ -407,7 +408,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = RuntimeException.class)
     public JsonResult cancelOrder(List<Long> orders, Long uid) {
         // 参数校验
         if (orders == null || orders.size() == 0) {
@@ -607,7 +608,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult funderRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
@@ -686,7 +687,7 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
 
-//    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException {
         if (orderId == null) {
@@ -930,7 +931,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = RuntimeException.class)
     public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
@@ -1109,8 +1110,11 @@ public class OrderServiceImpl implements OrderService {
                         );
                 if (amount.compareTo(deposit) >= 0) {
                     return new OperationResult<>(OrderResultEnum.FINANCINGABLE, true);
+                }else{
+                    return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
                 }
             }
+            return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
         }
         return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
     }
@@ -1228,7 +1232,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException {
         if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
             return new JsonResult(OrderResultEnum.PARAM_ERROR,false);
