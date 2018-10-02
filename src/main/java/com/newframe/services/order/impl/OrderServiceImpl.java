@@ -385,7 +385,7 @@ public class OrderServiceImpl implements OrderService {
             }else{
                 // 全款支付的首付、月租金等都为0
                 orderHirer.setDownPayment(fullRepayAmount.add(accidentBenefit));
-                orderHirer.setMonthlyPayment(BigDecimal.ZERO);
+                orderHirer.setMonthlyPayment(fullRepayAmount.divide(BigDecimal.valueOf(tenancyTerm),2,RoundingMode.HALF_UP));
                 orderHirer.setOrderAmount(fullRepayAmount);
             }
 

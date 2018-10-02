@@ -35,6 +35,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
@@ -491,6 +492,10 @@ public class AccountServiceImpl implements AccountService {
             dto.setPurchaseAmount(entity.getMatterPrice());
             dto.setRentMonth(entity.getRentDeadline());
             dto.setTotalRentAmount(entity.getTotalAmount());
+            if(null!=entity.getRentDeadline()&&null!=entity.getTotalAmount()&&entity.getRentDeadline()>0){
+                BigDecimal monthRent = entity.getTotalAmount().divide(BigDecimal.valueOf(entity.getRentDeadline()),2, RoundingMode.HALF_UP);
+                dto.setMonthRentAmount(monthRent);
+            }
             dtoList.add(dto);
         }
         return new PageJsonResult(SystemCode.SUCCESS, dtoList, page.getTotalElements());

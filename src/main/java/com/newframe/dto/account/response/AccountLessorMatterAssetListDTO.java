@@ -90,5 +90,9 @@ public class AccountLessorMatterAssetListDTO {
      * 租金总额
      */
     private BigDecimal totalRentAmount;
+    /**
+     * 月租金
+     */
+    private BigDecimal monthRentAmount;
 
 }

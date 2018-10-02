@@ -1,0 +1,1 @@
+INSERT INTO user_address (id, uid, consignee_name, mobile, province_id, province_name, city_id, city_name, county_id, county_name, consignee_address, default_address, ctime, utime) VALUES (0, 0, '91易租', '15957180382', null, '浙江省', null, '杭州市', null, '西湖区', '文一西路998号海外高层次人才创新园1幢', 1, 1537518694, 1537518694);

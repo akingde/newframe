@@ -66,7 +66,7 @@ BEGIN
 		cash_deposit = @deposit, due_amount = @repay, month_payable_amount = @monthRepay, overdue_amount = @overdueAmount, overdue_count = @overdueCount, overdue_rate = @overdueRate
 		WHERE uid = @uid;
   END IF;
- END
+ END;
 /*=========================================================================*/
 
 
@@ -148,7 +148,7 @@ CREATE PROCEDURE `pro_account_lessor`(in in_uid bigint)
           matter_rent_amount = @matterRentAmount,matter_rent_payed =@matterRentPayed,matter_rent_unpayed =@matterRentUnpayed
       WHERE uid = @uid;
     END IF;
-  END
+  END;
 /*=========================================================================*/
 
 
@@ -199,5 +199,5 @@ CREATE PROCEDURE `pro_account_supplier`(in in_uid bigint)
         total_earning = @sellAmount,sale_number = @sellCount, deliver_number = @deliverCount
       WHERE uid = @uid;
     END IF;
-  END
+  END;
 /*=========================================================================*/
