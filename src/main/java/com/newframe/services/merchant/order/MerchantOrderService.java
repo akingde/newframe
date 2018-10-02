@@ -42,4 +42,11 @@ public interface MerchantOrderService {
      * @return 操作结果
      */
     OperationResult<String> repayNotice(RepayNoticeDTO repayNotice);
+
+    /**
+     * 第三方平台订单状态同步通知
+     * @param dto 请求数据
+     * @return 操作结果
+     */
+    OperationResult<String> pushStatus(PushOrderStatusDTO dto);
 }

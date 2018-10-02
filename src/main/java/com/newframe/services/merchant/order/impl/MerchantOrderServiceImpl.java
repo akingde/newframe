@@ -160,5 +160,11 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
         return null;
     }
 
+    @Override
+    public OperationResult<String> pushStatus(PushOrderStatusDTO dto) {
+
+        return null;
+    }
+
 
 }
