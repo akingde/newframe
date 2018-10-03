@@ -10,6 +10,7 @@ import com.newframe.entity.account.*;
 import com.newframe.enums.TypeEnum;
 import com.newframe.services.account.AccountManageService;
 import com.newframe.services.account.AccountService;
+import com.newframe.services.account.AccountStatisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +32,9 @@ public class ApiAccountController extends BaseController {
 
     @Autowired
     private AccountManageService accountManageService;
+
+    @Autowired
+    private AccountStatisService accountStatisService;
 
     /**
      * 充值
@@ -316,6 +320,7 @@ public class ApiAccountController extends BaseController {
     @UserType(type = TypeEnum.app)
     @RequestMapping(value = "getFunderAssetAccount", method = RequestMethod.POST)
     public JsonResult getFunderAssetAccount(Long uid) {
+        accountStatisService.statisAccountFunding(uid);
         return accountService.getFunderAssetAccount(uid);
     }
 
@@ -425,6 +430,7 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping(value = "getSupplierAssetAccount", method = RequestMethod.POST)
     public JsonResult getSupplierAssetAccount(Long uid) {
+        accountStatisService.statisAccountSupplier(uid);
         return accountService.getSupplierAssetAccount(uid);
     }
 
@@ -440,6 +446,7 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping(value = "getSupplierOrderSellAssets", method = RequestMethod.POST)
     public JsonResult getSupplierOrderSellAssets(Long uid) {
+        accountStatisService.statisAccountSupplier(uid);
         return accountService.getSupplierOrderSellAssets(uid);
     }
 
@@ -474,6 +481,7 @@ public class ApiAccountController extends BaseController {
      */
     @RequestMapping(value = "getHirerAssetAccount", method = RequestMethod.POST)
     public JsonResult getHirerAssetAccount(Long uid) {
+        accountStatisService.statisAccountLessor(uid);
         return accountService.getHirerAssetAccount(uid);
     }
 

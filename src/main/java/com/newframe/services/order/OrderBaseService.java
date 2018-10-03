@@ -1,5 +1,6 @@
 package com.newframe.services.order;
 
+import com.newframe.dto.order.request.DeliverInfoDTO;
 import com.newframe.dto.order.response.SupplierInfoDTO;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
@@ -8,7 +9,9 @@ import com.newframe.enums.order.MessagePushEnum;
 import com.newframe.enums.order.OrderAssignStatusEnum;
 import com.newframe.enums.order.OrderType;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author kfm
@@ -58,4 +61,11 @@ public interface OrderBaseService {
     void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus);
 
     void updateOrderAssignStatus(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus);
+
+    /**
+     * 读取批量发货信息
+     * @param inputStream 文件流
+     * @return 返回结果
+     */
+    List<DeliverInfoDTO> wrapBatchDeliver(InputStream inputStream);
 }

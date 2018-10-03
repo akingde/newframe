@@ -125,6 +125,7 @@ public class BlockChainRepository {
 
         if(queryTransaction.getResult().getReceipt().getTy() != 2){
             queryTransaction.setError(queryTransaction.getResult().getReceipt().getLogs().get(0).getLog());
+            GwsLogger.getLogger().error("block chain error：======================>" + queryTransaction.getResult().getReceipt().getLogs().get(0).getLog());
             return queryTransaction;
         }
         return queryTransaction;

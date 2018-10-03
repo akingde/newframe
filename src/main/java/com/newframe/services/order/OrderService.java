@@ -6,6 +6,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.dto.order.response.FinancingInfo;
+import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.ProductLessor;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import java.util.List;
  */
 public interface OrderService {
 
+    OrderRenter getRenterOrderById(Long orderId);
     /**
      * 获取租赁商所有订单
      *
@@ -77,6 +79,14 @@ public interface OrderService {
      * @return 处理结果
      */
     JsonResult renterViewDetail(Long orderId, Long renterId);
+
+    /**
+     * 查询供应商融资购机报价
+     *
+     * @return 查询结果
+     */
+
+    SupplierInfoDTO getSupplierOrderBuy(Long orderId, Long supplierId);
 
     /**
      * 按产品信息查询有此机型的供应商列表
@@ -165,7 +175,7 @@ public interface OrderService {
      * @param deliverInfo 发货信息
      * @return 返回结果
      */
-    JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo);
+    OperationResult<Boolean>  supplierDeliver(Long uid, DeliverInfoDTO deliverInfo);
 
     /**
      * 供应商查询物流信息
@@ -208,7 +218,7 @@ public interface OrderService {
      * @param deliverInfo 发货信息
      * @return 操作结果
      */
-    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException;
+    OperationResult<Boolean> lessorDeliver(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException;
 
     /**
      * 出租方审核不通过
@@ -297,4 +307,30 @@ public interface OrderService {
      * @return 操作结果
      */
     OperationResult<RenterInfo> getRenterInfoByOrderId(Long orderId);
+
+    /**
+     * 批量发货
+     * @param uid 供应商id
+     * @param file excel文件
+     * @return 操作结果
+     */
+    OperationResult<Boolean> supplierBatchDeliver(Long uid, MultipartFile file);
+
+    /**
+     * 出租方批量发货
+     * @param uid 出租方uid
+     * @param file excel文件
+     * @return 操作结果
+     */
+    OperationResult<Boolean> lessorBatchLogistics(Long uid, MultipartFile file) throws AccountOperationException;
+
+    /**
+     * 资金方批量拒绝
+     * @param uid 资金方uid
+     * @param orders 订单id
+     * @return 操作结果
+     */
+    OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException;
+
+
 }

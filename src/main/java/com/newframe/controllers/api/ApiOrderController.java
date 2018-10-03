@@ -263,8 +263,14 @@ public class ApiOrderController extends BaseController {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        return orderService.supplierDeliver(uid,deliverInfo);
+        OperationResult<Boolean> result = orderService.supplierDeliver(uid,deliverInfo);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
+
+
 
     /**
      * 24、供应商和资金方查询物流信息
@@ -323,8 +329,14 @@ public class ApiOrderController extends BaseController {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
         }
-        return orderService.lessorLogistics(uid,deliverInfo);
+        OperationResult<Boolean> result = orderService.lessorDeliver(uid,deliverInfo);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
     }
+
+
 
     /**
      * 15、出租方-取消订单（拒绝）

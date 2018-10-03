@@ -10,6 +10,7 @@ import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.account.Account;
+import com.newframe.entity.account.AccountRenterOverdueAsset;
 import com.newframe.entity.order.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
@@ -17,6 +18,9 @@ import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.account.AccountFundingFinanceAssetSlave;
+import com.newframe.repositories.dataSlave.account.AccountRenterFinancingSlave;
+import com.newframe.repositories.dataSlave.account.AccountRenterOverdueAssetSlave;
+import com.newframe.repositories.dataSlave.account.AccountRenterOverdueDetailSlave;
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
@@ -53,6 +57,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -107,6 +112,10 @@ public class OrderServiceImpl implements OrderService {
     ProductSupplierSlave productSupplierSlave;
     @Autowired
     ProductLessorSlave productLessorSlave;
+    @Autowired
+    AccountRenterFinancingSlave accountRenterFinancingSlave;
+    @Autowired
+    AccountRenterOverdueDetailSlave accountRenterOverdueDetailSlave;
 
     @Autowired
     CommonService commonService;
@@ -122,7 +131,8 @@ public class OrderServiceImpl implements OrderService {
     UserRentMerchantService userRentMerchantService;
     @Autowired
     AccountFundingFinanceAssetSlave accountFundingFinanceAssetSlave;
-
+    @Autowired
+    AccountRenterOverdueAssetSlave accountRenterOverdueAssetSlave;
     @Autowired
     OrderBlockChainService orderBlockChainService;
     @Autowired
@@ -150,6 +160,9 @@ public class OrderServiceImpl implements OrderService {
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
 
+    public OrderRenter getRenterOrderById(Long orderId) {
+        return orderRenterSlave.findOne(orderId);
+    }
     @Override
     public JsonResult getRenterOrder(QueryOrderDTO param, Long uid) {
         if (null == param.getPageSize() || null == param.getCurrentPage()) {
@@ -226,7 +239,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult renterFinancingBuy(FinanceApplyDTO financeApply,Long uid) throws AccountOperationException {
         // 参数校验
         if (financeApply.getOrderId() == null || financeApply.getSupplierId() == null
@@ -236,18 +249,17 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
         String renterName = orderBaseService.getRenterName(uid);
-        // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
         List<UserFunder> funders = userFunderSlave.findAll();
-        Long funderId = 1535433927623092L;
-//        if(funders!= null && funders.size() > 0){
-//            Integer size = funders.size();
-//            Random random = new Random();L
-//            funderId = funders.get(random.nextInt(size)).getUid();
-//        }else{
-//            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
-//        }
+        Long funderId = null;
+        if(funders!= null && funders.size() > 0){
+            Integer size = funders.size();
+            Random random = new Random();
+            funderId = funders.get(random.nextInt(size)).getUid();
+        }else{
+            return new JsonResult(OrderResultEnum.NO_HAVE_FUNDER);
+        }
 
         // 查询此订单号是否已经在进行资金方审核，防止一个订单提交给多个资金方
 
@@ -323,7 +335,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult renterRent(Long uid, Long orderId, Long lessorId, Integer tenancyTerm,
                                  BigDecimal monthlyPayment, BigDecimal accidentBenefit, Integer patternPayment,
                                  BigDecimal fullRepayAmount) throws AccountOperationException {
@@ -407,7 +419,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = RuntimeException.class)
     public JsonResult cancelOrder(List<Long> orders, Long uid) {
         // 参数校验
         if (orders == null || orders.size() == 0) {
@@ -465,6 +477,43 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.SUCCESS, orderRenterDTO);
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
+    }
+
+    @Override
+    public SupplierInfoDTO getSupplierOrderBuy(Long orderId, Long supplierId) {
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if(!orderRenterOptional.isPresent()){
+            //订单不存在
+            return null;
+        }
+        OrderRenter orderRenter = orderRenterOptional.get();
+
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setSupplierId(supplierId);
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if(org.springframework.util.CollectionUtils.isEmpty(products)){
+            //供货商没有商品
+            return null;
+        }
+
+        SupplierInfoDTO dto = new SupplierInfoDTO();
+        dto.setSupplierId(supplierId);
+        BigDecimal financingAmount = getFinancingAmount(orderId, supplierId);
+        dto.setFinancingAmount(financingAmount);
+        dto.setAccidentBenefit(residualValue);
+        if(financingAmount != null){
+            dto.setDownPayment(financingAmount
+                    .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP)
+                    .add(residualValue));
+            dto.setMonthPayment(financingAmount
+                    .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
+            dto.setDeposit(getDeposit(orderId,supplierId));
+        }
+        return dto;
     }
 
     @Override
@@ -607,7 +656,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult funderRefuse(Long orderId, Long uid) throws AccountOperationException {
         if (orderId == null) {
             return new JsonResult(SystemCode.BAD_REQUEST);
@@ -620,6 +669,9 @@ public class OrderServiceImpl implements OrderService {
         List<OrderFunder> orderFunders = orderFunderSlave.findAll(query);
         if (orderFunders != null && orderFunders.size() == 1) {
             OrderFunder orderFunder = orderFunders.get(0);
+            if(!OrderFunderStatus.WAITING_AUDIT.getCode().equals(orderFunder.getOrderStatus())){
+                return new JsonResult(OrderResultEnum.SUCCESS, true);
+            }
             // 查询租赁商订单，将状态改为资金方已拒绝
             Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
             if (orderRenterOptional.isPresent()) {
@@ -645,6 +697,14 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
+    }
+
+    @Override
+    public OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
+        for(Long orderId:orders){
+            funderRefuse(orderId,uid);
+        }
+        return new OperationResult<>(OrderResultEnum.SUCCESS,true);
     }
 
     @Override
@@ -686,7 +746,7 @@ public class OrderServiceImpl implements OrderService {
         return new JsonResult(SystemCode.BAD_REQUEST);
     }
 
-//    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JsonResult funderUploadEvidence(Long uid, Long orderId, MultipartFile file) throws AccountOperationException {
         if (orderId == null) {
@@ -789,19 +849,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo) {
+    public OperationResult<Boolean> supplierDeliver(Long uid, DeliverInfoDTO deliverInfo) {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
                 || deliverInfo.getOrderId() == null || deliverInfo.getDeliverCode() == null) {
-            return new JsonResult(SystemCode.BAD_REQUEST, false);
+            return new OperationResult<>(SystemCode.BAD_REQUEST);
         }
         OrderSupplierQuery query = new OrderSupplierQuery();
         query.setOrderId(deliverInfo.getOrderId());
         query.setSupplierId(uid);
         OrderSupplier orderSupplier = orderSupplierSlave.findOne(query);
         if (orderSupplier == null) {
-            return new JsonResult(SystemCode.BAD_REQUEST, false);
+            return new OperationResult<>(SystemCode.BAD_REQUEST);
         }
         orderSupplier.setExpressCompany(deliverInfo.getExpressName());
         orderSupplier.setExpressNumber(deliverInfo.getDeliverId());
@@ -826,7 +886,24 @@ public class OrderServiceImpl implements OrderService {
             orderRenterMaser.save(orderRenter);
         }
         orderBlockChainService.supplierDeliver(orderSupplier);
-        return new JsonResult(SystemCode.SUCCESS, true);
+        return new OperationResult<>(SystemCode.SUCCESS, true);
+    }
+
+    @Override
+    public OperationResult<Boolean> supplierBatchDeliver(Long uid, MultipartFile file) {
+        if(file == null){
+            return new OperationResult<>(OrderResultEnum.NO_FILE);
+        }
+        try {
+            List<DeliverInfoDTO> deliverInfoDTOS = orderBaseService.wrapBatchDeliver(file.getInputStream());
+            for(DeliverInfoDTO deliverInfoDTO:deliverInfoDTOS){
+                supplierDeliver(uid,deliverInfoDTO);
+            }
+            return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_SUCCESS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_FAIL);
     }
 
     @Override
@@ -930,13 +1007,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = RuntimeException.class)
-    public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
+    @Transactional(rollbackFor = RuntimeException.class)
+    public OperationResult<Boolean> lessorDeliver(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
                 || deliverInfo.getOrderId() == null || deliverInfo.getDeliverCode() == null) {
-            return new JsonResult(SystemCode.BAD_REQUEST, false);
+            return new OperationResult<>(SystemCode.BAD_REQUEST);
         }
         HirerDeliver hirerDeliver = new HirerDeliver();
         hirerDeliver.setExpressName(deliverInfo.getExpressName());
@@ -972,7 +1049,25 @@ public class OrderServiceImpl implements OrderService {
         }
         orderBlockChainService.payLessor(orderRenter,orderHirer);
         orderBlockChainService.lessorDeliver(orderHirer,hirerDeliver);
-        return new JsonResult(SystemCode.SUCCESS, true);
+        return new OperationResult<>(SystemCode.SUCCESS, true);
+    }
+
+    @Override
+    @Transactional(noRollbackFor = Exception.class)
+    public OperationResult<Boolean> lessorBatchLogistics(Long uid,MultipartFile file) throws AccountOperationException {
+        if(file == null){
+            return new OperationResult<>(OrderResultEnum.NO_FILE);
+        }
+        try {
+            List<DeliverInfoDTO> deliverInfoDTOS = orderBaseService.wrapBatchDeliver(file.getInputStream());
+            for(DeliverInfoDTO deliverInfoDTO:deliverInfoDTOS){
+                lessorDeliver(uid,deliverInfoDTO);
+            }
+            return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_SUCCESS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_FAIL);
     }
 
     @Override
@@ -985,6 +1080,9 @@ public class OrderServiceImpl implements OrderService {
         Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(orderId);
         if (optionalOrderHirer.isPresent()) {
             OrderHirer orderHirer = optionalOrderHirer.get();
+            if(!OrderLessorStatus.WATIING_LESSOR_AUDIT.getCode().equals(orderHirer.getOrderStatus())){
+                return new JsonResult(OrderResultEnum.AUDIT_ORDER_REFUSE_ERROR);
+            }
             orderHirer.setOrderStatus(OrderLessorStatus.LESSOR_AUDIT_REFUSE.getCode());
             orderHirerMaser.save(orderHirer);
             // 如果 最大次数租赁次数 <= 订单租赁次数，将租赁商订单改为 不可再租赁状态
@@ -1109,8 +1207,11 @@ public class OrderServiceImpl implements OrderService {
                         );
                 if (amount.compareTo(deposit) >= 0) {
                     return new OperationResult<>(OrderResultEnum.FINANCINGABLE, true);
+                }else{
+                    return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
                 }
             }
+            return new OperationResult<>(OrderResultEnum.SUPPLIER_NO_PRODUCT);
         }
         return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
     }
@@ -1127,9 +1228,13 @@ public class OrderServiceImpl implements OrderService {
         info.setRenterPhone(renter.getMerchantPhoneNumber());
         info.setAddress(renter.getRentMerchantAddress());
         info.setBadDeptTimes(0);
-        info.setOverdueTimes(0);
-        info.setFinancingAmount(new BigDecimal(12593));
-        info.setOverdueAmount(new BigDecimal(2549));
+        info.setOverdueTimes(accountRenterOverdueDetailSlave.getRentOverdueTimes(renterId));
+        info.setFinancingAmount(accountRenterFinancingSlave.getFinancingAmount(renterId));
+        AccountRenterOverdueAsset accountRenterOverdueAsset = accountRenterOverdueAssetSlave.findOne(renterId);
+        if (accountRenterOverdueAsset != null){
+            info.setOverdueAmount(accountRenterOverdueAsset.getTotalOverdueAccount());
+        }
+
         return new OperationResult<>(OrderResultEnum.SUCCESS, info);
     }
 
@@ -1150,9 +1255,13 @@ public class OrderServiceImpl implements OrderService {
         info.setRenterPhone(renter.getMerchantPhoneNumber());
         info.setAddress(renter.getRentMerchantAddress());
         info.setBadDeptTimes(0);
-        info.setOverdueTimes(0);
-        info.setFinancingAmount(new BigDecimal(12593));
-        info.setOverdueAmount(new BigDecimal(2549));
+        info.setOverdueTimes(accountRenterOverdueDetailSlave.getRentOverdueTimes(renterId));
+        info.setFinancingAmount(accountRenterFinancingSlave.getFinancingAmount(renterId));
+        AccountRenterOverdueAsset accountRenterOverdueAsset = accountRenterOverdueAssetSlave.findOne(renterId);
+        if (accountRenterOverdueAsset != null){
+            info.setOverdueAmount(accountRenterOverdueAsset.getTotalOverdueAccount());
+        }
+
         return new OperationResult<>(OrderResultEnum.SUCCESS, info);
     }
 
@@ -1228,7 +1337,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public JsonResult onlineLoan(LoanDTO loanDTO, Long uid) throws AccountOperationException {
         if(loanDTO.getOrderId() == null || loanDTO.getLoanModel() == null || loanDTO.getLoanAmount() == null){
             return new JsonResult(OrderResultEnum.PARAM_ERROR,false);
@@ -1432,9 +1541,10 @@ public class OrderServiceImpl implements OrderService {
             orderSupplierDTO.setConsumerOrderTime(orderRenter.getCtime());
             orderSupplierDTO.setReceiverName(orderRenter.getReceiverName());
             orderSupplierDTO.setReceiverPhone(orderRenter.getReceiverPhone());
+            orderSupplierDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
         }
         // todo 查询用户坏账次数
-        orderSupplierDTO.setConsumerBedDebtTimes(1);
+        orderSupplierDTO.setConsumerBedDebtTimes(0);
         Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(orderSupplier.getOrderId());
         if (orderFunderOptional.isPresent()) {
             OrderFunder orderFunder = orderFunderOptional.get();

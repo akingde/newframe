@@ -1,12 +1,11 @@
 package com.newframe.services.order.impl;
 
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.order.request.DeliverInfoDTO;
+import com.newframe.dto.order.request.ExcelDeliverInfoDTO;
 import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.dto.order.response.SupplierInfoDTO;
-import com.newframe.entity.order.OrderAssign;
-import com.newframe.entity.order.OrderFunder;
-import com.newframe.entity.order.OrderHirer;
-import com.newframe.entity.order.OrderRenter;
+import com.newframe.entity.order.*;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
 import com.newframe.enums.order.MessagePushEnum;
@@ -14,7 +13,9 @@ import com.newframe.enums.order.OrderAssignStatusEnum;
 import com.newframe.enums.order.OrderType;
 import com.newframe.enums.order.PatternPaymentEnum;
 import com.newframe.repositories.dataMaster.order.OrderAssignMaster;
+import com.newframe.repositories.dataQuery.order.ExpressCompanyQuery;
 import com.newframe.repositories.dataQuery.order.OrderAssignQuery;
+import com.newframe.repositories.dataSlave.order.ExpressCompanySlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.services.account.AccountManageService;
@@ -26,15 +27,21 @@ import com.newframe.services.userbase.ConfigRateService;
 import com.newframe.services.userbase.UserRentMerchantService;
 import com.newframe.services.userbase.UserSupplierService;
 import com.newframe.utils.cache.IdGlobalGenerator;
+import com.newframe.utils.excel.ExcelUtil;
 import com.newframe.utils.log.GwsLogger;
 import org.apache.poi.ss.formula.functions.Finance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author kfm
@@ -69,6 +76,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     private ConfigRateService configRateService;
     @Autowired
     private OrderAssignMaster orderAssignMaster;
+    @Autowired
+    private ExpressCompanySlave expressCompanySlave;
     @Autowired
     private IdGlobalGenerator idGen;
     @Override
@@ -278,5 +287,33 @@ public class OrderBaseServiceImpl implements OrderBaseService {
         query.setRentUid(renterId);
         query.setOrderType(orderType.getCode());
         orderAssignMaster.update(orderAssign,query,OrderAssign.ORDER_STATUS);
+    }
+
+    @Override
+    public List<DeliverInfoDTO> wrapBatchDeliver(InputStream inputStream) {
+        ExcelUtil<ExcelDeliverInfoDTO> excelUtil = new ExcelUtil<>(ExcelDeliverInfoDTO.class);
+        List<ExcelDeliverInfoDTO> excelDTOS = excelUtil.importExcel(inputStream,null,3);
+        List<DeliverInfoDTO> deliverInfoDTOS = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        for(ExcelDeliverInfoDTO excelDto:excelDTOS){
+            DeliverInfoDTO deliverInfoDTO = new DeliverInfoDTO();
+            deliverInfoDTO.setDeliverId(excelDto.getDeliverId());
+            deliverInfoDTO.setExpressName(excelDto.getExpressName());
+            deliverInfoDTO.setOrderId(excelDto.getOrderId());
+            deliverInfoDTO.setSerialNumber(excelDto.getSerialNumber());
+            try {
+                deliverInfoDTO.setDeliverTime(format.parse(excelDto.getDeliverTime()).getTime()/1000);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            ExpressCompanyQuery query = new ExpressCompanyQuery();
+            query.setCompanyName(excelDto.getExpressName());
+            ExpressCompany company = expressCompanySlave.findOne(query);
+            if (null != expressCompanySlave){
+                deliverInfoDTO.setDeliverCode(company.getCompanyCode());
+            }
+            deliverInfoDTOS.add(deliverInfoDTO);
+        }
+        return deliverInfoDTOS;
     }
 }

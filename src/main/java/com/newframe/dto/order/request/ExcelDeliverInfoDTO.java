@@ -9,22 +9,24 @@ import lombok.Data;
  * 发货信息封装
  */
 @Data
-public class DeliverInfoDTO {
+public class ExcelDeliverInfoDTO {
     /**订单编号*/
+    @ExcelVOAttribute(name = "订单id",column = "A")
     private Long orderId;
 
     /**手机序列号*/
+    @ExcelVOAttribute(name = "手机序列号",column = "B")
     private String serialNumber;
 
     /**快递单号*/
+    @ExcelVOAttribute(name = "快递单号",column = "C")
     private String deliverId;
 
     /**发货时间*/
-    private Long deliverTime;
+    @ExcelVOAttribute(name = "发货时间",column = "D")
+    private String deliverTime;
 
     /**快递公司*/
+    @ExcelVOAttribute(name = "快递公司",column = "E")
     private String expressName;
-
-    /**快递公司编号*/
-    private String deliverCode;
 }
