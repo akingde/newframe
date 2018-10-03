@@ -61,4 +61,21 @@ public class ApiOrderBatchController extends BaseController {
         }
         return error(result.getErrorCode());
     }
+
+    /**
+     * 资金方-批量拒绝
+     * @return 操作结果
+     */
+    @Anonymous(true)
+    @RequestMapping("supplier/batch/deliver")
+    public JsonResult funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
+        if(uid == null){
+            return error(SystemCode.NEED_LOGIN);
+        }
+        OperationResult<Boolean> result = orderService.funderBatchRefuse(uid,orders);
+        if(result.getSucc()){
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode());
+    }
 }
