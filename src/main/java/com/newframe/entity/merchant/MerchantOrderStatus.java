@@ -9,7 +9,7 @@ import javax.persistence.Entity;
  * @date 2018.10.02 11:01
  */
 @Data
-@Entity
+//@Entity
 public class MerchantOrderStatus {
 
 }
