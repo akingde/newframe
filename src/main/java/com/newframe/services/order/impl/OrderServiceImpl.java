@@ -160,6 +160,9 @@ public class OrderServiceImpl implements OrderService {
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
 
+    public OrderRenter getRenterOrderById(Long orderId) {
+        return orderRenterSlave.findOne(orderId);
+    }
     @Override
     public JsonResult getRenterOrder(QueryOrderDTO param, Long uid) {
         if (null == param.getPageSize() || null == param.getCurrentPage()) {
@@ -474,6 +477,43 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.SUCCESS, orderRenterDTO);
         }
         return new JsonResult(SystemCode.BAD_REQUEST);
+    }
+
+    @Override
+    public SupplierInfoDTO getSupplierOrderBuy(Long orderId, Long supplierId) {
+        Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
+        if(!orderRenterOptional.isPresent()){
+            //订单不存在
+            return null;
+        }
+        OrderRenter orderRenter = orderRenterOptional.get();
+
+        OrderProductSupplierQuery query = new OrderProductSupplierQuery();
+        query.setSupplierId(supplierId);
+        query.setProductBrand(orderRenter.getProductBrand());
+        query.setProductColor(orderRenter.getProductColor());
+        query.setProductStorage(orderRenter.getProductStorage());
+        query.setProductName(orderRenter.getProductName());
+        List<ProductSupplier> products = productSupplierSlave.findAll(query);
+        if(org.springframework.util.CollectionUtils.isEmpty(products)){
+            //供货商没有商品
+            return null;
+        }
+
+        SupplierInfoDTO dto = new SupplierInfoDTO();
+        dto.setSupplierId(supplierId);
+        BigDecimal financingAmount = getFinancingAmount(orderId, supplierId);
+        dto.setFinancingAmount(financingAmount);
+        dto.setAccidentBenefit(residualValue);
+        if(financingAmount != null){
+            dto.setDownPayment(financingAmount
+                    .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP)
+                    .add(residualValue));
+            dto.setMonthPayment(financingAmount
+                    .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
+            dto.setDeposit(getDeposit(orderId,supplierId));
+        }
+        return dto;
     }
 
     @Override

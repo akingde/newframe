@@ -6,6 +6,7 @@ import com.newframe.dto.OperationResult;
 import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.dto.order.response.FinancingInfo;
+import com.newframe.entity.order.OrderRenter;
 import com.newframe.entity.user.ProductLessor;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import java.util.List;
  */
 public interface OrderService {
 
+    OrderRenter getRenterOrderById(Long orderId);
     /**
      * 获取租赁商所有订单
      *
@@ -77,6 +79,14 @@ public interface OrderService {
      * @return 处理结果
      */
     JsonResult renterViewDetail(Long orderId, Long renterId);
+
+    /**
+     * 查询供应商融资购机报价
+     *
+     * @return 查询结果
+     */
+
+    SupplierInfoDTO getSupplierOrderBuy(Long orderId, Long supplierId);
 
     /**
      * 按产品信息查询有此机型的供应商列表
