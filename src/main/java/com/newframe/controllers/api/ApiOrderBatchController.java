@@ -26,6 +26,7 @@ import com.newframe.services.order.OrderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,7 +68,7 @@ public class ApiOrderBatchController extends BaseController {
      * @return 返回结果
      */
     @Anonymous(true)
-    @RequestMapping("lessor/batch/deliver")
+    @PostMapping("lessor/batch/deliver")
     public JsonResult lessorBatchLogistics(Long uid, MultipartFile file) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
@@ -86,7 +87,7 @@ public class ApiOrderBatchController extends BaseController {
      * @return 操作结果
      */
     @Anonymous(true)
-    @RequestMapping("supplier/batch/deliver")
+    @PostMapping("supplier/batch/deliver")
     public JsonResult supplierBatchDeliver(Long uid,MultipartFile file){
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
@@ -103,7 +104,7 @@ public class ApiOrderBatchController extends BaseController {
      * @return 操作结果
      */
     @Anonymous(true)
-    @RequestMapping("supplier/batch/deliver")
+    @PostMapping("funder/batch/deliver")
     public JsonResult funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);
@@ -124,7 +125,7 @@ public class ApiOrderBatchController extends BaseController {
      * @throws AccountOperationException
      */
     @Anonymous(true)
-    @RequestMapping("supplier/list")
+    @PostMapping("supplier/list")
     public JsonResult getSupplierList(Long uid, List<Long> orderIds) {
         if (uid == null || CollectionUtils.isEmpty(orderIds)) {
             return error(SystemCode.NEED_LOGIN);
@@ -171,7 +172,7 @@ public class ApiOrderBatchController extends BaseController {
      * @throws AccountOperationException
      */
     @Anonymous(true)
-    @RequestMapping("renter/buy")
+    @PostMapping("renter/buy")
     public JsonResult renterBuy(Long uid, List<Long> orderIds, Long supplierId) throws AccountOperationException {
         if (uid == null || CollectionUtils.isEmpty(orderIds) || null == supplierId) {
             return error(SystemCode.NEED_LOGIN);
@@ -208,7 +209,7 @@ public class ApiOrderBatchController extends BaseController {
      * @throws AccountOperationException
      */
     @Anonymous(true)
-    @RequestMapping("lessor/list")
+    @PostMapping("lessor/list")
     public JsonResult getLessorList(Long uid, List<Long> orderIds) {
         if (uid == null || CollectionUtils.isEmpty(orderIds)) {
             return error(SystemCode.NEED_LOGIN);
@@ -253,7 +254,7 @@ public class ApiOrderBatchController extends BaseController {
      * @return 处理结果
      */
     @Anonymous(true)
-    @RequestMapping("renter/rent")
+    @PostMapping("renter/rent")
     public JsonResult renterRent(Long uid, List<Long> orderIds, Long lessorId, Integer patternPayment) throws AccountOperationException {
         if (uid == null || CollectionUtils.isEmpty(orderIds) || null == lessorId || null == patternPayment) {
             return error(SystemCode.NEED_LOGIN);
@@ -287,7 +288,7 @@ public class ApiOrderBatchController extends BaseController {
      * 租赁商批量取消订单
      */
     @Anonymous(true)
-    @RequestMapping("renter/cancel")
+    @PostMapping("renter/cancel")
     public JsonResult cancelOrder(@RequestParam List<Long> orderIds, Long uid) {
         if (uid == null) {
             return error(SystemCode.NEED_LOGIN);
