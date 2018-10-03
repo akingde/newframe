@@ -313,4 +313,14 @@ public interface OrderService {
      * @return 操作结果
      */
     OperationResult<Boolean> lessorBatchLogistics(Long uid, MultipartFile file) throws AccountOperationException;
+
+    /**
+     * 资金方批量拒绝
+     * @param uid 资金方uid
+     * @param orders 订单id
+     * @return 操作结果
+     */
+    OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders);
+
+
 }

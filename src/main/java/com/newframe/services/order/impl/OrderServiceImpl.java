@@ -657,6 +657,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders){
+
+        return null;
+    }
+
+    @Override
     public JsonResult offlineLoan(LoanDTO loanDTO, Long uid) {
         if (loanDTO.getLoanAmount() == null
                 || loanDTO.getLoanModel() == null || loanDTO.getOrderId() == null) {
