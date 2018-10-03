@@ -270,24 +270,7 @@ public class ApiOrderController extends BaseController {
         return error(result.getErrorCode());
     }
 
-    /**
-     * 13、供应商-批量发货
-     * 供应商发货
-     * 批量发货怎么填写订单物流信息？
-     * @return 操作结果
-     */
-    @Anonymous(true)
-    @RequestMapping("supplier/batch/deliver")
-    public JsonResult supplierBatchDeliver(Long uid,MultipartFile file){
-        if(uid == null){
-            return error(SystemCode.NEED_LOGIN);
-        }
-        OperationResult<Boolean> result = orderService.supplierBatchDeliver(uid,file);
-        if(result.getSucc()){
-            return success(result.getEntity());
-        }
-        return error(result.getErrorCode());
-    }
+
 
     /**
      * 24、供应商和资金方查询物流信息
@@ -353,23 +336,7 @@ public class ApiOrderController extends BaseController {
         return error(result.getErrorCode());
     }
 
-    /**
-     * 14、出租方-发货
-     * 出租方发货
-     * @return 返回结果
-     */
-    @Anonymous(true)
-    @RequestMapping("lessor/batch/deliver")
-    public JsonResult lessorBatchLogistics(Long uid,MultipartFile file) throws AccountOperationException {
-        if(uid == null){
-            return error(SystemCode.NEED_LOGIN);
-        }
-        OperationResult<Boolean> result = orderService.lessorBatchLogistics(uid,file);
-        if(result.getSucc()){
-            return success(result.getEntity());
-        }
-        return error(result.getErrorCode());
-    }
+
 
     /**
      * 15、出租方-取消订单（拒绝）
