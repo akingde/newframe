@@ -1123,7 +1123,7 @@ public class OrderServiceImpl implements OrderService {
                     return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
                 }
             }
-            return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
+            return new OperationResult<>(OrderResultEnum.SUPPLIER_NO_PRODUCT);
         }
         return new OperationResult<>(OrderResultEnum.NO_FINANCINGABLE);
     }
