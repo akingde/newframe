@@ -255,7 +255,7 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     }
 
     @Override
-    public void getSupplierInfo(SupplierInfoDTO supplierInfoDTO,BigDecimal supplyPrice,Integer periods,BigDecimal monthPayment){
+    public void setSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods, BigDecimal monthPayment){
         double rate = configRateService.getRate().doubleValue();
         supplierInfoDTO.setMonthPayment(monthPayment);
         supplierInfoDTO.setDownPayment(monthPayment);

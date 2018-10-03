@@ -5,6 +5,9 @@ import com.newframe.common.exception.AccountOperationException;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.common.OrdersBuyParam;
+import com.newframe.dto.common.OrdersRentParam;
+import com.newframe.dto.common.UidOrderIds;
 import com.newframe.dto.order.request.FinanceApplyDTO;
 import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.response.SupplierInfoDTO;
@@ -27,21 +30,18 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * 订单批量操作的Controller
- * @author kfm.zww
  */
 @RestController
 @RequestMapping("/rent/api/orders")
@@ -66,16 +66,17 @@ public class ApiOrderBatchController extends BaseController {
     /**
      * 1出租方-批量发货
      * 出租方发货
+     *
      * @return 返回结果
      */
     @Anonymous(true)
-    @RequestMapping("lessor/batch/deliver")
+    @PostMapping("lessor/batch/deliver")
     public JsonResult lessorBatchLogistics(Long uid, MultipartFile file) throws AccountOperationException {
-        if(uid == null){
+        if (uid == null) {
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<Boolean> result = orderService.lessorBatchLogistics(uid,file);
-        if(result.getSucc()){
+        OperationResult<Boolean> result = orderService.lessorBatchLogistics(uid, file);
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
         return error(result.getErrorCode());
@@ -85,16 +86,17 @@ public class ApiOrderBatchController extends BaseController {
      * 供应商-批量发货
      * 供应商发货
      * 批量发货怎么填写订单物流信息？
+     *
      * @return 操作结果
      */
     @Anonymous(true)
-    @RequestMapping("supplier/batch/deliver")
-    public JsonResult supplierBatchDeliver(Long uid,MultipartFile file){
-        if(uid == null){
+    @PostMapping("supplier/batch/deliver")
+    public JsonResult supplierBatchDeliver(Long uid, MultipartFile file) {
+        if (uid == null) {
             return error(SystemCode.NEED_LOGIN);
         }
-        OperationResult<Boolean> result = orderService.supplierBatchDeliver(uid,file);
-        if(result.getSucc()){
+        OperationResult<Boolean> result = orderService.supplierBatchDeliver(uid, file);
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
         return error(result.getErrorCode());
@@ -102,16 +104,14 @@ public class ApiOrderBatchController extends BaseController {
 
     /**
      * 资金方-批量拒绝
+     *
      * @return 操作结果
      */
     @Anonymous(true)
-    @RequestMapping("funder/batch/refuse")
-    public JsonResult funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
-        if(uid == null){
-            return error(SystemCode.NEED_LOGIN);
-        }
-        OperationResult<Boolean> result = orderService.funderBatchRefuse(uid,orders);
-        if(result.getSucc()){
+    @PostMapping("funder/batch/refuse")
+    public JsonResult funderBatchRefuse(@RequestBody @Valid UidOrderIds uidOrderIds) throws AccountOperationException {
+        OperationResult<Boolean> result = orderService.funderBatchRefuse(uidOrderIds.getUid(), uidOrderIds.getOrderIds());
+        if (result.getSucc()) {
             return success(result.getEntity());
         }
         return error(result.getErrorCode());
@@ -120,18 +120,16 @@ public class ApiOrderBatchController extends BaseController {
     /**
      * 查询有货的供货商
      *
-     * @param uid
-     * @param orderIds
      * @return
      * @throws AccountOperationException
      */
     @Anonymous(true)
     @PostMapping("supplier/list")
-    public JsonResult getSupplierList(Long uid, List<Long> orderIds) {
-        if (uid == null || CollectionUtils.isEmpty(orderIds)) {
-            return error(SystemCode.NEED_LOGIN);
+    public JsonResult getSupplierList(@RequestBody @Valid UidOrderIds uidOrderIds) {
+        if (CollectionUtils.isEmpty(uidOrderIds.getOrderIds())) {
+            return error(SystemCode.BAD_REQUEST);
         }
-        List<OrderRenter> list = orderRenterSlave.findAllById(orderIds);
+        List<OrderRenter> list = orderRenterSlave.findAllById(uidOrderIds.getOrderIds());
 
         Set<Long> supplierIds = null;
         for (OrderRenter orderRenter : list) {
@@ -166,36 +164,28 @@ public class ApiOrderBatchController extends BaseController {
     /**
      * 租赁商-批量融资购机
      *
-     * @param uid
-     * @param orderIds
-     * @param supplierId
      * @return
      * @throws AccountOperationException
      */
     @Anonymous(true)
     @PostMapping("renter/buy")
-    public JsonResult renterBuy(Long uid, List<Long> orderIds, Long supplierId) throws AccountOperationException {
-        if (uid == null || CollectionUtils.isEmpty(orderIds) || null == supplierId) {
-            return error(SystemCode.NEED_LOGIN);
-        }
-        for (Long orderId : orderIds) {
+    public JsonResult renterBuy(@RequestBody @Valid OrdersBuyParam ordersBuyParam) throws AccountOperationException {
+        for (Long orderId : ordersBuyParam.getOrderIds()) {
             OrderRenter orderRenter = orderService.getRenterOrderById(orderId);
             ProductInfoDTO productInfo = new ProductInfoDTO();
             BeanUtils.copyProperties(orderRenter, productInfo);
-            JsonResult jsonResult = orderService.getSupplierList(productInfo, orderId);
-            if (!"200".equals(jsonResult.getCode())) {
-                return jsonResult;
-            }
-            SupplierInfoDTO dto = orderService.getSupplierOrderBuy(orderId, supplierId);
+            SupplierInfoDTO dto = orderService.getSupplierOrderBuy(orderId, ordersBuyParam.getSupplierId());
             if (null == dto) {
-                return error(OrderResultEnum.SUPPLIER_NO_PRODUCT);
+                return new JsonResult("401016",
+                        "供应商:" + ordersBuyParam.getSupplierId() + ",没有商品:" + productInfo);
             }
             FinanceApplyDTO financeApply = new FinanceApplyDTO();
             BeanUtils.copyProperties(dto, financeApply);
             financeApply.setOrderId(orderId);
             financeApply.setFinancingDeadline(orderRenter.getNumberOfPayments());
             financeApply.setResidualScheme(dto.getAccidentBenefit().intValue());
-            orderService.renterFinancingBuy(financeApply, uid);
+
+            orderService.renterFinancingBuy(financeApply, ordersBuyParam.getUid());
         }
         return success(true);
     }
@@ -204,19 +194,13 @@ public class ApiOrderBatchController extends BaseController {
     /**
      * 查询有货的出租商
      *
-     * @param uid
-     * @param orderIds
      * @return
      * @throws AccountOperationException
      */
     @Anonymous(true)
     @PostMapping("lessor/list")
-    public JsonResult getLessorList(Long uid, List<Long> orderIds) {
-        if (uid == null || CollectionUtils.isEmpty(orderIds)) {
-            return error(SystemCode.NEED_LOGIN);
-        }
-        List<OrderRenter> list = orderRenterSlave.findAllById(orderIds);
-
+    public JsonResult getLessorList(@RequestBody @Valid UidOrderIds uidOrderIds) {
+        List<OrderRenter> list = orderRenterSlave.findAllById(uidOrderIds.getOrderIds());
         Set<Long> supplierIds = null;
         for (OrderRenter orderRenter : list) {
             OrderProductSupplierQuery query = new OrderProductSupplierQuery();
@@ -228,6 +212,7 @@ public class ApiOrderBatchController extends BaseController {
             Set<Long> set = products.stream().map(ProductLessor::getSupplierId).collect(Collectors.toSet());
             if (null == supplierIds) {
                 //第一次增加
+                supplierIds = new HashSet<>();
                 supplierIds.addAll(set);
             } else {
                 //取交集
@@ -249,29 +234,27 @@ public class ApiOrderBatchController extends BaseController {
 
     /**
      * 租赁商-批量租机
+     * <p>
+     * 支付方式，1：全款支付，2：分期支付
      *
-     * @param lessorId       出租方id
-     * @param patternPayment 支付方式，1：全款支付，2：分期支付
      * @return 处理结果
      */
     @Anonymous(true)
     @PostMapping("renter/rent")
-    public JsonResult renterRent(Long uid, List<Long> orderIds, Long lessorId, Integer patternPayment) throws AccountOperationException {
-        if (uid == null || CollectionUtils.isEmpty(orderIds) || null == lessorId || null == patternPayment) {
-            return error(SystemCode.NEED_LOGIN);
-        }
-        for (Long orderId : orderIds) {
+    public JsonResult renterRent(@RequestBody @Valid OrdersRentParam ordersRentParam) throws AccountOperationException {
+        for (Long orderId : ordersRentParam.getOrderIds()) {
             OrderRenter orderRenter = orderService.getRenterOrderById(orderId);
 
             OrderProductSupplierQuery query = new OrderProductSupplierQuery();
-            query.setSupplierId(lessorId);
+            query.setSupplierId(ordersRentParam.getLessorId());
             query.setProductBrand(orderRenter.getProductBrand());
             query.setProductColor(orderRenter.getProductColor());
             query.setProductStorage(orderRenter.getProductStorage());
             query.setProductName(orderRenter.getProductName());
             List<ProductLessor> products = productLessorSlave.findAll(query);
             if (CollectionUtils.isEmpty(products)) {
-                return error(OrderResultEnum.LESSOR_PRICE_NOT_EXIST);
+                return new JsonResult("401014",
+                        "出租方:" + ordersRentParam.getLessorId() + ",没有商品:" + query);
             }
             ProductLessor productLessor = products.get(0);
 
@@ -279,7 +262,7 @@ public class ApiOrderBatchController extends BaseController {
             BigDecimal monthlyPayment = orderBaseService.getRentPrice(productLessor.getSupplyPrice(), new BigDecimal("0.15"), 24);
             BigDecimal accidentBenefit = BigDecimal.ZERO;
             BigDecimal fullRepayAmount = productLessor.getSupplyPrice();
-            orderService.renterRent(uid, orderId, lessorId, tenancyTerm, monthlyPayment, accidentBenefit, patternPayment, fullRepayAmount);
+            orderService.renterRent(ordersRentParam.getUid(), orderId, ordersRentParam.getLessorId(), tenancyTerm, monthlyPayment, accidentBenefit, ordersRentParam.getPatternPayment(), fullRepayAmount);
         }
 
         return success(true);
@@ -290,10 +273,7 @@ public class ApiOrderBatchController extends BaseController {
      */
     @Anonymous(true)
     @PostMapping("renter/cancel")
-    public JsonResult cancelOrder(@RequestParam List<Long> orderIds, Long uid) {
-        if (uid == null) {
-            return error(SystemCode.NEED_LOGIN);
-        }
-        return orderService.cancelOrder(orderIds, uid);
+    public JsonResult cancelOrder(@RequestBody @Valid UidOrderIds uidOrderIds) {
+        return orderService.cancelOrder(uidOrderIds.getOrderIds(), uidOrderIds.getUid());
     }
 }
