@@ -629,6 +629,9 @@ public class OrderServiceImpl implements OrderService {
         List<OrderFunder> orderFunders = orderFunderSlave.findAll(query);
         if (orderFunders != null && orderFunders.size() == 1) {
             OrderFunder orderFunder = orderFunders.get(0);
+            if(!OrderFunderStatus.WAITING_AUDIT.getCode().equals(orderFunder.getOrderStatus())){
+                return new JsonResult(OrderResultEnum.SUCCESS, true);
+            }
             // 查询租赁商订单，将状态改为资金方已拒绝
             Optional<OrderRenter> orderRenterOptional = orderRenterSlave.findById(orderId);
             if (orderRenterOptional.isPresent()) {
@@ -657,9 +660,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders){
-
-        return null;
+    public OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
+        for(Long orderId:orders){
+            funderRefuse(orderId,uid);
+        }
+        return new OperationResult<>(OrderResultEnum.SUCCESS,true);
     }
 
     @Override
@@ -1035,6 +1040,9 @@ public class OrderServiceImpl implements OrderService {
         Optional<OrderHirer> optionalOrderHirer = orderHirerSlave.findById(orderId);
         if (optionalOrderHirer.isPresent()) {
             OrderHirer orderHirer = optionalOrderHirer.get();
+            if(!OrderLessorStatus.WATIING_LESSOR_AUDIT.getCode().equals(orderHirer.getOrderStatus())){
+                return new JsonResult(OrderResultEnum.AUDIT_ORDER_REFUSE_ERROR);
+            }
             orderHirer.setOrderStatus(OrderLessorStatus.LESSOR_AUDIT_REFUSE.getCode());
             orderHirerMaser.save(orderHirer);
             // 如果 最大次数租赁次数 <= 订单租赁次数，将租赁商订单改为 不可再租赁状态

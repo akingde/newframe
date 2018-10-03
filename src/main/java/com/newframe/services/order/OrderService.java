@@ -320,7 +320,7 @@ public interface OrderService {
      * @param orders 订单id
      * @return 操作结果
      */
-    OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders);
+    OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException;
 
 
 }

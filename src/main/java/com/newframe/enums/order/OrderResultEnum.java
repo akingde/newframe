@@ -29,6 +29,7 @@ public enum OrderResultEnum implements CodeStatus {
     NO_FILE("401017","请上传文件"),
     BATCH_DELIVER_FAIL("401018","批量发货失败"),
     BATCH_DELIVER_SUCCESS("401019","批量发货成功"),
+    AUDIT_ORDER_REFUSE_ERROR("401020","订单状态错误，不能进行拒绝操作"),
     ;
 
     String code;
