@@ -67,7 +67,7 @@ public class ApiOrderBatchController extends BaseController {
      * @return 操作结果
      */
     @Anonymous(true)
-    @RequestMapping("supplier/batch/deliver")
+    @RequestMapping("funder/batch/refuse")
     public JsonResult funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
         if(uid == null){
             return error(SystemCode.NEED_LOGIN);

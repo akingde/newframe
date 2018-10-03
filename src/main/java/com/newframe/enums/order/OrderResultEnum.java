@@ -28,7 +28,7 @@ public enum OrderResultEnum implements CodeStatus {
     SUPPLIER_NO_PRODUCT("401016","此型号的手机无供应商出售"),
     NO_FILE("401017","请上传文件"),
     BATCH_DELIVER_FAIL("401018","批量发货失败"),
-    BATCH_DELIVER_SUCCESS("401019","批量发货成功"),
+    BATCH_DELIVER_SUCCESS("200","批量发货成功"),
     AUDIT_ORDER_REFUSE_ERROR("401020","订单状态错误，不能进行拒绝操作"),
     ;
 
