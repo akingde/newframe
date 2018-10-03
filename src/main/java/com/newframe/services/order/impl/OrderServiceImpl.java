@@ -10,6 +10,7 @@ import com.newframe.dto.order.request.*;
 import com.newframe.dto.order.response.*;
 import com.newframe.dto.order.response.FinancingInfo;
 import com.newframe.entity.account.Account;
+import com.newframe.entity.account.AccountRenterOverdueAsset;
 import com.newframe.entity.order.*;
 import com.newframe.entity.user.*;
 import com.newframe.enums.SystemCode;
@@ -17,6 +18,9 @@ import com.newframe.enums.order.*;
 import com.newframe.repositories.dataMaster.order.*;
 import com.newframe.repositories.dataQuery.order.*;
 import com.newframe.repositories.dataSlave.account.AccountFundingFinanceAssetSlave;
+import com.newframe.repositories.dataSlave.account.AccountRenterFinancingSlave;
+import com.newframe.repositories.dataSlave.account.AccountRenterOverdueAssetSlave;
+import com.newframe.repositories.dataSlave.account.AccountRenterOverdueDetailSlave;
 import com.newframe.repositories.dataSlave.order.*;
 import com.newframe.repositories.dataSlave.user.ProductLessorSlave;
 import com.newframe.repositories.dataSlave.user.ProductSupplierSlave;
@@ -108,6 +112,10 @@ public class OrderServiceImpl implements OrderService {
     ProductSupplierSlave productSupplierSlave;
     @Autowired
     ProductLessorSlave productLessorSlave;
+    @Autowired
+    AccountRenterFinancingSlave accountRenterFinancingSlave;
+    @Autowired
+    AccountRenterOverdueDetailSlave accountRenterOverdueDetailSlave;
 
     @Autowired
     CommonService commonService;
@@ -123,7 +131,8 @@ public class OrderServiceImpl implements OrderService {
     UserRentMerchantService userRentMerchantService;
     @Autowired
     AccountFundingFinanceAssetSlave accountFundingFinanceAssetSlave;
-
+    @Autowired
+    AccountRenterOverdueAssetSlave accountRenterOverdueAssetSlave;
     @Autowired
     OrderBlockChainService orderBlockChainService;
     @Autowired
@@ -1131,9 +1140,13 @@ public class OrderServiceImpl implements OrderService {
         info.setRenterPhone(renter.getMerchantPhoneNumber());
         info.setAddress(renter.getRentMerchantAddress());
         info.setBadDeptTimes(0);
-        info.setOverdueTimes(0);
-        info.setFinancingAmount(new BigDecimal(12593));
-        info.setOverdueAmount(new BigDecimal(2549));
+        info.setOverdueTimes(accountRenterOverdueDetailSlave.getRentOverdueTimes(renterId));
+        info.setFinancingAmount(accountRenterFinancingSlave.getFinancingAmount(renterId));
+        AccountRenterOverdueAsset accountRenterOverdueAsset = accountRenterOverdueAssetSlave.findOne(renterId);
+        if (accountRenterOverdueAsset != null){
+            info.setOverdueAmount(accountRenterOverdueAsset.getTotalOverdueAccount());
+        }
+
         return new OperationResult<>(OrderResultEnum.SUCCESS, info);
     }
 
@@ -1154,9 +1167,13 @@ public class OrderServiceImpl implements OrderService {
         info.setRenterPhone(renter.getMerchantPhoneNumber());
         info.setAddress(renter.getRentMerchantAddress());
         info.setBadDeptTimes(0);
-        info.setOverdueTimes(0);
-        info.setFinancingAmount(new BigDecimal(12593));
-        info.setOverdueAmount(new BigDecimal(2549));
+        info.setOverdueTimes(accountRenterOverdueDetailSlave.getRentOverdueTimes(renterId));
+        info.setFinancingAmount(accountRenterFinancingSlave.getFinancingAmount(renterId));
+        AccountRenterOverdueAsset accountRenterOverdueAsset = accountRenterOverdueAssetSlave.findOne(renterId);
+        if (accountRenterOverdueAsset != null){
+            info.setOverdueAmount(accountRenterOverdueAsset.getTotalOverdueAccount());
+        }
+
         return new OperationResult<>(OrderResultEnum.SUCCESS, info);
     }
 
@@ -1436,9 +1453,10 @@ public class OrderServiceImpl implements OrderService {
             orderSupplierDTO.setConsumerOrderTime(orderRenter.getCtime());
             orderSupplierDTO.setReceiverName(orderRenter.getReceiverName());
             orderSupplierDTO.setReceiverPhone(orderRenter.getReceiverPhone());
+            orderSupplierDTO.setConsumerCreditLine(orderRenter.getUserCreditLine());
         }
         // todo 查询用户坏账次数
-        orderSupplierDTO.setConsumerBedDebtTimes(1);
+        orderSupplierDTO.setConsumerBedDebtTimes(0);
         Optional<OrderFunder> orderFunderOptional = orderFunderSlave.findById(orderSupplier.getOrderId());
         if (orderFunderOptional.isPresent()) {
             OrderFunder orderFunder = orderFunderOptional.get();

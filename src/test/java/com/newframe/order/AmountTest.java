@@ -31,12 +31,12 @@ public class AmountTest {
     @Test
     public void testFormula(){
         FormulaService formulaService = new FormulaServiceImpl();
-        BigDecimal financeAmount = BigDecimal.valueOf(6200);
+        BigDecimal financeAmount = BigDecimal.valueOf(5901);
         double rate = 0.15;
-        Integer periods = 10;
-        BigDecimal monthPayment = BigDecimal.valueOf(200);
+        Integer periods = 12;
+        BigDecimal monthPayment = BigDecimal.valueOf(399);
         SupplierInfoDTO supplierInfoDTO = new SupplierInfoDTO();
-        supplierInfoDTO.setDeposit(BigDecimal.valueOf(6500*0.15));
+        supplierInfoDTO.setDeposit(BigDecimal.valueOf(6000*0.15));
         supplierInfoDTO.setMonthPayment(monthPayment);
         supplierInfoDTO.setDownPayment(monthPayment);
         supplierInfoDTO.setAccidentBenefit(BigDecimal.ZERO);

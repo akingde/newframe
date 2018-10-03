@@ -48,5 +48,5 @@ public class OrderSupplierDTO {
     private Integer platformCreditScore;
     private String receiverPhone;
     private String receiverName;
-
+    private Integer consumerCreditLine;
 }
