@@ -246,7 +246,6 @@ public class OrderServiceImpl implements OrderService {
             return new JsonResult(SystemCode.BAD_REQUEST, false);
         }
         String renterName = orderBaseService.getRenterName(uid);
-        // todo 查询供应商是否存在
 
         // todo 查询资金方uid（目前资金方较少，随便查出一个资金方）
         List<UserFunder> funders = userFunderSlave.findAll();
@@ -799,19 +798,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo) {
+    public OperationResult<Boolean> supplierDeliver(Long uid, DeliverInfoDTO deliverInfo) {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
                 || deliverInfo.getOrderId() == null || deliverInfo.getDeliverCode() == null) {
-            return new JsonResult(SystemCode.BAD_REQUEST, false);
+            return new OperationResult<>(SystemCode.BAD_REQUEST);
         }
         OrderSupplierQuery query = new OrderSupplierQuery();
         query.setOrderId(deliverInfo.getOrderId());
         query.setSupplierId(uid);
         OrderSupplier orderSupplier = orderSupplierSlave.findOne(query);
         if (orderSupplier == null) {
-            return new JsonResult(SystemCode.BAD_REQUEST, false);
+            return new OperationResult<>(SystemCode.BAD_REQUEST);
         }
         orderSupplier.setExpressCompany(deliverInfo.getExpressName());
         orderSupplier.setExpressNumber(deliverInfo.getDeliverId());
@@ -836,7 +835,24 @@ public class OrderServiceImpl implements OrderService {
             orderRenterMaser.save(orderRenter);
         }
         orderBlockChainService.supplierDeliver(orderSupplier);
-        return new JsonResult(SystemCode.SUCCESS, true);
+        return new OperationResult<>(SystemCode.SUCCESS, true);
+    }
+
+    @Override
+    public OperationResult<Boolean> supplierBatchDeliver(Long uid, MultipartFile file) {
+        if(file == null){
+            return new OperationResult<>(OrderResultEnum.NO_FILE);
+        }
+        try {
+            List<DeliverInfoDTO> deliverInfoDTOS = orderBaseService.wrapBatchDeliver(file.getInputStream());
+            for(DeliverInfoDTO deliverInfoDTO:deliverInfoDTOS){
+                supplierDeliver(uid,deliverInfoDTO);
+            }
+            return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_SUCCESS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_FAIL);
     }
 
     @Override
@@ -941,12 +957,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
+    public OperationResult<Boolean> lessorDeliver(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException {
         // 参数校验
         if (StringUtils.isEmpty(deliverInfo.getExpressName()) || StringUtils.isEmpty(deliverInfo.getDeliverId())
                 || StringUtils.isEmpty(deliverInfo.getSerialNumber()) || deliverInfo.getDeliverTime() == null
                 || deliverInfo.getOrderId() == null || deliverInfo.getDeliverCode() == null) {
-            return new JsonResult(SystemCode.BAD_REQUEST, false);
+            return new OperationResult<>(SystemCode.BAD_REQUEST);
         }
         HirerDeliver hirerDeliver = new HirerDeliver();
         hirerDeliver.setExpressName(deliverInfo.getExpressName());
@@ -982,7 +998,25 @@ public class OrderServiceImpl implements OrderService {
         }
         orderBlockChainService.payLessor(orderRenter,orderHirer);
         orderBlockChainService.lessorDeliver(orderHirer,hirerDeliver);
-        return new JsonResult(SystemCode.SUCCESS, true);
+        return new OperationResult<>(SystemCode.SUCCESS, true);
+    }
+
+    @Override
+    @Transactional(noRollbackFor = Exception.class)
+    public OperationResult<Boolean> lessorBatchLogistics(Long uid,MultipartFile file) throws AccountOperationException {
+        if(file == null){
+            return new OperationResult<>(OrderResultEnum.NO_FILE);
+        }
+        try {
+            List<DeliverInfoDTO> deliverInfoDTOS = orderBaseService.wrapBatchDeliver(file.getInputStream());
+            for(DeliverInfoDTO deliverInfoDTO:deliverInfoDTOS){
+                lessorDeliver(uid,deliverInfoDTO);
+            }
+            return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_SUCCESS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new OperationResult<>(OrderResultEnum.BATCH_DELIVER_FAIL);
     }
 
     @Override

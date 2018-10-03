@@ -165,7 +165,7 @@ public interface OrderService {
      * @param deliverInfo 发货信息
      * @return 返回结果
      */
-    JsonResult supplierDeliver(Long uid, DeliverInfoDTO deliverInfo);
+    OperationResult<Boolean>  supplierDeliver(Long uid, DeliverInfoDTO deliverInfo);
 
     /**
      * 供应商查询物流信息
@@ -208,7 +208,7 @@ public interface OrderService {
      * @param deliverInfo 发货信息
      * @return 操作结果
      */
-    JsonResult lessorLogistics(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException;
+    OperationResult<Boolean> lessorDeliver(Long uid, DeliverInfoDTO deliverInfo) throws AccountOperationException;
 
     /**
      * 出租方审核不通过
@@ -297,4 +297,20 @@ public interface OrderService {
      * @return 操作结果
      */
     OperationResult<RenterInfo> getRenterInfoByOrderId(Long orderId);
+
+    /**
+     * 批量发货
+     * @param uid 供应商id
+     * @param file excel文件
+     * @return 操作结果
+     */
+    OperationResult<Boolean> supplierBatchDeliver(Long uid, MultipartFile file);
+
+    /**
+     * 出租方批量发货
+     * @param uid 出租方uid
+     * @param file excel文件
+     * @return 操作结果
+     */
+    OperationResult<Boolean> lessorBatchLogistics(Long uid, MultipartFile file) throws AccountOperationException;
 }

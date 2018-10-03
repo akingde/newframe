@@ -26,6 +26,9 @@ public enum OrderResultEnum implements CodeStatus {
     LESSOR_NOT_EXIST("401014","此型号的手机无出租方出租"),
     LESSOR_PRICE_NOT_EXIST("401015","平台无此型号手机的出租价格，请联系客服添加"),
     SUPPLIER_NO_PRODUCT("401016","此型号的手机无供应商出售"),
+    NO_FILE("401017","请上传文件"),
+    BATCH_DELIVER_FAIL("401018","批量发货失败"),
+    BATCH_DELIVER_SUCCESS("401019","批量发货成功"),
     ;
 
     String code;
