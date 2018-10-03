@@ -124,7 +124,7 @@ public class ApiOrderBatchController extends BaseController {
      * @throws AccountOperationException
      */
     @Anonymous(true)
-    @PostMapping("supplier/list")
+    @PostMapping("renter/buy/suppliers")
     public JsonResult getSupplierList(@RequestBody @Valid UidOrderIds uidOrderIds) {
         if (CollectionUtils.isEmpty(uidOrderIds.getOrderIds())) {
             return error(SystemCode.BAD_REQUEST);
@@ -185,7 +185,10 @@ public class ApiOrderBatchController extends BaseController {
             financeApply.setFinancingDeadline(orderRenter.getNumberOfPayments());
             financeApply.setResidualScheme(dto.getAccidentBenefit().intValue());
 
-            orderService.renterFinancingBuy(financeApply, ordersBuyParam.getUid());
+            JsonResult jsonResult = orderService.renterFinancingBuy(financeApply, ordersBuyParam.getUid());
+            if (!"200".equals(jsonResult.getCode())) {
+                return jsonResult;
+            }
         }
         return success(true);
     }
@@ -198,7 +201,7 @@ public class ApiOrderBatchController extends BaseController {
      * @throws AccountOperationException
      */
     @Anonymous(true)
-    @PostMapping("lessor/list")
+    @PostMapping("renter/rent/lessors")
     public JsonResult getLessorList(@RequestBody @Valid UidOrderIds uidOrderIds) {
         List<OrderRenter> list = orderRenterSlave.findAllById(uidOrderIds.getOrderIds());
         Set<Long> supplierIds = null;
@@ -262,7 +265,10 @@ public class ApiOrderBatchController extends BaseController {
             BigDecimal monthlyPayment = orderBaseService.getRentPrice(productLessor.getSupplyPrice(), new BigDecimal("0.15"), 24);
             BigDecimal accidentBenefit = BigDecimal.ZERO;
             BigDecimal fullRepayAmount = productLessor.getSupplyPrice();
-            orderService.renterRent(ordersRentParam.getUid(), orderId, ordersRentParam.getLessorId(), tenancyTerm, monthlyPayment, accidentBenefit, ordersRentParam.getPatternPayment(), fullRepayAmount);
+            JsonResult jsonResult = orderService.renterRent(ordersRentParam.getUid(), orderId, ordersRentParam.getLessorId(), tenancyTerm, monthlyPayment, accidentBenefit, ordersRentParam.getPatternPayment(), fullRepayAmount);
+            if (!"200".equals(jsonResult.getCode())) {
+                return jsonResult;
+            }
         }
 
         return success(true);
