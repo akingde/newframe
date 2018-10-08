@@ -512,6 +512,7 @@ public class OrderServiceImpl implements OrderService {
             dto.setMonthPayment(financingAmount
                     .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
             dto.setDeposit(getDeposit(orderId,supplierId));
+            orderBaseService.setSupplierInfo(dto,products.get(0).getSupplyPrice(),orderRenter.getNumberOfPayments(),orderRenter.getMonthlyPayment());
         }
         return dto;
     }
@@ -546,7 +547,7 @@ public class OrderServiceImpl implements OrderService {
                     dto.setMonthPayment(financingAmount
                             .divide(BigDecimal.valueOf(orderRenter.getNumberOfPayments()),2,RoundingMode.HALF_UP));
                     dto.setDeposit(getDeposit(orderId,userSupplier.getUid() ));
-                    orderBaseService.getSupplierInfo(dto,product.getSupplyPrice(),orderRenter.getNumberOfPayments(),orderRenter.getMonthlyPayment());
+                    orderBaseService.setSupplierInfo(dto,product.getSupplyPrice(),orderRenter.getNumberOfPayments(),orderRenter.getMonthlyPayment());
                 }
                 dtos.add(dto);
             }

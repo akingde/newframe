@@ -3,6 +3,8 @@ package com.newframe.user;
 import com.newframe.NewFrameApplicationTests;
 import com.newframe.blockchain.entity.ResponseChain;
 import com.newframe.blockchain.util.KeyUtil;
+import com.newframe.dto.block.FundSupplier;
+import com.newframe.dto.block.SupplierDeliver;
 import com.newframe.enums.user.UserSMSEnum;
 import com.newframe.services.after.AfterService;
 import com.newframe.services.block.BlockChainService;
@@ -68,6 +70,7 @@ public class UserTest extends NewFrameApplicationTests {
         blockChainService.funderApply(1234L, "", "test");
     }
 
+
     @Test
     public void redistest(){
         String mobile = "18939166685";
@@ -116,6 +119,28 @@ public class UserTest extends NewFrameApplicationTests {
                 "63bd01fdd70abd939469c523b6f288d987e0d4eaeffa7265a027f9b841d85b28",
                 "test111");
         System.out.println(chain.isSuccess());
+    }
+
+    @Test
+    public void fundSupplier(){
+        FundSupplier fundSupplier = new FundSupplier();
+        fundSupplier.setFunderUid(1537516469945277L);
+        fundSupplier.setSupplierUid(1537516469945279L);
+        fundSupplier.setLoanTime(1538465097);
+        fundSupplier.setOrderNum(1536923072812706L);
+        blockChainService.fundSupplier(fundSupplier);
+    }
+
+    @Test
+    public void supplierDeliver(){
+        SupplierDeliver supplierDeliver = new SupplierDeliver();
+        supplierDeliver.setOrderNum(1536923072812706L);
+        supplierDeliver.setSupplierUid(1537516469945279L);
+        supplierDeliver.setTrackingNum("801747777059872370");
+        supplierDeliver.setIMEI("122343242424");
+        supplierDeliver.setExpressCoName("圆通快递");
+        supplierDeliver.setDeliveryTime(1538467074);
+        blockChainService.supplierDeliver(supplierDeliver);
     }
 
     public static void main(String[] args) {

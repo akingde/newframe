@@ -57,7 +57,7 @@ public interface OrderBaseService {
      */
     BigDecimal getRentPrice(BigDecimal price, BigDecimal rate, Integer numberOfPayment);
 
-    void getSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods,BigDecimal monthPayment);
+    void setSupplierInfo(SupplierInfoDTO supplierInfoDTO, BigDecimal supplyPrice, Integer periods, BigDecimal monthPayment);
 
     void saveOrderAssign(Long orderId, Long renterId, Long examineId, OrderType orderType, OrderAssignStatusEnum orderAssignStatus);
 

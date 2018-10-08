@@ -100,14 +100,20 @@ CREATE PROCEDURE `pro_account_lessor`(in in_uid bigint)
 
     SET @existUid= NULL;
 
-    SELECT sum(order_amount) INTO @repay FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=2 AND t.withhold IN(1,3);
-    SELECT sum(order_amount) INTO @monthRepay FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=2 AND t.withhold IN(1,3) AND t.pay_time < unix_timestamp(date_add(curdate() - day(curdate()) + 1, interval 1 month));
+    SELECT sum(order_amount) INTO @repay FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_hirer t WHERE t.lessor_id=@uid AND t.delete_status=0)
+    AND t.order_type=2 AND t.withhold IN(1,3);
+    SELECT sum(order_amount) INTO @monthRepay FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_hirer t WHERE t.lessor_id=@uid AND t.delete_status=0)
+    AND t.order_type=2 AND t.withhold IN(1,3) AND t.pay_time < unix_timestamp(date_add(curdate() - day(curdate()) + 1, interval 1 month));
 
-    SELECT sum(order_amount) INTO @overdueAmount FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=2 AND t.order_status=3;
-    SELECT count(*) INTO @overdueCount FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=2 AND t.order_status=3;
+    SELECT sum(order_amount) INTO @overdueAmount FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_hirer t WHERE t.lessor_id=@uid AND t.delete_status=0)
+    AND t.order_type=2 AND t.order_status=3;
+    SELECT count(*) INTO @overdueCount FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_hirer t WHERE t.lessor_id=@uid AND t.delete_status=0)
+    AND t.order_type=2 AND t.order_status=3;
 
-    SELECT sum(order_amount) INTO @matterRentPayed FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=2 AND t.withhold IN(2,4);
-    SELECT sum(order_amount) INTO @matterRentUnpayed FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=2 AND t.withhold NOT IN(2,4);
+    SELECT sum(order_amount) INTO @matterRentPayed FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_hirer t WHERE t.lessor_id=@uid AND t.delete_status=0)
+    AND t.order_type=2 AND t.withhold IN(2,4);
+    SELECT sum(order_amount) INTO @matterRentUnpayed FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_hirer t WHERE t.lessor_id=@uid AND t.delete_status=0)
+    AND t.order_type=2 AND t.withhold NOT IN(2,4);
 
     SET @repay = IFNULL(@repay,0);
     SET @monthRepay = IFNULL(@monthRepay,0);
@@ -150,7 +156,6 @@ CREATE PROCEDURE `pro_account_lessor`(in in_uid bigint)
     END IF;
   END;
 /*=========================================================================*/
-
 
 
 
