@@ -24,11 +24,15 @@ BEGIN
 	SET @existUid= NULL;
 
 	SELECT sum(deposit) INTO @deposit FROM order_funder t WHERE t.funder_id=@uid;
-	SELECT sum(order_amount) INTO @repay FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=1 AND t.withhold IN(1,3);
-	SELECT sum(order_amount) INTO @monthRepay FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=1 AND t.withhold IN(1,3) AND t.pay_time < unix_timestamp(date_add(curdate() - day(curdate()) + 1, interval 1 month));
+	SELECT sum(order_amount) INTO @repay FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_funder t WHERE t.funder_id=@uid AND t.delete_status=0)
+	 AND t.order_type=1 AND t.withhold IN(1,3);
+	SELECT sum(order_amount) INTO @monthRepay FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_funder t WHERE t.funder_id=@uid AND t.delete_status=0)
+	 AND t.order_type=1 AND t.withhold IN(1,3) AND t.pay_time < unix_timestamp(date_add(curdate() - day(curdate()) + 1, interval 1 month));
 
-	SELECT sum(order_amount) INTO @overdueAmount FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=1 AND t.order_status=3;
-	SELECT count(*) INTO @overdueCount FROM account_renter_repay t WHERE t.uid=@uid AND t.order_type=1 AND t.order_status=3;
+	SELECT sum(order_amount) INTO @overdueAmount FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_funder t WHERE t.funder_id=@uid AND t.delete_status=0)
+	 AND t.order_type=1 AND t.order_status=3;
+	SELECT count(*) INTO @overdueCount FROM account_renter_repay t WHERE t.order_id IN(SELECT order_id FROM order_funder t WHERE t.funder_id=@uid AND t.delete_status=0)
+	 AND t.order_type=1 AND t.order_status=3;
 	SELECT sum(t.invest_amount) INTO @overdueOrderAmount FROM account_funding_overdue_asset t WHERE t.uid=@uid;
 
 	SET @deposit = IFNULL(@deposit,0);
