@@ -1,9 +1,6 @@
 package com.newframe.services.http;
 
-import com.newframe.blockchain.entity.ResponseBean;
-import com.newframe.blockchain.entity.TransactionResultBean;
 import com.newframe.dto.SmsResult;
-import com.newframe.resp.block.BlockAddress;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
 import com.newframe.resp.file.UploadFilesResp;
@@ -92,30 +89,6 @@ public interface OkHttpService {
      * @return
      */
     FaceIdentityResp faceHand(String faceHandUrl, MultipartFile handFile, String realName, String cardNum, String platformtoken) throws IOException;
-
-    /**
-     * 根据Uid去获取地址
-     * @param apiAddressService
-     * @param jsonBody
-     * @return
-     */
-    BlockAddress getBlockAddress(String apiAddressService, String jsonBody);
-
-    /**
-     * 发送区块链
-     * @param blockUrl
-     * @param json
-     * @return
-     */
-    ResponseBean<String> sendBlockChain(String blockUrl, String json);
-
-    /**
-     * 发送区块链 获取结果
-     * @param blockUrl
-     * @param json
-     * @return
-     */
-    ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json);
 
     /**
      * 发送验证码

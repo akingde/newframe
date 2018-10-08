@@ -1,14 +1,8 @@
 package com.newframe.services.http.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.mzlion.core.json.TypeRef;
 import com.mzlion.easyokhttp.HttpClient;
 import com.mzlion.easyokhttp.request.PostRequest;
-import com.newframe.blockchain.entity.ResponseBean;
-import com.newframe.blockchain.entity.TransactionResultBean;
 import com.newframe.dto.SmsResult;
-import com.newframe.resp.block.BlockAddress;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
 import com.newframe.resp.file.UploadFilesResp;
@@ -210,60 +204,6 @@ public class OkHttpServiceImpl implements OkHttpService {
         return faceIdentityResp;
     }
 
-    /**
-     * 根据Uid去获取地址
-     *
-     * @param apiAddressService
-     * @param jsonBody
-     * @return
-     */
-    @Override
-    public BlockAddress getBlockAddress(String apiAddressService, String jsonBody) {
-        if (StringUtils.isEmpty(apiAddressService) || StringUtils.isEmpty(jsonBody)){
-            return null;
-        }
-        String addressHeader = "Basic MzNleGNoYW5nZTpeZXhjaGFuZ2VAMjAxOEBidHl0b2tlbkAzM15g";
-
-        BlockAddress blockAddress = HttpClient.textBody(apiAddressService)
-                .header("authorization",addressHeader)
-                .json(jsonBody)
-                .charset("utf-8")
-                .asBean(BlockAddress.class);
-
-        return blockAddress;
-    }
-
-    /**
-     * 发送区块链
-     *
-     * @param blockUrl
-     * @param json
-     * @return
-     */
-    @Override
-    public ResponseBean<String> sendBlockChain(String blockUrl, String json) {
-        return HttpClient.textBody(blockUrl)
-                .json(json)
-                .charset("utf-8")
-                .asBean(new TypeRef<ResponseBean<String>>() {});
-    }
-
-    /**
-     * 发送区块链 获取结果
-     *
-     * @param blockUrl
-     * @param json
-     * @return
-     */
-    @Override
-    public ResponseBean<TransactionResultBean> queryTransactionResult(String blockUrl, String json) {
-        String result = new String(HttpClient.textBody(blockUrl)
-                .json(json)
-                .charset("utf-8")
-                .asByteData());
-        return JSONObject.parseObject(result, new TypeReference<ResponseBean<TransactionResultBean>>(){});
-
-    }
 
     /**
      * 发送验证码

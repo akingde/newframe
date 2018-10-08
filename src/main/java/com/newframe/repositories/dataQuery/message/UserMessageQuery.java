@@ -1,6 +1,5 @@
 package com.newframe.repositories.dataQuery.message;
 
-import com.newframe.entity.account.AccountRenterAppointSupplier;
 import com.newframe.entity.message.UserMessage;
 import com.newframe.utils.query.BaseQuery;
 import com.newframe.utils.query.Where;

@@ -5,7 +5,6 @@ import com.newframe.dto.common.ExpressInfo;
 import com.newframe.dto.message.UserMessageInfo;
 import com.newframe.entity.message.UserMessage;
 import com.newframe.enums.BizErrorCode;
-import com.newframe.repositories.dataMaster.user.UserMessageMaster;
 import com.newframe.repositories.dataQuery.message.UserMessageQuery;
 import com.newframe.repositories.dataSlave.message.UserMessageSlave;
 import com.newframe.services.common.CommonService;
@@ -26,10 +25,6 @@ public class CommonServiceImpl implements CommonService {
 
     @Autowired
     private UserMessageSlave userMessageSlave;
-
-    @Autowired
-    private UserMessageMaster userMessageMaster;
-
 
     /**
      * 根据快递公司和快递单号
@@ -54,7 +49,7 @@ public class CommonServiceImpl implements CommonService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         return new OperationResult<>(expressInfo);
     }
@@ -71,10 +66,10 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer roleId, Integer pageSize, Integer currentPage) {
         if (null == uid){
-            return new OperationResult<>(BizErrorCode.NOT_LOGIN);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         if (null == pageSize || null == currentPage){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         UserMessageInfo userMessageInfo = new UserMessageInfo();
         Sort sort =new Sort(Sort.Direction.DESC,"ctime");
@@ -89,19 +84,4 @@ public class CommonServiceImpl implements CommonService {
         return new OperationResult<>(userMessageInfo);
     }
 
-    /**
-     * 保存消息到数据库
-     *
-     * @param userMessage
-     * @return
-     */
-    @Override
-    public OperationResult<Boolean> saveUserMessage(UserMessage userMessage) {
-        if (null == userMessage){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
-        }
-        UserMessage result = userMessageMaster.save(userMessage);
-
-        return new OperationResult<>(true);
-    }
 }

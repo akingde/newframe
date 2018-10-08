@@ -70,7 +70,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<TestUser> saveTestUser(TestUser testUser) {
         if (null == testUser) {
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         TestUser result = testService.saveTestUserByMaster(testUser);
         Optional<TestUser> optionalUser = Optional.ofNullable(testUser);
@@ -91,7 +91,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<TestUser> getTestUser(Long uid) {
         if (null == uid) {
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         Optional<TestUser> testUser = testService.getTestUser(uid);
@@ -102,7 +102,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<TestUser> saveTestUserByMaster(TestUser testUser) {
         if (null == testUser) {
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         TestUser result = testService.saveTestUserByMaster(testUser);
         Optional<TestUser> optionalUser = Optional.ofNullable(testUser);
@@ -117,7 +117,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<TestUser> saveTestUserBySlave(TestUser testUser) {
         if (null == testUser) {
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         TestUser result = testService.saveTestUserBySlave(testUser);
         Optional<TestUser> optionalUser = Optional.ofNullable(testUser);
@@ -138,7 +138,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<List<TestUser>> listTestUserByAge(Integer age) {
         if (null == age){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         List<TestUser> testUsers = testService.listTestUserByAge(age);
@@ -157,7 +157,7 @@ public class TestManageServiceImpl implements TestManageService {
     public OperationResult<List<TestUser>> listTestUserByAgeAndName(Integer age, String name) {
 
         if (null == age || StringUtils.isEmpty(name)){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         List<TestUser> testUsers = testService.listTestUserByAgeAndName(age,name);
@@ -177,7 +177,7 @@ public class TestManageServiceImpl implements TestManageService {
     public OperationResult<Page<TestUser>> listTestUser(String name, Integer currentPage, Integer pageSize) {
 
         if (null == currentPage || null == pageSize){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         Page<TestUser> testUserPage = testService.listTestUser(name,currentPage,pageSize);
@@ -209,7 +209,7 @@ public class TestManageServiceImpl implements TestManageService {
     public OperationResult<Boolean> updateTestUserByAge(Integer age) {
 
         if (null == age){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         Boolean result = testService.updateTestUserByAge(age);
 
@@ -225,7 +225,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<TestUser> getTestUserByUid(Long uid) {
         if (null == uid){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         TestUser testUser = testService.getTestUserByUid(uid);
@@ -242,7 +242,7 @@ public class TestManageServiceImpl implements TestManageService {
     @Override
     public OperationResult<TestUser> getTestUserByQuery(Long uid) {
         if (null == uid){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         TestUser testUser = testService.getTestUserByQuery(uid);
@@ -267,15 +267,13 @@ public class TestManageServiceImpl implements TestManageService {
     public OperationResult<Boolean> sendMessToAllByUid(Long uid, Integer roleId, String associatedOrderId, Long orderId, String messTitle, Integer messType, String messContent) {
         if (null ==uid || null == orderId || StringUtils.isEmpty(messTitle) || null == messType ||
                 StringUtils.isEmpty(messContent) ){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
 
         OperationResult<Boolean> result = andSendMessageByUid(uid,orderId,messTitle,messType,messContent);
         OperationResult<Boolean> result1 = iosSendMessageByUid(uid,orderId,messTitle,messType,messContent);
         UserMessage userMessage = new UserMessage(uid,roleId,orderId,associatedOrderId,messTitle,messType,messContent);
         userMessage.setId(idGlobal.getSeqId(UserMessage.class));
-
-        OperationResult<Boolean> result2 = commonService.saveUserMessage(userMessage);
 
         return new OperationResult<>(true);
     }
@@ -294,7 +292,7 @@ public class TestManageServiceImpl implements TestManageService {
     public OperationResult<Boolean> andSendMessageByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent) {
         if (null == uid || StringUtils.isEmpty(messTitle) || null == messType ||
                 StringUtils.isEmpty(messContent)){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         XingeApp xingeApp = new XingeApp(andAccessId, andSecretKey);
         Message message = new Message();
@@ -331,7 +329,7 @@ public class TestManageServiceImpl implements TestManageService {
     public OperationResult<Boolean> iosSendMessageByUid(Long uid, Long orderId, String messTitle, Integer messType, String messContent) {
         if (null == uid || StringUtils.isEmpty(messTitle) || null == messType ||
                 StringUtils.isEmpty(messContent)){
-            return new OperationResult<>(BizErrorCode.PARAM_INFO_ERROR);
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
         }
         XingeApp xingeApp = new XingeApp(iosAccessId,iosSecretKey);
         MessageIOS messageIOS = new MessageIOS();

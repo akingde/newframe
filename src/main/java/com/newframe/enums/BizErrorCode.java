@@ -1,21 +1,19 @@
-
 package com.newframe.enums;
 
 /**
  *【错误码枚举】
- * 业务错误状态码有6位，都是以40开头，中间两位表未业务（01：游戏，02：）
+ * 业务错误状态码有6位，都是以40开头，中间两位表未业务（01：游戏，05：用户）
  *
  * @author
  */
 public enum BizErrorCode implements CodeStatus {
 
-    PARAM_INFO_ERROR("400101","参数非法"),
-    SAVE_INFO_ERROR("400102","保存信息失败"),
-    NOT_LOGIN("400103","未登录"),
-    ACCOUNT_NOTEXIST("400104","账户不存在"),
-    ACCOUNTTYPE_NOTEXIST("400105","账户类型不存在"),
-    ACCOUNTREPAY_NOTEXIST("400106","该笔还款计划不存在"),
-    NOT_SUFFICIENT_FUNDS("400106","该笔还款计划不存在")
+
+    PARM_ERROR("400101", "参数非法"),
+    SEND_FAIL("400102","消息发送失败"),
+    SAVE_FAIL("400103","消息保存失败"),
+    NO_MORE_MESSAGE("400104","没有更多消息了"),
+    SAVE_INFO_ERROR("400104","没有更多消息了")
     ;
     private String code;
     private String message;

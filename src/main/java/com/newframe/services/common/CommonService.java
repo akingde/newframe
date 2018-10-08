@@ -30,10 +30,4 @@ public interface CommonService {
      */
     OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer roleId, Integer pageSize, Integer currentPage);
 
-    /**
-     * 保存消息到数据库
-     * @param userMessage
-     * @return
-     */
-    OperationResult<Boolean> saveUserMessage(UserMessage userMessage);
 }

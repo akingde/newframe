@@ -1,6 +1,5 @@
 package com.newframe.dto.message;
 
-import com.newframe.entity.account.AccountRenterRent;
 import com.newframe.entity.message.UserMessage;
 import lombok.Data;
 
