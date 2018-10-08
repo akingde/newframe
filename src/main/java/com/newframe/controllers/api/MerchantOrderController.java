@@ -69,8 +69,8 @@ public class MerchantOrderController extends BaseController {
     }
 
     @RequestMapping("/status/push")
-    public JsonResult pushStatus(PushOrderStatusDTO dto){
-        OperationResult<String> result = merchantOrderService.pushStatus(dto);
+    public JsonResult pushStatus(@Valid @RequestBody PushOrderStatusDTO dto){
+        OperationResult<Boolean> result = merchantOrderService.pushStatus(dto);
         if(result.getSucc()){
             return success(result.getEntity());
         }

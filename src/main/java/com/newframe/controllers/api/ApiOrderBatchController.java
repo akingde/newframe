@@ -1,14 +1,15 @@
 package com.newframe.controllers.api;
 
-import com.newframe.common.anony.Anonymous;
 import com.newframe.common.exception.AccountOperationException;
 import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.common.OrdersBuyParam;
 import com.newframe.dto.common.OrdersRentParam;
+import com.newframe.dto.common.UidLoanDTOs;
 import com.newframe.dto.common.UidOrderIds;
 import com.newframe.dto.order.request.FinanceApplyDTO;
+import com.newframe.dto.order.request.LoanDTO;
 import com.newframe.dto.order.request.ProductInfoDTO;
 import com.newframe.dto.order.response.SupplierInfoDTO;
 import com.newframe.entity.order.OrderRenter;
@@ -46,7 +47,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/rent/api/orders")
 public class ApiOrderBatchController extends BaseController {
-
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -69,7 +69,6 @@ public class ApiOrderBatchController extends BaseController {
      *
      * @return 返回结果
      */
-    @Anonymous(true)
     @PostMapping("lessor/batch/deliver")
     public JsonResult lessorBatchLogistics(Long uid, MultipartFile file) throws AccountOperationException {
         if (uid == null) {
@@ -89,7 +88,6 @@ public class ApiOrderBatchController extends BaseController {
      *
      * @return 操作结果
      */
-    @Anonymous(true)
     @PostMapping("supplier/batch/deliver")
     public JsonResult supplierBatchDeliver(Long uid, MultipartFile file) {
         if (uid == null) {
@@ -103,27 +101,11 @@ public class ApiOrderBatchController extends BaseController {
     }
 
     /**
-     * 资金方-批量拒绝
-     *
-     * @return 操作结果
-     */
-    @Anonymous(true)
-    @PostMapping("funder/batch/refuse")
-    public JsonResult funderBatchRefuse(@RequestBody @Valid UidOrderIds uidOrderIds) throws AccountOperationException {
-        OperationResult<Boolean> result = orderService.funderBatchRefuse(uidOrderIds.getUid(), uidOrderIds.getOrderIds());
-        if (result.getSucc()) {
-            return success(result.getEntity());
-        }
-        return error(result.getErrorCode());
-    }
-
-    /**
      * 查询有货的供货商
      *
      * @return
      * @throws AccountOperationException
      */
-    @Anonymous(true)
     @PostMapping("renter/buy/suppliers")
     public JsonResult getSupplierList(@RequestBody @Valid UidOrderIds uidOrderIds) {
         if (CollectionUtils.isEmpty(uidOrderIds.getOrderIds())) {
@@ -167,7 +149,6 @@ public class ApiOrderBatchController extends BaseController {
      * @return
      * @throws AccountOperationException
      */
-    @Anonymous(true)
     @PostMapping("renter/buy")
     public JsonResult renterBuy(@RequestBody @Valid OrdersBuyParam ordersBuyParam) throws AccountOperationException {
         for (Long orderId : ordersBuyParam.getOrderIds()) {
@@ -200,7 +181,6 @@ public class ApiOrderBatchController extends BaseController {
      * @return
      * @throws AccountOperationException
      */
-    @Anonymous(true)
     @PostMapping("renter/rent/lessors")
     public JsonResult getLessorList(@RequestBody @Valid UidOrderIds uidOrderIds) {
         List<OrderRenter> list = orderRenterSlave.findAllById(uidOrderIds.getOrderIds());
@@ -242,7 +222,6 @@ public class ApiOrderBatchController extends BaseController {
      *
      * @return 处理结果
      */
-    @Anonymous(true)
     @PostMapping("renter/rent")
     public JsonResult renterRent(@RequestBody @Valid OrdersRentParam ordersRentParam) throws AccountOperationException {
         for (Long orderId : ordersRentParam.getOrderIds()) {
@@ -277,9 +256,60 @@ public class ApiOrderBatchController extends BaseController {
     /**
      * 租赁商批量取消订单
      */
-    @Anonymous(true)
     @PostMapping("renter/cancel")
     public JsonResult cancelOrder(@RequestBody @Valid UidOrderIds uidOrderIds) {
         return orderService.cancelOrder(uidOrderIds.getOrderIds(), uidOrderIds.getUid());
+    }
+
+
+    /**
+     * 资金方-线下付款确认下单
+     */
+    @PostMapping("funder/offline/loan")
+    public JsonResult funderOfflineLoan(@RequestBody @Valid UidLoanDTOs uidLoanDTOs) {
+        Long uid = uidLoanDTOs.getUid();
+        if (uid == null) {
+            return error(SystemCode.NEED_LOGIN);
+        }
+        for (LoanDTO loanDTO : uidLoanDTOs.getLoanDTOs()) {
+            JsonResult jsonResult = orderService.offlineLoan(loanDTO, uid);
+            if (!"200".equals(jsonResult.getCode())) {
+                return jsonResult;
+            }
+        }
+        return success(true);
+    }
+
+    /**
+     * 资金方线上付款
+     */
+    @PostMapping("funder/loan")
+    public JsonResult funderLoan(@RequestBody @Valid UidLoanDTOs uidLoanDTOs) throws AccountOperationException {
+        Long uid = uidLoanDTOs.getUid();
+        if (uid == null) {
+            return error(SystemCode.NEED_LOGIN);
+        }
+        for (LoanDTO loanDTO : uidLoanDTOs.getLoanDTOs()) {
+            JsonResult jsonResult = orderService.onlineLoan(loanDTO, uid);
+            if (!"200".equals(jsonResult.getCode())) {
+                return jsonResult;
+            }
+        }
+        return success(true);
+    }
+
+    /**
+     * 资金方-拒绝融资订单
+     */
+    @PostMapping("funder/refuse")
+    public JsonResult funderRefuse(@RequestBody @Valid UidOrderIds uidOrderIds) throws AccountOperationException {
+        Long uid = uidOrderIds.getUid();
+        for (Long orderId : uidOrderIds.getOrderIds()) {
+            JsonResult jsonResult = orderService.funderRefuse(orderId, uid);
+            if (!"200".equals(jsonResult.getCode())) {
+                return jsonResult;
+            }
+        }
+        return success(true);
     }
 }

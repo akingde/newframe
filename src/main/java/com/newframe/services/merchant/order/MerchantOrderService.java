@@ -48,5 +48,5 @@ public interface MerchantOrderService {
      * @param dto 请求数据
      * @return 操作结果
      */
-    OperationResult<String> pushStatus(PushOrderStatusDTO dto);
+    OperationResult<Boolean> pushStatus(PushOrderStatusDTO dto);
 }

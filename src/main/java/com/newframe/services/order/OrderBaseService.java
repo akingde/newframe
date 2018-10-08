@@ -2,6 +2,7 @@ package com.newframe.services.order;
 
 import com.newframe.dto.order.request.DeliverInfoDTO;
 import com.newframe.dto.order.response.SupplierInfoDTO;
+import com.newframe.entity.merchant.MerchantOrderStatus;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
@@ -68,4 +69,11 @@ public interface OrderBaseService {
      * @return 返回结果
      */
     List<DeliverInfoDTO> wrapBatchDeliver(InputStream inputStream);
+
+    /**
+     * 查询第三方订单状态
+     * @param orderId 订单id
+     * @return 第三方订单状态
+     */
+    MerchantOrderStatus getMerchantOrderStatus(Long orderId);
 }

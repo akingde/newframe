@@ -701,14 +701,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OperationResult<Boolean> funderBatchRefuse(Long uid, List<Long> orders) throws AccountOperationException {
-        for(Long orderId:orders){
-            funderRefuse(orderId,uid);
-        }
-        return new OperationResult<>(OrderResultEnum.SUCCESS,true);
-    }
-
-    @Override
     public JsonResult offlineLoan(LoanDTO loanDTO, Long uid) {
         if (loanDTO.getLoanAmount() == null
                 || loanDTO.getLoanModel() == null || loanDTO.getOrderId() == null) {
