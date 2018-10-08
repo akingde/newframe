@@ -2,6 +2,7 @@ package com.newframe.services.merchant.order.impl;
 
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.merchant.order.*;
+import com.newframe.entity.merchant.MerchantOrderStatus;
 import com.newframe.entity.order.OrderFunder;
 import com.newframe.entity.order.OrderHirer;
 import com.newframe.entity.order.OrderRenter;
@@ -11,8 +12,10 @@ import com.newframe.enums.SystemCode;
 import com.newframe.enums.merchant.MerchantResult;
 import com.newframe.enums.order.OrderRenterStatus;
 import com.newframe.enums.order.OrderType;
+import com.newframe.repositories.dataMaster.merchant.MerchantOrderStatusMaster;
 import com.newframe.repositories.dataMaster.order.OrderRenterMaser;
 import com.newframe.repositories.dataQuery.order.OrderRenterQuery;
+import com.newframe.repositories.dataSlave.merchant.MerchantOrderStatusSlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
 import com.newframe.repositories.dataSlave.order.OrderRenterSlave;
@@ -52,6 +55,12 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
 
     @Autowired
     OrderFunderSlave orderFunderSlave;
+
+    @Autowired
+    MerchantOrderStatusMaster merchantOrderStatusMaster;
+
+    @Autowired
+    MerchantOrderStatusSlave merchantOrderStatusSlave;
 
     @Value("${residual.value.protection.scheme}")
     private BigDecimal residualValue;
@@ -161,10 +170,22 @@ public class MerchantOrderServiceImpl implements MerchantOrderService {
     }
 
     @Override
-    public OperationResult<String> pushStatus(PushOrderStatusDTO dto) {
-
-        return null;
+    public OperationResult<Boolean> pushStatus(PushOrderStatusDTO dto) {
+        MerchantOrderStatus merchantOrderStatus = new MerchantOrderStatus();
+        OrderRenterQuery query = new OrderRenterQuery();
+        query.setPartnerId(dto.getPartnerId());
+        query.setPartnerOrderId(dto.getPartnerOrderId());
+        OrderRenter orderRenter = orderRenterSlave.findOne(query);
+        if(orderRenter == null){
+            return new OperationResult<>(MerchantResult.MERCHANT_ORDER_NOT_EXIST);
+        }
+        merchantOrderStatus.setOrderId(orderRenter.getOrderId());
+        merchantOrderStatus.setOrderStatus(dto.getOrderStatus());
+        merchantOrderStatus.setPartnerId(dto.getPartnerId());
+        merchantOrderStatus.setPartnerOrderId(dto.getPartnerOrderId());
+        merchantOrderStatus.setRenterId(orderRenter.getRenterId());
+        merchantOrderStatus.setValue(dto.getValue());
+        merchantOrderStatusMaster.save(merchantOrderStatus);
+        return new OperationResult<>(SystemCode.SUCCESS,true);
     }
-
-
 }

@@ -5,6 +5,7 @@ import com.newframe.dto.order.request.DeliverInfoDTO;
 import com.newframe.dto.order.request.ExcelDeliverInfoDTO;
 import com.newframe.dto.order.request.FinancingInfo;
 import com.newframe.dto.order.response.SupplierInfoDTO;
+import com.newframe.entity.merchant.MerchantOrderStatus;
 import com.newframe.entity.order.*;
 import com.newframe.entity.user.UserRentMerchant;
 import com.newframe.entity.user.UserSupplier;
@@ -15,6 +16,7 @@ import com.newframe.enums.order.PatternPaymentEnum;
 import com.newframe.repositories.dataMaster.order.OrderAssignMaster;
 import com.newframe.repositories.dataQuery.order.ExpressCompanyQuery;
 import com.newframe.repositories.dataQuery.order.OrderAssignQuery;
+import com.newframe.repositories.dataSlave.merchant.MerchantOrderStatusSlave;
 import com.newframe.repositories.dataSlave.order.ExpressCompanySlave;
 import com.newframe.repositories.dataSlave.order.OrderFunderSlave;
 import com.newframe.repositories.dataSlave.order.OrderHirerSlave;
@@ -42,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author kfm
@@ -80,6 +83,8 @@ public class OrderBaseServiceImpl implements OrderBaseService {
     private ExpressCompanySlave expressCompanySlave;
     @Autowired
     private IdGlobalGenerator idGen;
+    @Autowired
+    private MerchantOrderStatusSlave merchantOrderStatusSlave;
     @Override
     public String getSupplierName(Long supplierId){
         if(supplierId == null){
@@ -315,5 +320,11 @@ public class OrderBaseServiceImpl implements OrderBaseService {
             deliverInfoDTOS.add(deliverInfoDTO);
         }
         return deliverInfoDTOS;
+    }
+
+    @Override
+    public MerchantOrderStatus getMerchantOrderStatus(Long orderId){
+        Optional<MerchantOrderStatus> merchantOrderStatus = merchantOrderStatusSlave.findById(orderId);
+        return merchantOrderStatus.orElse(null);
     }
 }
