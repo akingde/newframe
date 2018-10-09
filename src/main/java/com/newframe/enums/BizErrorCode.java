@@ -10,10 +10,9 @@ public enum BizErrorCode implements CodeStatus {
 
 
     PARM_ERROR("400101", "参数非法"),
-    SEND_FAIL("400102","消息发送失败"),
-    SAVE_FAIL("400103","消息保存失败"),
-    NO_MORE_MESSAGE("400104","没有更多消息了"),
-    SAVE_INFO_ERROR("400104","没有更多消息了")
+    SAVE_INFO_ERROR("400104","没有更多消息了"),
+    MCODE_SEND_ERROR("400202", "发送短信失败,请稍后再试"),
+    MCODE_ONE_MINIT_LIMIT("400201", "验证码发送太频繁，请1分钟后重试")
     ;
     private String code;
     private String message;

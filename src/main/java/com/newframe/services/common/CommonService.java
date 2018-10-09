@@ -30,4 +30,5 @@ public interface CommonService {
      */
     OperationResult<UserMessageInfo> listUserMessage(Long uid, Integer roleId, Integer pageSize, Integer currentPage);
 
+
 }
