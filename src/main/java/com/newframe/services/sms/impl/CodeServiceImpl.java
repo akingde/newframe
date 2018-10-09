@@ -8,7 +8,9 @@ import com.newframe.enums.sms.McodeTypeEnum;
 import com.newframe.services.sms.CodeService;
 import com.newframe.services.sms.SmsService;
 import com.newframe.utils.log.GwsLogger;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,9 @@ public class CodeServiceImpl implements CodeService {
 
     @Autowired
     private SmsService smsService;
+
+    @Value("${mcode.open}")
+    private boolean mcodeOpen;
 
     /**
      * 发送短信验证码
@@ -75,4 +80,63 @@ public class CodeServiceImpl implements CodeService {
         }
         return vcode.toString();
     }
+
+    /**
+     *
+     * 校验验证码, 只能校验一次，校验后就删除验证码
+     * @param mobile
+     * @param mcodeType
+     * @param mcode
+     * @return
+     */
+    @Override
+    public Boolean isValidMcode(String mobile, McodeTypeEnum mcodeType, String mcode) {
+        if (StringUtils.isEmpty(mobile) || null == mcodeType || StringUtils.isEmpty(mcode)){
+            return false;
+        }
+        if(!mcodeOpen){
+            return true;
+        }
+
+        boolean isValid = hasMcode(mobile, mcodeType, mcode);
+        if (!isValid) {
+            return false;
+        }
+
+        String redisKey = new StringBuilder(CachePrefix.MCODE).
+                append(mcodeType.getCode()). append("_").append(mobile).toString();
+
+        redisTemplate.delete(redisKey);
+        return true;
+    }
+
+    /**
+     *
+     * 判断短信验证码是否存在, 不会删除验证码
+     * @param mobile
+     * @param mcodeType
+     * @param mcode
+     * @return
+     */
+    @Override
+    public Boolean hasMcode(String mobile, McodeTypeEnum mcodeType, String mcode) {
+
+        if (StringUtils.isEmpty(mobile) || null == mcodeType || StringUtils.isEmpty(mcode)) {
+            return false;
+        }
+
+        String redisKey = new StringBuilder(CachePrefix.MCODE).
+                append(mcodeType.getCode()). append("_").append(mobile).toString();
+        String value = (String) redisTemplate.opsForValue().get(redisKey);
+
+
+        if (mcode.equals(value)) {
+            return true;
+        } else {
+            //todo
+            //提测后改回来
+            return false;
+        }
+    }
+
 }

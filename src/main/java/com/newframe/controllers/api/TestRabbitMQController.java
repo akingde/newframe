@@ -5,6 +5,7 @@ import com.newframe.controllers.BaseController;
 import com.newframe.controllers.JsonResult;
 import com.newframe.dto.mq.AliVcode;
 import com.newframe.entity.rabbitmq.MessageEntity;
+import com.newframe.entity.user.User;
 import com.newframe.provider.MessageProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

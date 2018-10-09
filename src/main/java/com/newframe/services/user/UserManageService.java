@@ -1,6 +1,9 @@
 package com.newframe.services.user;
 
+import com.newframe.dto.LoginInfo;
 import com.newframe.dto.OperationResult;
+import com.newframe.dto.mq.AliVcode;
+import com.newframe.enums.sms.McodeTypeEnum;
 
 /**
  * @author:wangdong
@@ -15,4 +18,20 @@ public interface UserManageService {
      * @return
      */
     OperationResult<String> getMcode(String mobile, Integer mcodeType);
+
+    /**
+     * 通过消息队列发送验证码
+     * @param aliVcode
+     * @param mcodeTypeEnum
+     * @return
+     */
+    OperationResult<String> sendMcode(AliVcode aliVcode, McodeTypeEnum mcodeTypeEnum);
+    /**
+     * 用户的注册或者登陆
+     * @param mobile
+     * @param mcode
+     * @param roleType
+     * @return
+     */
+    OperationResult<LoginInfo> mobileRegisterOrLogin(String mobile, String mcode, Integer roleType);
 }

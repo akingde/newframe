@@ -14,4 +14,11 @@ public class AliVcode {
     private String templateCode;
 
     private String code;
+
+    public AliVcode(String mobile,String templateCode,String code){
+        this.mobile=mobile;
+        this.templateCode=templateCode;
+        this.code=code;
+    }
+
 }
