@@ -97,7 +97,7 @@ public class UserManageServiceImpl implements UserManageService {
         if (!result) {
             //将实体信息写入消息队列
             messageProvider.sendMessage(aliVcode, QueueConstants.MESSAGE_ALIEXCHANGE, QueueConstants.MESSAGE_ROUTE_SENDCODE);
-            redisTemplate.opsForValue().set(mcodeKey.toString(), aliVcode.getCode(), 10, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(mcodeKey.toString(), aliVcode.getCode(), 5, TimeUnit.MINUTES);
             GwsLogger.info("给{}发送{}验证码【{}】", aliVcode.getMobile(), mcodeTypeEnum.getMessage(), aliVcode.getCode());
         }
 

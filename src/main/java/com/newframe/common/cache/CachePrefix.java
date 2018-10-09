@@ -8,7 +8,7 @@ public class CachePrefix {
     /**
      * 用户Token
      */
-    public static final String U_TOKEN = "u_token";
+    public static final String U_TOKEN = "u_token_";
     /**
      * 手机验证码前缀
      */
