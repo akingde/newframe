@@ -14,7 +14,8 @@ public enum BizErrorCode implements CodeStatus {
     MCODE_SEND_ERROR("400103", "发送短信失败,请稍后再试"),
     MCODE_TYPE_ERROR("400104", "短信类型错误,请稍后再试"),
     MCODE_ONE_MINIT_LIMIT("400105", "验证码发送太频繁，请1分钟后重试"),
-    MCODE_VERIFY_ERROR("400106", "验证码已用过或错误")
+    MCODE_VERIFY_ERROR("400106", "验证码已用过或错误"),
+    MIBLE_NOT_EXIST("400107","手机号不存在")
     ;
     private String code;
     private String message;

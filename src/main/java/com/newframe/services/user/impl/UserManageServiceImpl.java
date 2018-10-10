@@ -5,7 +5,9 @@ import com.newframe.configuration.rabbitmq.QueueConstants;
 import com.newframe.dto.LoginInfo;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.mq.AliVcode;
+import com.newframe.dto.user.RegisterInfo;
 import com.newframe.entity.user.User;
+import com.newframe.entity.user.UserPwd;
 import com.newframe.enums.BizErrorCode;
 import com.newframe.enums.CodeStatus;
 import com.newframe.enums.SystemCode;
@@ -18,6 +20,7 @@ import com.newframe.provider.MessageProvider;
 import com.newframe.services.sms.CodeService;
 import com.newframe.services.user.UserManageService;
 import com.newframe.services.user.UserService;
+import com.newframe.utils.PwdUtil;
 import com.newframe.utils.log.GwsLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +164,73 @@ public class UserManageServiceImpl implements UserManageService {
             setUserToken(loginInfo);
             return new OperationResult<>(loginInfo);
         }
+    }
+
+    /**
+     * 根据手机号判断用户是否设置过密码
+     *
+     * @param mobile
+     * @return
+     */
+    @Override
+    public OperationResult<RegisterInfo> mobileHasRegister(String mobile) {
+        if (StringUtils.isEmpty(mobile)) {
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+
+        RegisterInfo registerInfo = new RegisterInfo();
+        //查看这个手机号是否已经注册过
+        User user = userService.getUser(mobile);
+        if (null == user) {
+
+            return new OperationResult<>(BizErrorCode.MIBLE_NOT_EXIST);
+        }
+        registerInfo.setUid(user.getUid());
+        registerInfo.setHasRegister(true);
+        UserPwd userPwd = userService.getUserPwd(user.getUid());
+        if (null == userPwd) {
+            registerInfo.setHasLoginPwd(false);
+            return new OperationResult<>(registerInfo);
+        }
+        if (StringUtils.isEmpty(userPwd.getLoginPwd())) {
+            registerInfo.setHasLoginPwd(false);
+        } else {
+            registerInfo.setHasLoginPwd(true);
+        }
+        return new OperationResult<>(registerInfo);
+    }
+
+    /**
+     * 通过手机号码设置密码
+     *
+     * @param mobile
+     * @param mcode
+     * @param pwd
+     * @param passWordType
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> setPasswordByMobile(String mobile, String mcode, String pwd, Integer passWordType) {
+
+        if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(mcode) || StringUtils.isEmpty(pwd) || null == passWordType ) {
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+        User user = userService.getUser(mobile);
+        if (null == user) {
+            return new OperationResult<>(BizErrorCode.MIBLE_NOT_EXIST);
+        }
+        CodeStatus codeStatus = validateMcode(mobile, McodeTypeEnum.REGISTER_OR_LOGIN, mcode);
+        if (!SystemCode.SUCCESS.equals(codeStatus)) {
+            return new OperationResult<>(codeStatus);
+        }
+        UserPwd userPwd = userService.getUserPwd(user.getUid());
+        //首次设置密码不需要清理token,非首次设置密码需要清理用户包括APP和PC端的Token
+        if (null == userPwd) {
+            userService.saveUserPwd(user.getUid(), PwdUtil.md5Pwd(pwd), passWordType);
+        } else {
+            userService.updateUserPwd(user.getUid(), PwdUtil.md5Pwd(pwd), passWordType);
+        }
+        return new OperationResult<>(true);
     }
 
     /**

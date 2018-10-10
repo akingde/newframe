@@ -3,6 +3,7 @@ package com.newframe.services.user;
 import com.newframe.dto.LoginInfo;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.mq.AliVcode;
+import com.newframe.dto.user.RegisterInfo;
 import com.newframe.enums.sms.McodeTypeEnum;
 
 /**
@@ -34,4 +35,21 @@ public interface UserManageService {
      * @return
      */
     OperationResult<LoginInfo> mobileRegisterOrLogin(String mobile, String mcode, Integer roleType);
+
+    /**
+     * 根据手机号判断用户是否设置过密码
+     * @param mobile
+     * @return
+     */
+    OperationResult<RegisterInfo> mobileHasRegister(String mobile);
+
+    /**
+     * 通过手机号码设置密码
+     * @param mobile
+     * @param mcode
+     * @param pwd
+     * @param passWordType
+     * @return
+     */
+    OperationResult<Boolean> setPasswordByMobile(String mobile, String mcode, String pwd, Integer passWordType);
 }
