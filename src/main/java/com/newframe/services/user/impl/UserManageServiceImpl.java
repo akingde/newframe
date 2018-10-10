@@ -156,6 +156,7 @@ public class UserManageServiceImpl implements UserManageService {
             }
             //操作token,将token放到redis，并存到数据库
             String token = UUID.randomUUID().toString();
+            loginInfo.setUid(user.getUid());
             loginInfo.setToken(token);
             setUserToken(loginInfo);
             return new OperationResult<>(loginInfo);
