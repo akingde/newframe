@@ -104,4 +104,12 @@ public interface OkHttpService {
      * @param templateCode
      */
     void sendSmallMessage(String mobile,  String templateCode);
+
+    /**
+     * 根据不同的用户角色，去初始化不同的申请表
+     * @param uid
+     * @param mobile
+     * @param role
+     */
+    void applyInitialize(Long uid, String mobile, Integer role);
 }

@@ -89,4 +89,37 @@ public class UserController extends BaseController {
         }
         return error(result.getErrorCode().getCode(), result.getErrorCode().getMessage());
     }
+
+    /**
+     * 通过旧密码的方式去修改密码
+     * @param uid
+     * @param oldPwd
+     * @param newPwd
+     * @param passWordType
+     * @return
+     */
+    @RequestMapping("setPasswordByOldPwd")
+    public JsonResult setPasswordByOldPwd(Long uid, String oldPwd, String newPwd, Integer passWordType) {
+        OperationResult<Boolean> result = userManageService.setPasswordByOldPwd(uid, oldPwd, newPwd, passWordType);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode().getCode(), result.getErrorCode().getMessage());
+    }
+
+
+    /**
+     * 密码登录
+     * @param mobile
+     * @param pwd
+     * @return
+     */
+    @RequestMapping("mobilePwdLogin")
+    public JsonResult mobilePwdLogin(String mobile, String pwd) {
+        OperationResult<LoginInfo> result = userManageService.mobilePwdLogin(mobile, pwd);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode().getCode(), result.getErrorCode().getMessage());
+    }
 }

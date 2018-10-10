@@ -9,6 +9,7 @@ import com.newframe.repositories.dataQuery.user.UserPwdQuery;
 import com.newframe.repositories.dataQuery.user.UserQuery;
 import com.newframe.repositories.dataSlave.user.UserPwdSlave;
 import com.newframe.repositories.dataSlave.user.UserSlave;
+import com.newframe.services.http.OkHttpService;
 import com.newframe.services.user.UserService;
 import com.newframe.utils.cache.IdGlobalGenerator;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserPwdMaster userPwdMaster;
+
+    @Autowired
+    private OkHttpService okHttpService;
     /**
      * 根据手机号查询用户信息
      *
@@ -134,4 +138,19 @@ public class UserServiceImpl implements UserService {
         }
         return userPwdMaster.updateById(userPwd, uid, "loginPwd", "payPwd") > 0 ? true : false;
     }
+
+    /**
+     * 根据用户的uid获取用户的信息
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public User getUser(Long uid) {
+        if (null == uid){
+            return null;
+        }
+        return userSlave.findOne(uid);
+    }
+
 }

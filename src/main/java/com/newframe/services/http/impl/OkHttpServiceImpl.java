@@ -28,6 +28,9 @@ public class OkHttpServiceImpl implements OkHttpService {
     @Value("${api.besetool.service}")
     private String smsUrl;
 
+    @Value("${api.tuancan.service}")
+    private String tuancanUrl;
+
     /**
      * 传送文件到服务器去
      *
@@ -234,5 +237,22 @@ public class OkHttpServiceImpl implements OkHttpService {
         HttpClient.post(url)
                 .param("mobile", mobile)
                 .param("templateCode", templateCode);
+    }
+
+    /**
+     * 根据不同的用户角色，去初始化不同的申请表
+     *
+     * @param uid
+     * @param mobile
+     * @param role
+     */
+    @Override
+    public void applyInitialize(Long uid, String mobile, Integer role) {
+        String url = tuancanUrl + "/front/apply/initialize/info";
+
+        HttpClient.post(url)
+                .param("uid",uid.toString())
+                .param("mobile", mobile)
+                .param("role", role.toString());
     }
 }

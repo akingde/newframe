@@ -17,6 +17,7 @@ import com.newframe.enums.User.UserStatusEnum;
 import com.newframe.enums.sms.AliyunSMSTemplateEnum;
 import com.newframe.enums.sms.McodeTypeEnum;
 import com.newframe.provider.MessageProvider;
+import com.newframe.services.http.OkHttpService;
 import com.newframe.services.sms.CodeService;
 import com.newframe.services.user.UserManageService;
 import com.newframe.services.user.UserService;
@@ -53,6 +54,9 @@ public class UserManageServiceImpl implements UserManageService {
 
     @Autowired
     private MessageProvider messageProvider;
+
+    @Autowired
+    private OkHttpService okHttpService;
 
     /**
      * 根据手机号获取验证码
@@ -149,6 +153,7 @@ public class UserManageServiceImpl implements UserManageService {
             String token = UUID.randomUUID().toString();
             loginInfo.setToken(token);
             setUserToken(loginInfo);
+            okHttpService.applyInitialize(u.getUid(),mobile,u.getRole());
             return new OperationResult<>(loginInfo);
         }else {
 
@@ -231,6 +236,79 @@ public class UserManageServiceImpl implements UserManageService {
             userService.updateUserPwd(user.getUid(), PwdUtil.md5Pwd(pwd), passWordType);
         }
         return new OperationResult<>(true);
+    }
+
+    /**
+     * 通过旧密码去修改新密码
+     *
+     * @param uid
+     * @param oldPwd
+     * @param newPwd
+     * @param passWordType
+     * @return
+     */
+    @Override
+    public OperationResult<Boolean> setPasswordByOldPwd(Long uid, String oldPwd, String newPwd, Integer passWordType) {
+        if (null == uid || StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd) || null == passWordType){
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+        User user = userService.getUser(uid);
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+        UserPwd userPwd = userService.getUserPwd(uid);
+        if (StringUtils.isEmpty(userPwd.getLoginPwd())){
+            return new OperationResult<>(BizErrorCode.USER_NO_LOGINPWD);
+        }
+        //校验旧密码是否正确
+        String md5Pwd = PwdUtil.md5Pwd(oldPwd);
+        if (!md5Pwd.equals(userPwd.getLoginPwd())) {
+            return new OperationResult<>(BizErrorCode.USER_OLDPWD_ERROR);
+        }
+
+        Boolean result = userService.updateUserPwd(uid, PwdUtil.md5Pwd(newPwd), passWordType);
+        if (!result){
+            return new OperationResult<>(BizErrorCode.USER_PWD_UPDATEERROR);
+        }
+        return new OperationResult<>(true);
+    }
+
+    /**
+     * 密码登录
+     *
+     * @param mobile
+     * @param pwd
+     * @return
+     */
+    @Override
+    public OperationResult<LoginInfo> mobilePwdLogin(String mobile, String pwd) {
+        if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(pwd)) {
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+        //校验密码的长度，密码需要在6-18之间
+        if (!PwdUtil.checkPwd(pwd)) {
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+        //校验账号是否正确并且存在
+        //mobile在这边代表手机号
+        User user = userService.getUser(mobile);
+        if (null == user) {
+            return new OperationResult<>(BizErrorCode.MIBLE_NOT_EXIST);
+        }
+        UserPwd userPwd = userService.getUserPwd(user.getUid());
+        if (null == userPwd || StringUtils.isEmpty(userPwd.getLoginPwd())) {
+            return new OperationResult<>(BizErrorCode.USER_NO_LOGINPWD);
+        }
+        String md5Pwd = PwdUtil.md5Pwd(pwd);
+        if (!md5Pwd.equals(userPwd.getLoginPwd())) {
+            return new OperationResult<>(BizErrorCode.USER_PWD_ERROR);
+        }
+        LoginInfo loginInfo = new LoginInfo();
+        loginInfo.setUid(user.getUid());
+        String token = UUID.randomUUID().toString();
+        loginInfo.setToken(token);
+        setUserToken(loginInfo);
+        return new OperationResult<>(loginInfo);
     }
 
     /**

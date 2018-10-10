@@ -52,4 +52,22 @@ public interface UserManageService {
      * @return
      */
     OperationResult<Boolean> setPasswordByMobile(String mobile, String mcode, String pwd, Integer passWordType);
+
+    /**
+     * 通过旧密码去修改新密码
+     * @param uid
+     * @param oldPwd
+     * @param newPwd
+     * @param passWordType
+     * @return
+     */
+    OperationResult<Boolean> setPasswordByOldPwd(Long uid, String oldPwd, String newPwd, Integer passWordType);
+
+    /**
+     * 密码登录
+     * @param mobile
+     * @param pwd
+     * @return
+     */
+    OperationResult<LoginInfo> mobilePwdLogin(String mobile, String pwd);
 }

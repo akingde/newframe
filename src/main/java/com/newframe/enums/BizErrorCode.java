@@ -15,7 +15,12 @@ public enum BizErrorCode implements CodeStatus {
     MCODE_TYPE_ERROR("400104", "短信类型错误,请稍后再试"),
     MCODE_ONE_MINIT_LIMIT("400105", "验证码发送太频繁，请1分钟后重试"),
     MCODE_VERIFY_ERROR("400106", "验证码已用过或错误"),
-    MIBLE_NOT_EXIST("400107","手机号不存在")
+    USER_NO_LOGINPWD("400108","未设置登陆密码"),
+    MIBLE_NOT_EXIST("400107","手机号不存在"),
+    USER_PWD_ERROR("400108","登陆密码错误"),
+    USER_UID_NOT_EXIST("400109","Uid不存在"),
+    USER_OLDPWD_ERROR("400110","旧密码错误"),
+    USER_PWD_UPDATEERROR("400111","密码更新失败")
     ;
     private String code;
     private String message;

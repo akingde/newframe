@@ -48,4 +48,12 @@ public interface UserService {
      * @return
      */
     Boolean updateUserPwd(Long uid, String pwd, Integer passWordType);
+
+    /**
+     * 根据用户的uid获取用户的信息
+     * @param uid
+     * @return
+     */
+    User getUser(Long uid);
+
 }
