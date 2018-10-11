@@ -1,6 +1,6 @@
 package com.newframe.services.http;
 
-import com.newframe.dto.SmsResult;
+import com.newframe.dto.CommonResult;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
 import com.newframe.resp.file.UploadFilesResp;
@@ -96,7 +96,7 @@ public interface OkHttpService {
      * @param code
      * @return
      */
-    SmsResult sendVerificationCode(String mobile, String templateCode, String code);
+    CommonResult sendVerificationCode(String mobile, String templateCode, String code);
 
     /**
      * 发送通知短信
@@ -111,5 +111,5 @@ public interface OkHttpService {
      * @param mobile
      * @param role
      */
-    void applyInitialize(Long uid, String mobile, Integer role);
+    CommonResult applyInitialize(Long uid, String mobile, Integer role);
 }

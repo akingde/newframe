@@ -6,7 +6,7 @@ import lombok.Data;
  * @author WangBin
  */
 @Data
-public class SmsResult {
+public class CommonResult {
 
     private String code;
     private String mesage;

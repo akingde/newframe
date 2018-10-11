@@ -1,7 +1,6 @@
 package com.newframe.services.sms.impl;
 
-import com.newframe.dto.SmsResult;
-import com.newframe.resp.sms.SendCodeResp;
+import com.newframe.dto.CommonResult;
 import com.newframe.services.http.OkHttpService;
 import com.newframe.services.sms.SmsService;
 import com.newframe.utils.log.GwsLogger;
@@ -41,7 +40,7 @@ public class SmsServiceImpl implements SmsService {
         params.put("templateCode", templateCode);
         params.put("code", code);
         GwsLogger.info("给{}发送验证码{}", mobile, code);
-        SmsResult smsResult = okHttpService.sendVerificationCode(mobile, templateCode, code);
+        CommonResult smsResult = okHttpService.sendVerificationCode(mobile, templateCode, code);
         if (null != smsResult && smsResult.getData().getStatus()){
             return true;
         }

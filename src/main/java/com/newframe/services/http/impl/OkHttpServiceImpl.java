@@ -2,7 +2,7 @@ package com.newframe.services.http.impl;
 
 import com.mzlion.easyokhttp.HttpClient;
 import com.mzlion.easyokhttp.request.PostRequest;
-import com.newframe.dto.SmsResult;
+import com.newframe.dto.CommonResult;
 import com.newframe.resp.face.FaceIdentityResp;
 import com.newframe.resp.file.CommonResp;
 import com.newframe.resp.file.UploadFilesResp;
@@ -216,13 +216,13 @@ public class OkHttpServiceImpl implements OkHttpService {
      * @return
      */
     @Override
-    public SmsResult sendVerificationCode(String mobile, String templateCode, String code) {
+    public CommonResult sendVerificationCode(String mobile, String templateCode, String code) {
         String url = smsUrl + "/api/sms/sendAliVcode";
         return HttpClient.post(url)
                 .param("mobile", mobile)
                 .param("templateCode", templateCode)
                 .param("code", code)
-                .asBean(SmsResult.class);
+                .asBean(CommonResult.class);
     }
 
     /**
@@ -241,18 +241,18 @@ public class OkHttpServiceImpl implements OkHttpService {
 
     /**
      * 根据不同的用户角色，去初始化不同的申请表
-     *
-     * @param uid
+     *  @param uid
      * @param mobile
      * @param role
      */
     @Override
-    public void applyInitialize(Long uid, String mobile, Integer role) {
+    public CommonResult applyInitialize(Long uid, String mobile, Integer role) {
         String url = tuancanUrl + "/front/apply/initialize/info";
 
-        HttpClient.post(url)
+        return HttpClient.post(url)
                 .param("uid",uid.toString())
                 .param("mobile", mobile)
-                .param("role", role.toString());
+                .param("role", role.toString())
+                .asBean(CommonResult.class);
     }
 }
