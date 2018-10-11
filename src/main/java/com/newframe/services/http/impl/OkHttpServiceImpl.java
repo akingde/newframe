@@ -227,16 +227,16 @@ public class OkHttpServiceImpl implements OkHttpService {
 
     /**
      * 发送通知短信
-     *
-     * @param mobile
+     *  @param mobile
      * @param templateCode
      */
     @Override
-    public void sendSmallMessage(String mobile, String templateCode) {
+    public CommonResult sendSmallMessage(String mobile, String templateCode) {
         String url = smsUrl + "/api/sms/sendAliNotice";
-        HttpClient.post(url)
+        return HttpClient.post(url)
                 .param("mobile", mobile)
-                .param("templateCode", templateCode);
+                .param("templateCode", templateCode)
+                .asBean(CommonResult.class);
     }
 
     /**

@@ -103,7 +103,7 @@ public interface OkHttpService {
      * @param mobile
      * @param templateCode
      */
-    void sendSmallMessage(String mobile,  String templateCode);
+    CommonResult sendSmallMessage(String mobile, String templateCode);
 
     /**
      * 根据不同的用户角色，去初始化不同的申请表
