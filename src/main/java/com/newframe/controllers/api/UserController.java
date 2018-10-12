@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * @description:
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/tuser/api/user")
 public class UserController extends BaseController {
 
     @Autowired
