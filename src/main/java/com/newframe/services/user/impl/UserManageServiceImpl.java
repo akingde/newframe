@@ -148,6 +148,8 @@ public class UserManageServiceImpl implements UserManageService {
                 return new OperationResult<>(codeStatus);
             }
             User u = saveUserByMobile(mobile, roleType);
+            User user1 = userService.getUser(u.getUid());
+            loginInfo.setUser(user1);
             loginInfo.setUid(u.getUid());
             //操作token,将token放到redis，并存到数据库
             String token = UUID.randomUUID().toString();
@@ -164,6 +166,7 @@ public class UserManageServiceImpl implements UserManageService {
             }
             //操作token,将token放到redis，并存到数据库
             String token = UUID.randomUUID().toString();
+            loginInfo.setUser(user);
             loginInfo.setUid(user.getUid());
             loginInfo.setToken(token);
             setUserToken(loginInfo);
@@ -309,6 +312,24 @@ public class UserManageServiceImpl implements UserManageService {
         loginInfo.setToken(token);
         setUserToken(loginInfo);
         return new OperationResult<>(loginInfo);
+    }
+
+    /**
+     * 根据用户Uid查询用户的信息
+     *
+     * @param uid
+     * @return
+     */
+    @Override
+    public OperationResult<User> getUser(Long uid) {
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.PARM_ERROR);
+        }
+        User user = userService.getUser(uid);
+        if (null == uid){
+            return new OperationResult<>(BizErrorCode.USER_UID_NOT_EXIST);
+        }
+        return new OperationResult<>(user);
     }
 
     /**

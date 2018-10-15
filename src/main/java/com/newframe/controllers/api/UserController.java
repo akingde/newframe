@@ -5,6 +5,7 @@ import com.newframe.controllers.JsonResult;
 import com.newframe.dto.LoginInfo;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.user.RegisterInfo;
+import com.newframe.entity.user.User;
 import com.newframe.services.user.UserManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -117,6 +118,20 @@ public class UserController extends BaseController {
     @RequestMapping("mobilePwdLogin")
     public JsonResult mobilePwdLogin(String mobile, String pwd) {
         OperationResult<LoginInfo> result = userManageService.mobilePwdLogin(mobile, pwd);
+        if (result.getSucc()) {
+            return success(result.getEntity());
+        }
+        return error(result.getErrorCode().getCode(), result.getErrorCode().getMessage());
+    }
+
+    /**
+     * 根据用的uid查询用户信息
+     * @param uid
+     * @return
+     */
+    @RequestMapping("getUser")
+    public JsonResult getUser(Long uid) {
+        OperationResult<User> result = userManageService.getUser(uid);
         if (result.getSucc()) {
             return success(result.getEntity());
         }

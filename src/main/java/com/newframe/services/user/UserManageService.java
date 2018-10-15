@@ -4,6 +4,7 @@ import com.newframe.dto.LoginInfo;
 import com.newframe.dto.OperationResult;
 import com.newframe.dto.mq.AliVcode;
 import com.newframe.dto.user.RegisterInfo;
+import com.newframe.entity.user.User;
 import com.newframe.enums.sms.McodeTypeEnum;
 
 /**
@@ -70,4 +71,11 @@ public interface UserManageService {
      * @return
      */
     OperationResult<LoginInfo> mobilePwdLogin(String mobile, String pwd);
+
+    /**
+     * 根据用户Uid查询用户的信息
+     * @param uid
+     * @return
+     */
+    OperationResult<User> getUser(Long uid);
 }

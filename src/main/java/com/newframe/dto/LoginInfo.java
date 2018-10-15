@@ -1,5 +1,6 @@
 package com.newframe.dto;
 
+import com.newframe.entity.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,8 @@ public class LoginInfo {
     private Long uid;
 
     private String token;
+
+    private User user;
 
     public LoginInfo(){
 
